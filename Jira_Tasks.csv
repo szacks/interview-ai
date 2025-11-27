@@ -2,7 +2,7 @@ Summary,Issue Type,Epic Name,Week,Day,Time Estimate,Description,Assignee,Priorit
 Initialize Spring Boot project with all dependencies,Task,Project Foundation,Week 1,Day 1,8h,Set up Spring Boot 3.2+ with PostgreSQL Security WebSocket JPA docker-java dependency,Backend Dev,High,V
 Initialize React + TypeScript + Vite project,Task,Project Foundation,Week 1,Day 1,8h,Set up React 18 TypeScript Vite TailwindCSS,Frontend Dev,High,V
 Configure application.yml and environment variables,Task,Project Foundation,Week 1,Day 2,4h,Set up database connection JWT secret CORS server port Claude Haiku 4.5 config,Backend Dev,High,V
-Set up local PostgreSQL with Docker,Task,Project Foundation,Week 1,Day 2,4h,Create docker-compose.yml with PostgreSQL 15 Alpine test connection configure volumes,Backend Dev,High,
+Set up local PostgreSQL with Docker,Task,Project Foundation,Week 1,Day 2,4h,Create docker-compose.yml with PostgreSQL 15 Alpine test connection configure volumes,Backend Dev,High,V
 Set up React Router and project structure,Task,Project Foundation,Week 1,Day 2,4h,Configure routing create folder structure,Frontend Dev,High,
 Configure Axios and API client,Task,Project Foundation,Week 1,Day 2,4h,Set up Axios instance with interceptors base URL error handling,Frontend Dev,High,
 Create database schema and all tables,Task,Project Foundation,Week 1,Day 3,8h,Create all database tables with relationships,Backend Dev,High,
