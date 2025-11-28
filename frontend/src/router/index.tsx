@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouteObject } from 'react-router-dom';
+import { createBrowserRouter } from 'react-router-dom';
 import AppLayout from '../layouts/AppLayout';
 import DashboardLayout from '../layouts/DashboardLayout';
 import InterviewLayout from '../layouts/InterviewLayout';
@@ -8,7 +8,7 @@ import DashboardPage from '../pages/DashboardPage';
 import InterviewPage from '../pages/InterviewPage';
 import NotFoundPage from '../pages/NotFoundPage';
 
-const routes: RouteObject[] = [
+const routes = [
   {
     path: '/',
     element: <AppLayout />,
