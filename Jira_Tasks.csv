@@ -9,8 +9,8 @@ Create database schema and all tables,Task,Project Foundation,Week 1,Day 3,8h,Cr
 Set up Zustand stores,Task,Project Foundation,Week 1,Day 3,4h,Create authStore and interviewStore,Frontend Dev,Medium,V
 Create common UI components,Task,Project Foundation,Week 1,Day 3,4h,Build Button Input Modal Card Spinner components,Frontend Dev,Medium,V
 Build basic layout components,Task,Project Foundation,Week 1,Day 4,8h,AppLayout with navigation DashboardLayout InterviewLayout,Frontend Dev,High,V
-Create all Spring Data repositories,Task,Project Foundation,Week 1,Day 5,4h,Create repositories for all entities with custom queries,Backend Dev,High,
-Create DTO classes for API communication,Task,Project Foundation,Week 1,Day 5,4h,Create request response DTOs for auth interview evaluation,Backend Dev,Medium,
+Create all Spring Data repositories,Task,Project Foundation,Week 1,Day 5,4h,Create repositories for all entities with custom queries,Backend Dev,High,V
+Create DTO classes for API communication,Task,Project Foundation,Week 1,Day 5,4h,Create request response DTOs for auth interview evaluation,Backend Dev,Medium,V
 Set up auth guards and protected routes,Task,Project Foundation,Week 1,Day 5,8h,Create PrivateRoute component implement redirect logic,Frontend Dev,High,
 Configure Spring Security,Task,User Authentication,Week 2,Day 6,4h,Set up SecurityConfig with JWT filter configure password encoder,Backend Dev,High,
 Implement JwtTokenProvider,Task,User Authentication,Week 2,Day 6,4h,Token generation validation extract user details,Backend Dev,High,
