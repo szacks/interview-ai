@@ -12,11 +12,18 @@ export interface SignupRequest {
 }
 
 export interface AuthResponse {
+  userId: string;
+  name: string;
+  email: string;
+  role: string;
+  companyId?: string;
   token: string;
-  user: {
+  expiresIn: number;
+  message: string;
+  user?: {
     id: string;
     email: string;
-    companyName: string;
+    companyName?: string;
     role: string;
   };
 }
