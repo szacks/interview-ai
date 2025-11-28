@@ -7,6 +7,7 @@ import SignupPage from '../pages/SignupPage';
 import DashboardPage from '../pages/DashboardPage';
 import InterviewPage from '../pages/InterviewPage';
 import NotFoundPage from '../pages/NotFoundPage';
+import PrivateRoute from '../components/auth/PrivateRoute';
 
 const routes = [
   {
@@ -23,7 +24,11 @@ const routes = [
       },
       {
         path: 'dashboard',
-        element: <DashboardLayout />,
+        element: (
+          <PrivateRoute>
+            <DashboardLayout />
+          </PrivateRoute>
+        ),
         children: [
           {
             index: true,
@@ -33,7 +38,11 @@ const routes = [
       },
       {
         path: 'interview/:interviewId',
-        element: <InterviewLayout />,
+        element: (
+          <PrivateRoute>
+            <InterviewLayout />
+          </PrivateRoute>
+        ),
         children: [
           {
             index: true,
