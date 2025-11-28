@@ -5,7 +5,7 @@ Configure application.yml and environment variables,Task,Project Foundation,Week
 Set up local PostgreSQL with Docker,Task,Project Foundation,Week 1,Day 2,4h,Create docker-compose.yml with PostgreSQL 15 Alpine test connection configure volumes,Backend Dev,High,V
 Set up React Router and project structure,Task,Project Foundation,Week 1,Day 2,4h,Configure routing create folder structure,Frontend Dev,High,V
 Configure Axios and API client,Task,Project Foundation,Week 1,Day 2,4h,Set up Axios instance with interceptors base URL error handling,Frontend Dev,High,V
-Create database schema and all tables,Task,Project Foundation,Week 1,Day 3,8h,Create all database tables with relationships,Backend Dev,High,
+Create database schema and all tables,Task,Project Foundation,Week 1,Day 3,8h,Create all database tables with relationships,Backend Dev,High,V
 Set up Zustand stores,Task,Project Foundation,Week 1,Day 3,4h,Create authStore and interviewStore,Frontend Dev,Medium,V
 Create common UI components,Task,Project Foundation,Week 1,Day 3,4h,Build Button Input Modal Card Spinner components,Frontend Dev,Medium,
 Create all JPA entity models Part 1,Task,Project Foundation,Week 1,Day 4,4h,Company User Candidate entities with annotations,Backend Dev,High,
