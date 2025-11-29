@@ -19,9 +19,9 @@ Implement AuthService,Task,User Authentication,Week 2,Day 7,8h,User registration
 Build Signup page,Task,User Authentication,Week 2,Day 7,8h,Company signup form with validation connect to API,Frontend Dev,High,V
 Implement AuthController endpoints,Task,User Authentication,Week 2,Day 8,4h,POST auth signup POST auth login,Backend Dev,High,V
 Add role-based access control,Task,User Authentication,Week 2,Day 8,4h,Implement PreAuthorize annotations custom access handler,Backend Dev,High,
-Build Password Reset flow Part 1,Task,User Authentication,Week 2,Day 8,4h,Create Forgot Password page request reset form,Frontend Dev,Medium,
-Build Password Reset flow Part 2,Task,User Authentication,Week 2,Day 8,4h,Password reset confirmation page connect to API,Frontend Dev,Medium,
-Implement password reset functionality,Task,User Authentication,Week 2,Day 9,8h,Generate tokens send reset email validate and reset password,Backend Dev,Medium,
+Build Password Reset flow Part 1,Task,User Authentication,Week 2,Day 8,4h,Create Forgot Password page request reset form,Frontend Dev,Medium,V
+Build Password Reset flow Part 2,Task,User Authentication,Week 2,Day 8,4h,Password reset confirmation page connect to API,Frontend Dev,Medium,V
+Implement password reset functionality,Task,User Authentication,Week 2,Day 9,8h,Generate tokens send reset email validate and reset password,Backend Dev,Medium,V
 Test and polish authentication flows,Task,User Authentication,Week 2,Day 9,8h,Test all flows add loading states improve error messages,Frontend Dev,Medium,
 Implement team management invite interviewers,Task,User Authentication,Week 2,Day 10,8h,Create invite endpoints send invitation emails,Backend Dev,Medium,
 End-to-end testing of authentication,Task,User Authentication,Week 2,Day 10,8h,Test all auth flows fix bugs verify token persistence,Frontend Dev,High,

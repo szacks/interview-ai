@@ -2,6 +2,8 @@ package com.example.interviewAI.controller;
 
 import com.example.interviewAI.dto.AuthResponse;
 import com.example.interviewAI.dto.LoginRequest;
+import com.example.interviewAI.dto.PasswordResetRequest;
+import com.example.interviewAI.dto.ResetPasswordRequest;
 import com.example.interviewAI.dto.SignupRequest;
 import com.example.interviewAI.service.AuthService;
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +56,30 @@ public class AuthController {
             AuthResponse errorResponse = new AuthResponse();
             errorResponse.setMessage(e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        }
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@Valid @RequestBody PasswordResetRequest request) {
+        try {
+            AuthResponse response = authService.requestPasswordReset(request);
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            AuthResponse errorResponse = new AuthResponse();
+            errorResponse.setMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        }
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        try {
+            AuthResponse response = authService.resetPassword(request);
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            AuthResponse errorResponse = new AuthResponse();
+            errorResponse.setMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }
 }
