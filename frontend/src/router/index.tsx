@@ -4,6 +4,8 @@ import DashboardLayout from '../layouts/DashboardLayout';
 import InterviewLayout from '../layouts/InterviewLayout';
 import LoginPage from '../pages/LoginPage';
 import SignupPage from '../pages/SignupPage';
+import ForgotPasswordPage from '../pages/ForgotPasswordPage';
+import ResetPasswordPage from '../pages/ResetPasswordPage';
 import DashboardPage from '../pages/DashboardPage';
 import InterviewPage from '../pages/InterviewPage';
 import NotFoundPage from '../pages/NotFoundPage';
@@ -20,6 +22,14 @@ const routes = [
       {
         path: 'signup',
         element: <SignupPage />,
+      },
+      {
+        path: 'forgot-password',
+        element: <ForgotPasswordPage />,
+      },
+      {
+        path: 'reset-password',
+        element: <ResetPasswordPage />,
       },
       {
         path: 'dashboard',
