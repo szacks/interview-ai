@@ -32,10 +32,10 @@ export default function LoginPage() {
       });
 
       const userData = {
-        id: response.user.id,
-        email: response.user.email,
-        role: response.user.role,
-        companyName: response.user.companyName,
+        id: response.userId.toString(),
+        email: response.email,
+        role: response.role,
+        companyName: response.name,
       };
 
       login(userData, response.token);
