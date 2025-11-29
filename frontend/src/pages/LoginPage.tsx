@@ -41,12 +41,7 @@ export default function LoginPage() {
       login(userData, response.token);
       navigate('/dashboard');
     } catch (error: any) {
-      const errorMessage =
-        error?.response?.data?.message ||
-        error?.response?.data?.error ||
-        error?.message ||
-        'Login failed. Please try again.';
-
+      const errorMessage = error?.message || 'Login failed. Please try again.';
       setApiError(errorMessage);
       setError(errorMessage);
     } finally {
