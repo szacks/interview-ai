@@ -95,7 +95,7 @@ logging:
   level:
     root: INFO
     com.example.interviewAI: DEBUG
-    org.springframework.security: DEBUG
+    org.springframework.security: INFO
     org.springframework.web: INFO
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"

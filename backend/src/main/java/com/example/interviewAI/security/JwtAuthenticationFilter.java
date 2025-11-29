@@ -28,6 +28,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        String requestPath = request.getRequestURI();
+
+        // Remove context path to get the actual servlet path
+        String contextPath = request.getContextPath();
+        if (contextPath != null && !contextPath.isEmpty() && requestPath.startsWith(contextPath)) {
+            requestPath = requestPath.substring(contextPath.length());
+        }
+
+        log.debug("Processing request: {} (context: {})", requestPath, contextPath);
+
+        // Skip JWT filter for public endpoints
+        if (isPublicEndpoint(requestPath)) {
+            log.debug("Public endpoint, skipping JWT authentication: {}", requestPath);
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         try {
             String jwt = getJwtFromRequest(request);
 
@@ -50,6 +67,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private boolean isPublicEndpoint(String requestPath) {
+        // The request path doesn't include /api context, so we check for direct paths
+        return requestPath.startsWith("/auth/") ||
+               requestPath.startsWith("/health/") ||
+               requestPath.startsWith("/error") ||
+               requestPath.startsWith("/interviews/") && requestPath.contains("/token/");
     }
 
     private String getJwtFromRequest(HttpServletRequest request) {
