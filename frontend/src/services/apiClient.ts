@@ -1,4 +1,5 @@
-import axios, { AxiosInstance, AxiosError, AxiosResponse } from 'axios';
+import axios from 'axios';
+import type { AxiosInstance, AxiosError, AxiosResponse } from 'axios';
 
 // Define API response types
 export interface ApiResponse<T = unknown> {
