@@ -6,6 +6,7 @@ import authService from '../services/authService';
 
 interface FormErrors {
   companyName?: string;
+  adminName?: string;
   email?: string;
   password?: string;
   confirmPassword?: string;
@@ -16,6 +17,7 @@ export default function SignupPage() {
   const navigate = useNavigate();
   const { login, setLoading, setError, clearError } = useAuthStore();
   const [companyName, setCompanyName] = useState('');
+  const [adminName, setAdminName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -31,6 +33,12 @@ export default function SignupPage() {
       newErrors.companyName = 'Company name is required';
     } else if (companyName.trim().length < 2) {
       newErrors.companyName = 'Company name must be at least 2 characters';
+    }
+
+    if (!adminName.trim()) {
+      newErrors.adminName = 'Admin name is required';
+    } else if (adminName.trim().length < 2) {
+      newErrors.adminName = 'Admin name must be at least 2 characters';
     }
 
     if (!email.trim()) {
@@ -71,6 +79,7 @@ export default function SignupPage() {
     try {
       const response = await authService.signup({
         companyName: companyName.trim(),
+        adminName: adminName.trim(),
         email: email.trim(),
         password,
       });
@@ -137,6 +146,28 @@ export default function SignupPage() {
               />
               {errors.companyName && (
                 <p className="mt-1 text-sm text-red-600">{errors.companyName}</p>
+              )}
+            </div>
+            <div>
+              <label htmlFor="admin-name" className="sr-only">
+                Admin Name
+              </label>
+              <input
+                id="admin-name"
+                name="adminName"
+                type="text"
+                required
+                value={adminName}
+                onChange={(e) => {
+                  setAdminName(e.target.value);
+                  if (errors.adminName) setErrors({ ...errors, adminName: undefined });
+                }}
+                disabled={isLoading}
+                className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm disabled:opacity-50"
+                placeholder="Admin Name"
+              />
+              {errors.adminName && (
+                <p className="mt-1 text-sm text-red-600">{errors.adminName}</p>
               )}
             </div>
             <div>

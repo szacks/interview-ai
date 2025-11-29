@@ -7,6 +7,7 @@ export interface LoginRequest {
 
 export interface SignupRequest {
   companyName: string;
+  adminName: string;
   email: string;
   password: string;
 }
