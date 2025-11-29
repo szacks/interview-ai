@@ -1,5 +1,6 @@
 package com.example.interviewAI.entity;
 
+import com.example.interviewAI.enums.RoleEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,7 +27,8 @@ public class User {
     private String name;
 
     @Column(nullable = false)
-    private String role; // 'admin', 'interviewer'
+    @Enumerated(EnumType.STRING)
+    private RoleEnum role;
 
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
