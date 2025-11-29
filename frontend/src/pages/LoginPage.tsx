@@ -2,8 +2,8 @@ import { useState, FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import authService from '../services/authService';
-import { Input } from '../components/common/Input';
-import { Button } from '../components/common/Button';
+import Input from '../components/common/Input';
+import Button from '../components/common/Button';
 
 interface FormErrors {
   email?: string;
