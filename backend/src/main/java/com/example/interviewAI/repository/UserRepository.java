@@ -1,6 +1,7 @@
 package com.example.interviewAI.repository;
 
 import com.example.interviewAI.entity.User;
+import com.example.interviewAI.enums.RoleEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -14,8 +15,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findByCompanyId(Long companyId);
 
-    List<User> findByCompanyIdAndRole(Long companyId, String role);
+    List<User> findByCompanyIdAndRole(Long companyId, RoleEnum role);
 
     @Query("SELECT u FROM User u WHERE u.company.id = ?1 AND u.role = ?2")
-    List<User> findInterviewersByCompany(Long companyId, String role);
+    List<User> findInterviewersByCompany(Long companyId, RoleEnum role);
 }
