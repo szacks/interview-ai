@@ -15,7 +15,6 @@ import jakarta.validation.Valid;
 @Slf4j
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "*", maxAge = 3600)
 public class AuthController {
 
     @Autowired
