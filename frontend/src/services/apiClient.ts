@@ -64,9 +64,12 @@ apiClient.interceptors.response.use(
       // Handle specific status codes
       switch (error.response.status) {
         case 401:
-          // Unauthorized - clear auth token and redirect to login
-          localStorage.removeItem('authToken');
-          window.location.href = '/login';
+          // Unauthorized - only redirect if not on login/signup page
+          const currentPath = window.location.pathname;
+          if (!currentPath.includes('/login') && !currentPath.includes('/signup')) {
+            localStorage.removeItem('authToken');
+            window.location.href = '/login';
+          }
           break;
         case 403:
           apiError.message = 'Access denied';
