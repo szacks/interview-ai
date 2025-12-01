@@ -31,16 +31,16 @@ public class Question {
     @Column
     private String supportedLanguages; // e.g., 'java,python,javascript'
 
-    @Column(columnDefinition = "JSONB", nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String requirementsJson;
 
-    @Column(columnDefinition = "JSONB", nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String testsJson;
 
-    @Column(columnDefinition = "JSONB", nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String rubricJson;
 
-    @Column(columnDefinition = "JSONB")
+    @Column(columnDefinition = "TEXT")
     private String intentionalBugsJson;
 
     @Column(columnDefinition = "TEXT")
