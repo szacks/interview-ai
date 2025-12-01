@@ -1,10 +1,18 @@
 import type { FC } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuthStore } from '../../stores/authStore';
 
 const Sidebar: FC = () => {
   const location = useLocation();
+  const { user } = useAuthStore();
 
   const isActive = (path: string) => location.pathname.startsWith(path);
+  const isAdmin = user?.role?.toUpperCase() === 'ADMIN';
+
+  // Debug log
+  if (user) {
+    console.log('User role:', user.role, 'Is admin:', isAdmin);
+  }
 
   return (
     <div className="w-64 bg-white shadow-lg flex flex-col">
@@ -46,16 +54,18 @@ const Sidebar: FC = () => {
           Candidates
         </Link>
 
-        <Link
-          to="/teams"
-          className={`block px-4 py-3 rounded-lg font-medium transition ${
-            isActive('/teams')
-              ? 'bg-blue-600 text-white'
-              : 'text-gray-700 hover:bg-gray-100'
-          }`}
-        >
-          Team Management
-        </Link>
+        {isAdmin && (
+          <Link
+            to="/teams"
+            className={`block px-4 py-3 rounded-lg font-medium transition ${
+              isActive('/teams')
+                ? 'bg-blue-600 text-white'
+                : 'text-gray-700 hover:bg-gray-100'
+            }`}
+          >
+            Team Management
+          </Link>
+        )}
 
         <Link
           to="/settings"

@@ -11,6 +11,8 @@ import DashboardPage from '../pages/DashboardPage';
 import TeamManagementPage from '../pages/TeamManagementPage';
 import InterviewPage from '../pages/InterviewPage';
 import NotFoundPage from '../pages/NotFoundPage';
+import PrivateRoute from '../components/PrivateRoute';
+import AdminRoute from '../components/AdminRoute';
 
 const routes = [
   {
@@ -38,32 +40,42 @@ const routes = [
         element: <AcceptInvitationPage />,
       },
       {
-        path: 'dashboard',
-        element: <DashboardLayout />,
+        element: <PrivateRoute />,
         children: [
           {
-            index: true,
-            element: <DashboardPage />,
+            path: 'dashboard',
+            element: <DashboardLayout />,
+            children: [
+              {
+                index: true,
+                element: <DashboardPage />,
+              },
+            ],
           },
-        ],
-      },
-      {
-        path: 'teams',
-        element: <DashboardLayout />,
-        children: [
           {
-            index: true,
-            element: <TeamManagementPage />,
+            path: 'interview/:interviewId',
+            element: <InterviewLayout />,
+            children: [
+              {
+                index: true,
+                element: <InterviewPage />,
+              },
+            ],
           },
-        ],
-      },
-      {
-        path: 'interview/:interviewId',
-        element: <InterviewLayout />,
-        children: [
           {
-            index: true,
-            element: <InterviewPage />,
+            element: <AdminRoute />,
+            children: [
+              {
+                path: 'teams',
+                element: <DashboardLayout />,
+                children: [
+                  {
+                    index: true,
+                    element: <TeamManagementPage />,
+                  },
+                ],
+              },
+            ],
           },
         ],
       },
