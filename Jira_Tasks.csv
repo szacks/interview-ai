@@ -24,7 +24,7 @@ Build Password Reset flow Part 2,Task,User Authentication,Week 2,Day 8,4h,Passwo
 Implement password reset functionality,Task,User Authentication,Week 2,Day 9,8h,Generate tokens send reset email validate and reset password,Backend Dev,Medium,V
 Test and polish authentication flows,Task,User Authentication,Week 2,Day 9,8h,Test all flows add loading states improve error messages,Frontend Dev,Medium,V
 Implement team management invite interviewers,Task,User Authentication,Week 2,Day 10,8h,Create invite endpoints send invitation emails,Backend Dev,Medium,V
-End-to-end testing of authentication,Task,User Authentication,Week 2,Day 10,8h,Test all auth flows fix bugs verify token persistence,Frontend Dev,High,
+End-to-end testing of authentication,Task,User Authentication,Week 2,Day 10,8h,Test all auth flows fix bugs verify token persistence,Frontend Dev,High,V
 Implement InterviewService Part 1,Task,Company Dashboard,Week 3,Day 11,8h,Interview creation logic generate tokens validate inputs,Backend Dev,High,
 Build Company Dashboard page structure,Task,Company Dashboard,Week 3,Day 11,8h,Dashboard layout header navigation placeholder sections,Frontend Dev,High,V
 Implement InterviewService Part 2,Task,Company Dashboard,Week 3,Day 12,4h,List interviews get by ID update status,Backend Dev,High,
