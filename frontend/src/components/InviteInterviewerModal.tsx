@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import type { FC, FormEvent, ChangeEvent } from 'react';
 import Modal from './common/Modal';
 import Button from './common/Button';
 import Input from './common/Input';
-import teamService, { InviteInterviewerRequest } from '../services/teamService';
+import teamService from '../services/teamService';
+import type { InviteInterviewerRequest } from '../services/teamService';
 
 interface InviteInterviewerModalProps {
   isOpen: boolean;
@@ -10,18 +12,15 @@ interface InviteInterviewerModalProps {
   onSuccess?: () => void;
 }
 
-const InviteInterviewerModal: React.FC<InviteInterviewerModalProps> = ({
-  isOpen,
-  onClose,
-  onSuccess,
-}) => {
+const InviteInterviewerModal: FC<InviteInterviewerModalProps> = (props: InviteInterviewerModalProps) => {
+  const { isOpen, onClose, onSuccess } = props;
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
 
@@ -126,7 +125,7 @@ const InviteInterviewerModal: React.FC<InviteInterviewerModalProps> = ({
             type="email"
             placeholder="interviewer@example.com"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
             disabled={isLoading}
             required
             error={error && !email ? 'Email is required' : undefined}
@@ -137,7 +136,7 @@ const InviteInterviewerModal: React.FC<InviteInterviewerModalProps> = ({
             type="text"
             placeholder="John Doe"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
             disabled={isLoading}
           />
 

@@ -1,17 +1,18 @@
+import type { FC } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-export default function Sidebar() {
+const Sidebar: FC = () => {
   const location = useLocation();
 
   const isActive = (path: string) => location.pathname.startsWith(path);
 
   return (
-    <div className="w-64 bg-white shadow-lg">
+    <div className="w-64 bg-white shadow-lg flex flex-col">
       <div className="p-6">
         <h1 className="text-2xl font-bold text-blue-600">InterviewAI</h1>
       </div>
 
-      <nav className="px-6 py-8 space-y-2">
+      <nav className="px-6 py-8 space-y-2 flex-1">
         <Link
           to="/dashboard"
           className={`block px-4 py-3 rounded-lg font-medium transition ${
@@ -67,12 +68,8 @@ export default function Sidebar() {
           Settings
         </Link>
       </nav>
-
-      <div className="absolute bottom-0 w-64 p-6 border-t">
-        <button className="w-full px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium transition">
-          Logout
-        </button>
-      </div>
     </div>
   );
-}
+};
+
+export default Sidebar;
