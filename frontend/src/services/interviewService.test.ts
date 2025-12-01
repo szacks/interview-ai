@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import interviewService, { Interview, CreateInterviewRequest } from './interviewService'
+import interviewService from './interviewService'
+import type { Interview, CreateInterviewRequest } from './interviewService'
 import apiClient from './apiClient'
 
 vi.mock('./apiClient')
