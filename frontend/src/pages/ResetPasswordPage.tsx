@@ -80,7 +80,19 @@ export default function ResetPasswordPage() {
         navigate('/login');
       }, 3000);
     } catch (error: any) {
-      const errorMessage = error?.message || 'Failed to reset password. Please try again.';
+      let errorMessage = error?.message || 'Failed to reset password. Please try again.';
+
+      // Provide better error messages for specific scenarios
+      if (error?.message?.includes('expired')) {
+        errorMessage = 'This password reset link has expired. Please request a new one.';
+      } else if (error?.message?.includes('already been used')) {
+        errorMessage = 'This password reset link has already been used. Please request a new one.';
+      } else if (error?.message?.includes('invalid') || error?.message?.includes('Invalid')) {
+        errorMessage = 'This password reset link is invalid. Please request a new one.';
+      } else if (error?.message?.includes('timeout') || error?.message?.includes('network')) {
+        errorMessage = 'Network error. Please check your connection and try again.';
+      }
+
       setError(errorMessage);
     } finally {
       setIsLoading(false);
