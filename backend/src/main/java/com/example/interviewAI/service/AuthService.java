@@ -2,11 +2,15 @@ package com.example.interviewAI.service;
 
 import com.example.interviewAI.dto.AuthResponse;
 import com.example.interviewAI.dto.LoginRequest;
+import com.example.interviewAI.dto.PasswordResetRequest;
+import com.example.interviewAI.dto.ResetPasswordRequest;
 import com.example.interviewAI.dto.SignupRequest;
 import com.example.interviewAI.entity.Company;
+import com.example.interviewAI.entity.PasswordResetToken;
 import com.example.interviewAI.entity.User;
 import com.example.interviewAI.enums.RoleEnum;
 import com.example.interviewAI.repository.CompanyRepository;
+import com.example.interviewAI.repository.PasswordResetTokenRepository;
 import com.example.interviewAI.repository.UserRepository;
 import com.example.interviewAI.security.JwtTokenProvider;
 import lombok.extern.slf4j.Slf4j;
@@ -28,10 +32,16 @@ public class AuthService {
     private CompanyRepository companyRepository;
 
     @Autowired
+    private PasswordResetTokenRepository passwordResetTokenRepository;
+
+    @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private EmailService emailService;
 
     @Transactional
     public AuthResponse signup(SignupRequest signupRequest) {
@@ -123,6 +133,75 @@ public class AuthService {
         response.setRole(user.getRole().getValue());
         response.setCompanyId(user.getCompany() != null ? user.getCompany().getId() : null);
         response.setMessage("Token is valid");
+
+        return response;
+    }
+
+    @Transactional
+    public AuthResponse requestPasswordReset(PasswordResetRequest request) {
+        // Find user by email
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("User with this email not found"));
+
+        // Create password reset token
+        PasswordResetToken resetToken = PasswordResetToken.create(user);
+        passwordResetTokenRepository.save(resetToken);
+
+        // Log the reset request
+        log.info("Password reset token generated for user: {}", user.getEmail());
+
+        // Send password reset email
+        emailService.sendPasswordResetEmail(
+                user.getEmail(),
+                user.getName(),
+                resetToken.getToken()
+        );
+
+        // Return response with message
+        AuthResponse response = new AuthResponse();
+        response.setMessage("Password reset link has been sent to your email");
+        response.setEmail(user.getEmail());
+
+        return response;
+    }
+
+    @Transactional
+    public AuthResponse resetPassword(ResetPasswordRequest request) {
+        // Find password reset token
+        PasswordResetToken resetToken = passwordResetTokenRepository.findByToken(request.getToken())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid password reset token"));
+
+        // Check if token is valid
+        if (!resetToken.isValid()) {
+            if (resetToken.isUsed()) {
+                throw new IllegalArgumentException("Password reset token has already been used");
+            } else {
+                throw new IllegalArgumentException("Password reset token has expired");
+            }
+        }
+
+        // Get user from token
+        User user = resetToken.getUser();
+
+        // Update password
+        user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+
+        // Mark token as used
+        resetToken.markAsUsed();
+        passwordResetTokenRepository.save(resetToken);
+
+        // Log the password reset
+        log.info("Password reset successful for user: {}", user.getEmail());
+
+        // Return response
+        AuthResponse response = new AuthResponse();
+        response.setUserId(user.getId());
+        response.setName(user.getName());
+        response.setEmail(user.getEmail());
+        response.setRole(user.getRole().getValue());
+        response.setCompanyId(user.getCompany() != null ? user.getCompany().getId() : null);
+        response.setMessage("Password reset successful");
 
         return response;
     }

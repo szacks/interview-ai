@@ -36,12 +36,13 @@ spring:
       allow-credentials: true
       max-age: 3600
 
-  # Mail Configuration (Resend)
+  # Mail Configuration (Resend with test domain)
   mail:
     host: ${MAIL_HOST:smtp.resend.com}
     port: ${MAIL_PORT:587}
-    username: ${RESEND_API_KEY}
-    password: ${RESEND_API_KEY}
+    username: ${MAIL_USERNAME:resend}
+    password: ${MAIL_PASSWORD:dev-no-email}
+    from: ${MAIL_FROM:onboarding@resend.dev}
     properties:
       mail:
         smtp:
@@ -64,6 +65,13 @@ server:
   error:
     include-message: always
     include-binding-errors: always
+
+# Application Configuration
+app:
+  mail:
+    from: ${MAIL_FROM:noreply@interviewai.com}
+  frontend:
+    url: ${APP_FRONTEND_URL:http://localhost:5173}
 
 # JWT Configuration
 jwt:
@@ -95,7 +103,7 @@ logging:
   level:
     root: INFO
     com.example.interviewAI: DEBUG
-    org.springframework.security: DEBUG
+    org.springframework.security: INFO
     org.springframework.web: INFO
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
