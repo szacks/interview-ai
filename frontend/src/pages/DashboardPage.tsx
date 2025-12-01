@@ -1,4 +1,5 @@
 import Card from '../components/common/Card';
+import InterviewList from '../components/InterviewList';
 
 export default function DashboardPage() {
   // Mock data for dashboard metrics
@@ -9,17 +10,6 @@ export default function DashboardPage() {
     totalCandidates: 0,
   };
 
-  const recentInterviews = [
-    // Example structure for recent interviews
-    // {
-    //   id: '1',
-    //   candidateName: 'John Doe',
-    //   position: 'Senior Engineer',
-    //   status: 'in-progress' | 'completed' | 'pending',
-    //   scheduledDate: '2024-01-15',
-    //   duration: 60,
-    // }
-  ];
 
   return (
     <div className="p-8">
@@ -123,67 +113,7 @@ export default function DashboardPage() {
         {/* Recent Interviews Section */}
         <div>
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Recent Interviews</h2>
-          <Card variant="elevated" padding="md">
-            {recentInterviews.length === 0 ? (
-              <div className="text-center py-12">
-                <div className="text-gray-400 text-4xl mb-4">📋</div>
-                <p className="text-gray-600 font-medium">No interviews yet</p>
-                <p className="mt-1 text-sm text-gray-500">Create one to get started</p>
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-gray-200">
-                      <th className="px-4 py-3 text-left font-semibold text-gray-700">
-                        Candidate
-                      </th>
-                      <th className="px-4 py-3 text-left font-semibold text-gray-700">
-                        Position
-                      </th>
-                      <th className="px-4 py-3 text-left font-semibold text-gray-700">
-                        Status
-                      </th>
-                      <th className="px-4 py-3 text-left font-semibold text-gray-700">
-                        Scheduled
-                      </th>
-                      <th className="px-4 py-3 text-left font-semibold text-gray-700">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {recentInterviews.map((interview) => (
-                      <tr key={interview.id} className="border-b border-gray-100 hover:bg-gray-50">
-                        <td className="px-4 py-3 text-gray-900">{interview.candidateName}</td>
-                        <td className="px-4 py-3 text-gray-600">{interview.position}</td>
-                        <td className="px-4 py-3">
-                          <span
-                            className={`px-3 py-1 rounded-full text-xs font-medium ${
-                              interview.status === 'completed'
-                                ? 'bg-green-100 text-green-800'
-                                : interview.status === 'in-progress'
-                                  ? 'bg-blue-100 text-blue-800'
-                                  : 'bg-yellow-100 text-yellow-800'
-                            }`}
-                          >
-                            {interview.status.charAt(0).toUpperCase() +
-                              interview.status.slice(1).replace('-', ' ')}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3 text-gray-600">{interview.scheduledDate}</td>
-                        <td className="px-4 py-3">
-                          <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                            View
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </Card>
+          <InterviewList />
         </div>
       </div>
     </div>
