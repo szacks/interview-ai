@@ -1,7 +1,11 @@
+import { useState } from 'react';
 import Card from '../components/common/Card';
 import InterviewList from '../components/InterviewList';
+import CreateInterviewModal from '../components/CreateInterviewModal';
 
 export default function DashboardPage() {
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
   // Mock data for dashboard metrics
   const metrics = {
     activeInterviews: 0,
@@ -97,7 +101,10 @@ export default function DashboardPage() {
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
           <Card variant="elevated" padding="md">
             <div className="flex flex-wrap gap-3">
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+              <button
+                onClick={() => setIsCreateModalOpen(true)}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+              >
                 Schedule Interview
               </button>
               <button className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-sm font-medium">
@@ -116,6 +123,16 @@ export default function DashboardPage() {
           <InterviewList />
         </div>
       </div>
+
+      {/* Create Interview Modal */}
+      <CreateInterviewModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSuccess={() => {
+          setIsCreateModalOpen(false);
+          // Optionally refresh interviews list
+        }}
+      />
     </div>
   );
 }

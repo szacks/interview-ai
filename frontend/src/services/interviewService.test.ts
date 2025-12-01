@@ -14,13 +14,14 @@ describe('interviewService', () => {
     it('should fetch all interviews with default parameters', async () => {
       const mockInterviews: Interview[] = [
         {
-          id: '1',
-          title: 'React Interview',
-          candidateName: 'John Doe',
-          candidateEmail: 'john@example.com',
-          status: 'pending',
-          language: 'JavaScript',
+          id: 1,
+          questionId: 1,
+          candidateId: 1,
+          interviewerId: 1,
+          language: 'javascript',
+          status: 'scheduled',
           createdAt: '2024-01-01',
+          interviewLinkToken: 'token123',
         },
       ]
 
@@ -37,9 +38,9 @@ describe('interviewService', () => {
 
       vi.mocked(apiClient.get).mockResolvedValueOnce(mockInterviews)
 
-      await interviewService.getInterviews('pending', 10, 0)
+      await interviewService.getInterviews('scheduled', 10, 0)
 
-      expect(apiClient.get).toHaveBeenCalledWith('/interviews?status=pending&limit=10&offset=0')
+      expect(apiClient.get).toHaveBeenCalledWith('/interviews?status=scheduled&limit=10&offset=0')
     })
 
     it('should fetch interviews with custom pagination', async () => {
@@ -56,13 +57,14 @@ describe('interviewService', () => {
   describe('getInterviewById', () => {
     it('should fetch interview by id', async () => {
       const mockInterview: Interview = {
-        id: '1',
-        title: 'React Interview',
-        candidateName: 'John Doe',
-        candidateEmail: 'john@example.com',
-        status: 'pending',
-        language: 'JavaScript',
+        id: 1,
+        questionId: 1,
+        candidateId: 1,
+        interviewerId: 1,
+        language: 'javascript',
+        status: 'scheduled',
         createdAt: '2024-01-01',
+        interviewLinkToken: 'token123',
       }
 
       vi.mocked(apiClient.get).mockResolvedValueOnce(mockInterview)
@@ -84,26 +86,25 @@ describe('interviewService', () => {
   describe('createInterview', () => {
     it('should create a new interview', async () => {
       const createData: CreateInterviewRequest = {
-        title: 'New Interview',
-        candidateName: 'Jane Smith',
-        candidateEmail: 'jane@example.com',
-        questionIds: ['q1', 'q2'],
-        language: 'Python',
+        questionId: 1,
+        candidateId: 2,
+        language: 'python',
       }
 
       const mockResponse: Interview = {
-        id: '2',
-        title: 'New Interview',
-        candidateName: 'Jane Smith',
-        candidateEmail: 'jane@example.com',
-        status: 'pending',
-        language: 'Python',
+        id: 2,
+        questionId: 1,
+        candidateId: 2,
+        interviewerId: 1,
+        language: 'python',
+        status: 'scheduled',
         createdAt: '2024-01-02',
+        interviewLinkToken: 'token456',
       }
 
       vi.mocked(apiClient.post).mockResolvedValueOnce(mockResponse)
 
-      const result = await interviewService.createInterview(createData)
+      const result = await interviewService.createInterview(createData as any)
 
       expect(result).toEqual(mockResponse)
       expect(apiClient.post).toHaveBeenCalledWith('/interviews', createData)
