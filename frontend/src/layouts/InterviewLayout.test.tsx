@@ -1,16 +1,18 @@
 import { describe, it, expect } from 'vitest'
-import { render, screen } from '@/test/test-utils'
-import { Routes, Route } from 'react-router-dom'
+import { render, screen } from '@testing-library/react'
+import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import InterviewLayout from './InterviewLayout'
 
 describe('InterviewLayout', () => {
   const renderLayout = () => {
     return render(
-      <Routes>
-        <Route path="/interview/:interviewId" element={<InterviewLayout />}>
-          <Route index element={<div>Interview Content</div>} />
-        </Route>
-      </Routes>
+      <MemoryRouter initialEntries={['/interview/test-123']}>
+        <Routes>
+          <Route path="/interview/:interviewId" element={<InterviewLayout />}>
+            <Route index element={<div>Interview Content</div>} />
+          </Route>
+        </Routes>
+      </MemoryRouter>
     )
   }
 
