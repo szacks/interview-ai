@@ -1,18 +1,21 @@
 import type { FC } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../stores/authStore';
+import authService from '../../services/authService';
 
 const Sidebar: FC = () => {
   const location = useLocation();
-  const { user } = useAuthStore();
+  const navigate = useNavigate();
+  const { user, logout } = useAuthStore();
 
   const isActive = (path: string) => location.pathname.startsWith(path);
   const isAdmin = user?.role?.toUpperCase() === 'ADMIN';
 
-  // Debug log
-  if (user) {
-    console.log('User role:', user.role, 'Is admin:', isAdmin);
-  }
+  const handleLogout = () => {
+    authService.logout();
+    logout();
+    navigate('/login');
+  };
 
   return (
     <div className="w-64 bg-white shadow-lg flex flex-col">
@@ -78,6 +81,15 @@ const Sidebar: FC = () => {
           Settings
         </Link>
       </nav>
+
+      <div className="px-6 pb-6">
+        <button
+          onClick={handleLogout}
+          className="w-full px-4 py-3 rounded-lg font-medium transition bg-red-600 text-white hover:bg-red-700"
+        >
+          Logout
+        </button>
+      </div>
     </div>
   );
 };

@@ -1,25 +1,16 @@
 import { describe, it, expect } from 'vitest'
-import { render as rtlRender, screen, RenderOptions } from '@testing-library/react'
-import { MemoryRouter, Routes, Route, ReactNode } from 'react-router-dom'
+import { render, screen } from '@/test/test-utils'
+import { Routes, Route } from 'react-router-dom'
 import DashboardLayout from './DashboardLayout'
-
-const render = (
-  ui: ReactNode,
-  options?: Omit<RenderOptions, 'wrapper'>,
-) => {
-  return rtlRender(ui, { ...options })
-}
 
 describe('DashboardLayout', () => {
   const renderLayout = () => {
     return render(
-      <MemoryRouter initialEntries={['/dashboard']}>
-        <Routes>
-          <Route element={<DashboardLayout />}>
-            <Route path="/dashboard" element={<div>Dashboard Content</div>} />
-          </Route>
-        </Routes>
-      </MemoryRouter>
+      <Routes>
+        <Route element={<DashboardLayout />}>
+          <Route path="/" element={<div>Dashboard Content</div>} />
+        </Route>
+      </Routes>
     )
   }
 
@@ -48,9 +39,10 @@ describe('DashboardLayout', () => {
     expect(screen.getByRole('link', { name: /settings/i })).toBeInTheDocument()
   })
 
-  it('renders logout button', () => {
+  it('renders logout buttons', () => {
     renderLayout()
-    expect(screen.getByRole('button', { name: /logout/i })).toBeInTheDocument()
+    const logoutButtons = screen.getAllByRole('button', { name: /logout/i })
+    expect(logoutButtons.length).toBeGreaterThan(0)
   })
 
   it('has flex layout', () => {
