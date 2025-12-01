@@ -99,3 +99,5 @@ Setup GitHub Actions CI/CD,Task,Launch Prep,Week 8,Day 39,4h,Create deploy workf
 Final end-to-end testing,Task,Launch Prep,Week 8,Day 39,4h,Test complete journey errors edge cases browsers mobile,Full Team,High,
 Create launch documentation,Task,Launch Prep,Week 8,Day 40,4h,User guide interviewer guide admin docs API docs deployment guide,Full Team,Medium,
 Final bug fixes and preparation,Task,Launch Prep,Week 8,Day 40,4h,Fix last issues set up monitoring on-call schedule verify all sandbox images,Full Team,High,
+change email to domain instead of local,Task,Launch Prep,Week 8,Day 40,4h,,Backend Dev,High,
+create a list of all the paid services i use in the system,,,,,,,,,

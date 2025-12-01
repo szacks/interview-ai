@@ -36,12 +36,13 @@ spring:
       allow-credentials: true
       max-age: 3600
 
-  # Mail Configuration (Resend)
+  # Mail Configuration (Resend with test domain)
   mail:
     host: ${MAIL_HOST:smtp.resend.com}
     port: ${MAIL_PORT:587}
     username: ${MAIL_USERNAME:resend}
     password: ${MAIL_PASSWORD:dev-no-email}
+    from: ${MAIL_FROM:onboarding@resend.dev}
     properties:
       mail:
         smtp:
