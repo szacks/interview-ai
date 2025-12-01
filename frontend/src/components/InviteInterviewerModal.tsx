@@ -95,7 +95,7 @@ const InviteInterviewerModal: FC<InviteInterviewerModalProps> = (props: InviteIn
           </Button>
           <Button
             variant="primary"
-            onClick={handleSubmit}
+            onClick={(e) => handleSubmit(e as any)}
             isLoading={isLoading}
             disabled={!email.trim() || isLoading}
           >

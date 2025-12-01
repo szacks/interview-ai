@@ -4,8 +4,8 @@ import Sidebar from './Sidebar'
 
 describe('Sidebar Component', () => {
   it('renders sidebar', () => {
-    const { container } = render(<Sidebar />)
-    const sidebar = container.querySelector('.w-64')
+    render(<Sidebar />)
+    const sidebar = document.querySelector('.w-64')
     expect(sidebar).toBeInTheDocument()
   })
 
@@ -40,14 +40,14 @@ describe('Sidebar Component', () => {
   })
 
   it('logout button has red background', () => {
-    const { container } = render(<Sidebar />)
+    render(<Sidebar />)
     const logoutButton = screen.getByRole('button', { name: /logout/i })
     expect(logoutButton).toHaveClass('bg-red-600')
   })
 
   it('has white background', () => {
-    const { container } = render(<Sidebar />)
-    const sidebar = container.querySelector('.bg-white')
+    render(<Sidebar />)
+    const sidebar = document.querySelector('.bg-white')
     expect(sidebar).toBeInTheDocument()
   })
 

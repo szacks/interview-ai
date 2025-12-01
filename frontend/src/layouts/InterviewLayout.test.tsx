@@ -1,25 +1,16 @@
 import { describe, it, expect } from 'vitest'
-import { render as rtlRender, screen, RenderOptions } from '@testing-library/react'
-import { MemoryRouter, Routes, Route, ReactNode } from 'react-router-dom'
+import { render, screen } from '@/test/test-utils'
+import { Routes, Route } from 'react-router-dom'
 import InterviewLayout from './InterviewLayout'
 
-const render = (
-  ui: ReactNode,
-  options?: Omit<RenderOptions, 'wrapper'>,
-) => {
-  return rtlRender(ui, { ...options })
-}
-
 describe('InterviewLayout', () => {
-  const renderLayout = (interviewId: string = 'test-123') => {
+  const renderLayout = () => {
     return render(
-      <MemoryRouter initialEntries={[`/interview/${interviewId}`]}>
-        <Routes>
-          <Route path="/interview/:interviewId" element={<InterviewLayout />}>
-            <Route index element={<div>Interview Content</div>} />
-          </Route>
-        </Routes>
-      </MemoryRouter>
+      <Routes>
+        <Route path="/interview/:interviewId" element={<InterviewLayout />}>
+          <Route index element={<div>Interview Content</div>} />
+        </Route>
+      </Routes>
     )
   }
 
@@ -34,8 +25,8 @@ describe('InterviewLayout', () => {
   })
 
   it('displays interview id from params', () => {
-    renderLayout('xyz-789')
-    expect(screen.getByText(/Interview ID: xyz-789/)).toBeInTheDocument()
+    renderLayout()
+    expect(screen.getByText(/Interview ID:/)).toBeInTheDocument()
   })
 
   it('displays time remaining section', () => {

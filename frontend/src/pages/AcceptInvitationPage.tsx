@@ -74,11 +74,8 @@ const AcceptInvitationPage: React.FC = () => {
       setUser({
         id: response.userId,
         email: response.email,
-        name: response.name,
         role: response.role,
-        companyId: response.companyId,
-        companyName: '',
-        avatar: null,
+        companyName: response.companyName,
       });
 
       // Redirect to dashboard

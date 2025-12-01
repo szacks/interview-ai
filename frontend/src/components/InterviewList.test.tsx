@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import InterviewList from './InterviewList';
 import interviewService from '../services/interviewService';
 import { useInterviewStore } from '../stores/interviewStore';
@@ -160,7 +160,6 @@ describe('InterviewList', () => {
   });
 
   it('should show filtered status empty message', async () => {
-    const pendingInterviews = [mockInterviews[0]]; // Only pending
     vi.mocked(interviewService.getInterviews)
       .mockResolvedValueOnce(mockInterviews) // Initial call - all interviews
       .mockResolvedValueOnce([]); // After filter - no interviews
