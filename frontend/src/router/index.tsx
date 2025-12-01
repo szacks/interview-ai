@@ -6,9 +6,13 @@ import LoginPage from '../pages/LoginPage';
 import SignupPage from '../pages/SignupPage';
 import ForgotPasswordPage from '../pages/ForgotPasswordPage';
 import ResetPasswordPage from '../pages/ResetPasswordPage';
+import AcceptInvitationPage from '../pages/AcceptInvitationPage';
 import DashboardPage from '../pages/DashboardPage';
+import TeamManagementPage from '../pages/TeamManagementPage';
 import InterviewPage from '../pages/InterviewPage';
 import NotFoundPage from '../pages/NotFoundPage';
+import PrivateRoute from '../components/PrivateRoute';
+import AdminRoute from '../components/AdminRoute';
 
 const routes = [
   {
@@ -32,22 +36,46 @@ const routes = [
         element: <ResetPasswordPage />,
       },
       {
-        path: 'dashboard',
-        element: <DashboardLayout />,
-        children: [
-          {
-            index: true,
-            element: <DashboardPage />,
-          },
-        ],
+        path: 'auth/accept-invitation',
+        element: <AcceptInvitationPage />,
       },
       {
-        path: 'interview/:interviewId',
-        element: <InterviewLayout />,
+        element: <PrivateRoute />,
         children: [
           {
-            index: true,
-            element: <InterviewPage />,
+            path: 'dashboard',
+            element: <DashboardLayout />,
+            children: [
+              {
+                index: true,
+                element: <DashboardPage />,
+              },
+            ],
+          },
+          {
+            path: 'interview/:interviewId',
+            element: <InterviewLayout />,
+            children: [
+              {
+                index: true,
+                element: <InterviewPage />,
+              },
+            ],
+          },
+          {
+            element: <AdminRoute />,
+            children: [
+              {
+                path: 'teams',
+                element: <DashboardLayout />,
+                children: [
+                  {
+                    index: true,
+                    element: <TeamManagementPage />,
+                  },
+                ],
+              },
+            ],
           },
         ],
       },
