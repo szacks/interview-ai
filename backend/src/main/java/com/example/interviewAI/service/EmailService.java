@@ -66,6 +66,35 @@ public class EmailService {
     }
 
     /**
+     * Send invitation email to new interviewer
+     */
+    public void sendInvitationEmail(String toEmail, String invitedByName, String companyName, String invitationLink) {
+        try {
+            // Email content
+            String subject = "You're invited to join " + companyName + " on InterviewAI";
+            String body = buildInvitationEmailBody(invitedByName, companyName, invitationLink);
+
+            // Send email
+            if (mailSender != null) {
+                try {
+                    sendEmail(toEmail, subject, body);
+                    log.info("Invitation email sent successfully to: {}", toEmail);
+                } catch (Exception e) {
+                    log.error("Error sending email via mail sender to: {}", toEmail, e);
+                    log.info("Dev Mode: Invitation link for {}: {}", toEmail, invitationLink);
+                    // Don't throw - allow invitation flow to continue
+                }
+            } else {
+                log.warn("Mail sender not configured (RESEND_API_KEY or MAIL configuration missing)");
+                log.info("Dev Mode: Invitation link for user {}: {}", toEmail, invitationLink);
+            }
+        } catch (Exception e) {
+            log.error("Unexpected error in sendInvitationEmail for: {}", toEmail, e);
+            // Don't throw - allow invitation flow to continue
+        }
+    }
+
+    /**
      * Build password reset email body
      */
     private String buildPasswordResetEmailBody(String userName, String resetLink) {
@@ -75,6 +104,20 @@ public class EmailService {
                 resetLink + "\n\n" +
                 "This link will expire in 24 hours.\n\n" +
                 "If you didn't request a password reset, please ignore this email.\n\n" +
+                "Best regards,\n" +
+                "InterviewAI Team";
+    }
+
+    /**
+     * Build invitation email body
+     */
+    private String buildInvitationEmailBody(String invitedByName, String companyName, String invitationLink) {
+        return "Hello,\n\n" +
+                invitedByName + " has invited you to join " + companyName + " on InterviewAI.\n\n" +
+                "Click the link below to accept the invitation and set up your account:\n" +
+                invitationLink + "\n\n" +
+                "This link will expire in 7 days.\n\n" +
+                "If you didn't expect this invitation, you can safely ignore this email.\n\n" +
                 "Best regards,\n" +
                 "InterviewAI Team";
     }
