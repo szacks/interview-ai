@@ -7,18 +7,20 @@ export interface LoginRequest {
 
 export interface SignupRequest {
   companyName: string;
+  adminName: string;
   email: string;
   password: string;
 }
 
 export interface AuthResponse {
   token: string;
-  user: {
-    id: string;
-    email: string;
-    companyName: string;
-    role: string;
-  };
+  userId: number;
+  name: string;
+  email: string;
+  role: string;
+  companyId: number;
+  expiresIn: number;
+  message?: string;
 }
 
 export interface PasswordResetRequest {
