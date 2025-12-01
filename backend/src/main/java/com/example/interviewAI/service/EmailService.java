@@ -14,7 +14,7 @@ public class EmailService {
     @Autowired(required = false)
     private JavaMailSender mailSender;
 
-    @Value("${app.mail.from:noreply@interviewai.com}")
+    @Value("${app.mail.from:onboarding@resend.dev}")
     private String fromEmail;
 
     @Value("${app.frontend.url}")
