@@ -31,7 +31,7 @@ Implement InterviewService Part 2,Task,Company Dashboard,Week 3,Day 12,4h,List i
 Implement InterviewController endpoints,Task,Company Dashboard,Week 3,Day 12,4h,POST interviews GET interviews GET interviews by id,Backend Dev,High,V
 Build Interview List component,Task,Company Dashboard,Week 3,Day 12,8h,Display interviews show status filters click to details,Frontend Dev,High,V
 Seed question database,Task,Company Dashboard,Week 3,Day 13,4h,Create 3 questions with details tests rubric intentional bugs JSON,Backend Dev,Medium,V
-Implement QuestionController,Task,Company Dashboard,Week 3,Day 13,4h,GET questions GET questions by id,Backend Dev,Medium,
+Implement QuestionController,Task,Company Dashboard,Week 3,Day 13,4h,GET questions GET questions by id,Backend Dev,Medium,V
 Build Create Interview modal,Task,Company Dashboard,Week 3,Day 13,8h,Modal with form to create interview validation,Frontend Dev,High,
 Implement Resend email notification service,Task,Company Dashboard,Week 3,Day 14,8h,Set up Resend API create templates send invite emails - replaces SendGrid,Backend Dev,High,
 Connect Create Interview form to API,Task,Company Dashboard,Week 3,Day 14,4h,Submit form handle success error refresh list,Frontend Dev,High,
