@@ -1,4 +1,4 @@
-import React from 'react';
+import type { FC, ReactNode, MouseEvent } from 'react';
 import Button from './Button';
 
 interface ModalProps {
@@ -6,12 +6,12 @@ interface ModalProps {
   onClose: () => void;
   title?: string;
   description?: string;
-  children?: React.ReactNode;
-  footer?: React.ReactNode;
+  children?: ReactNode;
+  footer?: ReactNode;
   size?: 'sm' | 'md' | 'lg' | 'xl';
 }
 
-const Modal: React.FC<ModalProps> = ({
+const Modal: FC<ModalProps> = ({
   isOpen,
   onClose,
   title,
@@ -29,7 +29,7 @@ const Modal: React.FC<ModalProps> = ({
     xl: 'max-w-xl',
   };
 
-  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleBackdropClick = (e: MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       onClose();
     }
