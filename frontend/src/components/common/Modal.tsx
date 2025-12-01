@@ -1,5 +1,4 @@
-import type { FC, ReactNode, MouseEvent } from 'react';
-import Button from './Button';
+import type { FC, ReactNode } from 'react';
 
 interface ModalProps {
   isOpen: boolean;
@@ -27,12 +26,6 @@ const Modal: FC<ModalProps> = ({
     md: 'max-w-md',
     lg: 'max-w-lg',
     xl: 'max-w-xl',
-  };
-
-  const handleBackdropClick = (e: MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
   };
 
   return (

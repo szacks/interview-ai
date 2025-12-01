@@ -1,5 +1,6 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { useAuthStore, User } from './authStore'
+import { describe, it, expect, beforeEach } from 'vitest'
+import { useAuthStore } from './authStore'
+import type { User } from './authStore'
 
 describe('authStore', () => {
   beforeEach(() => {

@@ -1,5 +1,6 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { useInterviewStore, Interview, InterviewSession } from './interviewStore'
+import { describe, it, expect, beforeEach } from 'vitest'
+import { useInterviewStore } from './interviewStore'
+import type { Interview, InterviewSession } from './interviewStore'
 
 describe('interviewStore', () => {
   beforeEach(() => {
