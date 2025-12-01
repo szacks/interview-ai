@@ -46,6 +46,17 @@ export default function Sidebar() {
         </Link>
 
         <Link
+          to="/teams"
+          className={`block px-4 py-3 rounded-lg font-medium transition ${
+            isActive('/teams')
+              ? 'bg-blue-600 text-white'
+              : 'text-gray-700 hover:bg-gray-100'
+          }`}
+        >
+          Team Management
+        </Link>
+
+        <Link
           to="/settings"
           className={`block px-4 py-3 rounded-lg font-medium transition ${
             isActive('/settings')

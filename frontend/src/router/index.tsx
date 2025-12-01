@@ -6,7 +6,9 @@ import LoginPage from '../pages/LoginPage';
 import SignupPage from '../pages/SignupPage';
 import ForgotPasswordPage from '../pages/ForgotPasswordPage';
 import ResetPasswordPage from '../pages/ResetPasswordPage';
+import AcceptInvitationPage from '../pages/AcceptInvitationPage';
 import DashboardPage from '../pages/DashboardPage';
+import TeamManagementPage from '../pages/TeamManagementPage';
 import InterviewPage from '../pages/InterviewPage';
 import NotFoundPage from '../pages/NotFoundPage';
 
@@ -32,12 +34,26 @@ const routes = [
         element: <ResetPasswordPage />,
       },
       {
+        path: 'auth/accept-invitation',
+        element: <AcceptInvitationPage />,
+      },
+      {
         path: 'dashboard',
         element: <DashboardLayout />,
         children: [
           {
             index: true,
             element: <DashboardPage />,
+          },
+        ],
+      },
+      {
+        path: 'teams',
+        element: <DashboardLayout />,
+        children: [
+          {
+            index: true,
+            element: <TeamManagementPage />,
           },
         ],
       },
