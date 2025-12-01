@@ -24,6 +24,18 @@ CREATE TABLE IF NOT EXISTS users (
     last_login TIMESTAMP
 );
 
+-- Invitation Tokens Table (for inviting interviewers)
+CREATE TABLE IF NOT EXISTS invitation_tokens (
+    id BIGSERIAL PRIMARY KEY,
+    token VARCHAR(255) UNIQUE NOT NULL,
+    company_id BIGINT NOT NULL REFERENCES companies(id),
+    email VARCHAR(255) NOT NULL,
+    invited_by_id BIGINT NOT NULL REFERENCES users(id),
+    expires_at TIMESTAMP NOT NULL,
+    accepted_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Candidates Table
 CREATE TABLE IF NOT EXISTS candidates (
     id BIGSERIAL PRIMARY KEY,
@@ -103,3 +115,7 @@ CREATE INDEX IF NOT EXISTS idx_interviews_scheduled ON interviews(scheduled_at);
 CREATE INDEX IF NOT EXISTS idx_interviews_link_token ON interviews(interview_link_token);
 CREATE INDEX IF NOT EXISTS idx_users_company ON users(company_id);
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE INDEX IF NOT EXISTS idx_invitation_tokens_token ON invitation_tokens(token);
+CREATE INDEX IF NOT EXISTS idx_invitation_tokens_company ON invitation_tokens(company_id);
+CREATE INDEX IF NOT EXISTS idx_invitation_tokens_email ON invitation_tokens(email);
+CREATE INDEX IF NOT EXISTS idx_invitation_tokens_accepted ON invitation_tokens(accepted_at);
