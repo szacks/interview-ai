@@ -1,7 +1,6 @@
 package com.example.interviewAI.controller;
 
 import com.example.interviewAI.dto.CandidateRequest;
-import com.example.interviewAI.dto.CandidateResponse;
 import com.example.interviewAI.entity.Candidate;
 import com.example.interviewAI.repository.CandidateRepository;
 import lombok.extern.slf4j.Slf4j;
