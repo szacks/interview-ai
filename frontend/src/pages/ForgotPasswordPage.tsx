@@ -9,19 +9,29 @@ export default function ForgotPasswordPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [fieldError, setFieldError] = useState<string | null>(null);
+
+  const validateEmail = (): boolean => {
+    if (!email.trim()) {
+      setFieldError('Email is required');
+      return false;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setFieldError('Please enter a valid email address');
+      return false;
+    }
+
+    setFieldError(null);
+    return true;
+  };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
     setSuccessMessage(null);
 
-    if (!email) {
-      setError('Email is required');
-      return;
-    }
-
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setError('Please enter a valid email address');
+    if (!validateEmail()) {
       return;
     }
 
@@ -42,7 +52,15 @@ export default function ForgotPasswordPage() {
         navigate('/login');
       }, 10000);
     } catch (error: any) {
-      const errorMessage = error?.message || 'Failed to request password reset. Please try again.';
+      let errorMessage = error?.message || 'Failed to request password reset. Please try again.';
+
+      // Provide better error messages for specific scenarios
+      if (error?.message?.includes('not found') || error?.message?.includes('does not exist')) {
+        errorMessage = 'This email address is not registered. Please check the email and try again.';
+      } else if (error?.message?.includes('timeout') || error?.message?.includes('network')) {
+        errorMessage = 'Network error. Please check your connection and try again.';
+      }
+
       setError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -98,11 +116,17 @@ export default function ForgotPasswordPage() {
                 onChange={(e) => {
                   setEmail(e.target.value);
                   setError(null);
+                  if (fieldError) setFieldError(null);
                 }}
                 disabled={isLoading || !!successMessage}
-                className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm disabled:opacity-50"
+                className={`appearance-none rounded relative block w-full px-3 py-2 border ${
+                  fieldError ? 'border-red-500' : 'border-gray-300'
+                } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm disabled:opacity-50`}
                 placeholder="Email address"
               />
+              {fieldError && (
+                <p className="mt-1 text-sm text-red-600">{fieldError}</p>
+              )}
             </div>
 
             <div>
