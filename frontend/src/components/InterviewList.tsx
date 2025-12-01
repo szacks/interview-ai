@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useInterviewStore, Interview } from '../stores/interviewStore';
+import type { Interview } from '../stores/interviewStore';
+import { useInterviewStore } from '../stores/interviewStore';
 import interviewService from '../services/interviewService';
 import Spinner from './common/Spinner';
 import Card from './common/Card';
