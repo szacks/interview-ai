@@ -17,6 +17,279 @@
 
 ---
 
+## User Roles & Team Structure
+
+### Role Definitions
+
+The platform has **3 distinct user roles** with different access levels and capabilities:
+
+#### 1. Company Admin 👔
+
+**Who:** The person who signs up and creates the company account.
+
+**Capabilities:**
+- ✅ Everything an Interviewer can do, PLUS:
+- ✅ Invite/remove interviewers to the team
+- ✅ Manage billing (Stripe subscription)
+- ✅ See ALL interviews across the company
+- ✅ Access company settings
+- ✅ Manage team members
+
+**Database:** Stored in `users` table with `role = 'admin'`
+
+**Access Control:**
+- Can access all interviews in their company (via `company_id`)
+- Can manage company settings
+- Can invite users to the company
+
+#### 2. Interviewer 🎯
+
+**Who:** Invited by an Admin to join the company's team.
+
+**Capabilities:**
+- ✅ Create interviews
+- ✅ Conduct interviews (observe candidate in real-time)
+- ✅ Fill out scorecards and evaluations
+- ✅ See interviews they created OR were assigned to
+- ❌ Cannot see other interviewers' interviews
+- ❌ Cannot manage billing or team members
+- ❌ Cannot access company settings
+
+**Database:** Stored in `users` table with `role = 'interviewer'`
+
+**Access Control:**
+- Can only access interviews where they are the `interviewer_id`
+- Can create new interviews (automatically assigned as interviewer)
+- Can view/edit evaluations for their interviews
+
+#### 3. Candidate 👨‍💻
+
+**Who:** External person being interviewed. Not a permanent user of the system.
+
+**Capabilities:**
+- ✅ Access interview via magic link (one-time token)
+- ✅ Write code in the interview room
+- ✅ Chat with AI assistant
+- ✅ Run code and see test results
+- ✅ Submit interview
+- ❌ No account required
+- ❌ Cannot see other interviews
+- ❌ Cannot access after interview is submitted (link expires)
+
+**Database:** Stored in `candidates` table (email + name only)
+
+**Access Control:**
+- Access ONLY via `interview_link_token` in the URL
+- Token is unique per interview and expires after use/time
+- No login required, no password
+
+---
+
+### The "Team" Concept
+
+In this MVP, **"team"** means: **All users (admin + interviewers) belonging to one company.**
+
+There is **ONE team per company**. There are no sub-teams or departments in the MVP.
+
+```
+Company (Acme Corp)
+├── Admin: john@acme.com (created the account)
+├── Interviewer: sarah@acme.com (invited by John)
+├── Interviewer: mike@acme.com (invited by John)
+└── Interviews
+    ├── Interview 1 (created by John, assigned to Sarah)
+    ├── Interview 2 (created by Sarah, assigned to Sarah)
+    ├── Interview 3 (created by Mike, assigned to Mike)
+    └── Interview 4 (created by John, assigned to Mike)
+```
+
+**Key Rules:**
+- Admins can see ALL interviews in the company (1, 2, 3, 4)
+- Sarah can only see interviews 1 and 2 (where she's the interviewer)
+- Mike can only see interviews 3 and 4 (where he's the interviewer)
+- John (admin) can also conduct interviews (acts as interviewer)
+
+---
+
+### Authorization Matrix
+
+| Action | Admin | Interviewer | Candidate |
+|--------|-------|-------------|-----------|
+| **Company & Team** |
+| Invite users to team | ✅ | ❌ | ❌ |
+| Remove users from team | ✅ | ❌ | ❌ |
+| View all company users | ✅ | ✅ | ❌ |
+| Manage billing | ✅ | ❌ | ❌ |
+| View company settings | ✅ | ❌ | ❌ |
+| **Interviews** |
+| Create interview | ✅ | ✅ | ❌ |
+| View ALL company interviews | ✅ | ❌ | ❌ |
+| View assigned interviews | ✅ | ✅ | ❌ |
+| Conduct interview (observe) | ✅ | ✅* | ❌ |
+| Fill out scorecard | ✅ | ✅* | ❌ |
+| View interview results | ✅ | ✅* | ❌ |
+| Access via magic link | ❌ | ❌ | ✅ |
+| **In Interview Room** |
+| Write code | ❌ | ❌ | ✅ |
+| Chat with AI | ❌ | ❌ | ✅ |
+| Run code | ❌ | ❌ | ✅ |
+| View candidate's code (real-time) | ✅** | ✅** | ❌ |
+| View test results (real-time) | ✅** | ✅** | ✅ |
+
+\* Only for interviews where they are the assigned interviewer  
+\*\* Via WebSocket observer connection
+
+---
+
+### Implementation Details
+
+#### Spring Security Configuration
+
+```java
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+    
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        return http
+            .authorizeHttpRequests(auth -> auth
+                // Public endpoints
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/interviews/link/**").permitAll()
+                
+                // Admin only endpoints
+                .requestMatchers("/api/companies/**").hasRole("ADMIN")
+                .requestMatchers("/api/team/**").hasRole("ADMIN")
+                .requestMatchers("/api/billing/**").hasRole("ADMIN")
+                
+                // Admin + Interviewer endpoints
+                .requestMatchers("/api/interviews/**").hasAnyRole("ADMIN", "INTERVIEWER")
+                .requestMatchers("/api/evaluations/**").hasAnyRole("ADMIN", "INTERVIEWER")
+                
+                // Authenticated users
+                .requestMatchers("/api/**").authenticated()
+            )
+            .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
+            .build();
+    }
+}
+```
+
+#### Custom Authorization Service
+
+```java
+@Service
+public class InterviewAuthorizationService {
+    
+    public boolean canAccessInterview(User user, Long interviewId) {
+        Interview interview = interviewRepo.findById(interviewId)
+            .orElseThrow(() -> new NotFoundException("Interview not found"));
+        
+        // Admins can access all interviews in their company
+        if (user.getRole() == UserRole.ADMIN) {
+            return interview.getCompany().getId().equals(user.getCompany().getId());
+        }
+        
+        // Interviewers can only access interviews they're assigned to
+        if (user.getRole() == UserRole.INTERVIEWER) {
+            return interview.getInterviewer().getId().equals(user.getId());
+        }
+        
+        return false;
+    }
+    
+    public boolean canInviteInterviewer(User user) {
+        return user.getRole() == UserRole.ADMIN;
+    }
+}
+```
+
+#### Database Queries
+
+```java
+// InterviewRepository.java
+
+// For Admins: Get all interviews in their company
+@Query("SELECT i FROM Interview i WHERE i.company.id = :companyId")
+List<Interview> findAllByCompanyId(@Param("companyId") Long companyId);
+
+// For Interviewers: Get only their assigned interviews
+@Query("SELECT i FROM Interview i WHERE i.interviewer.id = :interviewerId")
+List<Interview> findAllByInterviewerId(@Param("interviewerId") Long interviewerId);
+```
+
+---
+
+### User Invitation Flow
+
+```
+1. Admin clicks "Invite Interviewer"
+   ↓
+2. Enters email (e.g., sarah@acme.com)
+   ↓
+3. System generates invite token
+   ↓
+4. Email sent via Resend with link:
+   https://app.yourdomain.com/accept-invite?token=abc123
+   ↓
+5. Sarah clicks link, sets password
+   ↓
+6. Account created with role = 'interviewer'
+   ↓
+7. Sarah can now login and create interviews
+```
+
+**Database Tables Involved:**
+- `companies` - Company info
+- `users` - Admin and Interviewers (role field)
+- `candidates` - Interviewees (no login)
+- `interviews` - Links company + interviewer + candidate
+
+---
+
+### Frontend Route Protection
+
+```typescript
+// App.tsx routing example
+
+<Routes>
+  {/* Public routes */}
+  <Route path="/login" element={<LoginPage />} />
+  <Route path="/signup" element={<SignupPage />} />
+  <Route path="/interview/:token" element={<CandidateInterviewPage />} />
+  
+  {/* Protected routes - requires authentication */}
+  <Route element={<PrivateRoute />}>
+    
+    {/* Admin + Interviewer routes */}
+    <Route path="/dashboard" element={<DashboardPage />} />
+    <Route path="/interviews/:id" element={<InterviewDetailsPage />} />
+    <Route path="/results/:id" element={<ResultsPage />} />
+    
+    {/* Admin only routes */}
+    <Route element={<AdminRoute />}>
+      <Route path="/team" element={<TeamManagementPage />} />
+      <Route path="/billing" element={<BillingPage />} />
+      <Route path="/settings" element={<CompanySettingsPage />} />
+    </Route>
+  </Route>
+</Routes>
+```
+
+---
+
+### Key Points for MVP
+
+1. **Simple hierarchy:** Company → Team (all users) → Interviews
+2. **No sub-teams:** All interviewers in a company are in one team
+3. **Role-based access:** Admin sees all, Interviewers see only theirs
+4. **Candidates are temporary:** No persistent account, access via token
+5. **Invitation flow:** Only admins can invite interviewers
+6. **Security:** JPA + Spring Security handle authorization checks
+
+---
+
 ## Architecture Changes Summary
 
 > **Key optimizations made for solo developer on a budget:**
