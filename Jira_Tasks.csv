@@ -33,7 +33,7 @@ Build Interview List component,Task,Company Dashboard,Week 3,Day 12,8h,Display i
 Seed question database,Task,Company Dashboard,Week 3,Day 13,4h,Create 3 questions with details tests rubric intentional bugs JSON,Backend Dev,Medium,V
 Implement QuestionController,Task,Company Dashboard,Week 3,Day 13,4h,GET questions GET questions by id,Backend Dev,Medium,V
 Build Create Interview modal,Task,Company Dashboard,Week 3,Day 13,8h,Modal with form to create interview validation,Frontend Dev,High,
-Implement Resend email notification service,Task,Company Dashboard,Week 3,Day 14,8h,Set up Resend API create templates send invite emails - replaces SendGrid,Backend Dev,High,
+Implement Resend email notification service,Task,Company Dashboard,Week 3,Day 14,8h,Set up Resend API create templates send invite emails - replaces SendGrid,Backend Dev,High,V
 Connect Create Interview form to API,Task,Company Dashboard,Week 3,Day 14,4h,Submit form handle success error refresh list,Frontend Dev,High,
 Build Interview Details page,Task,Company Dashboard,Week 3,Day 14,4h,Show interview info candidate question start button,Frontend Dev,Medium,
 Testing and bug fixes,Task,Company Dashboard,Week 3,Day 15,8h,Test creation flow email delivery authorization,Backend Dev,High,

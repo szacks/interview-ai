@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.springframework.beans.factory.annotation.Value;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -27,6 +28,9 @@ public class InterviewService {
     @Autowired
     private InterviewRepository interviewRepository;
 
+    @Value("${app.frontend.url}")
+    private String frontendUrl;
+
     @Autowired
     private QuestionRepository questionRepository;
 
@@ -35,6 +39,9 @@ public class InterviewService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     /**
      * Get all interviews for a company
@@ -118,6 +125,23 @@ public class InterviewService {
 
         interview = interviewRepository.save(interview);
 
+        // Send interview scheduled email to candidate
+        try {
+            String interviewLink = buildInterviewLink(interview.getInterviewLinkToken());
+            String scheduledTime = interview.getScheduledAt() != null ? interview.getScheduledAt().toString() : "To be determined";
+            emailService.sendInterviewScheduledEmail(
+                    candidate.getEmail(),
+                    candidate.getName(),
+                    interviewer.getCompany().getName(),
+                    question.getTitle(),
+                    interviewLink,
+                    scheduledTime
+            );
+        } catch (Exception e) {
+            log.error("Error sending interview scheduled email: {}", e.getMessage());
+            // Don't throw - interview was created successfully
+        }
+
         return convertToResponse(interview);
     }
 
@@ -189,5 +213,12 @@ public class InterviewService {
      */
     private String generateUniqueToken() {
         return UUID.randomUUID().toString();
+    }
+
+    /**
+     * Build interview link for candidate access
+     */
+    private String buildInterviewLink(String interviewToken) {
+        return frontendUrl + "/interview/" + interviewToken;
     }
 }
