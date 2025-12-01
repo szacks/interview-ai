@@ -2,110 +2,89 @@ package com.example.interviewAI.controller;
 
 import com.example.interviewAI.dto.QuestionResponse;
 import com.example.interviewAI.service.QuestionService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+/**
+ * REST controller for question management operations.
+ * Handles retrieval and filtering of coding questions.
+ */
 @Slf4j
 @RestController
 @RequestMapping("/questions")
+@RequiredArgsConstructor
 public class QuestionController {
 
-    @Autowired
-    private QuestionService questionService;
+    private final QuestionService questionService;
 
     /**
-     * Get all questions
+     * Get all questions.
+     *
+     * @return list of all questions
      */
     @GetMapping
-    public ResponseEntity<?> getAllQuestions() {
-        try {
-            List<QuestionResponse> questions = questionService.getAllQuestions();
-            return ResponseEntity.ok(questions);
-        } catch (Exception e) {
-            log.error("Error fetching questions: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(createErrorResponse("Failed to fetch questions"));
-        }
+    public ResponseEntity<List<QuestionResponse>> getAllQuestions() {
+        log.debug("Fetching all questions");
+        List<QuestionResponse> questions = questionService.getAllQuestions();
+        return ResponseEntity.ok(questions);
     }
 
     /**
-     * Get a specific question by ID
+     * Get a specific question by ID.
+     *
+     * @param id question identifier
+     * @return question details
      */
     @GetMapping("/{id}")
-    public ResponseEntity<?> getQuestionById(@PathVariable Long id) {
-        try {
-            QuestionResponse question = questionService.getQuestionById(id);
-            return ResponseEntity.ok(question);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(createErrorResponse(e.getMessage()));
-        } catch (Exception e) {
-            log.error("Error fetching question: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(createErrorResponse("Failed to fetch question"));
-        }
+    public ResponseEntity<QuestionResponse> getQuestionById(@PathVariable Long id) {
+        log.debug("Fetching question with ID: {}", id);
+        QuestionResponse question = questionService.getQuestionById(id);
+        return ResponseEntity.ok(question);
     }
 
     /**
-     * Get questions filtered by difficulty level
+     * Get questions filtered by difficulty level.
+     *
+     * @param difficulty difficulty level (e.g., easy, medium, hard)
+     * @return list of questions matching difficulty
      */
     @GetMapping("/difficulty/{difficulty}")
-    public ResponseEntity<?> getQuestionsByDifficulty(@PathVariable String difficulty) {
-        try {
-            List<QuestionResponse> questions = questionService.getQuestionsByDifficulty(difficulty);
-            return ResponseEntity.ok(questions);
-        } catch (Exception e) {
-            log.error("Error fetching questions by difficulty: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(createErrorResponse("Failed to fetch questions by difficulty"));
-        }
+    public ResponseEntity<List<QuestionResponse>> getQuestionsByDifficulty(@PathVariable String difficulty) {
+        log.debug("Fetching questions with difficulty: {}", difficulty);
+        List<QuestionResponse> questions = questionService.getQuestionsByDifficulty(difficulty);
+        return ResponseEntity.ok(questions);
     }
 
     /**
-     * Get questions filtered by supported language
+     * Get questions filtered by supported language.
+     *
+     * @param language programming language (e.g., java, python, javascript)
+     * @return list of questions supporting the language
      */
     @GetMapping("/language/{language}")
-    public ResponseEntity<?> getQuestionsByLanguage(@PathVariable String language) {
-        try {
-            List<QuestionResponse> questions = questionService.getQuestionsByLanguage(language);
-            return ResponseEntity.ok(questions);
-        } catch (Exception e) {
-            log.error("Error fetching questions by language: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(createErrorResponse("Failed to fetch questions by language"));
-        }
+    public ResponseEntity<List<QuestionResponse>> getQuestionsByLanguage(@PathVariable String language) {
+        log.debug("Fetching questions for language: {}", language);
+        List<QuestionResponse> questions = questionService.getQuestionsByLanguage(language);
+        return ResponseEntity.ok(questions);
     }
 
     /**
-     * Get questions filtered by both difficulty and language
+     * Get questions filtered by both difficulty and language.
+     *
+     * @param difficulty difficulty level
+     * @param language programming language
+     * @return list of questions matching both criteria
      */
     @GetMapping("/filter")
-    public ResponseEntity<?> getQuestionsByDifficultyAndLanguage(
+    public ResponseEntity<List<QuestionResponse>> getQuestionsByDifficultyAndLanguage(
             @RequestParam String difficulty,
             @RequestParam String language) {
-        try {
-            List<QuestionResponse> questions = questionService.getQuestionsByDifficultyAndLanguage(difficulty, language);
-            return ResponseEntity.ok(questions);
-        } catch (Exception e) {
-            log.error("Error fetching questions by difficulty and language: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(createErrorResponse("Failed to fetch questions by difficulty and language"));
-        }
-    }
-
-    /**
-     * Helper method to create error response
-     */
-    private Map<String, String> createErrorResponse(String message) {
-        Map<String, String> response = new HashMap<>();
-        response.put("error", message);
-        return response;
+        log.debug("Fetching questions with difficulty: {} and language: {}", difficulty, language);
+        List<QuestionResponse> questions = questionService.getQuestionsByDifficultyAndLanguage(difficulty, language);
+        return ResponseEntity.ok(questions);
     }
 }
