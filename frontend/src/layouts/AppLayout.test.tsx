@@ -1,18 +1,20 @@
 import { describe, it, expect } from 'vitest'
-import { render, screen } from '@/test/test-utils'
-import { Routes, Route } from 'react-router-dom'
+import { render, screen } from '@testing-library/react'
+import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import AppLayout from './AppLayout'
 
 describe('AppLayout', () => {
   const renderWithRoute = () => {
     return render(
-      <Routes>
-        <Route element={<AppLayout />}>
-          <Route path="/login" element={<div>Login Page</div>} />
-          <Route path="/signup" element={<div>Signup Page</div>} />
-          <Route path="/" element={<div>Home Page</div>} />
-        </Route>
-      </Routes>
+      <MemoryRouter initialEntries={['/login']}>
+        <Routes>
+          <Route element={<AppLayout />}>
+            <Route path="/login" element={<div>Login Page</div>} />
+            <Route path="/signup" element={<div>Signup Page</div>} />
+            <Route path="/" element={<div>Home Page</div>} />
+          </Route>
+        </Routes>
+      </MemoryRouter>
     )
   }
 

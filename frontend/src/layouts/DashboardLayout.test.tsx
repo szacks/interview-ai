@@ -1,16 +1,18 @@
 import { describe, it, expect } from 'vitest'
-import { render, screen } from '@/test/test-utils'
-import { Routes, Route } from 'react-router-dom'
+import { render, screen } from '@testing-library/react'
+import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import DashboardLayout from './DashboardLayout'
 
 describe('DashboardLayout', () => {
   const renderLayout = () => {
     return render(
-      <Routes>
-        <Route element={<DashboardLayout />}>
-          <Route path="/" element={<div>Dashboard Content</div>} />
-        </Route>
-      </Routes>
+      <MemoryRouter initialEntries={['/']}>
+        <Routes>
+          <Route element={<DashboardLayout />}>
+            <Route path="/" element={<div>Dashboard Content</div>} />
+          </Route>
+        </Routes>
+      </MemoryRouter>
     )
   }
 
