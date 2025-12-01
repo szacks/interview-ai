@@ -95,7 +95,17 @@ export default function SignupPage() {
       login(userData, response.token);
       navigate('/dashboard');
     } catch (error: any) {
-      const errorMessage = error?.message || 'Signup failed. Please try again.';
+      let errorMessage = error?.message || 'Signup failed. Please try again.';
+
+      // Provide better error messages for specific scenarios
+      if (error?.message?.includes('already exists') || error?.message?.includes('Email already')) {
+        errorMessage = 'This email address is already registered. Please use a different email or sign in instead.';
+      } else if (error?.message?.includes('Invalid') || error?.message?.includes('validation')) {
+        errorMessage = 'Please check your information and try again.';
+      } else if (error?.message?.includes('timeout') || error?.message?.includes('network')) {
+        errorMessage = 'Network error. Please check your connection and try again.';
+      }
+
       setApiError(errorMessage);
       setError(errorMessage);
     } finally {
