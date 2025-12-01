@@ -121,4 +121,125 @@ public class EmailService {
                 "Best regards,\n" +
                 "InterviewAI Team";
     }
+
+    /**
+     * Send interview scheduled notification to candidate
+     */
+    public void sendInterviewScheduledEmail(String candidateEmail, String candidateName, String companyName,
+                                           String questionTitle, String interviewLink, String scheduledTime) {
+        try {
+            String subject = "You've Been Scheduled for an Interview - " + companyName;
+            String body = buildInterviewScheduledEmailBody(candidateName, companyName, questionTitle,
+                                                          interviewLink, scheduledTime);
+
+            if (mailSender != null) {
+                try {
+                    sendEmail(candidateEmail, subject, body);
+                    log.info("Interview scheduled email sent successfully to: {}", candidateEmail);
+                } catch (Exception e) {
+                    log.error("Error sending interview scheduled email to: {}", candidateEmail, e);
+                    log.info("Dev Mode: Interview link for {}: {}", candidateEmail, interviewLink);
+                }
+            } else {
+                log.warn("Mail sender not configured");
+                log.info("Dev Mode: Interview link for {}: {} (Scheduled: {})", candidateEmail, interviewLink, scheduledTime);
+            }
+        } catch (Exception e) {
+            log.error("Unexpected error in sendInterviewScheduledEmail for: {}", candidateEmail, e);
+        }
+    }
+
+    /**
+     * Send interview completion notification to candidate
+     */
+    public void sendInterviewCompletedEmail(String candidateEmail, String candidateName, String companyName) {
+        try {
+            String subject = "Interview Completed - " + companyName;
+            String body = buildInterviewCompletedEmailBody(candidateName, companyName);
+
+            if (mailSender != null) {
+                try {
+                    sendEmail(candidateEmail, subject, body);
+                    log.info("Interview completed email sent successfully to: {}", candidateEmail);
+                } catch (Exception e) {
+                    log.error("Error sending interview completed email to: {}", candidateEmail, e);
+                }
+            } else {
+                log.warn("Mail sender not configured");
+                log.info("Dev Mode: Interview completed notification for user: {}", candidateEmail);
+            }
+        } catch (Exception e) {
+            log.error("Unexpected error in sendInterviewCompletedEmail for: {}", candidateEmail, e);
+        }
+    }
+
+    /**
+     * Send interview evaluation complete notification with results
+     */
+    public void sendInterviewEvaluationEmail(String candidateEmail, String candidateName, String companyName,
+                                            String resultLink) {
+        try {
+            String subject = "Your Interview Results - " + companyName;
+            String body = buildInterviewEvaluationEmailBody(candidateName, companyName, resultLink);
+
+            if (mailSender != null) {
+                try {
+                    sendEmail(candidateEmail, subject, body);
+                    log.info("Interview evaluation email sent successfully to: {}", candidateEmail);
+                } catch (Exception e) {
+                    log.error("Error sending interview evaluation email to: {}", candidateEmail, e);
+                    log.info("Dev Mode: Results link for {}: {}", candidateEmail, resultLink);
+                }
+            } else {
+                log.warn("Mail sender not configured");
+                log.info("Dev Mode: Interview evaluation results link for {}: {}", candidateEmail, resultLink);
+            }
+        } catch (Exception e) {
+            log.error("Unexpected error in sendInterviewEvaluationEmail for: {}", candidateEmail, e);
+        }
+    }
+
+    /**
+     * Build interview scheduled email body
+     */
+    private String buildInterviewScheduledEmailBody(String candidateName, String companyName, String questionTitle,
+                                                    String interviewLink, String scheduledTime) {
+        return "Hello " + candidateName + ",\n\n" +
+                "Great news! " + companyName + " has scheduled you for an interview.\n\n" +
+                "Interview Details:\n" +
+                "Company: " + companyName + "\n" +
+                "Question: " + questionTitle + "\n" +
+                "Scheduled Time: " + scheduledTime + "\n\n" +
+                "You can access your interview at the following link:\n" +
+                interviewLink + "\n\n" +
+                "Please make sure you have a stable internet connection and a quiet environment.\n\n" +
+                "Best regards,\n" +
+                "InterviewAI Team";
+    }
+
+    /**
+     * Build interview completed email body
+     */
+    private String buildInterviewCompletedEmailBody(String candidateName, String companyName) {
+        return "Hello " + candidateName + ",\n\n" +
+                "Your interview with " + companyName + " has been completed.\n\n" +
+                "Thank you for participating in the interview. We appreciated your time and effort.\n\n" +
+                "You will receive your evaluation results shortly. In the meantime, if you have any questions, " +
+                "please feel free to reach out.\n\n" +
+                "Best regards,\n" +
+                "InterviewAI Team";
+    }
+
+    /**
+     * Build interview evaluation email body
+     */
+    private String buildInterviewEvaluationEmailBody(String candidateName, String companyName, String resultLink) {
+        return "Hello " + candidateName + ",\n\n" +
+                "Your interview results from " + companyName + " are now available.\n\n" +
+                "Click the link below to view your detailed evaluation:\n" +
+                resultLink + "\n\n" +
+                "Thank you for your participation. Good luck with your next steps!\n\n" +
+                "Best regards,\n" +
+                "InterviewAI Team";
+    }
 }
