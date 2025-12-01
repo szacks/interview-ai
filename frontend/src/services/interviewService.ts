@@ -1,23 +1,32 @@
 import apiClient from './apiClient';
 
+export interface Candidate {
+  id: number;
+  email: string;
+  name: string;
+  createdAt: string;
+}
+
 export interface Interview {
-  id: string;
-  title: string;
-  candidateName: string;
-  candidateEmail: string;
-  status: 'pending' | 'in_progress' | 'completed';
+  id: number;
+  questionId: number;
+  candidateId: number;
+  interviewerId: number;
+  language: string;
+  status: 'scheduled' | 'in_progress' | 'completed';
   createdAt: string;
   startedAt?: string;
   completedAt?: string;
-  language: string;
+  scheduledAt?: string;
+  interviewLinkToken: string;
 }
 
 export interface CreateInterviewRequest {
-  title: string;
-  candidateName: string;
-  candidateEmail: string;
-  questionIds: string[];
+  questionId: number;
+  candidateId: number;
   language: string;
+  scheduledAt?: string;
+  interviewerId?: number;
 }
 
 export interface InterviewSession {
@@ -111,6 +120,30 @@ const interviewService = {
   getQuestionById: async (questionId: string) => {
     const response = await apiClient.get(`/questions/${questionId}`);
     return response;
+  },
+
+  // Create a new candidate
+  createCandidate: async (email: string, name: string): Promise<Candidate> => {
+    const response = await apiClient.post('/candidates', { email, name });
+    return response.data;
+  },
+
+  // Search candidate by email
+  searchCandidateByEmail: async (email: string): Promise<Candidate> => {
+    const response = await apiClient.get(`/candidates/search?email=${encodeURIComponent(email)}`);
+    return response.data;
+  },
+
+  // Get candidate by ID
+  getCandidateById: async (candidateId: number): Promise<Candidate> => {
+    const response = await apiClient.get(`/candidates/${candidateId}`);
+    return response.data;
+  },
+
+  // Get all candidates
+  getAllCandidates: async (): Promise<Candidate[]> => {
+    const response = await apiClient.get('/candidates');
+    return response.data;
   },
 };
 
