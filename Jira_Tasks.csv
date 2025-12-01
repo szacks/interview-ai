@@ -9,19 +9,19 @@ Create database schema and all tables,Task,Project Foundation,Week 1,Day 3,8h,Cr
 Set up Zustand stores,Task,Project Foundation,Week 1,Day 3,4h,Create authStore and interviewStore,Frontend Dev,Medium,V
 Create common UI components,Task,Project Foundation,Week 1,Day 3,4h,Build Button Input Modal Card Spinner components,Frontend Dev,Medium,V
 Build basic layout components,Task,Project Foundation,Week 1,Day 4,8h,AppLayout with navigation DashboardLayout InterviewLayout,Frontend Dev,High,V
-Create all Spring Data repositories,Task,Project Foundation,Week 1,Day 5,4h,Create repositories for all entities with custom queries,Backend Dev,High,
-Create DTO classes for API communication,Task,Project Foundation,Week 1,Day 5,4h,Create request response DTOs for auth interview evaluation,Backend Dev,Medium,
-Set up auth guards and protected routes,Task,Project Foundation,Week 1,Day 5,8h,Create PrivateRoute component implement redirect logic,Frontend Dev,High,
-Configure Spring Security,Task,User Authentication,Week 2,Day 6,4h,Set up SecurityConfig with JWT filter configure password encoder,Backend Dev,High,
-Implement JwtTokenProvider,Task,User Authentication,Week 2,Day 6,4h,Token generation validation extract user details,Backend Dev,High,
-Build Login page,Task,User Authentication,Week 2,Day 6,8h,Create login form with validation connect to API handle errors,Frontend Dev,High,
-Implement AuthService,Task,User Authentication,Week 2,Day 7,8h,User registration authentication password hashing token generation,Backend Dev,High,
-Build Signup page,Task,User Authentication,Week 2,Day 7,8h,Company signup form with validation connect to API,Frontend Dev,High,
-Implement AuthController endpoints,Task,User Authentication,Week 2,Day 8,4h,POST auth signup POST auth login,Backend Dev,High,
-Add role-based access control,Task,User Authentication,Week 2,Day 8,4h,Implement PreAuthorize annotations custom access handler,Backend Dev,High,
-Build Password Reset flow Part 1,Task,User Authentication,Week 2,Day 8,4h,Create Forgot Password page request reset form,Frontend Dev,Medium,
-Build Password Reset flow Part 2,Task,User Authentication,Week 2,Day 8,4h,Password reset confirmation page connect to API,Frontend Dev,Medium,
-Implement password reset functionality,Task,User Authentication,Week 2,Day 9,8h,Generate tokens send reset email validate and reset password,Backend Dev,Medium,
+Create all Spring Data repositories,Task,Project Foundation,Week 1,Day 5,4h,Create repositories for all entities with custom queries,Backend Dev,High,V
+Create DTO classes for API communication,Task,Project Foundation,Week 1,Day 5,4h,Create request response DTOs for auth interview evaluation,Backend Dev,Medium,V
+Set up auth guards and protected routes,Task,Project Foundation,Week 1,Day 5,8h,Create PrivateRoute component implement redirect logic,Frontend Dev,High,V
+Configure Spring Security,Task,User Authentication,Week 2,Day 6,4h,Set up SecurityConfig with JWT filter configure password encoder,Backend Dev,High,V
+Implement JwtTokenProvider,Task,User Authentication,Week 2,Day 6,4h,Token generation validation extract user details,Backend Dev,High,V
+Build Login page,Task,User Authentication,Week 2,Day 6,8h,Create login form with validation connect to API handle errors,Frontend Dev,High,V
+Implement AuthService,Task,User Authentication,Week 2,Day 7,8h,User registration authentication password hashing token generation,Backend Dev,High,V
+Build Signup page,Task,User Authentication,Week 2,Day 7,8h,Company signup form with validation connect to API,Frontend Dev,High,V
+Implement AuthController endpoints,Task,User Authentication,Week 2,Day 8,4h,POST auth signup POST auth login,Backend Dev,High,V
+Add role-based access control,Task,User Authentication,Week 2,Day 8,4h,Implement PreAuthorize annotations custom access handler,Backend Dev,High,V
+Build Password Reset flow Part 1,Task,User Authentication,Week 2,Day 8,4h,Create Forgot Password page request reset form,Frontend Dev,Medium,V
+Build Password Reset flow Part 2,Task,User Authentication,Week 2,Day 8,4h,Password reset confirmation page connect to API,Frontend Dev,Medium,V
+Implement password reset functionality,Task,User Authentication,Week 2,Day 9,8h,Generate tokens send reset email validate and reset password,Backend Dev,Medium,V
 Test and polish authentication flows,Task,User Authentication,Week 2,Day 9,8h,Test all flows add loading states improve error messages,Frontend Dev,Medium,
 Implement team management invite interviewers,Task,User Authentication,Week 2,Day 10,8h,Create invite endpoints send invitation emails,Backend Dev,Medium,
 End-to-end testing of authentication,Task,User Authentication,Week 2,Day 10,8h,Test all auth flows fix bugs verify token persistence,Frontend Dev,High,
@@ -99,3 +99,5 @@ Setup GitHub Actions CI/CD,Task,Launch Prep,Week 8,Day 39,4h,Create deploy workf
 Final end-to-end testing,Task,Launch Prep,Week 8,Day 39,4h,Test complete journey errors edge cases browsers mobile,Full Team,High,
 Create launch documentation,Task,Launch Prep,Week 8,Day 40,4h,User guide interviewer guide admin docs API docs deployment guide,Full Team,Medium,
 Final bug fixes and preparation,Task,Launch Prep,Week 8,Day 40,4h,Fix last issues set up monitoring on-call schedule verify all sandbox images,Full Team,High,
+change email to domain instead of local,Task,Launch Prep,Week 8,Day 40,4h,,Backend Dev,High,
+create a list of all the paid services i use in the system,,,,,,,,,

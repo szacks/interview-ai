@@ -21,10 +21,16 @@ public class CorsConfig {
 
         // Parse allowed origins from comma-separated string
         String[] origins = allowedOrigins.split(",");
-        configuration.setAllowedOrigins(Arrays.asList(origins));
+        // Trim whitespace from each origin
+        java.util.List<String> trimmedOrigins = new java.util.ArrayList<>();
+        for (String origin : origins) {
+            trimmedOrigins.add(origin.trim());
+        }
+        configuration.setAllowedOrigins(trimmedOrigins);
 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept", "Origin"));
+        configuration.setExposedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
 
