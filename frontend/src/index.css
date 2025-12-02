@@ -122,4 +122,36 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Custom scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: oklch(0.3 0.02 252);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: oklch(0.35 0.02 252);
+  }
+
+  /* Firefox scrollbar */
+  * {
+    scrollbar-color: oklch(0.3 0.02 252) transparent;
+    scrollbar-width: thin;
+  }
+
+  /* Improve font rendering */
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
 }
