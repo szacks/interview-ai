@@ -25,14 +25,14 @@ Implement password reset functionality,Task,User Authentication,Week 2,Day 9,8h,
 Test and polish authentication flows,Task,User Authentication,Week 2,Day 9,8h,Test all flows add loading states improve error messages using shadcn/ui,Frontend Dev,Medium,V
 Implement interviewer invite system,Task,User Authentication,Week 2,Day 10,8h,Create invite endpoints generate tokens send invitation emails via Resend acceptance flow,Backend Dev,Medium,V
 End-to-end testing of authentication,Task,User Authentication,Week 2,Day 10,8h,Test all auth flows fix bugs verify token persistence test role restrictions,Frontend Dev,High,V
-Implement access token generation service,Task,Interview Creation,Week 3,Day 11,4h,Create 12-char secure random token generator ensure uniqueness (62^12 combinations),Backend Dev,High,
+Implement access token generation service,Task,Interview Creation,Week 3,Day 11,4h,Create 12-char secure random token generator ensure uniqueness (62^12 combinations),Backend Dev,High,V
 Implement InterviewService create interview,Task,Interview Creation,Week 3,Day 11,4h,Interview creation logic with access token generation optional candidate name/role,Backend Dev,High,V
-Build Dashboard page with tabs and shadcn/ui,Task,Interview Creation,Week 3,Day 11,8h,Dashboard layout with tabs (Pending Live Ended) using shadcn/ui table badge components,Frontend Dev,High,
+Build Dashboard page with tabs and shadcn/ui,Task,Interview Creation,Week 3,Day 11,8h,Dashboard layout with tabs (Pending Live Ended) using shadcn/ui table badge components,Frontend Dev,High,V
 Implement InterviewController CRUD endpoints,Task,Interview Creation,Week 3,Day 12,4h,POST /api/interviews GET /api/interviews (filtered by role) GET /api/interviews/:id DELETE /api/interviews/:id,Backend Dev,High,V
-Build Interview List component with status badges,Task,Interview Creation,Week 3,Day 12,8h,Display interviews with status badges quick actions (Copy Link Start View) using shadcn/ui,Frontend Dev,High,
+Build Interview List component with status badges,Task,Interview Creation,Week 3,Day 12,8h,Display interviews with status badges quick actions (Copy Link Start View) using shadcn/ui,Frontend Dev,High,V
 Seed question database with 3-5 questions,Task,Interview Creation,Week 3,Day 13,4h,Create URL Shortener Shopping Cart Task Manager questions with tests rubrics bugs JSON,Backend Dev,Medium,V
 Implement QuestionController,Task,Interview Creation,Week 3,Day 13,4h,GET /api/questions GET /api/questions/:id with full details tests rubrics,Backend Dev,Medium,V
-Build Create Interview dialog with shadcn/ui,Task,Interview Creation,Week 3,Day 13,8h,Dialog-based form select question optional candidate fields validation using shadcn/ui dialog,Frontend Dev,High,
+Build Create Interview dialog with shadcn/ui,Task,Interview Creation,Week 3,Day 13,8h,Dialog-based form select question optional candidate fields validation using shadcn/ui dialog,Frontend Dev,High,V
 Connect Create Interview form to API,Task,Interview Creation,Week 3,Day 14,4h,Submit form handle success refresh list show interview URL copy button,Frontend Dev,High,
 Build Interview Preview page,Task,Interview Creation,Week 3,Day 14,4h,Show interview details Copy Link button Start Interview button candidate connection status,Frontend Dev,Medium,
 Testing and bug fixes for interview creation,Task,Interview Creation,Week 3,Day 15,8h,Test creation flow link generation authorization by role,Backend Dev,High,
