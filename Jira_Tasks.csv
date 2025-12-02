@@ -6,7 +6,7 @@ Set up local PostgreSQL with Docker,Task,Project Foundation,Week 1,Day 2,4h,Crea
 Set up React Router and project structure,Task,Project Foundation,Week 1,Day 2,4h,Configure routing create folder structure with shadcn/ui components,Frontend Dev,High,V
 Configure Axios and API client,Task,Project Foundation,Week 1,Day 2,4h,Set up Axios instance with interceptors base URL error handling,Frontend Dev,High,V
 Create database schema with new simplified tables,Task,Project Foundation,Week 1,Day 3,8h,Create tables: companies users questions interviews interview_sessions evaluations with proper indexes,Backend Dev,High,V
-Install and configure shadcn/ui components,Task,Project Foundation,Week 1,Day 3,4h,Install shadcn/ui setup Tailwind config install base components (button dialog badge dropdown-menu),Frontend Dev,High,
+Install and configure shadcn/ui components,Task,Project Foundation,Week 1,Day 3,4h,Install shadcn/ui setup Tailwind config install base components (button dialog badge dropdown-menu),Frontend Dev,High,V
 Set up Zustand stores,Task,Project Foundation,Week 1,Day 3,4h,Create authStore and interviewStore with TypeScript types,Frontend Dev,Medium,V
 Build basic layout components with shadcn/ui,Task,Project Foundation,Week 1,Day 4,8h,AppLayout DashboardLayout using shadcn/ui components modern design,Frontend Dev,High,V
 Create all Spring Data repositories,Task,Project Foundation,Week 1,Day 5,4h,Create repositories for all entities with custom queries (access_token lookup),Backend Dev,High,V
