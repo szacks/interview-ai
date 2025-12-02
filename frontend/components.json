@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "default",
+  "rsc": false,
+  "tsx": true,
+  "alias": "@",
+  "baseColor": "slate",
+  "cssVariables": true,
+  "components": {
+    "path": "src/components/ui"
+  },
+  "utils": {
+    "path": "src/lib/utils.ts"
+  },
+  "radix": "latest",
+  "react": "latest",
+  "tailwindcss": "4"
+}
