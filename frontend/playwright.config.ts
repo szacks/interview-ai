@@ -37,25 +37,28 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
 
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
+    // Run additional browsers/viewports only in local development
+    ...(process.env.CI ? [] : [
+      {
+        name: 'firefox',
+        use: { ...devices['Desktop Firefox'] },
+      },
 
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
+      {
+        name: 'webkit',
+        use: { ...devices['Desktop Safari'] },
+      },
 
-    /* Test against mobile viewports. */
-    {
-      name: 'Mobile Chrome',
-      use: { ...devices['Pixel 5'] },
-    },
-    {
-      name: 'Mobile Safari',
-      use: { ...devices['iPhone 12'] },
-    },
+      /* Test against mobile viewports. */
+      {
+        name: 'Mobile Chrome',
+        use: { ...devices['Pixel 5'] },
+      },
+      {
+        name: 'Mobile Safari',
+        use: { ...devices['iPhone 12'] },
+      },
+    ]),
 
     /* Test against branded browsers. */
     // {
