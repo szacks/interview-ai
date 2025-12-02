@@ -1,103 +1,102 @@
 Summary,Issue Type,Epic Name,Week,Day,Time Estimate,Description,Assignee,Priority,Done
 Initialize Spring Boot project with all dependencies,Task,Project Foundation,Week 1,Day 1,8h,Set up Spring Boot 3.2+ with PostgreSQL Security WebSocket JPA docker-java dependency,Backend Dev,High,V
-Initialize React + TypeScript + Vite project,Task,Project Foundation,Week 1,Day 1,8h,Set up React 18 TypeScript Vite TailwindCSS,Frontend Dev,High,V
+Initialize React + TypeScript + Vite project,Task,Project Foundation,Week 1,Day 1,8h,Set up React 18 TypeScript Vite TailwindCSS shadcn/ui,Frontend Dev,High,V
 Configure application.yml and environment variables,Task,Project Foundation,Week 1,Day 2,4h,Set up database connection JWT secret CORS server port Claude Haiku 4.5 config,Backend Dev,High,V
 Set up local PostgreSQL with Docker,Task,Project Foundation,Week 1,Day 2,4h,Create docker-compose.yml with PostgreSQL 15 Alpine test connection configure volumes,Backend Dev,High,V
-Set up React Router and project structure,Task,Project Foundation,Week 1,Day 2,4h,Configure routing create folder structure,Frontend Dev,High,V
+Set up React Router and project structure,Task,Project Foundation,Week 1,Day 2,4h,Configure routing create folder structure with shadcn/ui components,Frontend Dev,High,V
 Configure Axios and API client,Task,Project Foundation,Week 1,Day 2,4h,Set up Axios instance with interceptors base URL error handling,Frontend Dev,High,V
-Create database schema and all tables,Task,Project Foundation,Week 1,Day 3,8h,Create all database tables with relationships,Backend Dev,High,V
-Set up Zustand stores,Task,Project Foundation,Week 1,Day 3,4h,Create authStore and interviewStore,Frontend Dev,Medium,V
-Create common UI components,Task,Project Foundation,Week 1,Day 3,4h,Build Button Input Modal Card Spinner components,Frontend Dev,Medium,V
-Build basic layout components,Task,Project Foundation,Week 1,Day 4,8h,AppLayout with navigation DashboardLayout InterviewLayout,Frontend Dev,High,V
-Create all Spring Data repositories,Task,Project Foundation,Week 1,Day 5,4h,Create repositories for all entities with custom queries,Backend Dev,High,V
-Create DTO classes for API communication,Task,Project Foundation,Week 1,Day 5,4h,Create request response DTOs for auth interview evaluation,Backend Dev,Medium,V
-Set up auth guards and protected routes,Task,Project Foundation,Week 1,Day 5,8h,Create PrivateRoute component implement redirect logic,Frontend Dev,High,V
-Configure Spring Security,Task,User Authentication,Week 2,Day 6,4h,Set up SecurityConfig with JWT filter configure password encoder,Backend Dev,High,V
-Implement JwtTokenProvider,Task,User Authentication,Week 2,Day 6,4h,Token generation validation extract user details,Backend Dev,High,V
-Build Login page,Task,User Authentication,Week 2,Day 6,8h,Create login form with validation connect to API handle errors,Frontend Dev,High,V
-Implement AuthService,Task,User Authentication,Week 2,Day 7,8h,User registration authentication password hashing token generation,Backend Dev,High,V
-Build Signup page,Task,User Authentication,Week 2,Day 7,8h,Company signup form with validation connect to API,Frontend Dev,High,V
-Implement AuthController endpoints,Task,User Authentication,Week 2,Day 8,4h,POST auth signup POST auth login,Backend Dev,High,V
-Add role-based access control,Task,User Authentication,Week 2,Day 8,4h,Implement PreAuthorize annotations custom access handler,Backend Dev,High,V
-Build Password Reset flow Part 1,Task,User Authentication,Week 2,Day 8,4h,Create Forgot Password page request reset form,Frontend Dev,Medium,V
-Build Password Reset flow Part 2,Task,User Authentication,Week 2,Day 8,4h,Password reset confirmation page connect to API,Frontend Dev,Medium,V
-Implement password reset functionality,Task,User Authentication,Week 2,Day 9,8h,Generate tokens send reset email validate and reset password,Backend Dev,Medium,V
-Test and polish authentication flows,Task,User Authentication,Week 2,Day 9,8h,Test all flows add loading states improve error messages,Frontend Dev,Medium,V
-Implement team management invite interviewers,Task,User Authentication,Week 2,Day 10,8h,Create invite endpoints send invitation emails,Backend Dev,Medium,V
-End-to-end testing of authentication,Task,User Authentication,Week 2,Day 10,8h,Test all auth flows fix bugs verify token persistence,Frontend Dev,High,V
-Implement InterviewService Part 1,Task,Company Dashboard,Week 3,Day 11,8h,Interview creation logic generate tokens validate inputs,Backend Dev,High,V
-Build Company Dashboard page structure,Task,Company Dashboard,Week 3,Day 11,8h,Dashboard layout header navigation placeholder sections,Frontend Dev,High,V
-Implement InterviewService Part 2,Task,Company Dashboard,Week 3,Day 12,4h,List interviews get by ID update status,Backend Dev,High,V
-Implement InterviewController endpoints,Task,Company Dashboard,Week 3,Day 12,4h,POST interviews GET interviews GET interviews by id,Backend Dev,High,V
-Build Interview List component,Task,Company Dashboard,Week 3,Day 12,8h,Display interviews show status filters click to details,Frontend Dev,High,V
-Seed question database,Task,Company Dashboard,Week 3,Day 13,4h,Create 3 questions with details tests rubric intentional bugs JSON,Backend Dev,Medium,V
-Implement QuestionController,Task,Company Dashboard,Week 3,Day 13,4h,GET questions GET questions by id,Backend Dev,Medium,V
-Build Create Interview modal,Task,Company Dashboard,Week 3,Day 13,8h,Modal with form to create interview validation,Frontend Dev,High,
-Implement Resend email notification service,Task,Company Dashboard,Week 3,Day 14,8h,Set up Resend API create templates send invite emails - replaces SendGrid,Backend Dev,High,V
-Connect Create Interview form to API,Task,Company Dashboard,Week 3,Day 14,4h,Submit form handle success error refresh list,Frontend Dev,High,
-Build Interview Details page,Task,Company Dashboard,Week 3,Day 14,4h,Show interview info candidate question start button,Frontend Dev,Medium,
-Testing and bug fixes,Task,Company Dashboard,Week 3,Day 15,8h,Test creation flow email delivery authorization,Backend Dev,High,
-Polish dashboard UI,Task,Company Dashboard,Week 3,Day 15,8h,Empty states responsive design loading skeletons,Frontend Dev,Medium,
-Implement candidate magic link authentication,Task,Interview Room,Week 4,Day 16,8h,Generate tokens validate access token expiration,Backend Dev,High,
-Build Interview Room layout,Task,Interview Room,Week 4,Day 16,8h,Split-screen layout header with timer responsive,Frontend Dev,High,
-Create interview session endpoints Part 1,Task,Interview Room,Week 4,Day 17,4h,POST interviews id start save start time,Backend Dev,High,
-Create interview session endpoints Part 2,Task,Interview Room,Week 4,Day 17,4h,POST interviews id submit save code update status,Backend Dev,High,
-Integrate Monaco code editor,Task,Interview Room,Week 4,Day 17,8h,Add Monaco configure syntax highlighting handle changes,Frontend Dev,High,
-Configure WebSocket for real-time sync,Task,Interview Room,Week 4,Day 18,8h,WebSocket setup handler broadcast code changes,Backend Dev,High,
-Build basic chat UI,Task,Interview Room,Week 4,Day 18,4h,Message list input field style messages,Frontend Dev,Medium,
-Add timer component,Task,Interview Room,Week 4,Day 18,4h,30-min countdown warning at 5min auto-submit,Frontend Dev,Medium,
-Set up Claude Haiku 4.5 API integration,Task,Interview Room,Week 4,Day 19,8h,Create AIService configure API client for Haiku 4.5 model send messages - cost optimized,Backend Dev,High,
-Connect chat to backend,Task,Interview Room,Week 4,Day 19,4h,Send messages to API receive responses display history,Frontend Dev,High,
-Implement WebSocket client for code sync,Task,Interview Room,Week 4,Day 19,4h,Connect WebSocket send code changes receive updates,Frontend Dev,High,
-Implement system prompt and conversation logging,Task,Interview Room,Week 4,Day 20,8h,System prompt for Claude Haiku 4.5 log messages store conversation optimize prompts,Backend Dev,High,
-Test interview room end-to-end,Task,Interview Room,Week 4,Day 20,8h,Test all features fix bugs,Frontend Dev,High,
-Implement intentional bug injection logic,Task,AI Enhancement,Week 5,Day 21,8h,Question-specific bugs detect prompts inject weak solutions for Haiku model,Backend Dev,High,
-Add code autosave functionality,Task,AI Enhancement,Week 5,Day 21,8h,Auto-save every 30s POST endpoint recovery on refresh,Frontend Dev,Medium,
-Create Java Sandbox Docker Image,Task,Code Execution Sandbox,Week 5,Day 22,4h,Create Dockerfile.java based on eclipse-temurin:21-jdk-alpine add non-root user java-runner.sh,Backend Dev,High,
-Implement DockerConfig for sandbox,Task,Code Execution Sandbox,Week 5,Day 22,4h,Configure DockerClient bean add docker-java dependencies to pom.xml,Backend Dev,High,
-Add Run Code button,Task,Code Execution Sandbox,Week 5,Day 22,4h,Button with loading spinner language selector,Frontend Dev,Medium,
-Display code output,Task,Code Execution Sandbox,Week 5,Day 22,4h,Show console output errors in red clear output,Frontend Dev,Medium,
-Implement SandboxExecutorService Part 1,Task,Code Execution Sandbox,Week 5,Day 23,8h,Container creation with limits 128MB RAM 50% CPU 10s timeout network none read-only filesystem,Backend Dev,High,
-Build interviewer view of interview room,Task,Code Execution Sandbox,Week 5,Day 23,8h,Read-only editor real-time code view chat notes panel,Frontend Dev,High,
-Implement SandboxExecutorService Part 2,Task,Code Execution Sandbox,Week 5,Day 24,4h,Container lifecycle management cleanup collect results parse output,Backend Dev,High,
-Implement sandbox security hardening,Task,Code Execution Sandbox,Week 5,Day 24,4h,Drop all capabilities no-new-privileges non-root user pids limit rate limiting,Backend Dev,High,
-Create Python Sandbox Docker Image,Task,Code Execution Sandbox,Week 5,Day 24,4h,Create Dockerfile.python based on python:3.12-alpine add python-runner.py,Backend Dev,Medium,
-Create JavaScript Sandbox Docker Image,Task,Code Execution Sandbox,Week 5,Day 24,4h,Create Dockerfile.node based on node:20-alpine add node-runner.js with VM isolation,Backend Dev,Medium,
-Implement TestRunner service,Task,Automated Testing,Week 5,Day 25,8h,Load tests run against code in sandbox capture results POST endpoint,Backend Dev,High,
-Build test results panel,Task,Automated Testing,Week 5,Day 25,4h,Display tests show pass fail status per language,Frontend Dev,High,
-Add real-time test updates,Task,Automated Testing,Week 5,Day 25,4h,Update via WebSocket progress indicator,Frontend Dev,Medium,
-Implement automated scoring service,Task,Automated Testing,Week 6,Day 26,4h,Calculate score from tests weight by importance save score,Backend Dev,High,
-Implement EvaluationService Part 1,Task,Evaluation System,Week 6,Day 26,4h,Evaluation save logic final score calculation POST endpoint,Backend Dev,High,
-Build interviewer scorecard form Part 1,Task,Evaluation System,Week 6,Day 26,8h,Form layout rubric categories score inputs,Frontend Dev,High,
-Implement EvaluationService Part 2,Task,Evaluation System,Week 6,Day 27,4h,Save detailed scores notes recommendation GET endpoint,Backend Dev,High,
-Create evaluation endpoints,Task,Evaluation System,Week 6,Day 27,4h,Test submission validate scores,Backend Dev,Medium,
-Build interviewer scorecard form Part 2,Task,Evaluation System,Week 6,Day 27,8h,Notes recommendation dropdown strengths weaknesses validation,Frontend Dev,High,
-Create comprehensive report generation,Task,Evaluation System,Week 6,Day 28,8h,Combine code conversation scores GET interviews id report,Backend Dev,High,
-Build interview results report page,Task,Evaluation System,Week 6,Day 28,8h,Show all interview data scores notes recommendation,Frontend Dev,High,
-Add results filtering and search,Task,Evaluation System,Week 6,Day 29,8h,Filter by recommendation search sort enhanced API,Backend Dev,Medium,
-Build candidate comparison table,Task,Evaluation System,Week 6,Day 29,8h,Table view sortable columns click to report,Frontend Dev,Medium,
-Implement email notifications for completion,Task,Evaluation System,Week 6,Day 30,8h,Send emails via Resend on completion thank you message links,Backend Dev,Medium,
-Add PDF export functionality optional,Task,Evaluation System,Week 6,Day 30,8h,Generate PDF download button,Frontend Dev,Low,
-End-to-end integration testing,Task,Integration & Testing,Week 7,Day 31,8h,Complete flow testing edge cases document bugs,Full Team,High,
-Bug fixing session,Task,Integration & Testing,Week 7,Day 32,8h,Fix critical bugs test fixes,Full Team,High,
-Setup Hetzner VPS server,Task,Infrastructure Setup,Week 7,Day 33,4h,Provision CX32 server 4vCPU 8GB RAM configure SSH UFW firewall create deploy user,Backend Dev,High,
-Install Docker and Docker Compose on VPS,Task,Infrastructure Setup,Week 7,Day 33,2h,Install Docker engine Docker Compose plugin add deploy user to docker group,Backend Dev,High,
-Create production docker-compose.yml,Task,Infrastructure Setup,Week 7,Day 33,2h,Configure nginx backend postgres services with volumes and restart policies,Backend Dev,High,
-Setup Nginx reverse proxy with SSL,Task,Infrastructure Setup,Week 7,Day 34,4h,Configure Nginx proxy to backend setup Let's Encrypt SSL WebSocket support,Backend Dev,High,
-Deploy frontend to Cloudflare Pages,Task,Infrastructure Setup,Week 7,Day 34,4h,Connect GitHub configure build settings custom domain SSL automatic deploys,Frontend Dev,High,
-Configure production PostgreSQL,Task,Infrastructure Setup,Week 7,Day 34,4h,Run migrations seed questions data configure backups,Backend Dev,High,
-Build and deploy sandbox Docker images,Task,Infrastructure Setup,Week 7,Day 35,4h,Build Java Python Node sandbox images on VPS tag and store locally,Backend Dev,High,
-Setup monitoring and logging,Task,Infrastructure Setup,Week 7,Day 35,4h,Add Sentry free tier configure application logs setup uptime monitoring,Backend Dev,High,
-Test production deployment,Task,Integration & Testing,Week 7,Day 35,8h,Test all features API connectivity WebSocket sandbox execution emails,Full Team,High,
-Create deployment script,Task,Infrastructure Setup,Week 8,Day 36,4h,Create deploy.sh for automated git pull build restart with zero downtime,Backend Dev,Medium,
-Implement Stripe payment integration,Task,Launch Prep,Week 8,Day 36,4h,Stripe setup checkout flow webhooks,Backend Dev,Medium,
-Build subscription billing page,Task,Launch Prep,Week 8,Day 36,8h,Show plan upgrade downgrade payment management,Frontend Dev,Medium,
-Security audit and hardening,Task,Launch Prep,Week 8,Day 37,8h,Review auth authorization CORS sandbox security container isolation validation,Full Team,High,
-UI UX polish,Task,Launch Prep,Week 8,Day 38,8h,Responsive design loading states error messages tooltips,Frontend Dev,Medium,
-Create admin utilities,Task,Launch Prep,Week 8,Day 38,8h,Test data script backup script seeding script container cleanup,Backend Dev,Low,
-Setup GitHub Actions CI/CD,Task,Launch Prep,Week 8,Day 39,4h,Create deploy workflow SSH to Hetzner build test deploy on push to main,Backend Dev,Medium,
-Final end-to-end testing,Task,Launch Prep,Week 8,Day 39,4h,Test complete journey errors edge cases browsers mobile,Full Team,High,
-Create launch documentation,Task,Launch Prep,Week 8,Day 40,4h,User guide interviewer guide admin docs API docs deployment guide,Full Team,Medium,
-Final bug fixes and preparation,Task,Launch Prep,Week 8,Day 40,4h,Fix last issues set up monitoring on-call schedule verify all sandbox images,Full Team,High,
-change email to domain instead of local,Task,Launch Prep,Week 8,Day 40,4h,,Backend Dev,High,
-create a list of all the paid services i use in the system,,,,,,,,,
+Create database schema with new simplified tables,Task,Project Foundation,Week 1,Day 3,8h,Create tables: companies users questions interviews interview_sessions evaluations with proper indexes,Backend Dev,High,V
+Install and configure shadcn/ui components,Task,Project Foundation,Week 1,Day 3,4h,Install shadcn/ui setup Tailwind config install base components (button dialog badge dropdown-menu),Frontend Dev,High,
+Set up Zustand stores,Task,Project Foundation,Week 1,Day 3,4h,Create authStore and interviewStore with TypeScript types,Frontend Dev,Medium,V
+Build basic layout components with shadcn/ui,Task,Project Foundation,Week 1,Day 4,8h,AppLayout DashboardLayout using shadcn/ui components modern design,Frontend Dev,High,V
+Create all Spring Data repositories,Task,Project Foundation,Week 1,Day 5,4h,Create repositories for all entities with custom queries (access_token lookup),Backend Dev,High,V
+Create DTO classes for API communication,Task,Project Foundation,Week 1,Day 5,4h,Create request response DTOs for auth interview evaluation with validation,Backend Dev,Medium,V
+Set up auth guards and protected routes,Task,Project Foundation,Week 1,Day 5,8h,Create PrivateRoute AdminRoute components implement redirect logic,Frontend Dev,High,V
+Configure Spring Security,Task,User Authentication,Week 2,Day 6,4h,Set up SecurityConfig with JWT filter configure password encoder role-based access,Backend Dev,High,V
+Implement JwtTokenProvider,Task,User Authentication,Week 2,Day 6,4h,Token generation validation extract user details and roles (ADMIN INTERVIEWER),Backend Dev,High,V
+Build Login page with shadcn/ui,Task,User Authentication,Week 2,Day 6,8h,Create login form with shadcn/ui components validation error handling,Frontend Dev,High,V
+Implement AuthService,Task,User Authentication,Week 2,Day 7,8h,User registration authentication password hashing token generation role assignment,Backend Dev,High,V
+Build Signup page with shadcn/ui,Task,User Authentication,Week 2,Day 7,8h,Company signup form with shadcn/ui validation connect to API,Frontend Dev,High,V
+Implement AuthController endpoints,Task,User Authentication,Week 2,Day 8,4h,POST /api/auth/signup POST /api/auth/login POST /api/auth/refresh,Backend Dev,High,V
+Add role-based access control ADMIN vs INTERVIEWER,Task,User Authentication,Week 2,Day 8,4h,Implement PreAuthorize annotations custom access handler filter interviews by role,Backend Dev,High,V
+Build Password Reset flow Part 1,Task,User Authentication,Week 2,Day 8,4h,Create Forgot Password page with shadcn/ui request reset form,Frontend Dev,Medium,V
+Build Password Reset flow Part 2,Task,User Authentication,Week 2,Day 8,4h,Password reset confirmation page with shadcn/ui connect to API,Frontend Dev,Medium,V
+Implement password reset functionality,Task,User Authentication,Week 2,Day 9,8h,Generate tokens store in database email via Resend validate and reset password,Backend Dev,Medium,V
+Test and polish authentication flows,Task,User Authentication,Week 2,Day 9,8h,Test all flows add loading states improve error messages using shadcn/ui,Frontend Dev,Medium,V
+Implement interviewer invite system,Task,User Authentication,Week 2,Day 10,8h,Create invite endpoints generate tokens send invitation emails via Resend acceptance flow,Backend Dev,Medium,V
+End-to-end testing of authentication,Task,User Authentication,Week 2,Day 10,8h,Test all auth flows fix bugs verify token persistence test role restrictions,Frontend Dev,High,V
+Implement access token generation service,Task,Interview Creation,Week 3,Day 11,4h,Create 12-char secure random token generator ensure uniqueness (62^12 combinations),Backend Dev,High,
+Implement InterviewService create interview,Task,Interview Creation,Week 3,Day 11,4h,Interview creation logic with access token generation optional candidate name/role,Backend Dev,High,V
+Build Dashboard page with tabs and shadcn/ui,Task,Interview Creation,Week 3,Day 11,8h,Dashboard layout with tabs (Pending Live Ended) using shadcn/ui table badge components,Frontend Dev,High,
+Implement InterviewController CRUD endpoints,Task,Interview Creation,Week 3,Day 12,4h,POST /api/interviews GET /api/interviews (filtered by role) GET /api/interviews/:id DELETE /api/interviews/:id,Backend Dev,High,V
+Build Interview List component with status badges,Task,Interview Creation,Week 3,Day 12,8h,Display interviews with status badges quick actions (Copy Link Start View) using shadcn/ui,Frontend Dev,High,
+Seed question database with 3-5 questions,Task,Interview Creation,Week 3,Day 13,4h,Create URL Shortener Shopping Cart Task Manager questions with tests rubrics bugs JSON,Backend Dev,Medium,V
+Implement QuestionController,Task,Interview Creation,Week 3,Day 13,4h,GET /api/questions GET /api/questions/:id with full details tests rubrics,Backend Dev,Medium,V
+Build Create Interview dialog with shadcn/ui,Task,Interview Creation,Week 3,Day 13,8h,Dialog-based form select question optional candidate fields validation using shadcn/ui dialog,Frontend Dev,High,
+Connect Create Interview form to API,Task,Interview Creation,Week 3,Day 14,4h,Submit form handle success refresh list show interview URL copy button,Frontend Dev,High,
+Build Interview Preview page,Task,Interview Creation,Week 3,Day 14,4h,Show interview details Copy Link button Start Interview button candidate connection status,Frontend Dev,Medium,
+Testing and bug fixes for interview creation,Task,Interview Creation,Week 3,Day 15,8h,Test creation flow link generation authorization by role,Backend Dev,High,
+Polish dashboard UI with shadcn/ui components,Task,Interview Creation,Week 3,Day 15,8h,Empty states responsive design loading skeletons hover states dropdown actions,Frontend Dev,Medium,
+Implement candidate access endpoint,Task,Interview Session,Week 4,Day 16,4h,GET /api/i/:token validate token return interview status question for candidate,Backend Dev,High,
+Build Interview Room layout split-screen,Task,Interview Session,Week 4,Day 16,8h,Split-screen layout with monaco editor chat panel timer using shadcn/ui,Frontend Dev,High,
+Implement interview start endpoint,Task,Interview Session,Week 4,Day 17,4h,POST /api/interviews/:id/start change status PENDING to LIVE save started_at,Backend Dev,High,
+Implement interview end endpoint,Task,Interview Session,Week 4,Day 17,4h,POST /api/interviews/:id/end change status LIVE to ENDED save ended_at,Backend Dev,High,
+Integrate Monaco code editor,Task,Interview Session,Week 4,Day 17,8h,Add Monaco configure for Java Python JavaScript syntax highlighting handle changes,Frontend Dev,High,
+Configure Spring WebSocket with STOMP,Task,Interview Session,Week 4,Day 18,8h,WebSocket config handler for /ws/interview/:token broadcast events by interview,Backend Dev,High,
+Build candidate waiting screen,Task,Interview Session,Week 4,Day 18,4h,Show waiting message company logo question title when status is PENDING,Frontend Dev,Medium,
+Add countdown timer component,Task,Interview Session,Week 4,Day 18,4h,30-min countdown warning at 5min auto-submit on timeout using shadcn/ui,Frontend Dev,Medium,
+Implement Claude Haiku 4.5 API integration,Task,Interview Session,Week 4,Day 19,8h,Create AIService configure for claude-haiku-4-5-20251001 model optimize prompts for cost,Backend Dev,High,
+Build AI chat interface with shadcn/ui,Task,Interview Session,Week 4,Day 19,4h,Message list input send button loading states using shadcn/ui components,Frontend Dev,High,
+Implement WebSocket client for real-time sync,Task,Interview Session,Week 4,Day 19,4h,Connect WebSocket handle code_updated test_results interview_started interview_ended events,Frontend Dev,High,
+Implement system prompt and conversation logging,Task,Interview Session,Week 4,Day 20,8h,Create system prompts with intentional bugs for Haiku log all messages to JSONB field,Backend Dev,High,
+Build interviewer observer view,Task,Interview Session,Week 4,Day 20,8h,Read-only monaco real-time code sync chat history notes panel End Interview button,Frontend Dev,High,
+Create Java Sandbox Docker Image,Task,Code Execution,Week 5,Day 21,4h,Dockerfile.java with eclipse-temurin:21-jdk-alpine non-root user java-runner.sh security hardening,Backend Dev,High,
+Implement DockerConfig and docker-java setup,Task,Code Execution,Week 5,Day 21,4h,Configure DockerClient bean add docker-java dependencies memory CPU network limits,Backend Dev,High,
+Add language selector to editor,Task,Code Execution,Week 5,Day 21,4h,Dropdown for Java Python JavaScript change monaco language syntax highlighting,Frontend Dev,Medium,
+Build code output panel with shadcn/ui,Task,Code Execution,Week 5,Day 21,4h,Display console output errors in red using shadcn/ui card component,Frontend Dev,Medium,
+Implement SandboxExecutorService for Java,Task,Code Execution,Week 5,Day 22,8h,Container creation with 128MB RAM 50% CPU 10s timeout no network read-only exec Java code,Backend Dev,High,
+Build Run Tests button with loading state,Task,Code Execution,Week 5,Day 22,8h,Button with spinner disable during execution using shadcn/ui button component,Frontend Dev,Medium,
+Create Python Sandbox Docker Image,Task,Code Execution,Week 5,Day 23,4h,Dockerfile.python with python:3.12-alpine python-runner.py security hardening,Backend Dev,High,
+Create JavaScript Sandbox Docker Image,Task,Code Execution,Week 5,Day 23,4h,Dockerfile.node with node:20-alpine node-runner.js VM isolation security hardening,Backend Dev,High,
+Extend SandboxExecutorService for multi-language,Task,Code Execution,Week 5,Day 23,4h,Support Python and JavaScript execution with proper image selection,Backend Dev,High,
+Implement TestRunnerService,Task,Code Execution,Week 5,Day 24,8h,Load tests from question run in sandbox capture results calculate pass rate,Backend Dev,High,
+Build test results panel with shadcn/ui,Task,Code Execution,Week 5,Day 24,4h,Display test results pass/fail status progress bar per language using shadcn/ui,Frontend Dev,High,
+Add real-time test result WebSocket updates,Task,Code Execution,Week 5,Day 24,4h,Broadcast test_results event update UI instantly show progress,Frontend Dev,Medium,
+Implement code execution endpoints,Task,Code Execution,Week 5,Day 25,4h,POST /api/code/execute POST /api/code/test with language detection,Backend Dev,High,
+Test all three language sandboxes end-to-end,Task,Code Execution,Week 5,Day 25,8h,Test Java Python JavaScript with various code samples verify isolation limits,Backend Dev,High,
+Implement automated scoring service,Task,Evaluation,Week 6,Day 26,4h,Calculate score from test results weight by importance save to interview_session,Backend Dev,High,
+Build submit interview endpoint,Task,Evaluation,Week 6,Day 26,4h,POST /api/i/:token/submit save code conversation trigger auto-scoring set status ENDED,Backend Dev,High,
+Build candidate completion screen,Task,Evaluation,Week 6,Day 26,8h,Show Thank You message Interview Complete next steps using shadcn/ui,Frontend Dev,Medium,
+Implement EvaluationService,Task,Evaluation,Week 6,Day 27,8h,Save manual scores notes recommendation calculate final score GET /api/evaluations/:interviewId,Backend Dev,High,
+Build interviewer scorecard form with shadcn/ui,Task,Evaluation,Week 6,Day 27,8h,Form with score inputs (0-10) strengths weaknesses recommendation dropdown using shadcn/ui,Frontend Dev,High,
+Implement evaluation endpoints,Task,Evaluation,Week 6,Day 28,4h,POST /api/evaluations validate scores return final results,Backend Dev,Medium,
+Build interview results page,Task,Evaluation,Week 6,Day 28,8h,Show code snapshot conversation test results scores breakdown using shadcn/ui,Frontend Dev,High,
+Add results filtering by recommendation,Task,Evaluation,Week 6,Day 29,4h,Filter interviews by HIRE MAYBE NO_HIRE add search functionality,Backend Dev,Medium,
+Build interview comparison table,Task,Evaluation,Week 6,Day 29,8h,Sortable table compare candidates click to view details using shadcn/ui table,Frontend Dev,Medium,
+Add PDF export functionality (optional),Task,Evaluation,Week 6,Day 30,4h,Generate PDF report download button if time permits,Backend Dev,Low,
+Implement Resend email service,Task,Notifications,Week 6,Day 30,4h,Set up Resend API create email templates (optional for MVP - manual link sharing is primary),Backend Dev,Low,
+End-to-end integration testing,Task,Testing,Week 7,Day 31,8h,Test complete interview flow all languages roles WebSocket edge cases,Full Team,High,
+Bug fixing session critical issues,Task,Testing,Week 7,Day 32,8h,Fix critical bugs identified in testing session verify fixes,Full Team,High,
+Provision Hetzner VPS CX32,Task,Infrastructure,Week 7,Day 33,2h,Create server 4vCPU 8GB RAM Nuremberg location configure SSH keys,Backend Dev,High,
+Secure VPS and install Docker,Task,Infrastructure,Week 7,Day 33,4h,UFW firewall create deploy user install Docker and Docker Compose disable root login,Backend Dev,High,
+Create production docker-compose.yml,Task,Infrastructure,Week 7,Day 33,2h,Services: nginx backend postgres sandbox-java sandbox-python sandbox-node with volumes,Backend Dev,High,
+Configure Nginx reverse proxy with SSL,Task,Infrastructure,Week 7,Day 34,4h,Nginx config proxy to backend Let's Encrypt SSL WebSocket support CORS,Backend Dev,High,
+Deploy frontend to Cloudflare Pages,Task,Infrastructure,Week 7,Day 34,4h,Connect GitHub repo configure build command environment variables custom domain,Frontend Dev,High,
+Configure production PostgreSQL and migrations,Task,Infrastructure,Week 7,Day 34,4h,Run Flyway/Liquibase migrations seed question data configure automated backups,Backend Dev,High,
+Build and push sandbox Docker images,Task,Infrastructure,Week 7,Day 35,4h,Build all three sandbox images on VPS tag appropriately test locally,Backend Dev,High,
+Setup Sentry error monitoring,Task,Infrastructure,Week 7,Day 35,2h,Add Sentry SDK to Spring Boot configure error capture free tier,Backend Dev,Medium,
+Setup uptime monitoring,Task,Infrastructure,Week 7,Day 35,2h,Configure uptime checks health endpoints alerting for downtime,Backend Dev,Medium,
+Test production deployment thoroughly,Task,Testing,Week 7,Day 35,4h,Test all features on production API connectivity WebSocket sandbox execution,Full Team,High,
+Create deployment script deploy.sh,Task,Infrastructure,Week 8,Day 36,4h,Automated script: git pull mvn build docker compose down/up backup before deploy,Backend Dev,Medium,
+Implement Stripe checkout integration,Task,Billing,Week 8,Day 36,4h,Stripe setup create checkout session webhook handlers subscription plans,Backend Dev,Medium,
+Build subscription billing page,Task,Billing,Week 8,Day 36,8h,Show current plan upgrade/downgrade buttons payment history using shadcn/ui,Frontend Dev,Medium,
+Security audit and penetration testing,Task,Security,Week 8,Day 37,8h,Review auth JWT security sandbox isolation CORS input validation rate limiting,Full Team,High,
+UI/UX polish and responsive design,Task,Polish,Week 8,Day 38,8h,Fix responsive issues loading states error messages tooltips accessibility,Frontend Dev,High,
+Create admin utility scripts,Task,DevOps,Week 8,Day 38,4h,Scripts: seed data backup database cleanup old containers health check,Backend Dev,Medium,
+Create interviewer and candidate guides,Task,Documentation,Week 8,Day 38,4h,User documentation how to create interview conduct interview candidate experience,Full Team,Medium,
+Setup GitHub Actions CI/CD pipeline,Task,DevOps,Week 8,Day 39,4h,Workflow: build test deploy to Hetzner via SSH on push to main branch,Backend Dev,Medium,
+Final end-to-end testing all browsers,Task,Testing,Week 8,Day 39,4h,Test complete journey Chrome Firefox Safari mobile responsiveness edge cases,Full Team,High,
+Create deployment and API documentation,Task,Documentation,Week 8,Day 40,4h,Deployment guide API documentation troubleshooting guide admin operations,Full Team,Medium,
+Final bug fixes and launch preparation,Task,Launch,Week 8,Day 40,4h,Fix remaining issues verify monitoring set up on-call schedule final checks,Full Team,High,
+Configure domain email instead of localhost,Task,Configuration,Week 8,Day 40,2h,Update email templates and links to use production domain,Backend Dev,High,
+Document all paid services and costs,Task,Documentation,Week 8,Day 40,2h,Create list: Hetzner VPS Claude Haiku Stripe Resend domain with monthly costs,Backend Dev,Medium,
