@@ -30,6 +30,18 @@ export default function LoginPage() {
     setLoading(true)
     setError('')
 
+    // Client-side validation
+    if (!formData.email) {
+      setError('Email is required')
+      setLoading(false)
+      return
+    }
+    if (!formData.password) {
+      setError('Password is required')
+      setLoading(false)
+      return
+    }
+
     try {
       const response = await authService.login(formData)
 
