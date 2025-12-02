@@ -226,16 +226,39 @@ SELECT * FROM interviews WHERE interviewer_id = :interviewerId
 
 ---
 
-### ❌ REMOVED FROM MVP (Future Features)
+### ❌ REMOVED FROM MVP (Out of Scope for v1)
 
-- ~~Team Management~~ → Future feature (admin invite interviewers)
-- ~~Interviewer invite flow~~ → Future feature
 - ~~Email notifications to candidates~~ → Interviewer shares link manually
 - ~~Candidate email verification~~ → Not needed, link-only access
 - ~~Magic link authentication~~ → Simple token in URL
 - ~~Scheduled interviews~~ → No calendar, just create and start when ready
 - ~~Reminder emails~~ → Manual coordination
 - ~~Candidate signup/login~~ → No account needed
+
+---
+
+### 🚀 FUTURE FEATURES (Post-MVP)
+
+**Phase 2 - Team Management:**
+- [ ] Admin invite interviewers flow
+- [ ] Team member management dashboard
+- [ ] Role-based permissions (Admin, Lead Interviewer, Interviewer)
+- [ ] Interviewer activity logs
+- [ ] Team interview analytics
+
+**Phase 2 - Custom Questions:**
+- [ ] Admin panel to create custom questions
+- [ ] Question versioning and updates
+- [ ] Question preview and testing
+- [ ] Question difficulty and time limit configuration
+- [ ] Reusable question templates library
+- [ ] Import/export questions
+
+**Phase 2 - Authentication:**
+- [ ] Google OAuth / SSO integration
+- [ ] GitHub OAuth authentication
+- [ ] Azure AD / Enterprise SSO support
+- [ ] Social login for signup
 
 ---
 
@@ -249,11 +272,51 @@ SELECT * FROM interviews WHERE interviewer_id = :interviewerId
 
 ---
 
+## UI/UX Design System
+
+### Design Principles
+- **Modern & Clean**: Using shadcn/ui for consistent, professional UI components
+- **Accessible**: Built with accessibility in mind (ARIA labels, semantic HTML)
+- **Responsive**: Mobile-first design that works on all screen sizes
+- **Dark Mode Ready**: Tailwind CSS with light/dark theme support
+
+### Component Library: shadcn/ui
+- Headless, unstyled components built on Radix UI primitives
+- Customizable Tailwind CSS styling
+- Icons via lucide-react
+- Fully typed with TypeScript
+
+### Key UI Updates
+
+**Dashboard Page:**
+- Refined interview list with status badges and quick actions
+- Search and filter functionality for interviews
+- Dialog-based "Create New Interview" instead of modal steps
+- Expandable question cards to view full descriptions
+- Responsive grid layout with hover states
+- Status-specific actions (Copy Link, Start, View Live, View Results)
+- Dropdown menu for additional actions (Delete, End Interview)
+
+**Login/Signup Pages:**
+- Centered card-based layout
+- Form validation with helpful error messages
+- Link to password reset and signup pages
+- Client-side validation before API calls
+
+**Interview Management Modal:**
+- Dialog-based creation flow (replaces multi-step modal)
+- Expandable question selection with descriptions
+- Candidate name and role optional fields
+- Integrated directly into dashboard dialog
+
+---
+
 ## Technical Architecture
 
 ### Frontend Stack
 
 **Framework:** React 18 + TypeScript + Vite
+**UI Library:** shadcn/ui with Tailwind CSS
 **Hosting:** Cloudflare Pages (FREE)
 
 ```json
@@ -267,7 +330,9 @@ SELECT * FROM interviews WHERE interviewer_id = :interviewerId
   "react-query": "^5.0.0",
   "zustand": "^4.4.0",
   "axios": "^1.6.0",
-  "socket.io-client": "^4.6.0"
+  "socket.io-client": "^4.6.0",
+  "shadcn/ui": "latest",
+  "lucide-react": "^latest"
 }
 ```
 
@@ -276,14 +341,23 @@ SELECT * FROM interviews WHERE interviewer_id = :interviewerId
 /frontend
   /src
     /components
-      /common
+      /ui                          # shadcn/ui components
+        button.tsx
+        input.tsx
+        dialog.tsx
+        select.tsx
+        badge.tsx
+        dropdown-menu.tsx
+        label.tsx
+        [other shadcn/ui components]
+      /common                      # Custom wrapper components
         Button.tsx
         Input.tsx
-        Modal.tsx
-        StatusBadge.tsx
-        Sidebar.tsx
+        Card.tsx
         Header.tsx
+        Sidebar.tsx
       PrivateRoute.tsx
+      AdminRoute.tsx
       CreateInterviewModal.tsx
       InterviewList.tsx
     /pages
@@ -293,6 +367,7 @@ SELECT * FROM interviews WHERE interviewer_id = :interviewerId
       ResetPasswordPage.tsx
       DashboardPage.tsx
       InterviewPage.tsx                # /interview/:id (interviewer + candidate)
+      HomePage.tsx
       NotFoundPage.tsx
     /layouts
       AppLayout.tsx
