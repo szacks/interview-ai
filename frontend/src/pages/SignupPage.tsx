@@ -32,6 +32,23 @@ export default function SignupPage() {
     setLoading(true)
     setError('')
 
+    // Client-side validation
+    if (formData.companyName.length < 2) {
+      setError('Company name must be at least 2 characters')
+      setLoading(false)
+      return
+    }
+    if (formData.adminName.length < 2) {
+      setError('Your name must be at least 2 characters')
+      setLoading(false)
+      return
+    }
+    if (formData.password.length < 8) {
+      setError('Password must be at least 8 characters')
+      setLoading(false)
+      return
+    }
+
     try {
       const response = await authService.signup(formData)
 
@@ -109,12 +126,16 @@ export default function SignupPage() {
                 id="password"
                 name="password"
                 type="password"
-                placeholder="Create a strong password"
+                placeholder="Create a strong password (min 8 characters)"
                 className="bg-background"
                 value={formData.password}
                 onChange={handleChange}
                 required
+                minLength={8}
               />
+              <p className="text-xs text-muted-foreground">
+                At least 8 characters for security
+              </p>
             </div>
 
             {error && (
