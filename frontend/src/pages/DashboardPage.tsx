@@ -159,7 +159,7 @@ export default function DashboardPage() {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
           <div>
             <h2 className="text-3xl font-bold mb-2 tracking-tight">Interviews</h2>
-            <p className="text-muted-foreground text-sm font-medium">Manage and conduct technical interviews</p>
+            <p className="text-muted-foreground text-base font-medium">Manage and conduct technical interviews</p>
           </div>
           <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
             <DialogTrigger asChild>
@@ -188,14 +188,14 @@ export default function DashboardPage() {
                           <div className="flex items-start justify-between gap-3">
                             <div className="flex-1">
                               <div className="flex items-center gap-2 mb-2">
-                                <h3 className="font-semibold text-base">{q.title}</h3>
-                                <Badge variant="outline" className="text-xs font-medium">
+                                <h3 className="font-semibold text-lg">{q.title}</h3>
+                                <Badge variant="outline" className="text-sm font-medium">
                                   {q.difficulty}
                                 </Badge>
-                                <span className="text-xs text-muted-foreground font-medium">{q.timeLimit} min</span>
+                                <span className="text-sm text-muted-foreground font-medium">{q.timeLimit} min</span>
                               </div>
                               {isExpanded && (
-                                <p className="text-sm text-muted-foreground leading-relaxed mt-3">{q.description}</p>
+                                <p className="text-base text-muted-foreground leading-relaxed mt-3">{q.description}</p>
                               )}
                             </div>
                             {isExpanded ? (
@@ -264,7 +264,7 @@ export default function DashboardPage() {
                     <h3 className="font-semibold text-lg truncate">{interview.candidateName || "Unnamed Candidate"}</h3>
                     {getStatusBadge(interview.status)}
                   </div>
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground font-medium">
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground font-medium">
                     <span>{interview.role}</span>
                     <span>•</span>
                     <span className="font-semibold text-foreground">{interview.questionTitle}</span>
@@ -333,8 +333,8 @@ export default function DashboardPage() {
             <div className="size-16 rounded-full bg-muted mx-auto mb-4 flex items-center justify-center">
               <Search className="size-8 text-muted-foreground" />
             </div>
-            <h3 className="text-lg font-semibold mb-2 tracking-tight">No interviews found</h3>
-            <p className="text-muted-foreground text-sm font-medium mb-4">
+            <h3 className="text-xl font-semibold mb-2 tracking-tight">No interviews found</h3>
+            <p className="text-muted-foreground text-base font-medium mb-4">
               {searchQuery || statusFilter !== "all"
                 ? "Try adjusting your filters"
                 : "Create your first interview to get started"}
