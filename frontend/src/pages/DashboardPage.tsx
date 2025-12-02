@@ -1,9 +1,7 @@
 import { useState } from "react"
-import { Link } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import {
   Dialog,
   DialogContent,
@@ -14,23 +12,22 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import {
-  Plus,
-  Search,
-  MoreVertical,
-  Copy,
-  Play,
-  Trash2,
-  Eye,
-  Clock,
-  CheckCircle2,
-  XCircle,
-  ChevronDown,
-  ChevronUp,
-} from "lucide-react"
+import { Plus, Search, ChevronDown, ChevronUp } from "lucide-react"
+import { InterviewListComponent } from "@/components/InterviewListComponent"
 
 // Mock data
-const mockInterviews = [
+const mockInterviews: Array<{
+  id: number
+  candidateName: string
+  role: string
+  questionId: number
+  questionTitle: string
+  status: "pending" | "live" | "ended"
+  createdAt: string
+  startedAt?: string
+  endedAt?: string
+  token: string
+}> = [
   {
     id: 1,
     candidateName: "Sarah Johnson",
@@ -119,34 +116,6 @@ export default function DashboardPage() {
     const matchesStatus = statusFilter === "all" || interview.status === statusFilter
     return matchesSearch && matchesStatus
   })
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "live":
-        return (
-          <Badge className="bg-accent text-accent-foreground">
-            <div className="size-1.5 rounded-full bg-accent-foreground mr-1.5 animate-pulse" />
-            Live
-          </Badge>
-        )
-      case "pending":
-        return (
-          <Badge variant="outline" className="border-muted-foreground/30 text-muted-foreground">
-            <Clock className="size-3 mr-1" />
-            Pending
-          </Badge>
-        )
-      case "ended":
-        return (
-          <Badge variant="secondary">
-            <CheckCircle2 className="size-3 mr-1" />
-            Ended
-          </Badge>
-        )
-      default:
-        return null
-    }
-  }
 
   const copyToClipboard = (token: string) => {
     navigator.clipboard.writeText(`${window.location.origin}/i/${token}`)
@@ -252,101 +221,15 @@ export default function DashboardPage() {
         </div>
 
         {/* Interviews List */}
-        <div className="space-y-3">
-          {filteredInterviews.map((interview) => (
-            <div
-              key={interview.id}
-              className="rounded-lg border border-border bg-card p-4 hover:border-primary/50 transition-colors"
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h3 className="font-semibold text-lg truncate">{interview.candidateName || "Unnamed Candidate"}</h3>
-                    {getStatusBadge(interview.status)}
-                  </div>
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground font-medium">
-                    <span>{interview.role}</span>
-                    <span>•</span>
-                    <span className="font-semibold text-foreground">{interview.questionTitle}</span>
-                    <span>•</span>
-                    <span>Created {new Date(interview.createdAt).toLocaleDateString()}</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  {interview.status === "pending" && (
-                    <>
-                      <Button size="sm" variant="outline" onClick={() => copyToClipboard(interview.token)}>
-                        <Copy className="size-4 mr-2" />
-                        Copy Link
-                      </Button>
-                      <Link to={`/interview/${interview.id}`}>
-                        <Button size="sm">
-                          <Play className="size-4 mr-2" />
-                          Start
-                        </Button>
-                      </Link>
-                    </>
-                  )}
-                  {interview.status === "live" && (
-                    <Link to={`/interview/${interview.id}`}>
-                      <Button size="sm" className="bg-accent hover:bg-accent/90">
-                        <Eye className="size-4 mr-2" />
-                        View Live
-                      </Button>
-                    </Link>
-                  )}
-                  {interview.status === "ended" && (
-                    <Button size="sm" variant="outline">
-                      <Eye className="size-4 mr-2" />
-                      View Results
-                    </Button>
-                  )}
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button size="sm" variant="ghost">
-                        <MoreVertical className="size-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      {interview.status === "pending" && (
-                        <DropdownMenuItem className="text-destructive">
-                          <Trash2 className="size-4 mr-2" />
-                          Delete
-                        </DropdownMenuItem>
-                      )}
-                      {interview.status === "live" && (
-                        <DropdownMenuItem className="text-destructive">
-                          <XCircle className="size-4 mr-2" />
-                          End Interview
-                        </DropdownMenuItem>
-                      )}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {filteredInterviews.length === 0 && (
-          <div className="text-center py-12">
-            <div className="size-16 rounded-full bg-muted mx-auto mb-4 flex items-center justify-center">
-              <Search className="size-8 text-muted-foreground" />
-            </div>
-            <h3 className="text-xl font-semibold mb-2 tracking-tight">No interviews found</h3>
-            <p className="text-muted-foreground text-base font-medium mb-4">
-              {searchQuery || statusFilter !== "all"
-                ? "Try adjusting your filters"
-                : "Create your first interview to get started"}
-            </p>
-            {!searchQuery && statusFilter === "all" && (
-              <Button onClick={() => setCreateDialogOpen(true)}>
-                <Plus className="size-4 mr-2" />
-                Create Interview
-              </Button>
-            )}
-          </div>
-        )}
+        <InterviewListComponent
+          interviews={filteredInterviews}
+          onCopyLink={copyToClipboard}
+          emptyMessage={
+            searchQuery || statusFilter !== "all"
+              ? "Try adjusting your filters"
+              : "Create your first interview to get started"
+          }
+        />
       </div>
     </div>
   )
