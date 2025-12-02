@@ -20,6 +20,8 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
 
     Optional<Interview> findByInterviewLinkToken(String token);
 
+    Optional<Interview> findByIdAndInterviewLinkToken(Long id, String token);
+
     @Query("SELECT i FROM Interview i WHERE i.company.id = ?1 ORDER BY i.createdAt DESC")
     List<Interview> findByCompanyIdOrderByCreatedAtDesc(Long companyId);
 
