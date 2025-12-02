@@ -2,23 +2,25 @@ import { createBrowserRouter } from 'react-router-dom';
 import AppLayout from '../layouts/AppLayout';
 import DashboardLayout from '../layouts/DashboardLayout';
 import InterviewLayout from '../layouts/InterviewLayout';
+import HomePage from '../pages/HomePage';
 import LoginPage from '../pages/LoginPage';
 import SignupPage from '../pages/SignupPage';
 import ForgotPasswordPage from '../pages/ForgotPasswordPage';
 import ResetPasswordPage from '../pages/ResetPasswordPage';
-import AcceptInvitationPage from '../pages/AcceptInvitationPage';
 import DashboardPage from '../pages/DashboardPage';
-import TeamManagementPage from '../pages/TeamManagementPage';
 import InterviewPage from '../pages/InterviewPage';
 import NotFoundPage from '../pages/NotFoundPage';
 import PrivateRoute from '../components/PrivateRoute';
-import AdminRoute from '../components/AdminRoute';
 
 const routes = [
   {
     path: '/',
     element: <AppLayout />,
     children: [
+      {
+        index: true,
+        element: <HomePage />,
+      },
       {
         path: 'login',
         element: <LoginPage />,
@@ -34,10 +36,6 @@ const routes = [
       {
         path: 'reset-password',
         element: <ResetPasswordPage />,
-      },
-      {
-        path: 'auth/accept-invitation',
-        element: <AcceptInvitationPage />,
       },
       {
         element: <PrivateRoute />,
@@ -59,21 +57,6 @@ const routes = [
               {
                 index: true,
                 element: <InterviewPage />,
-              },
-            ],
-          },
-          {
-            element: <AdminRoute />,
-            children: [
-              {
-                path: 'teams',
-                element: <DashboardLayout />,
-                children: [
-                  {
-                    index: true,
-                    element: <TeamManagementPage />,
-                  },
-                ],
               },
             ],
           },

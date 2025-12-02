@@ -1,184 +1,116 @@
-import { useState } from 'react';
-import type { FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../stores/authStore';
-import authService from '../services/authService';
+import { useState } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import authService from '@/services/authService'
+import { useAuthStore } from '@/stores/authStore'
 
 export default function LoginPage() {
-  const navigate = useNavigate();
-  const { login, setLoading, setError, clearError } = useAuthStore();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [apiError, setApiError] = useState<string | null>(null);
-  const [fieldErrors, setFieldErrors] = useState<{ email?: string; password?: string }>({});
+  const navigate = useNavigate()
+  const { login } = useAuthStore()
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+  })
 
-  const validateFields = (): boolean => {
-    const errors: { email?: string; password?: string } = {};
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
+    }))
+    setError('')
+  }
 
-    if (!email.trim()) {
-      errors.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      errors.email = 'Please enter a valid email address';
-    }
-
-    if (!password) {
-      errors.password = 'Password is required';
-    }
-
-    setFieldErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    clearError();
-    setApiError(null);
-
-    if (!validateFields()) {
-      return;
-    }
-
-    setIsLoading(true);
-    setLoading(true);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
 
     try {
-      const response = await authService.login({
-        email: email.trim(),
-        password,
-      });
+      const response = await authService.login(formData)
 
-      const userData = {
+      // Store in auth store and redirect to dashboard
+      const user = {
         id: response.userId.toString(),
         email: response.email,
         role: response.role,
-        companyName: response.name,
-      };
-
-      login(userData, response.token);
-      navigate('/dashboard');
-    } catch (error: any) {
-      const errorMessage = error?.message || 'Login failed. Please try again.';
-      setApiError(errorMessage);
-      setError(errorMessage);
+      }
+      login(user, response.token)
+      localStorage.setItem('authToken', response.token)
+      navigate('/dashboard')
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Login failed. Please try again.')
     } finally {
-      setIsLoading(false);
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to your account
-          </h2>
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-bold mb-2">Welcome back</h1>
+          <p className="text-muted-foreground">Sign in to your account to continue</p>
         </div>
 
-        {apiError && (
-          <div className="rounded-md bg-red-50 border border-red-200 p-3">
-            <p className="text-sm font-medium text-red-800">{apiError}</p>
-          </div>
-        )}
-
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit} noValidate>
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="email-address" className="sr-only">
-                Email address
-              </label>
-              <input
-                id="email-address"
+        <div className="rounded-lg border border-border bg-card p-8">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
                 name="email"
                 type="email"
-                autoComplete="email"
+                placeholder="name@company.com"
+                className="bg-background"
+                value={formData.email}
+                onChange={handleChange}
                 required
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  if (fieldErrors.email) setFieldErrors({ ...fieldErrors, email: undefined });
-                }}
-                disabled={isLoading}
-                className={`appearance-none rounded relative block w-full px-3 py-2 border ${
-                  fieldErrors.email ? 'border-red-500' : 'border-gray-300'
-                } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm disabled:opacity-50`}
-                placeholder="Email address"
               />
-              {fieldErrors.email && (
-                <p className="mt-1 text-sm text-red-600">{fieldErrors.email}</p>
-              )}
             </div>
-            <div>
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <input
+
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password">Password</Label>
+                <Link to="/forgot-password" className="text-sm text-primary hover:underline">
+                  Forgot password?
+                </Link>
+              </div>
+              <Input
                 id="password"
                 name="password"
                 type="password"
-                autoComplete="current-password"
+                placeholder="Enter your password"
+                className="bg-background"
+                value={formData.password}
+                onChange={handleChange}
                 required
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  if (fieldErrors.password) setFieldErrors({ ...fieldErrors, password: undefined });
-                }}
-                disabled={isLoading}
-                className={`appearance-none rounded relative block w-full px-3 py-2 border ${
-                  fieldErrors.password ? 'border-red-500' : 'border-gray-300'
-                } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm disabled:opacity-50`}
-                placeholder="Password"
               />
-              {fieldErrors.password && (
-                <p className="mt-1 text-sm text-red-600">{fieldErrors.password}</p>
-              )}
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember-me"
-                name="remember-me"
-                type="checkbox"
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                Remember me
-              </label>
             </div>
 
-            <div className="text-sm">
-              <Link
-                to="/forgot-password"
-                className="font-medium text-blue-600 hover:text-blue-500"
-              >
-                Forgot password?
-              </Link>
-            </div>
-          </div>
+            {error && (
+              <div className="p-3 bg-destructive/10 border border-destructive text-destructive text-sm rounded">
+                {error}
+              </div>
+            )}
 
-          <div>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isLoading ? 'Signing in...' : 'Sign in'}
-            </button>
-          </div>
-        </form>
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? 'Signing in...' : 'Sign in'}
+            </Button>
+          </form>
 
-        <div className="text-center">
-          <p className="text-sm text-gray-600">
-            Don't have an account?{' '}
-            <Link to="/signup" className="font-medium text-blue-600 hover:text-blue-500">
+          <div className="mt-6 text-center text-sm text-muted-foreground">
+            {"Don't have an account? "}
+            <Link to="/signup" className="text-primary hover:underline font-medium">
               Sign up
             </Link>
-          </p>
+          </div>
         </div>
       </div>
     </div>
-  );
+  )
 }

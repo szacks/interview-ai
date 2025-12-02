@@ -21,16 +21,16 @@ describe('Button Component', () => {
     expect(button).toHaveClass('bg-gray-200')
   })
 
-  it('applies danger variant styles', () => {
-    render(<Button variant="danger">Delete</Button>)
+  it('applies destructive variant styles', () => {
+    render(<Button variant="destructive">Delete</Button>)
     const button = screen.getByRole('button')
-    expect(button).toHaveClass('bg-red-600')
+    expect(button).toHaveClass('bg-destructive')
   })
 
-  it('applies success variant styles', () => {
-    render(<Button variant="success">Confirm</Button>)
+  it('applies outline variant styles', () => {
+    render(<Button variant="outline">Outline</Button>)
     const button = screen.getByRole('button')
-    expect(button).toHaveClass('bg-green-600')
+    expect(button).toHaveClass('border')
   })
 
   it('applies small size styles', () => {

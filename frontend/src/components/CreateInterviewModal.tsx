@@ -174,7 +174,7 @@ export default function CreateInterviewModal({
               Cancel
             </Button>
             <Button
-              variant="primary"
+              variant="default"
               onClick={
                 step === 'candidate'
                   ? handleCandidateSearch

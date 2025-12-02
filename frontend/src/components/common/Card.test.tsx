@@ -20,10 +20,10 @@ describe('Card Component', () => {
     expect(card).toHaveClass('bg-white', 'shadow-md')
   })
 
-  it('applies outlined variant styles', () => {
-    const { container } = render(<Card variant="outlined">Content</Card>)
+  it('applies elevated variant styles with different shadow', () => {
+    const { container } = render(<Card variant="elevated">Content</Card>)
     const card = container.firstChild
-    expect(card).toHaveClass('bg-white', 'border-2', 'border-gray-300')
+    expect(card).toHaveClass('bg-white', 'shadow-lg')
   })
 
   it('applies small padding', () => {
