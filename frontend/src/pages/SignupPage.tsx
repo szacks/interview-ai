@@ -1,271 +1,152 @@
-import { useState } from 'react';
-import type { FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../stores/authStore';
-import authService from '../services/authService';
-
-interface FormErrors {
-  companyName?: string;
-  adminName?: string;
-  email?: string;
-  password?: string;
-  confirmPassword?: string;
-  general?: string;
-}
+import { useState } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import authService from '@/services/authService'
+import { useAuthStore } from '@/stores/authStore'
 
 export default function SignupPage() {
-  const navigate = useNavigate();
-  const { login, setLoading, setError, clearError } = useAuthStore();
-  const [companyName, setCompanyName] = useState('');
-  const [adminName, setAdminName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [apiError, setApiError] = useState<string | null>(null);
+  const navigate = useNavigate()
+  const { login } = useAuthStore()
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [formData, setFormData] = useState({
+    companyName: '',
+    adminName: '',
+    email: '',
+    password: '',
+  })
 
-  // Validate form
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
+    }))
+    setError('')
+  }
 
-    if (!companyName.trim()) {
-      newErrors.companyName = 'Company name is required';
-    } else if (companyName.trim().length < 2) {
-      newErrors.companyName = 'Company name must be at least 2 characters';
-    }
-
-    if (!adminName.trim()) {
-      newErrors.adminName = 'Admin name is required';
-    } else if (adminName.trim().length < 2) {
-      newErrors.adminName = 'Admin name must be at least 2 characters';
-    }
-
-    if (!email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      newErrors.email = 'Please enter a valid email address';
-    }
-
-    if (!password) {
-      newErrors.password = 'Password is required';
-    } else if (password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
-    }
-
-    if (!confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password';
-    } else if (password !== confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    clearError();
-    setApiError(null);
-
-    // Validate form
-    if (!validateForm()) {
-      return;
-    }
-
-    setIsLoading(true);
-    setLoading(true);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
 
     try {
-      const response = await authService.signup({
-        companyName: companyName.trim(),
-        adminName: adminName.trim(),
-        email: email.trim(),
-        password,
-      });
+      const response = await authService.signup(formData)
 
-      // Transform response to match User interface
-      const userData = {
+      // Store in auth store and redirect to dashboard
+      const user = {
         id: response.userId.toString(),
         email: response.email,
         role: response.role,
-        companyName: response.name,
-      };
-
-      login(userData, response.token);
-      navigate('/dashboard');
-    } catch (error: any) {
-      let errorMessage = error?.message || 'Signup failed. Please try again.';
-
-      // Provide better error messages for specific scenarios
-      if (error?.message?.includes('already exists') || error?.message?.includes('Email already')) {
-        errorMessage = 'This email address is already registered. Please use a different email or sign in instead.';
-      } else if (error?.message?.includes('Invalid') || error?.message?.includes('validation')) {
-        errorMessage = 'Please check your information and try again.';
-      } else if (error?.message?.includes('timeout') || error?.message?.includes('network')) {
-        errorMessage = 'Network error. Please check your connection and try again.';
       }
-
-      setApiError(errorMessage);
-      setError(errorMessage);
+      login(user, response.token)
+      localStorage.setItem('authToken', response.token)
+      navigate('/dashboard')
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Signup failed. Please try again.')
     } finally {
-      setIsLoading(false);
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Create your account
-          </h2>
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-bold mb-2">Create your account</h1>
+          <p className="text-muted-foreground">Start conducting AI-powered interviews today</p>
         </div>
 
-        {apiError && (
-          <div className="rounded-md bg-red-50 border border-red-200 p-3">
-            <p className="text-sm font-medium text-red-800">{apiError}</p>
-          </div>
-        )}
-
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit} noValidate>
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="company" className="sr-only">
-                Company Name
-              </label>
-              <input
-                id="company"
-                name="company"
+        <div className="rounded-lg border border-border bg-card p-8">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="companyName">Company Name</Label>
+              <Input
+                id="companyName"
+                name="companyName"
                 type="text"
+                placeholder="Acme Inc."
+                className="bg-background"
+                value={formData.companyName}
+                onChange={handleChange}
                 required
-                value={companyName}
-                onChange={(e) => {
-                  setCompanyName(e.target.value);
-                  if (errors.companyName) setErrors({ ...errors, companyName: undefined });
-                }}
-                disabled={isLoading}
-                className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm disabled:opacity-50"
-                placeholder="Company Name"
               />
-              {errors.companyName && (
-                <p className="mt-1 text-sm text-red-600">{errors.companyName}</p>
-              )}
             </div>
-            <div>
-              <label htmlFor="admin-name" className="sr-only">
-                Admin Name
-              </label>
-              <input
-                id="admin-name"
+
+            <div className="space-y-2">
+              <Label htmlFor="adminName">Your Name</Label>
+              <Input
+                id="adminName"
                 name="adminName"
                 type="text"
+                placeholder="John Smith"
+                className="bg-background"
+                value={formData.adminName}
+                onChange={handleChange}
                 required
-                value={adminName}
-                onChange={(e) => {
-                  setAdminName(e.target.value);
-                  if (errors.adminName) setErrors({ ...errors, adminName: undefined });
-                }}
-                disabled={isLoading}
-                className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm disabled:opacity-50"
-                placeholder="Admin Name"
               />
-              {errors.adminName && (
-                <p className="mt-1 text-sm text-red-600">{errors.adminName}</p>
-              )}
             </div>
-            <div>
-              <label htmlFor="email-address" className="sr-only">
-                Email address
-              </label>
-              <input
-                id="email-address"
+
+            <div className="space-y-2">
+              <Label htmlFor="email">Work Email</Label>
+              <Input
+                id="email"
                 name="email"
                 type="email"
-                autoComplete="email"
+                placeholder="john@company.com"
+                className="bg-background"
+                value={formData.email}
+                onChange={handleChange}
                 required
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  if (errors.email) setErrors({ ...errors, email: undefined });
-                }}
-                disabled={isLoading}
-                className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm disabled:opacity-50"
-                placeholder="Email address"
               />
-              {errors.email && (
-                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
-              )}
             </div>
-            <div>
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <input
+
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
                 id="password"
                 name="password"
                 type="password"
-                autoComplete="new-password"
+                placeholder="Create a strong password"
+                className="bg-background"
+                value={formData.password}
+                onChange={handleChange}
                 required
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  if (errors.password) setErrors({ ...errors, password: undefined });
-                }}
-                disabled={isLoading}
-                className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm disabled:opacity-50"
-                placeholder="Password"
               />
-              {errors.password && (
-                <p className="mt-1 text-sm text-red-600">{errors.password}</p>
-              )}
             </div>
-            <div>
-              <label htmlFor="confirm-password" className="sr-only">
-                Confirm Password
-              </label>
-              <input
-                id="confirm-password"
-                name="confirmPassword"
-                type="password"
-                autoComplete="new-password"
-                required
-                value={confirmPassword}
-                onChange={(e) => {
-                  setConfirmPassword(e.target.value);
-                  if (errors.confirmPassword) setErrors({ ...errors, confirmPassword: undefined });
-                }}
-                disabled={isLoading}
-                className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm disabled:opacity-50"
-                placeholder="Confirm Password"
-              />
-              {errors.confirmPassword && (
-                <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
-              )}
-            </div>
-          </div>
 
-          <div>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isLoading ? 'Creating account...' : 'Sign up'}
-            </button>
-          </div>
-        </form>
+            {error && (
+              <div className="p-3 bg-destructive/10 border border-destructive text-destructive text-sm rounded">
+                {error}
+              </div>
+            )}
 
-        <div className="text-center">
-          <p className="text-sm text-gray-600">
-            Already have an account?{' '}
-            <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? 'Creating account...' : 'Create Account'}
+            </Button>
+
+            <p className="text-xs text-muted-foreground text-center">
+              By signing up, you agree to our{" "}
+              <Link to="/terms" className="text-primary hover:underline">
+                Terms of Service
+              </Link>{" "}
+              and{" "}
+              <Link to="/privacy" className="text-primary hover:underline">
+                Privacy Policy
+              </Link>
+            </p>
+          </form>
+
+          <div className="mt-6 text-center text-sm text-muted-foreground">
+            Already have an account?{" "}
+            <Link to="/login" className="text-primary hover:underline font-medium">
               Sign in
             </Link>
-          </p>
+          </div>
         </div>
       </div>
     </div>
-  );
+  )
 }

@@ -1,4 +1,4 @@
-# MVP Specification & Build Plan
+# MVP Specification V2 - Simplified Flow
 
 ## MVP Scope Definition
 
@@ -12,298 +12,142 @@
 - ✅ Multi-language support (Java, Python, JavaScript)
 - ❌ No admin dashboard polish
 - ❌ No advanced analytics
-- ❌ No video integration (use external Zoom)
-- ❌ No custom questions (5 pre-built questions only)
+- ❌ No video integration (use external Zoom/Meet)
+- ❌ No custom questions (3-5 pre-built questions only)
+- ❌ No automated email sending (interviewer shares link manually)
 
 ---
 
-## User Roles & Team Structure
+## Core Interview Flow
+
+### The Simplified Flow
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           INTERVIEW FLOW V2                                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  INTERVIEWER                                    CANDIDATE                    │
+│  ────────────                                   ─────────                    │
+│                                                                              │
+│  1. Click "New Interview"                                                    │
+│         │                                                                    │
+│         ▼                                                                    │
+│  2. Select question from bank                                                │
+│     + Optional: candidate name, role                                         │
+│         │                                                                    │
+│         ▼                                                                    │
+│  3. System creates session:                                                  │
+│     • status = "pending"                                                     │
+│     • access_token = "xK9mPq2nR4vL"                                         │
+│     • URL = yourapp.com/i/xK9mPq2nR4vL                                      │
+│         │                                                                    │
+│         ▼                                                                    │
+│  4. Interviewer sees:                                                        │
+│     • Session preview page                                                   │
+│     • "Copy Link" button                                                     │
+│     • "Start Interview" button                                               │
+│     • Candidate connection status                                            │
+│         │                                                                    │
+│         ▼                                                                    │
+│  5. Manually sends link via                    6. Receives link              │
+│     email/Slack/calendar ─────────────────────────▶ (any channel)            │
+│         │                                              │                     │
+│         │                                              ▼                     │
+│         │                                       7. Opens link                │
+│         │                                              │                     │
+│         │                                              ▼                     │
+│         │                                       8. Sees waiting screen:      │
+│         │                                          "Waiting for              │
+│         │                                           interviewer..."          │
+│         │                                              │                     │
+│         │◄──── WebSocket ──────────────────────────────┤                     │
+│         │      (candidate connected)                   │                     │
+│         ▼                                              │                     │
+│  9. Sees "Candidate connected" ●                       │                     │
+│         │                                              │                     │
+│         ▼                                              │                     │
+│  10. Clicks "Start Interview"                          │                     │
+│         │                                              │                     │
+│         │────── WebSocket ─────────────────────────────▶                     │
+│         │       (status: live)                         │                     │
+│         ▼                                              ▼                     │
+│  11. Sees live observer view:                   12. Screen transitions:      │
+│      • Candidate's code (real-time)                 • Question appears       │
+│      • AI chat history                              • Editor unlocks         │
+│      • Test results                                 • Language selector      │
+│      • Notes panel                                  • Timer starts           │
+│      • "End Interview" button                       • AI chat available      │
+│         │                                              │                     │
+│         │◄────── Real-time sync ───────────────────────┤                     │
+│         │        (code, chat, tests)                   │                     │
+│         │                                              │                     │
+│         │                                       13. Candidate codes,         │
+│         │                                           uses AI, runs tests      │
+│         │                                              │                     │
+│         │                                              ▼                     │
+│         │                                       14. Clicks "Submit"          │
+│         │◄────── WebSocket ────────────────────────────┤                     │
+│         │        (interview submitted)                 │                     │
+│         │                                              ▼                     │
+│  ───────┼───────────────────────────────────    15. Sees "Complete"          │
+│    OR   │                                           screen                   │
+│         │                                                                    │
+│         ▼                                                                    │
+│  14b. Interviewer clicks                                                     │
+│       "End Interview"                                                        │
+│         │                                                                    │
+│         │────── WebSocket ─────────────────────────────▶                     │
+│         │       (status: ended)                        │                     │
+│         ▼                                              ▼                     │
+│  15. Interview ends:                            16. Sees "Interview          │
+│      • Auto-scoring runs                            Ended" screen            │
+│      • Results available                                                     │
+│      • Can fill scorecard                                                    │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Interview Status States
+
+```
+┌──────────┐     Interviewer clicks      ┌──────────┐     Submit OR        ┌──────────┐
+│ PENDING  │ ──────"Start Interview"────▶│   LIVE   │ ───End Interview───▶│  ENDED   │
+└──────────┘                              └──────────┘                      └──────────┘
+     │                                         │                                 │
+     │                                         │                                 │
+     ▼                                         ▼                                 ▼
+ Candidate sees                           Candidate sees                    Candidate sees
+ waiting screen                           coding environment                "ended" screen
+```
+
+| Status | Interviewer Actions | Candidate View |
+|--------|---------------------|----------------|
+| `PENDING` | Copy link, Start, Delete | Waiting screen with company/question info |
+| `LIVE` | Watch code, See AI chat, Take notes, End Interview | Full coding environment |
+| `ENDED` | View results, Fill scorecard, View report | "Interview Complete" or "Interview Ended" |
+
+---
+
+## User Roles
 
 ### Role Definitions
 
-The platform has **3 distinct user roles** with different access levels and capabilities:
+| Role | Description | Capabilities |
+|------|-------------|--------------|
+| **Admin** | Person who creates company account | Everything Interviewer can do + Invite interviewers + Manage billing + See ALL interviews |
+| **Interviewer** | Invited by Admin | Create interviews + Conduct interviews + See OWN interviews only + Fill scorecards |
+| **Candidate** | External person being interviewed | Access via link only + No account + Code + Chat with AI + Submit |
 
-#### 1. Company Admin 👔
-
-**Who:** The person who signs up and creates the company account.
-
-**Capabilities:**
-- ✅ Everything an Interviewer can do, PLUS:
-- ✅ Invite/remove interviewers to the team
-- ✅ Manage billing (Stripe subscription)
-- ✅ See ALL interviews across the company
-- ✅ Access company settings
-- ✅ Manage team members
-
-**Database:** Stored in `users` table with `role = 'admin'`
-
-**Access Control:**
-- Can access all interviews in their company (via `company_id`)
-- Can manage company settings
-- Can invite users to the company
-
-#### 2. Interviewer 🎯
-
-**Who:** Invited by an Admin to join the company's team.
-
-**Capabilities:**
-- ✅ Create interviews
-- ✅ Conduct interviews (observe candidate in real-time)
-- ✅ Fill out scorecards and evaluations
-- ✅ See interviews they created OR were assigned to
-- ❌ Cannot see other interviewers' interviews
-- ❌ Cannot manage billing or team members
-- ❌ Cannot access company settings
-
-**Database:** Stored in `users` table with `role = 'interviewer'`
-
-**Access Control:**
-- Can only access interviews where they are the `interviewer_id`
-- Can create new interviews (automatically assigned as interviewer)
-- Can view/edit evaluations for their interviews
-
-#### 3. Candidate 👨‍💻
-
-**Who:** External person being interviewed. Not a permanent user of the system.
-
-**Capabilities:**
-- ✅ Access interview via magic link (one-time token)
-- ✅ Write code in the interview room
-- ✅ Chat with AI assistant
-- ✅ Run code and see test results
-- ✅ Submit interview
-- ❌ No account required
-- ❌ Cannot see other interviews
-- ❌ Cannot access after interview is submitted (link expires)
-
-**Database:** Stored in `candidates` table (email + name only)
-
-**Access Control:**
-- Access ONLY via `interview_link_token` in the URL
-- Token is unique per interview and expires after use/time
-- No login required, no password
-
----
-
-### The "Team" Concept
-
-In this MVP, **"team"** means: **All users (admin + interviewers) belonging to one company.**
-
-There is **ONE team per company**. There are no sub-teams or departments in the MVP.
-
-```
-Company (Acme Corp)
-├── Admin: john@acme.com (created the account)
-├── Interviewer: sarah@acme.com (invited by John)
-├── Interviewer: mike@acme.com (invited by John)
-└── Interviews
-    ├── Interview 1 (created by John, assigned to Sarah)
-    ├── Interview 2 (created by Sarah, assigned to Sarah)
-    ├── Interview 3 (created by Mike, assigned to Mike)
-    └── Interview 4 (created by John, assigned to Mike)
-```
-
-**Key Rules:**
-- Admins can see ALL interviews in the company (1, 2, 3, 4)
-- Sarah can only see interviews 1 and 2 (where she's the interviewer)
-- Mike can only see interviews 3 and 4 (where he's the interviewer)
-- John (admin) can also conduct interviews (acts as interviewer)
-
----
-
-### Authorization Matrix
-
-| Action | Admin | Interviewer | Candidate |
-|--------|-------|-------------|-----------|
-| **Company & Team** |
-| Invite users to team | ✅ | ❌ | ❌ |
-| Remove users from team | ✅ | ❌ | ❌ |
-| View all company users | ✅ | ✅ | ❌ |
-| Manage billing | ✅ | ❌ | ❌ |
-| View company settings | ✅ | ❌ | ❌ |
-| **Interviews** |
-| Create interview | ✅ | ✅ | ❌ |
-| View ALL company interviews | ✅ | ❌ | ❌ |
-| View assigned interviews | ✅ | ✅ | ❌ |
-| Conduct interview (observe) | ✅ | ✅* | ❌ |
-| Fill out scorecard | ✅ | ✅* | ❌ |
-| View interview results | ✅ | ✅* | ❌ |
-| Access via magic link | ❌ | ❌ | ✅ |
-| **In Interview Room** |
-| Write code | ❌ | ❌ | ✅ |
-| Chat with AI | ❌ | ❌ | ✅ |
-| Run code | ❌ | ❌ | ✅ |
-| View candidate's code (real-time) | ✅** | ✅** | ❌ |
-| View test results (real-time) | ✅** | ✅** | ✅ |
-
-\* Only for interviews where they are the assigned interviewer  
-\*\* Via WebSocket observer connection
-
----
-
-### Implementation Details
-
-#### Spring Security Configuration
+### Authorization Rules
 
 ```java
-@Configuration
-@EnableWebSecurity
-public class SecurityConfig {
-    
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http
-            .authorizeHttpRequests(auth -> auth
-                // Public endpoints
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/interviews/link/**").permitAll()
-                
-                // Admin only endpoints
-                .requestMatchers("/api/companies/**").hasRole("ADMIN")
-                .requestMatchers("/api/team/**").hasRole("ADMIN")
-                .requestMatchers("/api/billing/**").hasRole("ADMIN")
-                
-                // Admin + Interviewer endpoints
-                .requestMatchers("/api/interviews/**").hasAnyRole("ADMIN", "INTERVIEWER")
-                .requestMatchers("/api/evaluations/**").hasAnyRole("ADMIN", "INTERVIEWER")
-                
-                // Authenticated users
-                .requestMatchers("/api/**").authenticated()
-            )
-            .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
-            .build();
-    }
-}
+// Admin sees all company interviews
+SELECT * FROM interviews WHERE company_id = :companyId
+
+// Interviewer sees only their interviews
+SELECT * FROM interviews WHERE interviewer_id = :interviewerId
 ```
-
-#### Custom Authorization Service
-
-```java
-@Service
-public class InterviewAuthorizationService {
-    
-    public boolean canAccessInterview(User user, Long interviewId) {
-        Interview interview = interviewRepo.findById(interviewId)
-            .orElseThrow(() -> new NotFoundException("Interview not found"));
-        
-        // Admins can access all interviews in their company
-        if (user.getRole() == UserRole.ADMIN) {
-            return interview.getCompany().getId().equals(user.getCompany().getId());
-        }
-        
-        // Interviewers can only access interviews they're assigned to
-        if (user.getRole() == UserRole.INTERVIEWER) {
-            return interview.getInterviewer().getId().equals(user.getId());
-        }
-        
-        return false;
-    }
-    
-    public boolean canInviteInterviewer(User user) {
-        return user.getRole() == UserRole.ADMIN;
-    }
-}
-```
-
-#### Database Queries
-
-```java
-// InterviewRepository.java
-
-// For Admins: Get all interviews in their company
-@Query("SELECT i FROM Interview i WHERE i.company.id = :companyId")
-List<Interview> findAllByCompanyId(@Param("companyId") Long companyId);
-
-// For Interviewers: Get only their assigned interviews
-@Query("SELECT i FROM Interview i WHERE i.interviewer.id = :interviewerId")
-List<Interview> findAllByInterviewerId(@Param("interviewerId") Long interviewerId);
-```
-
----
-
-### User Invitation Flow
-
-```
-1. Admin clicks "Invite Interviewer"
-   ↓
-2. Enters email (e.g., sarah@acme.com)
-   ↓
-3. System generates invite token
-   ↓
-4. Email sent via Resend with link:
-   https://app.yourdomain.com/accept-invite?token=abc123
-   ↓
-5. Sarah clicks link, sets password
-   ↓
-6. Account created with role = 'interviewer'
-   ↓
-7. Sarah can now login and create interviews
-```
-
-**Database Tables Involved:**
-- `companies` - Company info
-- `users` - Admin and Interviewers (role field)
-- `candidates` - Interviewees (no login)
-- `interviews` - Links company + interviewer + candidate
-
----
-
-### Frontend Route Protection
-
-```typescript
-// App.tsx routing example
-
-<Routes>
-  {/* Public routes */}
-  <Route path="/login" element={<LoginPage />} />
-  <Route path="/signup" element={<SignupPage />} />
-  <Route path="/interview/:token" element={<CandidateInterviewPage />} />
-  
-  {/* Protected routes - requires authentication */}
-  <Route element={<PrivateRoute />}>
-    
-    {/* Admin + Interviewer routes */}
-    <Route path="/dashboard" element={<DashboardPage />} />
-    <Route path="/interviews/:id" element={<InterviewDetailsPage />} />
-    <Route path="/results/:id" element={<ResultsPage />} />
-    
-    {/* Admin only routes */}
-    <Route element={<AdminRoute />}>
-      <Route path="/team" element={<TeamManagementPage />} />
-      <Route path="/billing" element={<BillingPage />} />
-      <Route path="/settings" element={<CompanySettingsPage />} />
-    </Route>
-  </Route>
-</Routes>
-```
-
----
-
-### Key Points for MVP
-
-1. **Simple hierarchy:** Company → Team (all users) → Interviews
-2. **No sub-teams:** All interviewers in a company are in one team
-3. **Role-based access:** Admin sees all, Interviewers see only theirs
-4. **Candidates are temporary:** No persistent account, access via token
-5. **Invitation flow:** Only admins can invite interviewers
-6. **Security:** JPA + Spring Security handle authorization checks
-
----
-
-## Architecture Changes Summary
-
-> **Key optimizations made for solo developer on a budget:**
-
-| Component | Original | Updated | Savings |
-|-----------|----------|---------|---------|
-| **Hosting** | Railway ($20-50/mo) | Hetzner VPS CX32 ($9/mo) | ~70% |
-| **Frontend** | Railway | Cloudflare Pages (FREE) | 100% |
-| **AI Model** | Claude Sonnet | Claude Haiku 4.5 | ~70% |
-| **Email** | SendGrid | Resend | Better free tier |
-| **Code Sandbox** | Node.js subprocess | Docker containers | Multi-language |
-| **Database** | Railway managed | Docker PostgreSQL | Included in VPS |
-
-**Estimated Monthly Cost: ~$15-25** (down from $70-100+)
 
 ---
 
@@ -313,110 +157,105 @@ List<Interview> findAllByInterviewerId(@Param("interviewerId") Long interviewerI
 
 **Authentication & User Management:**
 - [ ] Company signup/login (email + password)
-- [ ] Interviewer signup/login (invite-based)
-- [ ] Candidate access (magic link, no signup required)
-- [ ] Basic role-based access control (admin, interviewer, candidate)
+- [ ] Role-based access (Admin vs Interviewer)
 - [ ] Password reset flow
+- [ ] JWT authentication
 
-**Company Dashboard:**
-- [ ] Create interview (select question, assign interviewer, enter candidate info)
-- [ ] View list of interviews (scheduled, completed, in-progress)
+**Dashboard:**
+- [ ] View list of interviews (Pending, Live, Ended)
+- [ ] Create new interview (select question, optional candidate name/role)
+- [ ] Copy interview link
 - [ ] View interview results
-- [ ] Add/invite interviewers to team
 
-**Interview Scheduling:**
-- [ ] Create interview and send email to candidate
-- [ ] Generate unique interview link
-- [ ] Email notifications (invite, reminder, completion) via Resend
+**Interview Session Management:**
+- [ ] Generate unique interview link (12-char alphanumeric token)
+- [ ] Interview preview page (before starting)
+- [ ] Start interview (Pending → Live)
+- [ ] End interview (Live → Ended)
+- [ ] Real-time candidate connection status
+- [ ] Delete pending interviews
 
-**Interview Room (Core Product):**
-- [ ] Code editor (Monaco) with syntax highlighting for Java, Python, JavaScript
-- [ ] AI chat interface (Claude Haiku 4.5 integration)
-- [ ] Shared view (interviewer sees candidate's code in real-time)
-- [ ] Run code button (Docker sandbox execution)
+**Candidate Experience:**
+- [ ] Waiting screen (when status = Pending)
+- [ ] Real-time transition to coding (when interviewer starts)
+- [ ] Coding environment with Monaco editor
 - [ ] Language selector (Java, Python, JavaScript)
-- [ ] Timer display (30 min countdown)
-- [ ] Submit button
+- [ ] AI chat assistant (Claude Haiku 4.5)
+- [ ] Run code / Run tests
+- [ ] Submit interview
+- [ ] "Interview Ended" screen
 
-**AI Assistant:**
-- [ ] Claude Haiku 4.5 API integration (cost-optimized)
-- [ ] System prompt engineering (helpful but imperfect)
-- [ ] Intentional bugs in responses (per question)
-- [ ] Conversation logging
+**Interviewer Live View:**
+- [ ] See candidate's code in real-time (WebSocket)
+- [ ] See AI chat history
+- [ ] See test results
+- [ ] Notes panel (saved with interview)
+- [ ] "End Interview" button
+- [ ] Timer display
 
-**Code Execution Sandbox (Docker-based):**
-- [ ] Docker container isolation per execution
+**Code Execution Sandbox (Docker):**
 - [ ] Java sandbox (eclipse-temurin:21-jdk-alpine)
 - [ ] Python sandbox (python:3.12-alpine)
 - [ ] JavaScript sandbox (node:20-alpine)
-- [ ] Security hardening (no network, read-only, resource limits)
-
-**Automated Testing:**
-- [ ] Test runner executing predefined tests in sandbox
-- [ ] Test results displayed to interviewer (real-time)
-- [ ] Pass/fail status per test
-- [ ] Automated score calculation (60 points max)
+- [ ] Security: No network, read-only, 128MB RAM, 10s timeout
+- [ ] Test runner with predefined tests
 
 **Evaluation & Scoring:**
-- [ ] Interviewer scorecard form (manual assessment)
-- [ ] Rubric with 4 categories (Understanding, Problem Solving, AI Collab, Communication)
-- [ ] Final score calculation (automated + manual)
-- [ ] Submit evaluation
+- [ ] Automated scoring (tests passed = points)
+- [ ] Interviewer scorecard (manual assessment)
+- [ ] Final score calculation
+- [ ] Recommendation (Hire / Maybe / No Hire)
 
 **Results & Reporting:**
-- [ ] Individual interview report page
-- [ ] Display: code, conversation, scores, notes, recommendation
-- [ ] Candidate list/comparison table (basic)
+- [ ] Interview results page
+- [ ] Code snapshot
+- [ ] Conversation history
+- [ ] Test results
+- [ ] Scores breakdown
+- [ ] Interviewer notes
 
 **Question Library:**
-- [ ] 3-5 pre-built questions with tests (multi-language)
-- [ ] Shopping Cart API
+- [ ] 3-5 pre-built questions with tests
 - [ ] URL Shortener
+- [ ] Shopping Cart API
 - [ ] Task Manager
 
 **Billing (Basic):**
-- [ ] Stripe integration (subscribe to Starter plan)
-- [ ] Payment method collection
-- [ ] Basic subscription management
+- [ ] Stripe integration
+- [ ] Subscription plans
+
+---
+
+### ❌ REMOVED FROM MVP (Future Features)
+
+- ~~Team Management~~ → Future feature (admin invite interviewers)
+- ~~Interviewer invite flow~~ → Future feature
+- ~~Email notifications to candidates~~ → Interviewer shares link manually
+- ~~Candidate email verification~~ → Not needed, link-only access
+- ~~Magic link authentication~~ → Simple token in URL
+- ~~Scheduled interviews~~ → No calendar, just create and start when ready
+- ~~Reminder emails~~ → Manual coordination
+- ~~Candidate signup/login~~ → No account needed
 
 ---
 
 ### 🔶 NICE TO HAVE (If Time Permits)
 
-- [ ] Real-time code sync (WebSockets)
 - [ ] Code autosave every 30 seconds
-- [ ] Interviewer notes panel in interview room
-- [ ] Export report as PDF
-- [ ] Basic analytics dashboard (total interviews, avg score)
-- [ ] Email reminders 1 day before interview
+- [ ] Export results as PDF
+- [ ] Basic analytics (total interviews, avg score)
+- [ ] Question difficulty labels
+- [ ] Dark/light theme toggle
 
 ---
 
-### ❌ NOT IN MVP (Explicitly Cut)
-
-- Video/audio integration (use external Zoom)
-- Recording storage
-- Custom question builder
-- Additional languages beyond Java/Python/JavaScript
-- Advanced analytics
-- SSO
-- API access
-- Mobile app
-- Interviewer training modules
-- Candidate feedback form
-- Scheduling calendar integration
-- AWS Lambda (using Docker instead - simpler, no cold starts)
-
----
-
-## Technical Architecture (MVP)
+## Technical Architecture
 
 ### Frontend Stack
 
 **Framework:** React 18 + TypeScript + Vite
 **Hosting:** Cloudflare Pages (FREE)
 
-**Key Libraries:**
 ```json
 {
   "react": "^18.2.0",
@@ -437,110 +276,53 @@ List<Interview> findAllByInterviewerId(@Param("interviewerId") Long interviewerI
 /frontend
   /src
     /components
-      /auth (Login, Signup, ResetPassword)
-      /dashboard (CompanyDashboard, InterviewList)
-      /interview (InterviewRoom, CodeEditor, AIChat, TestResults)
-      /evaluation (ScorecardForm)
-      /common (Button, Input, Modal, etc.)
+      /common
+        Button.tsx
+        Input.tsx
+        Modal.tsx
+        StatusBadge.tsx
+        Sidebar.tsx
+        Header.tsx
+      PrivateRoute.tsx
+      CreateInterviewModal.tsx
+      InterviewList.tsx
     /pages
-      /LoginPage.tsx
-      /DashboardPage.tsx
-      /InterviewPage.tsx
-      /ResultsPage.tsx
+      LoginPage.tsx
+      SignupPage.tsx
+      ForgotPasswordPage.tsx
+      ResetPasswordPage.tsx
+      DashboardPage.tsx
+      InterviewPage.tsx                # /interview/:id (interviewer + candidate)
+      NotFoundPage.tsx
+    /layouts
+      AppLayout.tsx
+      DashboardLayout.tsx
+      InterviewLayout.tsx
     /hooks
-      /useAuth.ts
-      /useInterview.ts
-    /api
-      /client.ts (axios setup)
-      /endpoints.ts
-    /store
-      /authStore.ts
-      /interviewStore.ts
-    /utils
-      /constants.ts
-      /helpers.ts
+      useAuth.ts
+      useInterview.ts
+      useWebSocket.ts
+    /services
+      apiClient.ts
+      authService.ts
+      interviewService.ts
+    /stores
+      authStore.ts
+      interviewStore.ts
+    /types
+      store.ts
+    /router
+      index.tsx
     App.tsx
     main.tsx
 ```
 
 ---
 
-### Backend Stack (Java)
+### Backend Stack
 
 **Framework:** Spring Boot 3.2+ with Java 17
-**Hosting:** Hetzner VPS CX32 (4 vCPU, 8GB RAM, 80GB SSD) - ~$9/month
-
-**Key Dependencies:**
-```xml
-<dependencies>
-    <!-- Spring Boot -->
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-web</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-data-jpa</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-security</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-websocket</artifactId>
-    </dependency>
-    
-    <!-- Database -->
-    <dependency>
-        <groupId>org.postgresql</groupId>
-        <artifactId>postgresql</artifactId>
-    </dependency>
-    
-    <!-- JWT -->
-    <dependency>
-        <groupId>io.jsonwebtoken</groupId>
-        <artifactId>jjwt</artifactId>
-        <version>0.12.3</version>
-    </dependency>
-    
-    <!-- HTTP Client (for Claude API) -->
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-webflux</artifactId>
-    </dependency>
-    
-    <!-- Email (Resend uses REST API, no special dependency needed) -->
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-mail</artifactId>
-    </dependency>
-    
-    <!-- Validation -->
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-validation</artifactId>
-    </dependency>
-    
-    <!-- Lombok -->
-    <dependency>
-        <groupId>org.projectlombok</groupId>
-        <artifactId>lombok</artifactId>
-    </dependency>
-    
-    <!-- Docker Java Client (for sandbox) -->
-    <dependency>
-        <groupId>com.github.docker-java</groupId>
-        <artifactId>docker-java-core</artifactId>
-        <version>3.3.4</version>
-    </dependency>
-    <dependency>
-        <groupId>com.github.docker-java</groupId>
-        <artifactId>docker-java-transport-httpclient5</artifactId>
-        <version>3.3.4</version>
-    </dependency>
-</dependencies>
-```
+**Hosting:** Hetzner VPS CX32 (~$9/month)
 
 **Project Structure:**
 ```
@@ -550,23 +332,20 @@ List<Interview> findAllByInterviewerId(@Param("interviewerId") Long interviewerI
       SecurityConfig.java
       WebSocketConfig.java
       CorsConfig.java
-      DockerConfig.java          # NEW: Docker client configuration
+      DockerConfig.java
     /controller
       AuthController.java
-      CompanyController.java
       InterviewController.java
-      InterviewSessionController.java
       QuestionController.java
       EvaluationController.java
-      CodeExecutionController.java  # NEW: Code execution endpoint
+      CodeExecutionController.java
     /service
       AuthService.java
       InterviewService.java
-      AIService.java             # Claude Haiku 4.5 integration
-      SandboxExecutorService.java  # NEW: Docker sandbox execution
+      AIService.java
+      SandboxExecutorService.java
       TestRunnerService.java
       ScoringService.java
-      EmailService.java          # Updated for Resend
     /repository
       CompanyRepository.java
       UserRepository.java
@@ -577,47 +356,31 @@ List<Interview> findAllByInterviewerId(@Param("interviewerId") Long interviewerI
       /entity
         Company.java
         User.java
-        Candidate.java
         Interview.java
         InterviewSession.java
         Question.java
-        TestResult.java
         Evaluation.java
       /dto
-        InterviewCreateRequest.java
+        CreateInterviewRequest.java
         InterviewResponse.java
         ChatMessageRequest.java
-        EvaluationSubmitRequest.java
-        CodeExecutionRequest.java   # NEW
-        CodeExecutionResponse.java  # NEW
+        CodeExecutionRequest.java
+        InviteInterviewerRequest.java
       /enums
-        Language.java              # NEW: JAVA, PYTHON, JAVASCRIPT
+        UserRole.java              # ADMIN, INTERVIEWER
+        InterviewStatus.java       # PENDING, LIVE, ENDED
+        Language.java              # JAVA, PYTHON, JAVASCRIPT
     /security
       JwtTokenProvider.java
       UserDetailsServiceImpl.java
-    /sandbox                       # NEW: Sandbox package
-      DockerSandboxManager.java
-      SandboxSecurityConfig.java
     /websocket
       InterviewWebSocketHandler.java
-  /src/main/resources
-    application.yml
-    questions/ (JSON files with question data)
-  /sandbox                         # NEW: Docker sandbox files
-    /java
-      Dockerfile
-      java-runner.sh
-    /python
-      Dockerfile
-      python-runner.py
-    /javascript
-      Dockerfile
-      node-runner.js
+      WebSocketEventType.java
 ```
 
 ---
 
-### Database Schema (PostgreSQL)
+### Database Schema
 
 ```sql
 -- Companies
@@ -625,776 +388,282 @@ CREATE TABLE companies (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
-    subscription_tier VARCHAR(50) DEFAULT 'starter',
     stripe_customer_id VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Users (Interviewers & Admins)
-CREATE TABLE users (
-    id BIGSERIAL PRIMARY KEY,
-    company_id BIGINT REFERENCES companies(id),
-    email VARCHAR(255) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
-    name VARCHAR(255) NOT NULL,
-    role VARCHAR(50) NOT NULL, -- 'admin', 'interviewer'
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    last_login TIMESTAMP
-);
-
--- Candidates
-CREATE TABLE candidates (
-    id BIGSERIAL PRIMARY KEY,
-    email VARCHAR(255) NOT NULL,
-    name VARCHAR(255) NOT NULL,
+    subscription_tier VARCHAR(50) DEFAULT 'starter',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Questions (updated with intentional_bugs_json)
+-- Users (Admins & Interviewers)
+CREATE TABLE users (
+    id BIGSERIAL PRIMARY KEY,
+    company_id BIGINT REFERENCES companies(id) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    role VARCHAR(20) NOT NULL,  -- 'ADMIN' or 'INTERVIEWER'
+    invite_token VARCHAR(255),  -- For pending invites
+    invite_accepted_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Questions (pre-built)
 CREATE TABLE questions (
     id BIGSERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
-    difficulty VARCHAR(50) NOT NULL, -- 'easy', 'medium', 'hard'
+    difficulty VARCHAR(20),  -- 'easy', 'medium', 'hard'
     time_limit_minutes INT DEFAULT 30,
-    supported_languages VARCHAR(255) DEFAULT 'java,python,javascript',  -- NEW
-    requirements_json JSONB NOT NULL,
     tests_json JSONB NOT NULL,
-    rubric_json JSONB NOT NULL,
-    intentional_bugs_json JSONB,  -- NEW: Per-question AI bug injection
-    initial_code_java TEXT,       -- NEW: Language-specific starter code
-    initial_code_python TEXT,     -- NEW
-    initial_code_javascript TEXT, -- NEW
+    rubric_json JSONB,
+    initial_code_java TEXT,
+    initial_code_python TEXT,
+    initial_code_javascript TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Interviews (updated with language field)
+-- Interviews
 CREATE TABLE interviews (
     id BIGSERIAL PRIMARY KEY,
-    company_id BIGINT REFERENCES companies(id),
-    question_id BIGINT REFERENCES questions(id),
-    candidate_id BIGINT REFERENCES candidates(id),
-    interviewer_id BIGINT REFERENCES users(id),
-    language VARCHAR(50) DEFAULT 'javascript',  -- NEW: Selected language
-    scheduled_at TIMESTAMP,
-    started_at TIMESTAMP,
-    completed_at TIMESTAMP,
-    status VARCHAR(50) DEFAULT 'scheduled', -- 'scheduled', 'in_progress', 'completed', 'cancelled'
-    interview_link_token VARCHAR(255) UNIQUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    company_id BIGINT REFERENCES companies(id) NOT NULL,
+    interviewer_id BIGINT REFERENCES users(id) NOT NULL,
+    question_id BIGINT REFERENCES questions(id) NOT NULL,
+    
+    -- Optional candidate info
+    candidate_name VARCHAR(255),
+    role_label VARCHAR(255),
+    
+    -- Access
+    access_token VARCHAR(20) UNIQUE NOT NULL,  -- URL token (12 chars)
+    
+    -- Status
+    status VARCHAR(20) DEFAULT 'PENDING',  -- PENDING, LIVE, ENDED
+    
+    -- Timestamps
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    started_at TIMESTAMP,   -- When interviewer clicked Start
+    ended_at TIMESTAMP,     -- When interview ended
+    
+    -- Indexes
+    CONSTRAINT idx_access_token UNIQUE (access_token)
 );
 
--- Interview Sessions (stores the actual interview data)
+-- Interview Sessions (interview data after it starts)
 CREATE TABLE interview_sessions (
     id BIGSERIAL PRIMARY KEY,
-    interview_id BIGINT REFERENCES interviews(id) UNIQUE,
+    interview_id BIGINT REFERENCES interviews(id) UNIQUE NOT NULL,
+    
+    -- Candidate's work
+    selected_language VARCHAR(20),
     code_snapshot TEXT,
-    language VARCHAR(50),  -- NEW: Language used
     conversation_log JSONB,
     test_results JSONB,
+    
+    -- Interviewer notes
+    interviewer_notes TEXT,
+    
+    -- Scores
     automated_score INT,
     manual_score INT,
     final_score INT,
-    interviewer_notes TEXT,
-    recommendation VARCHAR(50), -- 'hire', 'no_hire', 'maybe'
+    recommendation VARCHAR(20),  -- 'HIRE', 'MAYBE', 'NO_HIRE'
+    
+    -- Timestamps
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Evaluations (detailed rubric scores)
+-- Evaluations (detailed scorecard)
 CREATE TABLE evaluations (
     id BIGSERIAL PRIMARY KEY,
     interview_session_id BIGINT REFERENCES interview_sessions(id),
-    understanding_score INT,
-    problem_solving_score INT,
-    ai_collaboration_score INT,
-    communication_score INT,
+    understanding_score INT,      -- 0-10
+    problem_solving_score INT,    -- 0-10
+    ai_collaboration_score INT,   -- 0-10
+    communication_score INT,      -- 0-10
     strengths TEXT,
     weaknesses TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Performance indexes
+-- Indexes
 CREATE INDEX idx_interviews_company ON interviews(company_id);
+CREATE INDEX idx_interviews_interviewer ON interviews(interviewer_id);
 CREATE INDEX idx_interviews_status ON interviews(status);
-CREATE INDEX idx_interviews_scheduled ON interviews(scheduled_at);
-CREATE INDEX idx_interviews_link_token ON interviews(interview_link_token);
 CREATE INDEX idx_users_company ON users(company_id);
-CREATE INDEX idx_users_email ON users(email);
 ```
 
 ---
 
-### External Services
+### API Endpoints
 
-**1. Claude API (Anthropic) - UPDATED**
-- Endpoint: `https://api.anthropic.com/v1/messages`
-- Model: `claude-haiku-4-5-20251001` (cost-optimized)
-- Usage: AI assistant in interview room
-- Cost: ~$1 per 1M input tokens, ~$5 per 1M output tokens
-- Estimated: **~$0.06 per interview** (down from $0.50-1.00)
+```
+# Authentication
+POST   /api/auth/signup              # Company signup (creates Admin)
+POST   /api/auth/login               # Login
+POST   /api/auth/refresh             # Refresh token
+POST   /api/auth/forgot-password     # Request reset
+POST   /api/auth/reset-password      # Reset password
 
-**2. Resend (Email) - CHANGED FROM SENDGRID**
-- Transactional emails (invites, reminders, results)
-- Free tier: 3,000 emails/month (vs SendGrid's 100/day)
-- Simple REST API
-- React Email templates support
+# Interviews (authenticated)
+POST   /api/interviews               # Create interview
+GET    /api/interviews               # List interviews (filtered by role)
+GET    /api/interviews/:id           # Get interview details
+DELETE /api/interviews/:id           # Delete (only if PENDING)
+POST   /api/interviews/:id/start     # Start interview (PENDING → LIVE)
+POST   /api/interviews/:id/end       # End interview (LIVE → ENDED)
 
-**3. Stripe (Payments)**
-- Subscription management
-- Fee: 2.9% + $0.30 per transaction
-- No monthly fee
+# Candidate Access (no auth, by token)
+GET    /api/i/:token                 # Get interview for candidate
+POST   /api/i/:token/submit          # Submit interview
 
-**4. Hosting - UPDATED**
-- Backend: Hetzner VPS CX32 (~$9/month)
-- Frontend: Cloudflare Pages (FREE)
-- Database: PostgreSQL in Docker on VPS (included)
-- **Total: ~$9-10/month** (down from $50-100)
+# Code Execution
+POST   /api/code/execute             # Run code in sandbox
+POST   /api/code/test                # Run tests
 
-**5. Cloudflare (CDN & Frontend) - NEW**
-- Static site hosting (FREE)
-- Global CDN
-- Automatic SSL
-- DDoS protection
+# AI Chat
+POST   /api/ai/chat                  # Send message to Claude
+
+# Questions
+GET    /api/questions                # List available questions
+
+# Evaluation
+POST   /api/evaluations              # Submit evaluation
+GET    /api/evaluations/:interviewId # Get evaluation
+
+# WebSocket
+WS     /ws/interview/:token          # Real-time updates
+```
 
 ---
 
-## Code Execution Strategy
+### WebSocket Events
 
-**Solution: Docker Container Sandbox**
+```typescript
+// Event types
+enum WebSocketEvent {
+  // Connection
+  CANDIDATE_CONNECTED = 'candidate_connected',
+  CANDIDATE_DISCONNECTED = 'candidate_disconnected',
+  INTERVIEWER_CONNECTED = 'interviewer_connected',
+  
+  // Interview lifecycle
+  INTERVIEW_STARTED = 'interview_started',
+  INTERVIEW_ENDED = 'interview_ended',
+  INTERVIEW_SUBMITTED = 'interview_submitted',
+  
+  // Real-time sync (candidate → interviewer)
+  CODE_UPDATED = 'code_updated',
+  LANGUAGE_CHANGED = 'language_changed',
+  TEST_RESULTS = 'test_results',
+  AI_MESSAGE = 'ai_message',
+}
 
-> Chosen over AWS Lambda because:
-> - No cold starts (especially important for Java)
-> - Zero marginal cost (included in VPS)
-> - Full control over execution environment
-> - Simpler debugging and development
-> - Multi-language support with consistent behavior
-
-### Docker Images
-
-**Java Sandbox (Dockerfile.java):**
-```dockerfile
-FROM eclipse-temurin:21-jdk-alpine
-
-# Create non-root user for security
-RUN addgroup -S sandbox && adduser -S sandbox -G sandbox
-
-WORKDIR /app
-
-COPY java-runner.sh /app/runner.sh
-RUN chmod +x /app/runner.sh
-
-USER sandbox
-
-ENTRYPOINT ["/app/runner.sh"]
+// Payload examples
+{ type: 'candidate_connected' }
+{ type: 'interview_started', timestamp: '...' }
+{ type: 'code_updated', code: '...', cursor: { line: 5, column: 10 } }
+{ type: 'test_results', results: [...], passCount: 3, totalCount: 5 }
+{ type: 'interview_ended', endedBy: 'interviewer' }
 ```
 
-**Python Sandbox (Dockerfile.python):**
-```dockerfile
-FROM python:3.12-alpine
+---
 
-RUN addgroup -S sandbox && adduser -S sandbox -G sandbox
-
-WORKDIR /app
-
-COPY python-runner.py /app/runner.py
-
-USER sandbox
-
-ENTRYPOINT ["python", "/app/runner.py"]
-```
-
-**JavaScript Sandbox (Dockerfile.node):**
-```dockerfile
-FROM node:20-alpine
-
-RUN addgroup -S sandbox && adduser -S sandbox -G sandbox
-
-WORKDIR /app
-
-COPY node-runner.js /app/runner.js
-
-USER sandbox
-
-ENTRYPOINT ["node", "/app/runner.js"]
-```
-
-### Sandbox Executor Service
+### Link Generation
 
 ```java
 @Service
-@Slf4j
-public class SandboxExecutorService {
+public class InterviewService {
     
-    private final DockerClient dockerClient;
+    private static final SecureRandom RANDOM = new SecureRandom();
+    private static final String ALPHABET = 
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static final int TOKEN_LENGTH = 12;
     
-    // Container configuration
-    private static final long MEMORY_LIMIT = 128 * 1024 * 1024; // 128MB
-    private static final long CPU_PERIOD = 100000L;
-    private static final long CPU_QUOTA = 50000L; // 50% of one CPU
-    private static final int TIMEOUT_SECONDS = 10;
-    
-    // Pre-built images for each language
-    private static final Map<Language, String> IMAGES = Map.of(
-        Language.JAVA, "interview-sandbox-java:21",
-        Language.PYTHON, "interview-sandbox-python:3.12",
-        Language.JAVASCRIPT, "interview-sandbox-node:20"
-    );
-    
-    public ExecutionResult execute(Language language, String code, List<TestCase> tests) {
-        String containerId = null;
-        
-        try {
-            // 1. Create container with strict limits
-            CreateContainerResponse container = dockerClient.createContainerCmd(IMAGES.get(language))
-                .withHostConfig(HostConfig.newHostConfig()
-                    .withMemory(MEMORY_LIMIT)
-                    .withMemorySwap(MEMORY_LIMIT)     // Prevent swap
-                    .withCpuPeriod(CPU_PERIOD)
-                    .withCpuQuota(CPU_QUOTA)
-                    .withNetworkMode("none")          // No network access
-                    .withReadonlyRootfs(true)         // Read-only filesystem
-                    .withSecurityOpts(List.of("no-new-privileges:true"))
-                    .withCapDrop(Capability.ALL)      // Drop all capabilities
-                    .withPidsLimit(50L)               // Limit processes
-                )
-                .withUser("sandbox")
-                .exec();
-            
-            containerId = container.getId();
-            
-            // 2. Copy code and tests to container
-            copyToContainer(containerId, buildPayload(language, code, tests));
-            
-            // 3. Start and wait with timeout
-            dockerClient.startContainerCmd(containerId).exec();
-            
-            WaitContainerResultCallback callback = new WaitContainerResultCallback();
-            dockerClient.waitContainerCmd(containerId).exec(callback);
-            
-            boolean finished = callback.awaitCompletion(TIMEOUT_SECONDS, TimeUnit.SECONDS);
-            
-            if (!finished) {
-                dockerClient.killContainerCmd(containerId).exec();
-                return ExecutionResult.timeout();
-            }
-            
-            // 4. Collect and parse results
-            String output = collectLogs(containerId);
-            return parseResults(output, tests);
-            
-        } catch (Exception e) {
-            log.error("Execution failed", e);
-            return ExecutionResult.error(e.getMessage());
-        } finally {
-            // 5. Always cleanup
-            if (containerId != null) {
-                try {
-                    dockerClient.removeContainerCmd(containerId)
-                        .withForce(true)
-                        .withRemoveVolumes(true)
-                        .exec();
-                } catch (Exception e) {
-                    log.warn("Failed to cleanup container: {}", containerId);
-                }
-            }
+    /**
+     * Generates unique 12-char token.
+     * 62^12 = 3.2 × 10^21 combinations (unguessable)
+     */
+    public String generateAccessToken() {
+        StringBuilder token = new StringBuilder(TOKEN_LENGTH);
+        for (int i = 0; i < TOKEN_LENGTH; i++) {
+            token.append(ALPHABET.charAt(RANDOM.nextInt(ALPHABET.length())));
         }
+        return token.toString();
     }
-}
-```
-
-### Security Layers
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    SANDBOX SECURITY LAYERS                       │
-├─────────────────────────────────────────────────────────────────┤
-│  Layer 1: CONTAINER ISOLATION                                    │
-│  ├── Network: none (--network=none)                              │
-│  ├── Filesystem: read-only root                                  │
-│  ├── User: non-root (sandbox user)                               │
-│  └── Capabilities: ALL dropped                                   │
-├─────────────────────────────────────────────────────────────────┤
-│  Layer 2: RESOURCE LIMITS                                        │
-│  ├── Memory: 128MB hard limit (no swap)                          │
-│  ├── CPU: 50% of 1 core                                          │
-│  ├── Disk: No writable volumes                                   │
-│  └── PIDs: Max 50 processes                                      │
-├─────────────────────────────────────────────────────────────────┤
-│  Layer 3: TIME LIMITS                                            │
-│  ├── Execution timeout: 10 seconds                               │
-│  ├── Per-test timeout: 2 seconds                                 │
-│  └── Container lifetime: 30 seconds max                          │
-├─────────────────────────────────────────────────────────────────┤
-│  Layer 4: RATE LIMITING                                          │
-│  ├── Max 20 executions per interview                             │
-│  └── Max 5 concurrent containers                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
-
----
-
-## AI Integration Strategy
-
-**Model: Claude Haiku 4.5** (cost-optimized)
-
-**System Prompt Engineering:**
-
-```java
-@Service
-public class AIService {
     
-    private static final String MODEL = "claude-haiku-4-5-20251001";
-    
-    private static final String SYSTEM_PROMPT = """
-        You are an AI coding assistant helping a candidate during a technical interview.
+    @Transactional
+    public Interview createInterview(CreateInterviewRequest request, User interviewer) {
+        String token;
+        do {
+            token = generateAccessToken();
+        } while (interviewRepository.existsByAccessToken(token));
         
-        Guidelines:
-        1. Be helpful and provide working code suggestions
-        2. Respond quickly (keep responses concise)
-        3. Do NOT volunteer best practices unless asked
-        4. When asked for validation, provide a weak but plausible solution first
-        5. When asked for tests, provide only happy path tests initially
-        6. Only improve when explicitly asked for better solutions
-        7. Be confident in your suggestions (don't say "this might not be perfect")
+        Interview interview = Interview.builder()
+            .company(interviewer.getCompany())
+            .interviewer(interviewer)
+            .question(questionRepository.findById(request.getQuestionId())
+                .orElseThrow(() -> new NotFoundException("Question not found")))
+            .candidateName(request.getCandidateName())
+            .roleLabel(request.getRoleLabel())
+            .accessToken(token)
+            .status(InterviewStatus.PENDING)
+            .createdAt(Instant.now())
+            .build();
         
-        You are intentionally imperfect to test if the candidate:
-        - Reviews your code critically
-        - Catches weak implementations
-        - Asks for improvements
-        - Tests edge cases
-        
-        Common intentional mistakes to make:
-        - Weak validation (e.g., checking if string contains 'http' instead of proper URL parsing)
-        - Missing edge case handling (null, empty, negative numbers)
-        - Incomplete error handling
-        - Basic tests that don't cover edge cases
-        
-        IMPORTANT: Keep responses concise to minimize token usage.
-        """;
-    
-    public String chat(String question, String userMessage, List<Message> history) {
-        // Call Claude Haiku 4.5 API
-        // Inject intentional bugs based on question type
-        // Log conversation
-        // Return AI response
+        return interviewRepository.save(interview);
     }
-}
-```
-
-**Per-Question Bug Injection:**
-
-```json
-{
-  "questionId": "shopping-cart",
-  "intentionalBugs": [
-    {
-      "trigger": "user asks for validation",
-      "bug": "Suggest checking if quantity > 0, but don't check for null/undefined"
-    },
-    {
-      "trigger": "user asks for discount",
-      "bug": "Implement discount as `total - 10` instead of `total * 0.9`"
+    
+    public String getInterviewUrl(Interview interview) {
+        return frontendBaseUrl + "/i/" + interview.getAccessToken();
     }
-  ]
 }
 ```
 
 ---
 
-## Deployment Strategy
+## Pages & Routes
 
-### Infrastructure Overview
+### Frontend Routes
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    PRODUCTION ARCHITECTURE                       │
-│                                                                  │
-│  ┌─────────────────────────────────┐                            │
-│  │     CLOUDFLARE (FREE)           │                            │
-│  │  • Pages (Frontend hosting)     │                            │
-│  │  • CDN + SSL + DDoS protection  │                            │
-│  └───────────────┬─────────────────┘                            │
-│                  │                                               │
-│                  ▼                                               │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │          HETZNER VPS - CX32 (~$9/mo)                    │    │
-│  │                                                          │    │
-│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐      │    │
-│  │  │   Nginx     │  │ Spring Boot │  │ PostgreSQL  │      │    │
-│  │  │   Proxy     │  │   Backend   │  │  Database   │      │    │
-│  │  │   + SSL     │  │  Port 8080  │  │  Port 5432  │      │    │
-│  │  └─────────────┘  └─────────────┘  └─────────────┘      │    │
-│  │                                                          │    │
-│  │  ┌─────────────────────────────────────────────────┐    │    │
-│  │  │              DOCKER SANDBOX POOL                 │    │    │
-│  │  │  ┌─────────┐  ┌─────────┐  ┌─────────┐          │    │    │
-│  │  │  │  Java   │  │ Python  │  │  Node   │          │    │    │
-│  │  │  │ Sandbox │  │ Sandbox │  │ Sandbox │          │    │    │
-│  │  │  └─────────┘  └─────────┘  └─────────┘          │    │    │
-│  │  └─────────────────────────────────────────────────┘    │    │
-│  │                                                          │    │
-│  │  Specs: 4 vCPU, 8GB RAM, 80GB SSD                       │    │
-│  └─────────────────────────────────────────────────────────┘    │
-│                                                                  │
-│  EXTERNAL SERVICES                                               │
-│  ┌────────────┐  ┌────────────┐  ┌────────────┐                 │
-│  │ Claude API │  │   Resend   │  │   Stripe   │                 │
-│  │ (Haiku4.5) │  │   (Email)  │  │ (Payments) │                 │
-│  │  ~$10/mo   │  │    FREE    │  │ Pay-as-go  │                 │
-│  └────────────┘  └────────────┘  └────────────┘                 │
-│                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+```typescript
+// Public routes (no auth)
+/login                    → LoginPage
+/signup                   → SignupPage
+/forgot-password          → ForgotPasswordPage
+/reset-password           → ResetPasswordPage
+/i/:token                 → CandidatePage (waiting/coding/ended)
+
+// Protected routes (auth required)
+/dashboard                → DashboardPage (interview list)
+/interview/:id            → InterviewPage (interviewer + candidate view)
+/settings                 → SettingsPage
 ```
 
-### Docker Compose (Production)
+### Page Breakdown
 
-```yaml
-# docker-compose.yml
-version: '3.8'
-
-services:
-  # Nginx Reverse Proxy
-  nginx:
-    image: nginx:alpine
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./ssl:/etc/nginx/ssl:ro
-    depends_on:
-      - backend
-    restart: unless-stopped
-
-  # Spring Boot Backend
-  backend:
-    build: ./backend
-    environment:
-      - SPRING_PROFILES_ACTIVE=prod
-      - DATABASE_URL=jdbc:postgresql://postgres:5432/interview
-      - CLAUDE_API_KEY=${CLAUDE_API_KEY}
-      - RESEND_API_KEY=${RESEND_API_KEY}
-      - JWT_SECRET=${JWT_SECRET}
-      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock  # For sandbox containers
-    depends_on:
-      - postgres
-    restart: unless-stopped
-
-  # PostgreSQL Database
-  postgres:
-    image: postgres:15-alpine
-    environment:
-      - POSTGRES_DB=interview
-      - POSTGRES_USER=interview
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    restart: unless-stopped
-
-volumes:
-  postgres_data:
-```
-
-### Environment Variables
-
-```bash
-# Backend (.env)
-DATABASE_URL=jdbc:postgresql://postgres:5432/interview
-DB_PASSWORD=your-secure-password
-JWT_SECRET=your-jwt-secret-key
-CLAUDE_API_KEY=sk-ant-...
-RESEND_API_KEY=re_...
-STRIPE_SECRET_KEY=sk_live_...
-STRIPE_WEBHOOK_SECRET=whsec_...
-FRONTEND_URL=https://app.yourdomain.com
-
-# Frontend (Cloudflare Pages environment)
-VITE_API_URL=https://api.yourdomain.com
-VITE_WS_URL=wss://api.yourdomain.com
-```
-
-### VPS Setup Commands
-
-```bash
-# 1. Initial server setup
-ssh root@your-server-ip
-apt update && apt upgrade -y
-
-# 2. Install Docker
-curl -fsSL https://get.docker.com | sh
-
-# 3. Install Docker Compose
-apt install docker-compose-plugin -y
-
-# 4. Create deploy user
-adduser deploy
-usermod -aG docker deploy
-usermod -aG sudo deploy
-
-# 5. Setup firewall
-ufw allow OpenSSH
-ufw allow 80/tcp
-ufw allow 443/tcp
-ufw enable
-
-# 6. Disable root login
-sed -i 's/PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config
-systemctl restart sshd
-
-# 7. Build sandbox images (one-time)
-docker build -t interview-sandbox-java:21 ./sandbox/java
-docker build -t interview-sandbox-python:3.12 ./sandbox/python
-docker build -t interview-sandbox-node:20 ./sandbox/javascript
-```
-
-### Deployment Script
-
-```bash
-#!/bin/bash
-# deploy.sh
-
-set -e
-
-echo "🚀 Deploying AI Interview Platform..."
-
-cd /home/deploy/interview-platform
-
-# Pull latest code
-git pull origin main
-
-# Build backend
-echo "📦 Building backend..."
-cd backend
-./mvnw clean package -DskipTests
-cd ..
-
-# Build and restart services
-echo "🐳 Rebuilding containers..."
-docker compose build
-docker compose down
-docker compose up -d
-
-echo "✅ Deployment complete!"
-```
+| Page | Description | Key Components |
+|------|-------------|----------------|
+| **LoginPage** | Email/password login | LoginForm |
+| **SignupPage** | Company registration | SignupForm |
+| **ForgotPasswordPage** | Password reset request | Email form |
+| **ResetPasswordPage** | Password reset confirmation | New password form |
+| **DashboardPage** | Interview list with tabs | InterviewList, CreateModal |
+| **InterviewPage** | Interviewer + candidate view | Preview/Observer/Coding modes |
+| **SettingsPage** | Account settings | Profile, billing |
 
 ---
 
 ## Cost Breakdown
 
-### Monthly Costs (MVP Phase)
-
-| Service | Cost | Notes |
-|---------|------|-------|
-| **Hetzner VPS CX32** | $9.10 | 4 vCPU, 8GB RAM, 80GB SSD |
-| **Cloudflare Pages** | $0 | Frontend hosting + CDN |
-| **Claude Haiku 4.5** | ~$3-10 | ~50 interviews/month @ $0.06 each |
-| **Resend** | $0 | 3,000 emails/month free |
-| **Stripe** | $0 base | 2.9% + $0.30 per transaction |
-| **Domain** | ~$1 | ~$12/year amortized |
-| **Sentry** | $0 | Free tier (5,000 events) |
-| | | |
+| Service | Cost/Month | Notes |
+|---------|------------|-------|
+| Hetzner VPS CX32 | $9.10 | 4 vCPU, 8GB RAM |
+| Cloudflare Pages | $0 | Frontend hosting |
+| Claude Haiku 4.5 | ~$3-10 | ~50 interviews @ $0.06 each |
+| Stripe | $0 base | 2.9% + $0.30 per transaction |
+| Domain | ~$1 | Amortized |
+| Sentry | $0 | Free tier |
 | **TOTAL** | **~$13-20/mo** | |
-
-### Cost Per Interview
-
-| Component | Cost |
-|-----------|------|
-| AI (Claude Haiku 4.5) | ~$0.06 |
-| Code Execution (Docker) | ~$0.00 (included in VPS) |
-| Email (3 emails) | ~$0.00 (free tier) |
-| **Total per interview** | **~$0.06** |
-
-### Scaling Projections
-
-| Interviews/Month | AI Cost | VPS | Total |
-|------------------|---------|-----|-------|
-| 50 | $3 | $9 | ~$12 |
-| 100 | $6 | $9 | ~$15 |
-| 500 | $30 | $9 | ~$40 |
-| 1,000 | $60 | $18* | ~$80 |
-
-*Upgrade to CX42 for higher concurrent load
-
----
-
-## Testing Strategy (MVP)
-
-**Manual Testing Priority:**
-- [ ] Complete user flow (signup → create interview → conduct → evaluate)
-- [ ] All core features work
-- [ ] Multi-language code execution (Java, Python, JavaScript)
-- [ ] No critical bugs
-
-**Automated Testing (Nice to have):**
-- Unit tests for critical services (SandboxExecutor, Scoring)
-- Integration tests for API endpoints
-- E2E test for interview flow (Playwright/Cypress)
-
-**Testing Checklist:**
-```
-Company Flow:
-□ Signup and login works
-□ Can create interview (select language)
-□ Can invite interviewer
-□ Email sent to candidate (via Resend)
-□ Can view results
-
-Interview Flow:
-□ Candidate can access via link (no login)
-□ Code editor loads with correct language
-□ AI chat responds (Claude Haiku 4.5)
-□ Code execution works (Docker sandbox)
-□ Tests run and show results
-□ Timer counts down
-□ Submit works
-
-Code Execution:
-□ Java code runs correctly
-□ Python code runs correctly
-□ JavaScript code runs correctly
-□ Timeout works (10 seconds)
-□ Memory limit works (128MB)
-□ No network access from sandbox
-□ Container cleanup works
-
-Interviewer Flow:
-□ Can see candidate's code in real-time
-□ Test results update live
-□ Can fill out scorecard
-□ Score calculates correctly
-□ Report generates
-```
-
----
-
-## Security Checklist
-
-**MVP Security Requirements:**
-
-**Authentication:**
-- [ ] Passwords hashed (BCrypt)
-- [ ] JWT tokens with expiration
-- [ ] Secure password reset flow
-- [ ] Rate limiting on auth endpoints
-
-**Authorization:**
-- [ ] Role-based access control
-- [ ] Users can only access their company's data
-- [ ] Interviewers can only see assigned interviews
-- [ ] Candidates can only access their interview (via token)
-
-**Code Execution (Docker Sandbox):**
-- [ ] Container isolation (no network, read-only fs)
-- [ ] Timeout limits (10 seconds)
-- [ ] Memory limits (128MB)
-- [ ] CPU limits (50% of 1 core)
-- [ ] Non-root user execution
-- [ ] All capabilities dropped
-- [ ] Process limits (max 50 PIDs)
-- [ ] Container cleanup after execution
-- [ ] Rate limiting (max 20 executions per interview)
-
-**API Security:**
-- [ ] CORS properly configured
-- [ ] CSRF protection
-- [ ] SQL injection prevention (using JPA)
-- [ ] XSS prevention (React handles this)
-- [ ] Rate limiting on expensive endpoints
-
-**Infrastructure:**
-- [ ] HTTPS everywhere (Let's Encrypt via Nginx)
-- [ ] SSH key authentication only
-- [ ] Firewall configured (UFW)
-- [ ] Docker socket access controlled
-- [ ] Regular security updates
-
-**Data Privacy:**
-- [ ] Sensitive data encrypted at rest
-- [ ] Interview links expire after use/time
-- [ ] GDPR compliance basics (user data deletion)
-
----
-
-## Performance Requirements (MVP)
-
-**Target Metrics:**
-- Page load: <3 seconds
-- API response time: <500ms (p95)
-- Code execution: <10 seconds (including container startup)
-- AI response: <3 seconds
-- Support: 10 concurrent interviews minimum
-
-**Optimization Strategy:**
-- Database indexing on foreign keys
-- Pre-built Docker images (no build time during execution)
-- CDN for static assets (Cloudflare)
-- Lazy loading for code editor
-- WebSocket for real-time updates
-
----
-
-## Monitoring & Analytics (MVP)
-
-**Must Track:**
-- [ ] Error rate (Sentry)
-- [ ] API performance (response times)
-- [ ] Interview completion rate
-- [ ] User signups and conversions
-- [ ] Container execution metrics
-
-**Tools:**
-- Sentry (error tracking) - FREE
-- PostHog (product analytics) - FREE tier
-- Uptime monitoring (UptimeRobot or similar) - FREE
-
-**Key Events to Track:**
-```
-- company_signup
-- interview_created
-- interview_started
-- interview_completed
-- interview_abandoned (didn't finish)
-- code_execution (language, duration, success)
-- evaluation_submitted
-- subscription_created
-```
-
----
-
-## Launch Checklist
-
-**Before Launch:**
-- [ ] All core features work end-to-end
-- [ ] Manual testing completed
-- [ ] Security audit (basic)
-- [ ] Terms of Service written
-- [ ] Privacy Policy written
-- [ ] Domain purchased and DNS configured
-- [ ] SSL certificate installed (Let's Encrypt)
-- [ ] Email templates created and tested (Resend)
-- [ ] Stripe test mode → live mode
-- [ ] Error monitoring set up (Sentry)
-- [ ] Analytics set up (PostHog)
-- [ ] Docker sandbox images built and tested
-- [ ] 5 beta testers lined up
-
-**Launch Day:**
-- [ ] Deploy to production (Hetzner VPS)
-- [ ] Deploy frontend (Cloudflare Pages)
-- [ ] Smoke test in production
-- [ ] Monitor error rates
-- [ ] Be available for support
-
-**Week 1 After Launch:**
-- [ ] Daily check of error logs
-- [ ] Respond to user feedback
-- [ ] Fix critical bugs
-- [ ] Monitor usage metrics
-- [ ] Monitor container resource usage
 
 ---
 
@@ -1402,71 +671,105 @@ Interviewer Flow:
 
 ```
 Week 1-2: Foundation
-├── Setup Hetzner VPS + Docker
-├── Setup local development with Docker Compose
-├── Basic Spring Boot + Auth
-├── React app + routing
-└── Create Java sandbox container
+├── Hetzner VPS + Docker setup
+├── Spring Boot + Auth (signup, login, JWT)
+├── React app + routing + Tailwind
+├── Database schema + migrations
+└── Basic dashboard UI
 
-Week 3-4: Core Interview
-├── Interview room UI (Monaco)
-├── Claude Haiku 4.5 integration
-├── WebSocket for real-time sync
-├── Java code execution working
-└── Add Python + JavaScript sandboxes
+Week 3-4: Interview Core
+├── Create interview flow
+├── Interview session page (interviewer)
+├── Candidate waiting page
+├── WebSocket setup
+├── Start/End interview logic
+└── Real-time status sync
 
-Week 5-6: Testing & Scoring
-├── Test runner implementation
-├── Automated scoring
-├── Interviewer scorecard
+Week 5: Coding Environment
+├── Monaco editor integration
+├── Language selector
+├── Docker sandbox (Java, Python, JS)
+├── Code execution API
+├── Test runner
+└── Claude Haiku 4.5 integration
+
+Week 6: Live Sync & AI
+├── Real-time code sync (WebSocket)
+├── AI chat interface
+├── Observer view for interviewer
+├── Timer component
+├── Submit interview flow
+
+Week 7: Evaluation & Results
+├── Auto-scoring
+├── Scorecard form
 ├── Results page
-└── Email notifications (Resend)
+├── Interview history
+└── Team management (invite interviewers)
 
-Week 7-8: Polish & Launch
+Week 8: Polish & Launch
 ├── Stripe integration
-├── Cloudflare Pages deploy
-├── Nginx + SSL setup
+├── Error handling
 ├── Security hardening
-├── Testing + bug fixes
+├── Testing
+├── Cloudflare deploy
 └── Launch!
 ```
 
 ---
 
-## Quick Reference Commands
+## Security Checklist
 
-```bash
-# Local Development
-docker compose up -d                    # Start all services
-docker compose logs -f backend          # View backend logs
-docker compose down                     # Stop all services
+- [ ] Passwords hashed (BCrypt)
+- [ ] JWT with expiration
+- [ ] Role-based access control
+- [ ] Interview tokens unguessable (12-char random)
+- [ ] Docker sandbox isolation
+- [ ] CORS configured
+- [ ] Rate limiting
+- [ ] HTTPS everywhere
 
-# Sandbox Testing
-docker run --rm -it interview-sandbox-java:21    # Test Java sandbox
-docker run --rm -it interview-sandbox-python:3.12 # Test Python sandbox
-docker run --rm -it interview-sandbox-node:20     # Test Node sandbox
+---
 
-# Production Deployment
-ssh deploy@your-server-ip               # Connect to VPS
-./deploy.sh                             # Run deployment
-docker compose logs -f                  # View logs
-docker ps -a                            # Check containers
+## Testing Checklist
 
-# Database
-docker exec -it postgres psql -U interview -d interview  # Connect to DB
+```
+Auth Flow:
+□ Company signup works
+□ Login works
+□ Admin can invite interviewer
+□ Interviewer can accept invite
+□ JWT refresh works
 
-# Monitoring
-htop                                    # Server resources
-docker stats                            # Container resources
+Interview Flow:
+□ Create interview works
+□ Copy link works
+□ Candidate sees waiting screen
+□ Interviewer sees candidate connected
+□ Start interview transitions both screens
+□ End interview works
+□ Submit works
+
+Coding Environment:
+□ Monaco loads correctly
+□ Language switch works
+□ Code execution works (all 3 languages)
+□ Tests run correctly
+□ AI chat works
+□ Timer works
+
+Real-time:
+□ Code syncs to interviewer
+□ Test results sync
+□ Status changes sync
+□ Reconnection works
+
+Evaluation:
+□ Auto-score calculates
+□ Scorecard saves
+□ Results display correctly
 ```
 
 ---
 
-**END OF MVP SPECIFICATION**
-
-This document defines the scope and technical approach for the Minimum Viable Product.
-- **Focus:** Ship working product in 8 weeks, get feedback, iterate.
-- **Budget:** ~$15-25/month operational costs
-- **Tech:** Docker containers, Hetzner VPS, Cloudflare Pages, Claude Haiku 4.5
-
-*Last Updated: November 2025*
+*Last Updated: December 2025*

@@ -2,27 +2,29 @@ import { forwardRef } from 'react';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'danger' | 'success';
-  size?: 'sm' | 'md' | 'lg';
+  variant?: 'default' | 'secondary' | 'destructive' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg' | 'icon';
   isLoading?: boolean;
   children: ReactNode;
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ variant = 'primary', size = 'md', isLoading = false, children, className, disabled, ...props }, ref) => {
-    const baseStyles = 'font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+  ({ variant = 'default', size = 'md', isLoading = false, children, className, disabled, ...props }, ref) => {
+    const baseStyles = 'inline-flex items-center justify-center font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
 
     const variantStyles = {
-      primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',
-      secondary: 'bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-500',
-      danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500',
-      success: 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500',
+      default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+      secondary: 'bg-muted text-muted-foreground hover:bg-muted/80',
+      destructive: 'bg-destructive text-white hover:bg-destructive/90',
+      outline: 'border border-border bg-background text-foreground hover:bg-muted',
+      ghost: 'hover:bg-muted text-foreground',
     };
 
     const sizeStyles = {
-      sm: 'px-3 py-1.5 text-sm',
-      md: 'px-4 py-2 text-base',
-      lg: 'px-6 py-3 text-lg',
+      sm: 'px-2.5 py-1.5 text-xs gap-2',
+      md: 'px-4 py-2 text-sm gap-2',
+      lg: 'px-6 py-3 text-base gap-2',
+      icon: 'h-10 w-10',
     };
 
     return (
@@ -33,13 +35,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {isLoading ? (
-          <span className="inline-flex items-center gap-2">
-            <span className="animate-spin">⏳</span>
-            {children}
-          </span>
-        ) : (
-          children
-        )}
+          <span className="animate-spin">⏳</span>
+        ) : null}
+        {children}
       </button>
     );
   }
