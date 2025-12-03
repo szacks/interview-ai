@@ -40,4 +40,6 @@ public class InterviewResponse {
     private CandidateResponse candidate;
 
     private UserResponse interviewer;
+
+    private CompanyResponse company;
 }
