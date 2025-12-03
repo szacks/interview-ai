@@ -160,9 +160,9 @@ public class AccessTokenValidator {
      */
     public String getValidationInfo() {
         return "Access Token Validator:\n" +
-               "- Validates token format (alphanumeric, 8-32 chars)\n" +
-               "- Looks up interview from database\n" +
-               "- Checks if interview is not cancelled\n" +
-               "- Masks sensitive data in logs";
+               "- validates token format (alphanumeric, 8-32 chars)\n" +
+               "- looks up interview from database\n" +
+               "- checks if interview is not cancelled\n" +
+               "- masks sensitive data in logs";
     }
 }
