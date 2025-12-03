@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Send, Play } from 'lucide-react';
+import { CodeEditor } from '@/components/CodeEditor';
 
 interface ChatMessage {
   id: string;
@@ -52,11 +53,27 @@ export default function InterviewPage() {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatMessages]);
 
+  // Get template code for the selected language
+  const getCodeTemplate = (language: 'javascript' | 'python' | 'java' | 'typescript'): string => {
+    const templates: Record<string, string> = {
+      javascript: '// Write your solution here\nfunction solution() {\n  \n}',
+      typescript: '// Write your solution here\nfunction solution(): void {\n  \n}',
+      python: '# Write your solution here\ndef solution():\n    pass',
+      java: 'public class Solution {\n    public void solution() {\n        // Write your solution here\n    }\n}',
+    };
+    return templates[language] || templates.javascript;
+  };
+
   // Handle pre-interview setup (candidate enters name and selects language)
   const handleStartInterview = () => {
     if (!candidateName.trim()) return;
     setUserRole('candidate');
-    setEditor({ ...editor, language: selectedLanguage });
+    setEditor({
+      language: selectedLanguage,
+      code: getCodeTemplate(selectedLanguage),
+      output: '',
+      isRunning: false,
+    });
   };
 
   const handleSendMessage = () => {
@@ -163,12 +180,14 @@ export default function InterviewPage() {
               <h2 className="font-semibold">Code Editor</h2>
             </div>
 
-            <div className="flex-1 bg-background p-4 overflow-hidden flex flex-col">
-              <textarea
+            <div className="flex-1 bg-background overflow-hidden">
+              <CodeEditor
                 value={editor.code}
-                onChange={(e) => handleCodeChange(e.target.value)}
-                className="flex-1 bg-background text-foreground font-mono text-sm border border-border rounded p-3 resize-none focus:outline-none focus:ring-2 focus:ring-primary"
-                placeholder="// Write your solution here..."
+                onChange={handleCodeChange}
+                language={editor.language}
+                readOnly={false}
+                height="100%"
+                theme="dark"
               />
             </div>
           </div>
@@ -242,12 +261,13 @@ export default function InterviewPage() {
             </Button>
           </div>
 
-          <div className="flex-1 bg-background p-4 overflow-hidden flex flex-col">
-            <textarea
+          <div className="flex-1 bg-background overflow-hidden">
+            <CodeEditor
               value={editor.code}
-              readOnly
-              className="flex-1 bg-muted text-foreground font-mono text-sm border border-border rounded p-3 resize-none focus:outline-none"
-              placeholder="Waiting for candidate code..."
+              language={editor.language}
+              readOnly={true}
+              height="100%"
+              theme="dark"
             />
           </div>
 
