@@ -229,7 +229,7 @@ export default function CandidateInterviewPage() {
           </div>
 
           {/* Editor Controls */}
-          <div className="border-b border-border bg-card/50 px-4 py-2 flex items-center justify-between">
+          <div className="border-b border-border bg-card/50 px-4 py-2">
             <Select value={language} onValueChange={handleLanguageChange}>
               <SelectTrigger className="w-40">
                 <SelectValue />
@@ -240,19 +240,6 @@ export default function CandidateInterviewPage() {
                 <SelectItem value="java">Java</SelectItem>
               </SelectContent>
             </Select>
-            <Button onClick={handleRunTests} disabled={isRunning}>
-              {isRunning ? (
-                <>
-                  <Loader2 className="size-4 mr-2 animate-spin" />
-                  Running Tests...
-                </>
-              ) : (
-                <>
-                  <Play className="size-4 mr-2" />
-                  Run Tests
-                </>
-              )}
-            </Button>
           </div>
 
           {/* Code Editor */}

@@ -315,21 +315,19 @@ SELECT * FROM interviews WHERE interviewer_id = :interviewerId
 
 ### Frontend Stack
 
-**Framework:** React 18 + TypeScript + Vite
+**Framework:** Next.js 16 + React 19 + TypeScript + Turbopack
 **UI Library:** shadcn/ui with Tailwind CSS
-**Hosting:** Cloudflare Pages (FREE)
+**Hosting:** Vercel (FREE tier available)
 
 ```json
 {
-  "react": "^18.2.0",
-  "typescript": "^5.0.0",
-  "vite": "^5.0.0",
-  "react-router-dom": "^6.20.0",
+  "next": "^16.0.3",
+  "react": "^19.2.0",
+  "typescript": "^5.7.2",
   "tailwindcss": "^3.4.0",
   "@monaco-editor/react": "^4.6.0",
-  "react-query": "^5.0.0",
-  "zustand": "^4.4.0",
-  "axios": "^1.6.0",
+  "zustand": "^5.0.9",
+  "axios": "^1.13.2",
   "socket.io-client": "^4.6.0",
   "shadcn/ui": "latest",
   "lucide-react": "^latest"
@@ -339,57 +337,38 @@ SELECT * FROM interviews WHERE interviewer_id = :interviewerId
 **File Structure:**
 ```
 /frontend
-  /src
-    /components
-      /ui                          # shadcn/ui components
-        button.tsx
-        input.tsx
-        dialog.tsx
-        select.tsx
-        badge.tsx
-        dropdown-menu.tsx
-        label.tsx
-        [other shadcn/ui components]
-      /common                      # Custom wrapper components
-        Button.tsx
-        Input.tsx
-        Card.tsx
-        Header.tsx
-        Sidebar.tsx
-      PrivateRoute.tsx
-      AdminRoute.tsx
-      CreateInterviewModal.tsx
-      InterviewList.tsx
-    /pages
-      LoginPage.tsx
-      SignupPage.tsx
-      ForgotPasswordPage.tsx
-      ResetPasswordPage.tsx
-      DashboardPage.tsx
-      InterviewPage.tsx                # /interview/:id (interviewer + candidate)
-      HomePage.tsx
-      NotFoundPage.tsx
-    /layouts
-      AppLayout.tsx
-      DashboardLayout.tsx
-      InterviewLayout.tsx
-    /hooks
-      useAuth.ts
-      useInterview.ts
-      useWebSocket.ts
-    /services
-      apiClient.ts
-      authService.ts
-      interviewService.ts
-    /stores
-      authStore.ts
-      interviewStore.ts
-    /types
-      store.ts
-    /router
-      index.tsx
-    App.tsx
-    main.tsx
+  /app                             # Next.js App Router
+    /login                         # Login page
+    /signup                        # Signup page
+    /dashboard                     # Interview management dashboard
+    /interview/[id]                # Interviewer live session view
+    /i/[token]                     # Candidate waiting screen + live coding
+    /test                          # Test page with quick links
+    layout.tsx                     # Root layout
+  /components
+    /ui                            # shadcn/ui components
+      button.tsx
+      input.tsx
+      dialog.tsx
+      select.tsx
+      badge.tsx
+      dropdown-menu.tsx
+      label.tsx
+      [other shadcn/ui components]
+  /services
+    apiClient.ts                   # Axios client with interceptors
+    authService.ts                 # Auth endpoints
+    interviewService.ts
+  /stores
+    authStore.ts                   # Zustand store with localStorage persistence
+  /types
+    index.ts
+  .env.local                       # Environment variables
+  package.json
+  pnpm-lock.yaml
+  tsconfig.json
+  tailwind.config.ts
+  next.config.ts
 ```
 
 ---
