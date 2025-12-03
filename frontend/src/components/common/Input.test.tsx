@@ -19,7 +19,7 @@ describe('Input Component', () => {
     render(<Input label="Email" required />)
     const asterisk = screen.getByText('*')
     expect(asterisk).toBeInTheDocument()
-    expect(asterisk).toHaveClass('text-red-500')
+    expect(asterisk).toHaveClass('text-destructive')
   })
 
   it('displays error message', () => {
@@ -30,7 +30,7 @@ describe('Input Component', () => {
   it('displays error styles when error is present', () => {
     render(<Input error="Invalid input" />)
     const input = screen.getByRole('textbox')
-    expect(input).toHaveClass('border-red-500', 'bg-red-50')
+    expect(input).toHaveClass('border-destructive')
   })
 
   it('displays helper text when no error', () => {
@@ -83,7 +83,7 @@ describe('Input Component', () => {
   it('displays border in default state', () => {
     render(<Input />)
     const input = screen.getByRole('textbox')
-    expect(input).toHaveClass('border-gray-300', 'bg-white')
+    expect(input).toHaveClass('border-border', 'bg-background')
   })
 
   it('is disabled when disabled prop is true', () => {
