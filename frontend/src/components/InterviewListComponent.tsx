@@ -145,7 +145,7 @@ export function InterviewListComponent({
                     <Copy className="size-4 mr-2" />
                     Copy Link
                   </Button>
-                  <Link to={`/interview/${interview.id}`}>
+                  <Link to={`/interview/${interview.id}?role=interviewer`}>
                     <Button size="sm">
                       <Play className="size-4 mr-2" />
                       Start
@@ -154,7 +154,7 @@ export function InterviewListComponent({
                 </>
               )}
               {interview.status === "live" && (
-                <Link to={`/interview/${interview.id}`}>
+                <Link to={`/interview/${interview.id}?role=interviewer`}>
                   <Button size="sm" className="bg-accent hover:bg-accent/90">
                     <Eye className="size-4 mr-2" />
                     View Live
