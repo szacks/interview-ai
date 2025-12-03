@@ -39,21 +39,21 @@ describe('Sidebar Component', () => {
     expect(screen.getByRole('button', { name: /logout/i })).toBeInTheDocument()
   })
 
-  it('logout button has red background', () => {
+  it('logout button has destructive styling', () => {
     render(<Sidebar />)
     const logoutButton = screen.getByRole('button', { name: /logout/i })
-    expect(logoutButton).toHaveClass('bg-red-600')
+    expect(logoutButton).toHaveClass('bg-destructive', 'text-destructive-foreground')
   })
 
-  it('has white background', () => {
+  it('has sidebar background color', () => {
     render(<Sidebar />)
-    const sidebar = document.querySelector('.bg-white')
+    const sidebar = document.querySelector('.bg-sidebar')
     expect(sidebar).toBeInTheDocument()
   })
 
-  it('has shadow styling', () => {
+  it('has sidebar border', () => {
     const { container } = render(<Sidebar />)
-    const sidebar = container.querySelector('.shadow-lg')
+    const sidebar = container.querySelector('.border-r')
     expect(sidebar).toBeInTheDocument()
   })
 
@@ -70,9 +70,9 @@ describe('Sidebar Component', () => {
     expect(settingsLink.pathname).toBe('/settings')
   })
 
-  it('logo is blue colored', () => {
+  it('logo is sidebar primary colored', () => {
     const { container } = render(<Sidebar />)
-    const logo = container.querySelector('.text-blue-600')
+    const logo = container.querySelector('.text-sidebar-primary')
     expect(logo).toBeInTheDocument()
     expect(logo).toHaveTextContent('InterviewAI')
   })

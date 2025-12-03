@@ -11,19 +11,19 @@ describe('Card Component', () => {
   it('applies default variant styles', () => {
     const { container } = render(<Card>Content</Card>)
     const card = container.firstChild
-    expect(card).toHaveClass('bg-white', 'border', 'border-gray-200')
+    expect(card).toHaveClass('bg-card', 'border', 'border-border')
   })
 
   it('applies elevated variant styles', () => {
     const { container } = render(<Card variant="elevated">Content</Card>)
     const card = container.firstChild
-    expect(card).toHaveClass('bg-white', 'shadow-md')
+    expect(card).toHaveClass('bg-card', 'shadow-md')
   })
 
   it('applies elevated variant styles with different shadow', () => {
     const { container } = render(<Card variant="elevated">Content</Card>)
     const card = container.firstChild
-    expect(card).toHaveClass('bg-white', 'shadow-lg')
+    expect(card).toHaveClass('bg-card', 'shadow-md')
   })
 
   it('applies small padding', () => {
@@ -64,7 +64,7 @@ describe('Card Component', () => {
   it('has rounded corners', () => {
     const { container } = render(<Card>Content</Card>)
     const card = container.firstChild
-    expect(card).toHaveClass('rounded-lg')
+    expect(card).toHaveClass('rounded-md')
   })
 
   it('renders as div element', () => {

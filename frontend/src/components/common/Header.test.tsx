@@ -17,9 +17,14 @@ describe('Header Component', () => {
     expect(header).toBeInTheDocument()
   })
 
-  it('displays welcome message', () => {
+  it('displays InterviewAI branding', () => {
     render(<Header user={mockUser} onLogout={mockOnLogout} />)
-    expect(screen.getByText('Welcome')).toBeInTheDocument()
+    expect(screen.getByText('InterviewAI')).toBeInTheDocument()
+  })
+
+  it('displays company name', () => {
+    render(<Header user={mockUser} onLogout={mockOnLogout} />)
+    expect(screen.getByText('Acme Inc.')).toBeInTheDocument()
   })
 
   it('displays user avatar with initials', () => {
@@ -27,36 +32,26 @@ describe('Header Component', () => {
     expect(screen.getByText('T')).toBeInTheDocument()
   })
 
-  it('displays user email', () => {
-    render(<Header user={mockUser} onLogout={mockOnLogout} />)
-    expect(screen.getByText('test@example.com')).toBeInTheDocument()
-  })
-
-  it('displays default user label when no user', () => {
-    render(<Header user={null} onLogout={mockOnLogout} />)
-    expect(screen.getByText('User')).toBeInTheDocument()
-  })
-
   it('displays default avatar when no user', () => {
     render(<Header user={null} onLogout={mockOnLogout} />)
     expect(screen.getByText('U')).toBeInTheDocument()
   })
 
-  it('has white background', () => {
+  it('has card background color', () => {
     const { container } = render(<Header user={mockUser} onLogout={mockOnLogout} />)
     const header = container.querySelector('header')
-    expect(header).toHaveClass('bg-white')
+    expect(header).toHaveClass('bg-card')
   })
 
-  it('has shadow styling', () => {
+  it('has border styling', () => {
     const { container } = render(<Header user={mockUser} onLogout={mockOnLogout} />)
     const header = container.querySelector('header')
-    expect(header).toHaveClass('shadow')
+    expect(header).toHaveClass('border-b', 'border-border')
   })
 
   it('has proper padding', () => {
     const { container } = render(<Header user={mockUser} onLogout={mockOnLogout} />)
-    const headerContent = container.querySelector('.px-6')
+    const headerContent = container.querySelector('.px-4')
     expect(headerContent).toBeInTheDocument()
   })
 
@@ -66,15 +61,15 @@ describe('Header Component', () => {
     expect(headerContent).toHaveClass('items-center', 'justify-between')
   })
 
-  it('avatar has blue background', () => {
-    const { container } = render(<Header user={mockUser} onLogout={mockOnLogout} />)
-    const avatar = container.querySelector('.bg-blue-600')
-    expect(avatar).toBeInTheDocument()
-  })
-
   it('avatar is rounded circle', () => {
     const { container } = render(<Header user={mockUser} onLogout={mockOnLogout} />)
     const avatar = container.querySelector('.rounded-full')
     expect(avatar).toBeInTheDocument()
+  })
+
+  it('logo has primary background', () => {
+    const { container } = render(<Header user={mockUser} onLogout={mockOnLogout} />)
+    const logo = container.querySelector('.bg-primary')
+    expect(logo).toBeInTheDocument()
   })
 })
