@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
@@ -34,18 +35,17 @@ public class AccessTokenValidatorTest {
     @Mock
     private InterviewRepository interviewRepository;
 
+    @Spy
+    private AccessTokenGenerator tokenGenerator;
+
     @InjectMocks
     private AccessTokenValidator tokenValidator;
-
-    private AccessTokenGenerator tokenGenerator;
 
     private Interview mockInterview;
     private String validToken;
 
     @BeforeEach
     void setUp() {
-        // Initialize AccessTokenGenerator for testing
-        tokenGenerator = new AccessTokenGenerator();
         assertNotNull(tokenValidator, "AccessTokenValidator should be injected");
         assertNotNull(tokenGenerator, "AccessTokenGenerator should be initialized");
 
