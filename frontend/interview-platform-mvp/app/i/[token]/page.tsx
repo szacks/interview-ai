@@ -1,12 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Code2, Play, Send, Loader2, CheckCircle2, XCircle, Clock, MessageSquare, Terminal } from "lucide-react"
 import Editor from "@monaco-editor/react"
+import { useParams } from "next/navigation"
 
 // Mock data
 const mockQuestion = {
@@ -35,7 +36,7 @@ def get_long_url(short_code):
         // Your code here
         return null;
     }
-    
+
     public String getLongUrl(String shortCode) {
         // Your code here
         return null;
@@ -55,8 +56,31 @@ const mockChatHistory = [
 
 type InterviewStatus = "waiting" | "live" | "ended"
 
+interface InterviewData {
+  id: number
+  status: string
+  company?: {
+    id: number
+    name: string
+    logoUrl?: string
+  }
+  question?: {
+    id: number
+    title: string
+    description: string
+    difficulty: string
+    timeLimitMinutes: number
+  }
+}
+
 export default function CandidateInterviewPage() {
-  const [status, setStatus] = useState<InterviewStatus>("live") // Can be: waiting, live, ended
+  const params = useParams()
+  const token = params.token as string
+
+  const [status, setStatus] = useState<InterviewStatus>("waiting") // Can be: waiting, live, ended
+  const [interviewData, setInterviewData] = useState<InterviewData | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [language, setLanguage] = useState("javascript")
   const [code, setCode] = useState(mockQuestion.initialCode.javascript)
   const [chatMessage, setChatMessage] = useState("")
@@ -65,6 +89,48 @@ export default function CandidateInterviewPage() {
   const [testResults, setTestResults] = useState<Array<{ name: string; passed: boolean }>>([])
   const [showChat, setShowChat] = useState(false)
   const [startTime] = useState(Date.now())
+
+  // Fetch interview data using token
+  useEffect(() => {
+    const fetchInterviewData = async () => {
+      try {
+        setLoading(true)
+        const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080/api"
+        const response = await fetch(`${apiBaseUrl}/interviews/link/${token}`)
+        if (!response.ok) {
+          throw new Error("Failed to fetch interview data")
+        }
+        const data: InterviewData = await response.json()
+        setInterviewData(data)
+
+        // Map backend status to frontend status
+        if (data.status === "scheduled" || data.status === "pending") {
+          setStatus("waiting")
+        } else if (data.status === "in_progress") {
+          setStatus("live")
+        } else if (data.status === "completed") {
+          setStatus("ended")
+        }
+
+        // Update code with question initial code if available
+        if (data.question) {
+          const initialCode =
+            mockQuestion.initialCode[language as keyof typeof mockQuestion.initialCode]
+          setCode(initialCode)
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "An error occurred")
+        // Keep waiting status on error
+        setStatus("waiting")
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    if (token) {
+      fetchInterviewData()
+    }
+  }, [token])
 
   const handleLanguageChange = (newLanguage: string) => {
     setLanguage(newLanguage)
@@ -121,14 +187,35 @@ export default function CandidateInterviewPage() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <div className="max-w-lg w-full text-center">
-          <div className="size-16 rounded-full bg-primary/10 mx-auto mb-6 flex items-center justify-center">
-            <Code2 className="size-8 text-primary" />
-          </div>
-          <h1 className="text-2xl font-bold mb-3">Interview Session</h1>
+          {/* Company Logo */}
+          {interviewData?.company?.logoUrl ? (
+            <div className="mb-6">
+              <img
+                src={interviewData.company.logoUrl}
+                alt={interviewData.company.name}
+                className="h-16 w-auto mx-auto"
+              />
+            </div>
+          ) : (
+            <div className="size-16 rounded-full bg-primary/10 mx-auto mb-6 flex items-center justify-center">
+              <Code2 className="size-8 text-primary" />
+            </div>
+          )}
+
+          {/* Interview Session Title */}
+          <h1 className="text-2xl font-bold mb-2">Interview with {interviewData?.company?.name || "Company"}</h1>
+
+          {/* Question Title */}
+          {interviewData?.question?.title && (
+            <h2 className="text-lg font-semibold text-primary mb-4">{interviewData.question.title}</h2>
+          )}
+
+          {/* Waiting Message */}
           <p className="text-muted-foreground mb-8">
             Waiting for the interviewer to start the session. Please stay on this page.
           </p>
 
+          {/* What to Expect */}
           <div className="rounded-lg border border-border bg-card p-6 text-left">
             <h2 className="font-semibold mb-4">What to expect</h2>
             <ul className="space-y-3 text-sm text-muted-foreground">
@@ -151,6 +238,7 @@ export default function CandidateInterviewPage() {
             </ul>
           </div>
 
+          {/* Connection Status */}
           <div className="mt-6 flex items-center justify-center gap-2 text-sm text-muted-foreground">
             <div className="size-2 rounded-full bg-accent animate-pulse" />
             <span>Connected and ready</span>
