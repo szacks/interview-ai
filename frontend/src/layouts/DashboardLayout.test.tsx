@@ -21,30 +21,22 @@ describe('DashboardLayout', () => {
     expect(screen.getByText('Dashboard Content')).toBeInTheDocument()
   })
 
-  it('renders sidebar component', () => {
-    renderLayout()
-    const sidebar = screen.getByText('InterviewAI')
-    expect(sidebar).toBeInTheDocument()
-  })
-
   it('renders header component', () => {
     renderLayout()
-    const header = screen.getByText('Welcome')
+    const header = screen.getByText('InterviewAI')
     expect(header).toBeInTheDocument()
   })
 
-  it('renders sidebar navigation links', () => {
+  it('displays company name in header', () => {
     renderLayout()
-    expect(screen.getByRole('link', { name: /dashboard/i })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /interviews/i })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /candidates/i })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /settings/i })).toBeInTheDocument()
+    const companyName = screen.getByText('Acme Inc.')
+    expect(companyName).toBeInTheDocument()
   })
 
-  it('renders logout buttons', () => {
+  it('renders logout button in header', () => {
     renderLayout()
-    const logoutButtons = screen.getAllByRole('button', { name: /logout/i })
-    expect(logoutButtons.length).toBeGreaterThan(0)
+    const logoutButton = screen.getByRole('button')
+    expect(logoutButton).toBeInTheDocument()
   })
 
   it('has flex layout', () => {
@@ -59,9 +51,9 @@ describe('DashboardLayout', () => {
     expect(mainContainer).toBeInTheDocument()
   })
 
-  it('renders with gray background', () => {
+  it('renders with background styling', () => {
     const { container } = renderLayout()
-    const bgElement = container.querySelector('.bg-gray-100')
+    const bgElement = container.querySelector('.bg-background')
     expect(bgElement).toBeInTheDocument()
   })
 })

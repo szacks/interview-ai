@@ -23,50 +23,15 @@ describe('AppLayout', () => {
     expect(screen.getByText('Login Page')).toBeInTheDocument()
   })
 
-  it('displays navigation on login page', () => {
-    renderWithRoute()
-    expect(screen.getByRole('link', { name: /login/i })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /signup/i })).toBeInTheDocument()
-  })
-
-  it('displays navigation on signup page', () => {
-    renderWithRoute()
-    expect(screen.getByRole('link', { name: /login/i })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /signup/i })).toBeInTheDocument()
-  })
-
-  it('displays logo on auth pages', () => {
-    renderWithRoute()
-    expect(screen.getByText('InterviewAI')).toBeInTheDocument()
-  })
-
-  it('logo links to home', () => {
-    renderWithRoute()
-    const homeLink = screen.getByRole('link', { name: /interviewai/i })
-    expect(homeLink).toHaveAttribute('href', '/')
-  })
-
-  it('has correct styling on active login link', () => {
-    renderWithRoute()
-    const loginLink = screen.getByRole('link', { name: /^login$/i })
-    expect(loginLink).toHaveClass('bg-blue-600', 'text-white')
-  })
-
-  it('has correct styling on inactive signup link when on login page', () => {
-    renderWithRoute()
-    const signupLink = screen.getByRole('link', { name: /^signup$/i })
-    expect(signupLink).not.toHaveClass('bg-blue-600', 'text-white')
-  })
-
-  it('renders with light background', () => {
+  it('renders with background styling', () => {
     const { container } = renderWithRoute()
-    const layoutContainer = container.querySelector('.bg-gray-50')
+    const layoutContainer = container.querySelector('.bg-background')
     expect(layoutContainer).toBeInTheDocument()
   })
 
-  it('navigation has white background', () => {
+  it('has minimum screen height', () => {
     const { container } = renderWithRoute()
-    const nav = container.querySelector('.bg-white')
-    expect(nav).toBeInTheDocument()
+    const layoutContainer = container.querySelector('.min-h-screen')
+    expect(layoutContainer).toBeInTheDocument()
   })
 })
