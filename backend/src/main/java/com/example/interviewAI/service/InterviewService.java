@@ -2,6 +2,10 @@ package com.example.interviewAI.service;
 
 import com.example.interviewAI.dto.CreateInterviewRequest;
 import com.example.interviewAI.dto.InterviewResponse;
+import com.example.interviewAI.dto.CompanyResponse;
+import com.example.interviewAI.dto.QuestionResponse;
+import com.example.interviewAI.dto.CandidateResponse;
+import com.example.interviewAI.dto.UserResponse;
 import com.example.interviewAI.entity.Candidate;
 import com.example.interviewAI.entity.Interview;
 import com.example.interviewAI.entity.Question;
@@ -205,6 +209,40 @@ public class InterviewService {
         response.setCompletedAt(interview.getCompletedAt());
         response.setInterviewLinkToken(interview.getInterviewLinkToken());
         response.setCreatedAt(interview.getCreatedAt());
+
+        // Map company
+        if (interview.getCompany() != null) {
+            CompanyResponse companyResponse = new CompanyResponse();
+            companyResponse.setId(interview.getCompany().getId());
+            companyResponse.setName(interview.getCompany().getName());
+            companyResponse.setEmail(interview.getCompany().getEmail());
+            companyResponse.setSubscriptionTier(interview.getCompany().getSubscriptionTier());
+            companyResponse.setLogoUrl(interview.getCompany().getLogoUrl());
+            companyResponse.setCreatedAt(interview.getCompany().getCreatedAt());
+            companyResponse.setUpdatedAt(interview.getCompany().getUpdatedAt());
+            response.setCompany(companyResponse);
+        }
+
+        // Map question
+        if (interview.getQuestion() != null) {
+            QuestionResponse questionResponse = new QuestionResponse();
+            questionResponse.setId(interview.getQuestion().getId());
+            questionResponse.setTitle(interview.getQuestion().getTitle());
+            questionResponse.setDescription(interview.getQuestion().getDescription());
+            questionResponse.setDifficulty(interview.getQuestion().getDifficulty());
+            questionResponse.setTimeLimitMinutes(interview.getQuestion().getTimeLimitMinutes());
+            questionResponse.setSupportedLanguages(interview.getQuestion().getSupportedLanguages());
+            questionResponse.setRequirementsJson(interview.getQuestion().getRequirementsJson());
+            questionResponse.setTestsJson(interview.getQuestion().getTestsJson());
+            questionResponse.setRubricJson(interview.getQuestion().getRubricJson());
+            questionResponse.setIntentionalBugsJson(interview.getQuestion().getIntentionalBugsJson());
+            questionResponse.setInitialCodeJava(interview.getQuestion().getInitialCodeJava());
+            questionResponse.setInitialCodePython(interview.getQuestion().getInitialCodePython());
+            questionResponse.setInitialCodeJavascript(interview.getQuestion().getInitialCodeJavascript());
+            questionResponse.setCreatedAt(interview.getQuestion().getCreatedAt());
+            response.setQuestion(questionResponse);
+        }
+
         return response;
     }
 

@@ -34,6 +34,9 @@ public class Company {
     @Column(nullable = false)
     private LocalDateTime updatedAt = LocalDateTime.now();
 
+    @Column
+    private String logoUrl;
+
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
