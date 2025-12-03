@@ -41,8 +41,8 @@ Implement candidate access endpoint,Task,Interview Session,Week 4,Day 16,4h,GET 
 Build Interview Room layout split-screen,Task,Interview Session,Week 4,Day 16,8h,Split-screen layout with monaco editor chat panel timer using shadcn/ui,Frontend Dev,High,V
 Implement interview start endpoint,Task,Interview Session,Week 4,Day 17,4h,POST /api/interviews/:id/start change status PENDING to LIVE save started_at,Backend Dev,High,V
 Implement interview end endpoint,Task,Interview Session,Week 4,Day 17,4h,POST /api/interviews/:id/end change status LIVE to ENDED save ended_at,Backend Dev,High,V
-Integrate Monaco code editor,Task,Interview Session,Week 4,Day 17,8h,Add Monaco configure for Java Python JavaScript syntax highlighting handle changes,Frontend Dev,High,
-Configure Spring WebSocket with STOMP,Task,Interview Session,Week 4,Day 18,8h,WebSocket config handler for /ws/interview/:token broadcast events by interview,Backend Dev,High,
+Integrate Monaco code editor,Task,Interview Session,Week 4,Day 17,8h,Add Monaco configure for Java Python JavaScript syntax highlighting handle changes,Frontend Dev,High,V
+Configure Spring WebSocket with STOMP,Task,Interview Session,Week 4,Day 18,8h,WebSocket config handler for /ws/interview/:token broadcast events by interview,Backend Dev,High,V
 Build candidate waiting screen,Task,Interview Session,Week 4,Day 18,4h,Show waiting message company logo question title when status is PENDING,Frontend Dev,Medium,
 Add countdown timer component,Task,Interview Session,Week 4,Day 18,4h,30-min countdown warning at 5min auto-submit on timeout using shadcn/ui,Frontend Dev,Medium,
 Implement Claude Haiku 4.5 API integration,Task,Interview Session,Week 4,Day 19,8h,Create AIService configure for claude-haiku-4-5-20251001 model optimize prompts for cost,Backend Dev,High,
