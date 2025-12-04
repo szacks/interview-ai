@@ -43,8 +43,8 @@ Implement interview start endpoint,Task,Interview Session,Week 4,Day 17,4h,POST 
 Implement interview end endpoint,Task,Interview Session,Week 4,Day 17,4h,POST /api/interviews/:id/end change status LIVE to ENDED save ended_at,Backend Dev,High,V
 Integrate Monaco code editor,Task,Interview Session,Week 4,Day 17,8h,Add Monaco configure for Java Python JavaScript syntax highlighting handle changes,Frontend Dev,High,V
 Configure Spring WebSocket with STOMP,Task,Interview Session,Week 4,Day 18,8h,WebSocket config handler for /ws/interview/:token broadcast events by interview,Backend Dev,High,V
-Build candidate waiting screen,Task,Interview Session,Week 4,Day 18,4h,Show waiting message company logo question title when status is PENDING,Frontend Dev,Medium,
-Implement Claude Haiku 4.5 API integration,Task,Interview Session,Week 4,Day 19,8h,Create AIService configure for claude-haiku-4-5-20251001 model optimize prompts for cost,Backend Dev,High,
+Build candidate waiting screen,Task,Interview Session,Week 4,Day 18,4h,Show waiting message company logo question title when status is PENDING,Frontend Dev,Medium,V
+Implement Claude Haiku 4.5 API integration,Task,Interview Session,Week 4,Day 19,8h,Create AIService configure for claude-haiku-4-5-20251001 model optimize prompts for cost,Backend Dev,High,V
 Build AI chat interface with shadcn/ui,Task,Interview Session,Week 4,Day 19,4h,Message list input send button loading states using shadcn/ui components,Frontend Dev,High,
 Implement WebSocket client for real-time sync,Task,Interview Session,Week 4,Day 19,4h,Connect WebSocket handle code_updated test_results interview_started interview_ended events,Frontend Dev,High,
 Implement system prompt and conversation logging,Task,Interview Session,Week 4,Day 20,8h,Create system prompts with intentional bugs for Haiku log all messages to JSONB field,Backend Dev,High,

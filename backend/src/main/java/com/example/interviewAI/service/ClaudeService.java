@@ -4,6 +4,9 @@ import com.example.interviewAI.config.ClaudeProperties;
 import com.example.interviewAI.dto.ClaudeEvaluationRequest;
 import com.example.interviewAI.dto.ClaudeEvaluationResponse;
 import com.example.interviewAI.dto.EvaluationResultDto;
+import com.example.interviewAI.entity.ChatMessage;
+import com.example.interviewAI.entity.Interview;
+import com.example.interviewAI.repository.InterviewRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -25,6 +28,9 @@ public class ClaudeService {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private InterviewRepository interviewRepository;
 
     /**
      * Evaluate interview code submission using Claude AI
@@ -242,5 +248,132 @@ public class ClaudeService {
                 .strengths("Evaluation pending - please review manually")
                 .weaknesses("Unable to generate AI evaluation at this time")
                 .build();
+    }
+
+    /**
+     * Generate AI response for a candidate question during live interview
+     * @param interviewId ID of the interview
+     * @param candidateQuestion The question from the candidate
+     * @param conversationHistory Previous messages for context
+     * @return AI response text
+     */
+    public String generateChatResponse(Long interviewId, String candidateQuestion,
+                                      List<ChatMessage> conversationHistory) {
+        try {
+            Interview interview = interviewRepository.findById(interviewId)
+                    .orElseThrow(() -> new RuntimeException("Interview not found"));
+
+            // Build system prompt with question context
+            String systemPrompt = buildChatSystemPrompt(interview.getQuestion().getTitle(),
+                    interview.getQuestion().getDescription());
+
+            // Build conversation history for context
+            List<ClaudeEvaluationRequest.ClaudeMessage> messages = buildConversationContext(
+                    conversationHistory, candidateQuestion, systemPrompt
+            );
+
+            // Build Claude API request
+            ClaudeEvaluationRequest request = ClaudeEvaluationRequest.builder()
+                    .model(claudeProperties.getModel())
+                    .maxTokens(claudeProperties.getMaxTokens())
+                    .temperature(claudeProperties.getTemperature())
+                    .messages(messages)
+                    .build();
+
+            // Call Claude API
+            ClaudeEvaluationResponse response = callClaudeAPIWithCustomRequest(request);
+
+            if (response == null || response.getContent() == null || response.getContent().isEmpty()) {
+                log.warn("Empty response from Claude API for interview {}", interviewId);
+                return "I'm having trouble responding right now. Please try again.";
+            }
+
+            String aiResponse = response.getContent().get(0).getText();
+            log.debug("Generated chat response for interview {}", interviewId);
+
+            return aiResponse;
+
+        } catch (Exception e) {
+            log.error("Error generating chat response for interview {}", interviewId, e);
+            return "I apologize, but I'm having trouble responding right now. Please try again.";
+        }
+    }
+
+    /**
+     * Build system prompt for live chat assistance
+     */
+    private String buildChatSystemPrompt(String questionTitle, String questionDescription) {
+        return String.format(
+                "You are a helpful AI assistant supporting candidates during coding interviews. " +
+                "The candidate is working on: %s\n\n" +
+                "Description: %s\n\n" +
+                "Your role:\n" +
+                "- Provide hints and clarifications when asked\n" +
+                "- Help candidates think through problems\n" +
+                "- DO NOT give away the solution directly\n" +
+                "- Be encouraging and supportive\n" +
+                "- Keep responses concise (2-3 sentences when possible)\n" +
+                "- If the candidate is stuck, ask guiding questions instead of providing the answer",
+                questionTitle, questionDescription
+        );
+    }
+
+    /**
+     * Build conversation context from chat history with system prompt embedded
+     */
+    private List<ClaudeEvaluationRequest.ClaudeMessage> buildConversationContext(
+            List<ChatMessage> history, String newQuestion, String systemPrompt) {
+
+        List<ClaudeEvaluationRequest.ClaudeMessage> messages = new ArrayList<>();
+
+        // Embed system prompt as first user message
+        messages.add(ClaudeEvaluationRequest.ClaudeMessage.builder()
+                .role("user")
+                .content(systemPrompt)
+                .build());
+
+        // Add assistant acknowledgment
+        messages.add(ClaudeEvaluationRequest.ClaudeMessage.builder()
+                .role("assistant")
+                .content("I understand. I'm here to help with the interview question. Please go ahead with your question or concern.")
+                .build());
+
+        // Include last 10 messages for context (to manage token usage)
+        int startIndex = Math.max(0, history.size() - 10);
+        for (int i = startIndex; i < history.size(); i++) {
+            ChatMessage msg = history.get(i);
+            messages.add(ClaudeEvaluationRequest.ClaudeMessage.builder()
+                    .role(msg.getRole().equals("ai") ? "assistant" : "user")
+                    .content(msg.getContent())
+                    .build());
+        }
+
+        // Add new question from candidate
+        messages.add(ClaudeEvaluationRequest.ClaudeMessage.builder()
+                .role("user")
+                .content(newQuestion)
+                .build());
+
+        return messages;
+    }
+
+    /**
+     * Call Claude API with custom request (for chat responses)
+     */
+    private ClaudeEvaluationResponse callClaudeAPIWithCustomRequest(ClaudeEvaluationRequest request) {
+        try {
+            ClaudeEvaluationResponse response = restTemplate.postForObject(
+                    claudeProperties.getApiUrl() + "/messages",
+                    createHttpEntity(request),
+                    ClaudeEvaluationResponse.class
+            );
+
+            log.debug("Claude API call successful for chat response");
+            return response;
+
+        } catch (Exception e) {
+            log.error("Error calling Claude API for chat: {}", e.getMessage(), e);
+            return null;
+        }
     }
 }

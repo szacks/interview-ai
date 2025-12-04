@@ -1,12 +1,18 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Code2, Play, Send, Loader2, CheckCircle2, XCircle, Clock, MessageSquare, Terminal } from "lucide-react"
 import Editor from "@monaco-editor/react"
+import { useChatStore } from "@/stores/chatStore"
+import { chatService } from "@/services/chatService"
+import { webSocketService } from "@/services/webSocketService"
+import type { ChatMessage as ChatMessageType } from "@/types/chat"
 
 // Mock data
 const mockQuestion = {
@@ -56,15 +62,79 @@ const mockChatHistory = [
 type InterviewStatus = "waiting" | "live" | "ended"
 
 export default function CandidateInterviewPage() {
+  // Interview state
   const [status, setStatus] = useState<InterviewStatus>("live") // Can be: waiting, live, ended
+  const [interviewId] = useState("1") // Get from params in real implementation
   const [language, setLanguage] = useState("javascript")
   const [code, setCode] = useState(mockQuestion.initialCode.javascript)
-  const [chatMessage, setChatMessage] = useState("")
-  const [chatHistory, setChatHistory] = useState(mockChatHistory)
   const [isRunning, setIsRunning] = useState(false)
   const [testResults, setTestResults] = useState<Array<{ name: string; passed: boolean }>>([])
   const [showChat, setShowChat] = useState(false)
   const [startTime] = useState(Date.now())
+
+  // Local chat state
+  const [chatMessage, setChatMessage] = useState("")
+  const scrollRef = useRef<HTMLDivElement>(null)
+
+  // Chat store hooks
+  const conversation = useChatStore((state) => state.getConversation(interviewId))
+  const addMessage = useChatStore((state) => state.addMessage)
+  const setLoading = useChatStore((state) => state.setLoading)
+  const setConnectionStatus = useChatStore((state) => state.setConnectionStatus)
+  const loadHistory = useChatStore((state) => state.loadHistory)
+
+  // Load chat history on mount
+  useEffect(() => {
+    const loadChatHistory = async () => {
+      try {
+        const history = await chatService.getChatHistory(interviewId)
+        const messages = history.map((msg) => ({
+          id: msg.id.toString(),
+          role: msg.role as "candidate" | "ai",
+          content: msg.content,
+          timestamp: new Date(msg.timestamp),
+          senderName: msg.senderName,
+        }))
+        loadHistory(interviewId, messages)
+      } catch (error) {
+        console.error("Error loading chat history", error)
+      }
+    }
+
+    loadChatHistory()
+  }, [interviewId, loadHistory])
+
+  // Connect to WebSocket on mount
+  useEffect(() => {
+    const connectWebSocket = async () => {
+      try {
+        await webSocketService.connect(interviewId)
+
+        webSocketService.onMessage((message) => {
+          addMessage(interviewId, message)
+        })
+
+        webSocketService.onConnectionChange((connected) => {
+          setConnectionStatus(interviewId, connected)
+        })
+      } catch (error) {
+        console.error("Error connecting to WebSocket", error)
+      }
+    }
+
+    connectWebSocket()
+
+    return () => {
+      webSocketService.disconnect()
+    }
+  }, [interviewId, addMessage, setConnectionStatus])
+
+  // Auto-scroll to bottom when new messages arrive
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+    }
+  }, [conversation.messages])
 
   const handleLanguageChange = (newLanguage: string) => {
     setLanguage(newLanguage)
@@ -85,29 +155,32 @@ export default function CandidateInterviewPage() {
     }, 2000)
   }
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!chatMessage.trim()) return
 
-    const newMessage = {
-      role: "candidate" as const,
-      message: chatMessage,
+    const tempMessage: ChatMessageType = {
+      role: "candidate",
+      content: chatMessage,
       timestamp: new Date(),
+      senderName: "You",
     }
 
-    setChatHistory([...chatHistory, newMessage])
+    addMessage(interviewId, tempMessage)
     setChatMessage("")
+    setLoading(interviewId, true)
 
-    // Simulate AI response
-    setTimeout(() => {
-      setChatHistory((prev) => [
-        ...prev,
-        {
-          role: "ai" as const,
-          message: "I understand your question. Let me help you think through this...",
-          timestamp: new Date(),
-        },
-      ])
-    }, 1000)
+    try {
+      await chatService.sendMessage({
+        interviewId,
+        message: chatMessage,
+        senderType: "candidate",
+        senderName: "Candidate",
+      })
+    } catch (error) {
+      console.error("Error sending message", error)
+    } finally {
+      setLoading(interviewId, false)
+    }
   }
 
   const getElapsedTime = () => {
@@ -292,38 +365,63 @@ export default function CandidateInterviewPage() {
 
         {/* AI Chat Sidebar */}
         <div className="w-96 border-l border-border bg-card flex flex-col">
+          {/* Header */}
           <div className="p-4 border-b border-border">
             <div className="flex items-center gap-2">
               <div className="size-8 rounded-lg bg-accent/10 flex items-center justify-center">
                 <MessageSquare className="size-4 text-accent" />
               </div>
-              <div>
+              <div className="flex-1">
                 <h3 className="font-semibold text-sm">AI Assistant</h3>
-                <p className="text-xs text-muted-foreground">Ask me anything</p>
+                <p className="text-xs text-muted-foreground">
+                  {conversation.isConnected ? "● Connected" : "○ Disconnected"}
+                </p>
               </div>
             </div>
           </div>
 
           {/* Chat Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            {chatHistory.map((chat, idx) => (
-              <div key={idx} className="flex gap-3">
-                <div
-                  className={`size-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                    chat.role === "candidate" ? "bg-primary/10 text-primary" : "bg-accent/10 text-accent"
-                  }`}
-                >
-                  {chat.role === "candidate" ? <Terminal className="size-4" /> : <MessageSquare className="size-4" />}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-xs text-muted-foreground mb-1">
-                    {chat.role === "candidate" ? "You" : "AI Assistant"}
+          <ScrollArea
+            className="flex-1 p-4 space-y-4"
+            ref={scrollRef}
+          >
+            <div className="space-y-4">
+              {conversation.messages.map((msg, idx) => (
+                <div key={idx} className="flex gap-3">
+                  <div
+                    className={`size-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                      msg.role === "candidate" ? "bg-primary/10 text-primary" : "bg-accent/10 text-accent"
+                    }`}
+                  >
+                    {msg.role === "candidate" ? (
+                      <Terminal className="size-4" />
+                    ) : (
+                      <MessageSquare className="size-4" />
+                    )}
                   </div>
-                  <div className="text-sm leading-relaxed whitespace-pre-wrap">{chat.message}</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-xs text-muted-foreground mb-1">
+                      {msg.role === "candidate" ? "You" : "AI Assistant"}
+                    </div>
+                    <div className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</div>
+                    <div className="text-xs text-muted-foreground mt-1">
+                      {msg.timestamp.toLocaleTimeString()}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+
+              {conversation.isLoading && (
+                <div className="flex gap-3">
+                  <Skeleton className="size-8 rounded-full" />
+                  <div className="space-y-2 flex-1">
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                  </div>
+                </div>
+              )}
+            </div>
+          </ScrollArea>
 
           {/* Chat Input */}
           <div className="p-4 border-t border-border">
@@ -332,14 +430,21 @@ export default function CandidateInterviewPage() {
                 placeholder="Ask a question..."
                 value={chatMessage}
                 onChange={(e) => setChatMessage(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+                onKeyDown={(e) => e.key === "Enter" && !conversation.isLoading && handleSendMessage()}
+                disabled={conversation.isLoading}
                 className="flex-1"
               />
-              <Button size="icon" onClick={handleSendMessage}>
+              <Button
+                size="icon"
+                onClick={handleSendMessage}
+                disabled={conversation.isLoading || !chatMessage.trim()}
+              >
                 <Send className="size-4" />
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground mt-2">The AI and interviewer can see this conversation</p>
+            <p className="text-xs text-muted-foreground mt-2">
+              The AI and interviewer can see this conversation
+            </p>
           </div>
         </div>
       </div>
