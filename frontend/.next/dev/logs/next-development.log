@@ -3584,3 +3584,1504 @@ destination:/topic/interview/1/code
 
 [00:24:29.692] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/1/code
 [00:24:29.692] Browser LOG     Latest code loaded: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","id":15,"language":"javascript","timestamp":"2025-12-04T15:21:52.318983"}
+[00:31:23.324] Server  LOG      ✓ Compiled in 40ms
+[00:31:29.276] Server  LOG      ✓ Compiled in 35ms
+[00:31:29.831] Browser LOG     [STOMP] >>> UNSUBSCRIBE
+id:[object Object]
+
+
+[00:31:29.831] Browser LOG     [STOMP] >>> UNSUBSCRIBE
+id:[object Object]
+
+
+[00:31:29.831] Browser LOG     [STOMP] >>> DISCONNECT
+receipt:close-2
+
+
+[00:31:29.831] Browser LOG     [WebSocket] Disconnected
+[00:31:29.831] Browser LOG     [WebSocket] Connecting to ws://localhost:8080/api/ws/interview for interview 1
+[00:31:29.831] Browser LOG     [WebSocket] Client created, activating...
+[00:31:29.831] Browser LOG     [STOMP] Opening Web Socket...
+[00:31:29.831] Browser LOG     [STOMP] Received data
+[00:31:29.831] Browser LOG     [STOMP] <<< RECEIPT
+receipt-id:close-2
+content-length:0
+
+
+[00:31:29.831] Browser LOG     [WebSocket] Disconnected from interview 1
+[00:31:29.831] Browser LOG     Latest code loaded: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","id":15,"language":"javascript","timestamp":"2025-12-04T15:21:52.318983"}
+[00:31:29.831] Browser LOG     [STOMP] Connection closed to ws://localhost:8080/api/ws/interview
+[00:31:29.831] Browser LOG     [WebSocket] WebSocket closed
+[00:31:29.831] Browser LOG     [STOMP] Web Socket Opened...
+[00:31:29.831] Browser LOG     [STOMP] >>> CONNECT
+accept-version:1.2,1.1,1.0
+heart-beat:10000,10000
+
+
+[00:31:29.831] Browser LOG     [STOMP] Received data
+[00:31:29.831] Browser LOG     [STOMP] <<< CONNECTED
+heart-beat:0,0
+version:1.2
+content-length:0
+
+
+[00:31:29.831] Browser LOG     [STOMP] connected to server undefined
+[00:31:29.831] Browser LOG     [WebSocket] ✓ Connected to interview 1
+[00:31:29.831] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-0
+destination:/topic/interview/1/chat
+
+
+[00:31:29.831] Browser LOG     [WebSocket] Subscribed to /topic/interview/1/chat
+[00:31:29.831] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-1
+destination:/topic/interview/1/code
+
+
+[00:31:29.831] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/1/code
+[00:31:34.819] Server  LOG      ✓ Compiled in 32ms
+[00:31:36.219] Browser LOG     [STOMP] Received data
+[00:31:36.219] Browser LOG     [STOMP] <<< MESSAGE
+content-length:186
+message-id:9914a60a-9c4b-80c1-d5f3-b7589d9de34a-50
+subscription:sub-0
+content-type:application/json
+destination:/topic/interview/1/chat
+content-length:186
+
+
+[00:31:36.396] Browser LOG     [STOMP] Received data
+[00:31:36.396] Browser LOG     [STOMP] <<< MESSAGE
+content-length:235
+message-id:9914a60a-9c4b-80c1-d5f3-b7589d9de34a-52
+subscription:sub-0
+content-type:application/json
+destination:/topic/interview/1/chat
+content-length:235
+
+
+[00:31:36.831] Browser LOG     [STOMP] Received data
+[00:31:36.831] Browser LOG     [STOMP] <<< MESSAGE
+content-length:186
+message-id:3b107a1f-36a7-d957-3542-8ceb3b6e9fd0-51
+subscription:sub-0
+content-type:application/json
+destination:/topic/interview/1/chat
+content-length:186
+
+
+[00:31:36.831] Browser LOG     [STOMP] Received data
+[00:31:36.831] Browser LOG     [STOMP] <<< MESSAGE
+content-length:235
+message-id:3b107a1f-36a7-d957-3542-8ceb3b6e9fd0-53
+subscription:sub-0
+content-type:application/json
+destination:/topic/interview/1/chat
+content-length:235
+
+
+[00:31:41.261] Server  LOG      ✓ Compiled in 36ms
+[00:32:05.715] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:32:05.919] Browser LOG     [WebSocket] Connecting to ws://localhost:8080/api/ws/interview for interview 1
+[00:32:05.919] Browser LOG     [WebSocket] Client created, activating...
+[00:32:05.919] Browser LOG     [STOMP] Opening Web Socket...
+[00:32:05.919] Browser LOG     [STOMP] Web Socket Opened...
+[00:32:05.919] Browser LOG     [STOMP] >>> CONNECT
+accept-version:1.2,1.1,1.0
+heart-beat:10000,10000
+
+
+[00:32:05.919] Browser LOG     Latest code loaded: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","id":15,"language":"javascript","timestamp":"2025-12-04T15:21:52.318983"}
+[00:32:05.919] Browser LOG     [STOMP] Received data
+[00:32:05.919] Browser LOG     [STOMP] <<< CONNECTED
+heart-beat:0,0
+version:1.2
+content-length:0
+
+
+[00:32:05.919] Browser LOG     [STOMP] connected to server undefined
+[00:32:05.919] Browser LOG     [WebSocket] ✓ Connected to interview 1
+[00:32:05.919] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-0
+destination:/topic/interview/1/chat
+
+
+[00:32:05.919] Browser LOG     [WebSocket] Subscribed to /topic/interview/1/chat
+[00:32:05.919] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-1
+destination:/topic/interview/1/code
+
+
+[00:32:05.919] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/1/code
+[00:32:05.919] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:32:05.919] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/interview/1","route":"/interview/[id]"}
+[00:32:05.919] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/interview/1 color: rgb(120, 120, 120) color: inherit {"dp":"/interview/[id]","o":"http://localhost:3000/interview/1","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1765098945811}
+[00:32:08.141] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:32:08.594] Browser LOG     [WebSocket] Connecting to ws://localhost:8080/api/ws/interview for interview 1
+[00:32:08.594] Browser LOG     [WebSocket] Client created, activating...
+[00:32:08.594] Browser LOG     [STOMP] Opening Web Socket...
+[00:32:08.594] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:32:08.594] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/i/3bc41d97-2477-4ac8-afd3-45dd6ff7d3c0","route":"/i/[token]"}
+[00:32:08.594] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/i/3bc41d97-2477-4ac8-afd3-45dd6ff7d3c0 color: rgb(120, 120, 120) color: inherit {"dp":"/i/[token]","o":"http://localhost:3000/i/3bc41d97-2477-4ac8-afd3-45dd6ff7d3c0","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1765098948289}
+[00:32:08.594] Browser LOG     [STOMP] Web Socket Opened...
+[00:32:08.594] Browser LOG     [STOMP] >>> CONNECT
+accept-version:1.2,1.1,1.0
+heart-beat:10000,10000
+
+
+[00:32:08.594] Browser LOG     [STOMP] Received data
+[00:32:08.594] Browser LOG     [STOMP] <<< CONNECTED
+heart-beat:0,0
+version:1.2
+content-length:0
+
+
+[00:32:08.594] Browser LOG     [STOMP] connected to server undefined
+[00:32:08.594] Browser LOG     [WebSocket] ✓ Connected to interview 1
+[00:32:08.594] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-0
+destination:/topic/interview/1/chat
+
+
+[00:32:08.594] Browser LOG     [WebSocket] Subscribed to /topic/interview/1/chat
+[00:32:08.594] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-1
+destination:/topic/interview/1/code
+
+
+[00:32:08.594] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/1/code
+[00:32:11.333] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:192
+
+
+[00:32:11.334] Browser LOG     [WebSocket] Code update published
+[00:32:11.334] Browser LOG     Code update streamed via WebSocket for interview 1
+[00:32:11.334] Browser LOG     [STOMP] Received data
+[00:32:11.334] Browser LOG     [STOMP] <<< MESSAGE
+content-length:287
+message-id:a8a71848-e9e6-7683-149e-8fd833d9d7fc-55
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:287
+
+
+[00:32:11.334] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  \n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:15:51.228270671","type":"code"}
+[00:32:11.832] Browser LOG     [STOMP] Received data
+[00:32:11.833] Browser LOG     [STOMP] <<< MESSAGE
+content-length:287
+message-id:b1c1a6b6-e784-a2e2-d340-f4e8cbea8f4e-54
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:287
+
+
+[00:32:11.833] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  \n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:15:51.228270671","type":"code"}
+[00:32:11.833] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  \n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:32:12.432] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:194
+
+
+[00:32:12.432] Browser LOG     [WebSocket] Code update published
+[00:32:12.432] Browser LOG     Code update streamed via WebSocket for interview 1
+[00:32:12.432] Browser LOG     [STOMP] Received data
+[00:32:12.432] Browser LOG     [STOMP] <<< MESSAGE
+content-length:289
+message-id:a8a71848-e9e6-7683-149e-8fd833d9d7fc-57
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:289
+
+
+[00:32:12.432] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  lo\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:15:52.327279932","type":"code"}
+[00:32:12.831] Browser LOG     [STOMP] Received data
+[00:32:12.831] Browser LOG     [STOMP] <<< MESSAGE
+content-length:289
+message-id:b1c1a6b6-e784-a2e2-d340-f4e8cbea8f4e-56
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:289
+
+
+[00:32:12.831] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  lo\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:15:52.327279932","type":"code"}
+[00:32:12.831] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  lo\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:32:13.134] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:200
+
+
+[00:32:13.134] Browser LOG     [WebSocket] Code update published
+[00:32:13.134] Browser LOG     Code update streamed via WebSocket for interview 1
+[00:32:13.134] Browser LOG     [STOMP] Received data
+[00:32:13.134] Browser LOG     [STOMP] <<< MESSAGE
+content-length:295
+message-id:a8a71848-e9e6-7683-149e-8fd833d9d7fc-59
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:295
+
+
+[00:32:13.134] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:15:53.029878837","type":"code"}
+[00:32:13.788] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:210
+
+
+[00:32:13.788] Browser LOG     [WebSocket] Code update published
+[00:32:13.788] Browser LOG     Code update streamed via WebSocket for interview 1
+[00:32:13.788] Browser LOG     [STOMP] Received data
+[00:32:13.788] Browser LOG     [STOMP] <<< MESSAGE
+content-length:305
+message-id:a8a71848-e9e6-7683-149e-8fd833d9d7fc-61
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:305
+
+
+[00:32:13.788] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:15:53.684488308","type":"code"}
+[00:32:13.832] Browser LOG     [STOMP] Received data
+[00:32:13.832] Browser LOG     [STOMP] <<< MESSAGE
+content-length:295
+message-id:b1c1a6b6-e784-a2e2-d340-f4e8cbea8f4e-58
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:295
+
+
+[00:32:13.832] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:15:53.029878837","type":"code"}
+[00:32:13.832] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:32:13.832] Browser LOG     [STOMP] Received data
+[00:32:13.832] Browser LOG     [STOMP] <<< MESSAGE
+content-length:305
+message-id:b1c1a6b6-e784-a2e2-d340-f4e8cbea8f4e-60
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:305
+
+
+[00:32:13.832] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:15:53.684488308","type":"code"}
+[00:32:13.832] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:32:14.872] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:212
+
+
+[00:32:14.872] Browser LOG     [WebSocket] Code update published
+[00:32:14.872] Browser LOG     Code update streamed via WebSocket for interview 1
+[00:32:14.872] Browser LOG     [STOMP] Received data
+[00:32:14.872] Browser LOG     [STOMP] <<< MESSAGE
+content-length:307
+message-id:a8a71848-e9e6-7683-149e-8fd833d9d7fc-63
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:307
+
+
+[00:32:14.872] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:15:54.769209642","type":"code"}
+[00:32:15.831] Browser LOG     [STOMP] Received data
+[00:32:15.831] Browser LOG     [STOMP] <<< MESSAGE
+content-length:307
+message-id:b1c1a6b6-e784-a2e2-d340-f4e8cbea8f4e-62
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:307
+
+
+[00:32:15.831] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:15:54.769209642","type":"code"}
+[00:32:15.831] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:32:18.768] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:216
+
+
+[00:32:18.768] Browser LOG     [WebSocket] Code update published
+[00:32:18.768] Browser LOG     [Interviewer] Code update sent to candidate
+[00:32:18.768] Browser LOG     [STOMP] Received data
+[00:32:18.768] Browser LOG     [STOMP] <<< MESSAGE
+content-length:311
+message-id:b1c1a6b6-e784-a2e2-d340-f4e8cbea8f4e-64
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:311
+
+
+[00:32:18.768] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  \n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:15:58.653167031","type":"code"}
+[00:32:18.768] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  \n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:32:18.831] Browser LOG     [STOMP] Received data
+[00:32:18.831] Browser LOG     [STOMP] <<< MESSAGE
+content-length:311
+message-id:a8a71848-e9e6-7683-149e-8fd833d9d7fc-65
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:311
+
+
+[00:32:18.831] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  \n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:15:58.653167031","type":"code"}
+[00:32:20.633] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:218
+
+
+[00:32:20.633] Browser LOG     [WebSocket] Code update published
+[00:32:20.634] Browser LOG     [Interviewer] Code update sent to candidate
+[00:32:20.634] Browser LOG     [STOMP] Received data
+[00:32:20.634] Browser LOG     [STOMP] <<< MESSAGE
+content-length:313
+message-id:b1c1a6b6-e784-a2e2-d340-f4e8cbea8f4e-66
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:313
+
+
+[00:32:20.634] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:16:00.532785254","type":"code"}
+[00:32:20.634] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:32:20.885] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:219
+
+
+[00:32:20.885] Browser LOG     [WebSocket] Code update published
+[00:32:20.885] Browser LOG     [Interviewer] Code update sent to candidate
+[00:32:20.885] Browser LOG     [STOMP] Received data
+[00:32:20.885] Browser LOG     [STOMP] <<< MESSAGE
+content-length:314
+message-id:b1c1a6b6-e784-a2e2-d340-f4e8cbea8f4e-68
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:314
+
+
+[00:32:20.885] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //s\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:16:00.784017409","type":"code"}
+[00:32:20.885] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //s\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:32:21.585] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:223
+
+
+[00:32:21.585] Browser LOG     [WebSocket] Code update published
+[00:32:21.585] Browser LOG     [Interviewer] Code update sent to candidate
+[00:32:21.585] Browser LOG     [STOMP] Received data
+[00:32:21.585] Browser LOG     [STOMP] <<< MESSAGE
+content-length:318
+message-id:b1c1a6b6-e784-a2e2-d340-f4e8cbea8f4e-70
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:318
+
+
+[00:32:21.585] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //shani\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:16:01.482106576","type":"code"}
+[00:32:21.585] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //shani\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:32:21.831] Browser LOG     [STOMP] Received data
+[00:32:21.831] Browser LOG     [STOMP] <<< MESSAGE
+content-length:313
+message-id:a8a71848-e9e6-7683-149e-8fd833d9d7fc-67
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:313
+
+
+[00:32:21.831] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:16:00.532785254","type":"code"}
+[00:32:21.831] Browser LOG     [STOMP] Received data
+[00:32:21.831] Browser LOG     [STOMP] <<< MESSAGE
+content-length:314
+message-id:a8a71848-e9e6-7683-149e-8fd833d9d7fc-69
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:314
+
+
+[00:32:21.831] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //s\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:16:00.784017409","type":"code"}
+[00:32:21.831] Browser LOG     [STOMP] Received data
+[00:32:21.831] Browser LOG     [STOMP] <<< MESSAGE
+content-length:318
+message-id:a8a71848-e9e6-7683-149e-8fd833d9d7fc-71
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:318
+
+
+[00:32:21.831] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //shani\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:16:01.482106576","type":"code"}
+[00:32:32.882] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:32:33.325] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:32:33.325] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/i/3bc41d97-2477-4ac8-afd3-45dd6ff7d3c0","route":"/i/[token]"}
+[00:32:33.325] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/i/3bc41d97-2477-4ac8-afd3-45dd6ff7d3c0 color: rgb(120, 120, 120) color: inherit {"dp":"/i/[token]","o":"http://localhost:3000/i/3bc41d97-2477-4ac8-afd3-45dd6ff7d3c0","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1765098972961}
+[00:32:33.325] Browser LOG     [WebSocket] Connecting to ws://localhost:8080/api/ws/interview for interview 1
+[00:32:33.325] Browser LOG     [WebSocket] Client created, activating...
+[00:32:33.326] Browser LOG     [STOMP] Opening Web Socket...
+[00:32:33.326] Browser LOG     [STOMP] Web Socket Opened...
+[00:32:33.326] Browser LOG     [STOMP] >>> CONNECT
+accept-version:1.2,1.1,1.0
+heart-beat:10000,10000
+
+
+[00:32:33.326] Browser LOG     [STOMP] Received data
+[00:32:33.326] Browser LOG     [STOMP] <<< CONNECTED
+heart-beat:0,0
+version:1.2
+content-length:0
+
+
+[00:32:33.326] Browser LOG     [STOMP] connected to server undefined
+[00:32:33.326] Browser LOG     [WebSocket] ✓ Connected to interview 1
+[00:32:33.326] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-0
+destination:/topic/interview/1/chat
+
+
+[00:32:33.326] Browser LOG     [WebSocket] Subscribed to /topic/interview/1/chat
+[00:32:33.326] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-1
+destination:/topic/interview/1/code
+
+
+[00:32:33.326] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/1/code
+[00:32:38.329] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:227
+
+
+[00:32:38.329] Browser LOG     [WebSocket] Code update published
+[00:32:38.329] Browser LOG     [Interviewer] Code update sent to candidate
+[00:32:38.329] Browser LOG     [STOMP] Received data
+[00:32:38.329] Browser LOG     [STOMP] <<< MESSAGE
+content-length:322
+message-id:b1c1a6b6-e784-a2e2-d340-f4e8cbea8f4e-72
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:322
+
+
+[00:32:38.329] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //shani\n  \n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:16:18.225546524","type":"code"}
+[00:32:38.329] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //shani\n  \n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:32:38.661] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:228
+
+
+[00:32:38.661] Browser LOG     [WebSocket] Code update published
+[00:32:38.661] Browser LOG     [Interviewer] Code update sent to candidate
+[00:32:38.661] Browser LOG     [STOMP] Received data
+[00:32:38.661] Browser LOG     [STOMP] <<< MESSAGE
+content-length:322
+message-id:b1c1a6b6-e784-a2e2-d340-f4e8cbea8f4e-75
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:322
+
+
+[00:32:38.661] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //shani\n  l\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:16:18.55988645","type":"code"}
+[00:32:38.661] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //shani\n  l\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:32:38.831] Browser LOG     [STOMP] Received data
+[00:32:38.831] Browser LOG     [STOMP] <<< MESSAGE
+content-length:322
+message-id:205c1218-5129-7311-1022-199d0e3ce9a2-73
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:322
+
+
+[00:32:38.831] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //shani\n  \n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:16:18.225546524","type":"code"}
+[00:32:38.831] Browser LOG     [STOMP] Received data
+[00:32:38.831] Browser LOG     [STOMP] <<< MESSAGE
+content-length:322
+message-id:205c1218-5129-7311-1022-199d0e3ce9a2-74
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:322
+
+
+[00:32:38.831] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //shani\n  l\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:16:18.55988645","type":"code"}
+[00:32:39.150] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:234
+
+
+[00:32:39.150] Browser LOG     [WebSocket] Code update published
+[00:32:39.150] Browser LOG     [Interviewer] Code update sent to candidate
+[00:32:39.150] Browser LOG     [STOMP] Received data
+[00:32:39.150] Browser LOG     [STOMP] <<< MESSAGE
+content-length:329
+message-id:b1c1a6b6-e784-a2e2-d340-f4e8cbea8f4e-76
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:329
+
+
+[00:32:39.150] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //shani\n  longUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:16:19.046794138","type":"code"}
+[00:32:39.150] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //shani\n  longUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:32:39.831] Browser LOG     [STOMP] Received data
+[00:32:39.831] Browser LOG     [STOMP] <<< MESSAGE
+content-length:329
+message-id:205c1218-5129-7311-1022-199d0e3ce9a2-77
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:329
+
+
+[00:32:39.831] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //shani\n  longUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:16:19.046794138","type":"code"}
+[00:33:33.053] Server  LOG      ✓ Compiled in 46ms
+[00:33:33.276] Browser LOG     [STOMP] >>> UNSUBSCRIBE
+id:[object Object]
+
+
+[00:33:33.276] Browser LOG     [STOMP] >>> UNSUBSCRIBE
+id:[object Object]
+
+
+[00:33:33.276] Browser LOG     [STOMP] >>> DISCONNECT
+receipt:close-2
+
+
+[00:33:33.276] Browser LOG     [WebSocket] Disconnected
+[00:33:33.276] Browser LOG     [STOMP] Received data
+[00:33:33.276] Browser LOG     [STOMP] <<< RECEIPT
+receipt-id:close-2
+content-length:0
+
+
+[00:33:33.276] Browser LOG     [WebSocket] Disconnected from interview 1
+[00:33:33.276] Browser LOG     [STOMP] Connection closed to ws://localhost:8080/api/ws/interview
+[00:33:33.276] Browser LOG     [WebSocket] WebSocket closed
+[00:33:33.276] Browser LOG     [WebSocket] Connecting to ws://localhost:8080/api/ws/interview for interview 1
+[00:33:33.276] Browser LOG     [WebSocket] Client created, activating...
+[00:33:33.276] Browser LOG     [STOMP] Opening Web Socket...
+[00:33:33.276] Browser LOG     [STOMP] Web Socket Opened...
+[00:33:33.276] Browser LOG     [STOMP] >>> CONNECT
+accept-version:1.2,1.1,1.0
+heart-beat:10000,10000
+
+
+[00:33:33.276] Browser LOG     [STOMP] Received data
+[00:33:33.276] Browser LOG     [STOMP] <<< CONNECTED
+heart-beat:0,0
+version:1.2
+content-length:0
+
+
+[00:33:33.276] Browser LOG     [STOMP] connected to server undefined
+[00:33:33.276] Browser LOG     [WebSocket] ✓ Connected to interview 1
+[00:33:33.276] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-0
+destination:/topic/interview/1/chat
+
+
+[00:33:33.276] Browser LOG     [WebSocket] Subscribed to /topic/interview/1/chat
+[00:33:33.276] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-1
+destination:/topic/interview/1/code
+
+
+[00:33:33.276] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/1/code
+[00:34:26.178] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:34:26.644] Browser LOG     [WebSocket] Connecting to ws://localhost:8080/api/ws/interview for interview 1
+[00:34:26.644] Browser LOG     [WebSocket] Client created, activating...
+[00:34:26.644] Browser LOG     [STOMP] Opening Web Socket...
+[00:34:26.644] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:34:26.644] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/i/3bc41d97-2477-4ac8-afd3-45dd6ff7d3c0","route":"/i/[token]"}
+[00:34:26.644] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/i/3bc41d97-2477-4ac8-afd3-45dd6ff7d3c0 color: rgb(120, 120, 120) color: inherit {"dp":"/i/[token]","o":"http://localhost:3000/i/3bc41d97-2477-4ac8-afd3-45dd6ff7d3c0","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1765099086322}
+[00:34:26.644] Browser LOG     [STOMP] Web Socket Opened...
+[00:34:26.644] Browser LOG     [STOMP] >>> CONNECT
+accept-version:1.2,1.1,1.0
+heart-beat:10000,10000
+
+
+[00:34:26.644] Browser LOG     [STOMP] Received data
+[00:34:26.644] Browser LOG     [STOMP] <<< CONNECTED
+heart-beat:0,0
+version:1.2
+content-length:0
+
+
+[00:34:26.644] Browser LOG     [STOMP] connected to server undefined
+[00:34:26.644] Browser LOG     [WebSocket] ✓ Connected to interview 1
+[00:34:26.644] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-0
+destination:/topic/interview/1/chat
+
+
+[00:34:26.644] Browser LOG     [WebSocket] Subscribed to /topic/interview/1/chat
+[00:34:26.644] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-1
+destination:/topic/interview/1/code
+
+
+[00:34:26.644] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/1/code
+[00:34:29.088] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:34:29.288] Browser LOG     [WebSocket] Connecting to ws://localhost:8080/api/ws/interview for interview 1
+[00:34:29.288] Browser LOG     [WebSocket] Client created, activating...
+[00:34:29.288] Browser LOG     [STOMP] Opening Web Socket...
+[00:34:29.288] Browser LOG     [STOMP] Web Socket Opened...
+[00:34:29.288] Browser LOG     [STOMP] >>> CONNECT
+accept-version:1.2,1.1,1.0
+heart-beat:10000,10000
+
+
+[00:34:29.288] Browser LOG     Latest code loaded: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","id":15,"language":"javascript","timestamp":"2025-12-04T15:21:52.318983"}
+[00:34:29.288] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:34:29.288] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/interview/1","route":"/interview/[id]"}
+[00:34:29.288] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/interview/1 color: rgb(120, 120, 120) color: inherit {"dp":"/interview/[id]","o":"http://localhost:3000/interview/1","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1765099089185}
+[00:34:29.288] Browser LOG     [STOMP] Received data
+[00:34:29.288] Browser LOG     [STOMP] <<< CONNECTED
+heart-beat:0,0
+version:1.2
+content-length:0
+
+
+[00:34:29.288] Browser LOG     [STOMP] connected to server undefined
+[00:34:29.288] Browser LOG     [WebSocket] ✓ Connected to interview 1
+[00:34:29.288] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-0
+destination:/topic/interview/1/chat
+
+
+[00:34:29.288] Browser LOG     [WebSocket] Subscribed to /topic/interview/1/chat
+[00:34:29.288] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-1
+destination:/topic/interview/1/code
+
+
+[00:34:29.288] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/1/code
+[00:34:32.110] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:216
+
+
+[00:34:32.110] Browser LOG     [WebSocket] Code update published
+[00:34:32.110] Browser LOG     [Interviewer] Code update sent to candidate
+[00:34:32.110] Browser LOG     [STOMP] Received data
+[00:34:32.110] Browser LOG     [STOMP] <<< MESSAGE
+content-length:311
+message-id:2abfb6a0-9550-f58d-7c81-3041d5128c71-79
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:311
+
+
+[00:34:32.110] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  \n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:18:12.002375697","type":"code"}
+[00:34:32.110] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  \n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:34:32.399] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:217
+
+
+[00:34:32.399] Browser LOG     [WebSocket] Code update published
+[00:34:32.399] Browser LOG     [Interviewer] Code update sent to candidate
+[00:34:32.399] Browser LOG     [STOMP] Received data
+[00:34:32.399] Browser LOG     [STOMP] <<< MESSAGE
+content-length:312
+message-id:2abfb6a0-9550-f58d-7c81-3041d5128c71-81
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:312
+
+
+[00:34:32.399] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  /\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:18:12.297402698","type":"code"}
+[00:34:32.399] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  /\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:34:32.610] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:218
+
+
+[00:34:32.610] Browser LOG     [WebSocket] Code update published
+[00:34:32.610] Browser LOG     [Interviewer] Code update sent to candidate
+[00:34:32.610] Browser LOG     [STOMP] Received data
+[00:34:32.610] Browser LOG     [STOMP] <<< MESSAGE
+content-length:312
+message-id:2abfb6a0-9550-f58d-7c81-3041d5128c71-83
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:312
+
+
+[00:34:32.610] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:18:12.50743138","type":"code"}
+[00:34:32.610] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:34:32.833] Browser LOG     [STOMP] Received data
+[00:34:32.833] Browser LOG     [STOMP] <<< MESSAGE
+content-length:311
+message-id:fd400de0-43d0-caaa-e232-df1e3ebc9b65-78
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:311
+
+
+[00:34:32.833] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  \n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:18:12.002375697","type":"code"}
+[00:34:32.833] Browser LOG     [Candidate] Code updated from interviewer: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  \n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:34:32.833] Browser LOG     [STOMP] Received data
+[00:34:32.833] Browser LOG     [STOMP] <<< MESSAGE
+content-length:312
+message-id:fd400de0-43d0-caaa-e232-df1e3ebc9b65-80
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:312
+
+
+[00:34:32.833] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  /\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:18:12.297402698","type":"code"}
+[00:34:32.833] Browser LOG     [Candidate] Code updated from interviewer: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  /\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:34:32.833] Browser LOG     [STOMP] Received data
+[00:34:32.833] Browser LOG     [STOMP] <<< MESSAGE
+content-length:312
+message-id:fd400de0-43d0-caaa-e232-df1e3ebc9b65-82
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:312
+
+
+[00:34:32.833] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:18:12.50743138","type":"code"}
+[00:34:32.833] Browser LOG     [Candidate] Code updated from interviewer: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:34:32.938] Browser LOG     [STOMP] Received data
+[00:34:32.938] Browser LOG     [STOMP] <<< MESSAGE
+content-length:313
+message-id:2abfb6a0-9550-f58d-7c81-3041d5128c71-84
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:313
+
+
+[00:34:32.938] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:18:12.834749324","type":"code"}
+[00:34:32.938] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:34:33.440] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:220
+
+
+[00:34:33.440] Browser LOG     [WebSocket] Code update published
+[00:34:33.440] Browser LOG     [Interviewer] Code update sent to candidate
+[00:34:33.440] Browser LOG     [STOMP] Received data
+[00:34:33.440] Browser LOG     [STOMP] <<< MESSAGE
+content-length:314
+message-id:2abfb6a0-9550-f58d-7c81-3041d5128c71-87
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:314
+
+
+[00:34:33.440] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}ks","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:18:13.33740044","type":"code"}
+[00:34:33.440] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}ks","endLine":null,"language":"javascript","startLine":null}
+[00:34:33.833] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:218
+
+
+[00:34:33.833] Browser LOG     [WebSocket] Code update published
+[00:34:33.833] Browser LOG     Code update streamed via WebSocket for interview 1
+[00:34:33.833] Browser LOG     [STOMP] Received data
+[00:34:33.833] Browser LOG     [STOMP] <<< MESSAGE
+content-length:313
+message-id:fd400de0-43d0-caaa-e232-df1e3ebc9b65-85
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:313
+
+
+[00:34:33.833] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:18:12.834749324","type":"code"}
+[00:34:33.833] Browser LOG     [Candidate] Code updated from interviewer: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:34:33.833] Browser LOG     [STOMP] Received data
+[00:34:33.833] Browser LOG     [STOMP] <<< MESSAGE
+content-length:314
+message-id:fd400de0-43d0-caaa-e232-df1e3ebc9b65-86
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:314
+
+
+[00:34:33.833] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}ks","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:18:13.33740044","type":"code"}
+[00:34:33.833] Browser LOG     [Candidate] Code updated from interviewer: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}ks","endLine":null,"language":"javascript","startLine":null}
+[00:34:33.940] Browser LOG     [STOMP] Received data
+[00:34:33.940] Browser LOG     [STOMP] <<< MESSAGE
+content-length:315
+message-id:2abfb6a0-9550-f58d-7c81-3041d5128c71-89
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:315
+
+
+[00:34:33.940] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}ks","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:18:13.837153625","type":"code"}
+[00:34:33.940] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}ks","endLine":null,"language":"javascript","startLine":null}
+[00:34:34.303] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:233
+
+
+[00:34:34.303] Browser LOG     [WebSocket] Code update published
+[00:34:34.303] Browser LOG     [Interviewer] Code update sent to candidate
+[00:34:34.303] Browser LOG     [STOMP] Received data
+[00:34:34.303] Browser LOG     [STOMP] <<< MESSAGE
+content-length:328
+message-id:2abfb6a0-9550-f58d-7c81-3041d5128c71-90
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:328
+
+
+[00:34:34.303] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}MediaKeySession","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:18:14.201179417","type":"code"}
+[00:34:34.303] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}MediaKeySession","endLine":null,"language":"javascript","startLine":null}
+[00:34:34.832] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:220
+
+
+[00:34:34.832] Browser LOG     [WebSocket] Code update published
+[00:34:34.832] Browser LOG     Code update streamed via WebSocket for interview 1
+[00:34:34.832] Browser LOG     [STOMP] Received data
+[00:34:34.832] Browser LOG     [STOMP] <<< MESSAGE
+content-length:315
+message-id:fd400de0-43d0-caaa-e232-df1e3ebc9b65-88
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:315
+
+
+[00:34:34.832] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}ks","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:18:13.837153625","type":"code"}
+[00:34:34.832] Browser LOG     [Candidate] Code updated from interviewer: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}ks","endLine":null,"language":"javascript","startLine":null}
+[00:34:34.832] Browser LOG     [STOMP] Received data
+[00:34:34.832] Browser LOG     [STOMP] <<< MESSAGE
+content-length:328
+message-id:fd400de0-43d0-caaa-e232-df1e3ebc9b65-91
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:328
+
+
+[00:34:34.832] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}MediaKeySession","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:18:14.201179417","type":"code"}
+[00:34:34.832] Browser LOG     [Candidate] Code updated from interviewer: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}MediaKeySession","endLine":null,"language":"javascript","startLine":null}
+[00:34:34.935] Browser LOG     [STOMP] Received data
+[00:34:34.935] Browser LOG     [STOMP] <<< MESSAGE
+content-length:328
+message-id:2abfb6a0-9550-f58d-7c81-3041d5128c71-93
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:328
+
+
+[00:34:34.935] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}MediaKeySession","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:18:14.833834387","type":"code"}
+[00:34:34.935] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}MediaKeySession","endLine":null,"language":"javascript","startLine":null}
+[00:34:35.411] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:233
+
+
+[00:34:35.411] Browser LOG     [WebSocket] Code update published
+[00:34:35.411] Browser LOG     Code update streamed via WebSocket for interview 1
+[00:34:35.411] Browser LOG     [STOMP] Received data
+[00:34:35.411] Browser LOG     [STOMP] <<< MESSAGE
+content-length:328
+message-id:fd400de0-43d0-caaa-e232-df1e3ebc9b65-92
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:328
+
+
+[00:34:35.411] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}MediaKeySession","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:18:14.833834387","type":"code"}
+[00:34:35.411] Browser LOG     [Candidate] Code updated from interviewer: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}MediaKeySession","endLine":null,"language":"javascript","startLine":null}
+[00:34:37.652] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:237
+
+
+[00:34:37.652] Browser LOG     [WebSocket] Code update published
+[00:34:37.652] Browser LOG     Code update streamed via WebSocket for interview 1
+[00:34:37.652] Browser LOG     [STOMP] Received data
+[00:34:37.652] Browser LOG     [STOMP] <<< MESSAGE
+content-length:332
+message-id:fd400de0-43d0-caaa-e232-df1e3ebc9b65-94
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:332
+
+
+[00:34:37.652] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n  \n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}MediaKeySession","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:18:17.550378195","type":"code"}
+[00:34:37.652] Browser LOG     [Candidate] Code updated from interviewer: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n  \n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}MediaKeySession","endLine":null,"language":"javascript","startLine":null}
+[00:34:37.840] Browser LOG     [STOMP] Received data
+[00:34:37.840] Browser LOG     [STOMP] <<< MESSAGE
+content-length:332
+message-id:2abfb6a0-9550-f58d-7c81-3041d5128c71-95
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:332
+
+
+[00:34:37.840] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n  \n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}MediaKeySession","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:18:17.550378195","type":"code"}
+[00:34:37.840] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n  \n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}MediaKeySession","endLine":null,"language":"javascript","startLine":null}
+[00:34:37.938] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:238
+
+
+[00:34:37.938] Browser LOG     [WebSocket] Code update published
+[00:34:37.938] Browser LOG     Code update streamed via WebSocket for interview 1
+[00:34:37.938] Browser LOG     [STOMP] Received data
+[00:34:37.938] Browser LOG     [STOMP] <<< MESSAGE
+content-length:333
+message-id:fd400de0-43d0-caaa-e232-df1e3ebc9b65-96
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:333
+
+
+[00:34:37.938] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n  l\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}MediaKeySession","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:18:17.836693059","type":"code"}
+[00:34:37.938] Browser LOG     [Candidate] Code updated from interviewer: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n  l\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}MediaKeySession","endLine":null,"language":"javascript","startLine":null}
+[00:34:38.220] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:239
+
+
+[00:34:38.220] Browser LOG     [WebSocket] Code update published
+[00:34:38.220] Browser LOG     Code update streamed via WebSocket for interview 1
+[00:34:38.220] Browser LOG     [STOMP] Received data
+[00:34:38.220] Browser LOG     [STOMP] <<< MESSAGE
+content-length:334
+message-id:fd400de0-43d0-caaa-e232-df1e3ebc9b65-98
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:334
+
+
+[00:34:38.220] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n  ls\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}MediaKeySession","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:18:18.116229428","type":"code"}
+[00:34:38.220] Browser LOG     [Candidate] Code updated from interviewer: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n  ls\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}MediaKeySession","endLine":null,"language":"javascript","startLine":null}
+[00:34:38.578] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:249
+
+
+[00:34:38.578] Browser LOG     [WebSocket] Code update published
+[00:34:38.578] Browser LOG     Code update streamed via WebSocket for interview 1
+[00:34:38.578] Browser LOG     [STOMP] Received data
+[00:34:38.578] Browser LOG     [STOMP] <<< MESSAGE
+content-length:342
+message-id:fd400de0-43d0-caaa-e232-df1e3ebc9b65-100
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:342
+
+
+[00:34:38.578] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n  localStorage\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}MediaKeySession","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:18:18.4745248","type":"code"}
+[00:34:38.578] Browser LOG     [Candidate] Code updated from interviewer: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n  localStorage\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}MediaKeySession","endLine":null,"language":"javascript","startLine":null}
+[00:34:38.839] Browser LOG     [STOMP] Received data
+[00:34:38.839] Browser LOG     [STOMP] <<< MESSAGE
+content-length:333
+message-id:2abfb6a0-9550-f58d-7c81-3041d5128c71-97
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:333
+
+
+[00:34:38.839] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n  l\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}MediaKeySession","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:18:17.836693059","type":"code"}
+[00:34:38.839] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n  l\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}MediaKeySession","endLine":null,"language":"javascript","startLine":null}
+[00:34:38.839] Browser LOG     [STOMP] Received data
+[00:34:38.839] Browser LOG     [STOMP] <<< MESSAGE
+content-length:334
+message-id:2abfb6a0-9550-f58d-7c81-3041d5128c71-99
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:334
+
+
+[00:34:38.839] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n  ls\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}MediaKeySession","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:18:18.116229428","type":"code"}
+[00:34:38.839] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n  ls\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}MediaKeySession","endLine":null,"language":"javascript","startLine":null}
+[00:34:38.839] Browser LOG     [STOMP] Received data
+[00:34:38.839] Browser LOG     [STOMP] <<< MESSAGE
+content-length:342
+message-id:2abfb6a0-9550-f58d-7c81-3041d5128c71-101
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:342
+
+
+[00:34:38.839] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n  localStorage\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}MediaKeySession","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:18:18.4745248","type":"code"}
+[00:34:38.839] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n  //\n  localStorage\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}MediaKeySession","endLine":null,"language":"javascript","startLine":null}
+[00:35:14.744] Server  LOG      ✓ Compiled in 33ms
+[00:35:15.831] Browser ERROR   The final argument passed to %s changed size between renders. The order and size of this array must remain constant.
+
+Previous: %s
+Incoming: %s useEffect [javascript] []
+[00:37:38.264] Server  LOG      ✓ Compiled in 51ms
+[00:38:26.031] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:38:26.234] Browser LOG     [WebSocket] Connecting to ws://localhost:8080/api/ws/interview for interview 1
+[00:38:26.234] Browser LOG     [WebSocket] Client created, activating...
+[00:38:26.234] Browser LOG     [STOMP] Opening Web Socket...
+[00:38:26.234] Browser LOG     [STOMP] Web Socket Opened...
+[00:38:26.234] Browser LOG     [STOMP] >>> CONNECT
+accept-version:1.2,1.1,1.0
+heart-beat:10000,10000
+
+
+[00:38:26.234] Browser LOG     [STOMP] Received data
+[00:38:26.234] Browser LOG     [STOMP] <<< CONNECTED
+heart-beat:0,0
+version:1.2
+content-length:0
+
+
+[00:38:26.234] Browser LOG     [STOMP] connected to server undefined
+[00:38:26.234] Browser LOG     [WebSocket] ✓ Connected to interview 1
+[00:38:26.234] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-0
+destination:/topic/interview/1/chat
+
+
+[00:38:26.234] Browser LOG     [WebSocket] Subscribed to /topic/interview/1/chat
+[00:38:26.234] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-1
+destination:/topic/interview/1/code
+
+
+[00:38:26.234] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/1/code
+[00:38:26.234] Browser LOG     Latest code loaded: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","id":15,"language":"javascript","timestamp":"2025-12-04T15:21:52.318983"}
+[00:38:26.234] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:38:26.234] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/interview/1","route":"/interview/[id]"}
+[00:38:26.234] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/interview/1 color: rgb(120, 120, 120) color: inherit {"dp":"/interview/[id]","o":"http://localhost:3000/interview/1","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1765099326128}
+[00:38:28.605] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:38:29.096] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:38:29.096] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/i/3bc41d97-2477-4ac8-afd3-45dd6ff7d3c0","route":"/i/[token]"}
+[00:38:29.096] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/i/3bc41d97-2477-4ac8-afd3-45dd6ff7d3c0 color: rgb(120, 120, 120) color: inherit {"dp":"/i/[token]","o":"http://localhost:3000/i/3bc41d97-2477-4ac8-afd3-45dd6ff7d3c0","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1765099328674}
+[00:38:29.096] Browser LOG     [WebSocket] Connecting to ws://localhost:8080/api/ws/interview for interview 1
+[00:38:29.096] Browser LOG     [WebSocket] Client created, activating...
+[00:38:29.096] Browser LOG     [STOMP] Opening Web Socket...
+[00:38:29.096] Browser LOG     [STOMP] Web Socket Opened...
+[00:38:29.096] Browser LOG     [STOMP] >>> CONNECT
+accept-version:1.2,1.1,1.0
+heart-beat:10000,10000
+
+
+[00:38:29.096] Browser LOG     [STOMP] Received data
+[00:38:29.096] Browser LOG     [STOMP] <<< CONNECTED
+heart-beat:0,0
+version:1.2
+content-length:0
+
+
+[00:38:29.096] Browser LOG     [STOMP] connected to server undefined
+[00:38:29.096] Browser LOG     [WebSocket] ✓ Connected to interview 1
+[00:38:29.096] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-0
+destination:/topic/interview/1/chat
+
+
+[00:38:29.096] Browser LOG     [WebSocket] Subscribed to /topic/interview/1/chat
+[00:38:29.096] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-1
+destination:/topic/interview/1/code
+
+
+[00:38:29.096] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/1/code
+[00:38:30.914] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:192
+
+
+[00:38:30.915] Browser LOG     [WebSocket] Code update published
+[00:38:30.915] Browser LOG     Code update streamed via WebSocket for interview 1
+[00:38:30.915] Browser LOG     [STOMP] Received data
+[00:38:30.915] Browser LOG     [STOMP] <<< MESSAGE
+content-length:287
+message-id:b872a60d-406e-b527-d8d7-6df786d63681-103
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:287
+
+
+[00:38:30.915] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  \n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:22:10.812713481","type":"code"}
+[00:38:30.915] Browser LOG     [Candidate] Code updated from interviewer: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  \n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:38:31.200] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:193
+
+
+[00:38:31.200] Browser LOG     [WebSocket] Code update published
+[00:38:31.200] Browser LOG     Code update streamed via WebSocket for interview 1
+[00:38:31.200] Browser LOG     [STOMP] Received data
+[00:38:31.200] Browser LOG     [STOMP] <<< MESSAGE
+content-length:288
+message-id:b872a60d-406e-b527-d8d7-6df786d63681-105
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:288
+
+
+[00:38:31.200] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  l\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:22:11.096049529","type":"code"}
+[00:38:31.200] Browser LOG     [Candidate] Code updated from interviewer: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  l\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:38:31.623] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:199
+
+
+[00:38:31.623] Browser LOG     [WebSocket] Code update published
+[00:38:31.623] Browser LOG     Code update streamed via WebSocket for interview 1
+[00:38:31.623] Browser LOG     [STOMP] Received data
+[00:38:31.623] Browser LOG     [STOMP] <<< MESSAGE
+content-length:294
+message-id:b872a60d-406e-b527-d8d7-6df786d63681-107
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:294
+
+
+[00:38:31.623] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:22:11.519387717","type":"code"}
+[00:38:31.623] Browser LOG     [Candidate] Code updated from interviewer: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:38:31.897] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:200
+
+
+[00:38:31.897] Browser LOG     [WebSocket] Code update published
+[00:38:31.897] Browser LOG     Code update streamed via WebSocket for interview 1
+[00:38:31.897] Browser LOG     [STOMP] Received data
+[00:38:31.897] Browser LOG     [STOMP] <<< MESSAGE
+content-length:295
+message-id:b872a60d-406e-b527-d8d7-6df786d63681-109
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:295
+
+
+[00:38:31.897] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:22:11.792911295","type":"code"}
+[00:38:31.897] Browser LOG     [Candidate] Code updated from interviewer: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:38:32.537] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:210
+
+
+[00:38:32.537] Browser LOG     [WebSocket] Code update published
+[00:38:32.537] Browser LOG     Code update streamed via WebSocket for interview 1
+[00:38:32.537] Browser LOG     [STOMP] Received data
+[00:38:32.537] Browser LOG     [STOMP] <<< MESSAGE
+content-length:305
+message-id:b872a60d-406e-b527-d8d7-6df786d63681-111
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:305
+
+
+[00:38:32.537] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:22:12.433217302","type":"code"}
+[00:38:32.537] Browser LOG     [Candidate] Code updated from interviewer: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:38:32.843] Browser LOG     [STOMP] Received data
+[00:38:32.843] Browser LOG     [STOMP] <<< MESSAGE
+content-length:287
+message-id:f4468b45-c505-c8f1-2139-b8058d3bc397-102
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:287
+
+
+[00:38:32.843] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  \n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:22:10.812713481","type":"code"}
+[00:38:32.843] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  \n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:38:32.843] Browser LOG     [STOMP] Received data
+[00:38:32.843] Browser LOG     [STOMP] <<< MESSAGE
+content-length:288
+message-id:f4468b45-c505-c8f1-2139-b8058d3bc397-104
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:288
+
+
+[00:38:32.843] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  l\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:22:11.096049529","type":"code"}
+[00:38:32.843] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  l\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:38:32.843] Browser LOG     [STOMP] Received data
+[00:38:32.843] Browser LOG     [STOMP] <<< MESSAGE
+content-length:294
+message-id:f4468b45-c505-c8f1-2139-b8058d3bc397-106
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:294
+
+
+[00:38:32.843] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:22:11.519387717","type":"code"}
+[00:38:32.843] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:38:32.843] Browser LOG     [STOMP] Received data
+[00:38:32.843] Browser LOG     [STOMP] <<< MESSAGE
+content-length:295
+message-id:f4468b45-c505-c8f1-2139-b8058d3bc397-108
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:295
+
+
+[00:38:32.843] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:22:11.792911295","type":"code"}
+[00:38:32.843] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:38:32.843] Browser LOG     [STOMP] Received data
+[00:38:32.843] Browser LOG     [STOMP] <<< MESSAGE
+content-length:305
+message-id:f4468b45-c505-c8f1-2139-b8058d3bc397-110
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:305
+
+
+[00:38:32.843] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:22:12.433217302","type":"code"}
+[00:38:32.843] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:38:35.168] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:214
+
+
+[00:38:35.168] Browser LOG     [WebSocket] Code update published
+[00:38:35.168] Browser LOG     Code update streamed via WebSocket for interview 1
+[00:38:35.168] Browser LOG     [STOMP] Received data
+[00:38:35.168] Browser LOG     [STOMP] <<< MESSAGE
+content-length:309
+message-id:b872a60d-406e-b527-d8d7-6df786d63681-113
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:309
+
+
+[00:38:35.168] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n  \n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:22:15.065007563","type":"code"}
+[00:38:35.168] Browser LOG     [Candidate] Code updated from interviewer: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n  \n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:38:35.535] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:221
+
+
+[00:38:35.535] Browser LOG     [WebSocket] Code update published
+[00:38:35.535] Browser LOG     Code update streamed via WebSocket for interview 1
+[00:38:35.535] Browser LOG     [STOMP] Received data
+[00:38:35.535] Browser LOG     [STOMP] <<< MESSAGE
+content-length:316
+message-id:b872a60d-406e-b527-d8d7-6df786d63681-115
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:316
+
+
+[00:38:35.535] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n  longUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:22:15.430378667","type":"code"}
+[00:38:35.535] Browser LOG     [Candidate] Code updated from interviewer: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n  longUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:38:35.842] Browser LOG     [STOMP] Received data
+[00:38:35.842] Browser LOG     [STOMP] <<< MESSAGE
+content-length:309
+message-id:f4468b45-c505-c8f1-2139-b8058d3bc397-112
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:309
+
+
+[00:38:35.842] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n  \n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:22:15.065007563","type":"code"}
+[00:38:35.842] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n  \n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:38:35.842] Browser LOG     [STOMP] Received data
+[00:38:35.842] Browser LOG     [STOMP] <<< MESSAGE
+content-length:316
+message-id:f4468b45-c505-c8f1-2139-b8058d3bc397-114
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:316
+
+
+[00:38:35.842] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n  longUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:22:15.430378667","type":"code"}
+[00:38:35.842] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n  longUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","endLine":null,"language":"javascript","startLine":null}
+[00:38:39.249] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:225
+
+
+[00:38:39.249] Browser LOG     [WebSocket] Code update published
+[00:38:39.249] Browser LOG     [Interviewer] Code update sent to candidate
+[00:38:39.249] Browser LOG     [STOMP] Received data
+[00:38:39.249] Browser LOG     [STOMP] <<< MESSAGE
+content-length:320
+message-id:f4468b45-c505-c8f1-2139-b8058d3bc397-116
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:320
+
+
+[00:38:39.249] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n  longUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n  \n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:22:19.146148253","type":"code"}
+[00:38:39.249] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n  longUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n  \n}","endLine":null,"language":"javascript","startLine":null}
+[00:38:39.832] Browser LOG     [STOMP] Received data
+[00:38:39.832] Browser LOG     [STOMP] <<< MESSAGE
+content-length:320
+message-id:b872a60d-406e-b527-d8d7-6df786d63681-117
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:320
+
+
+[00:38:39.832] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n  longUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n  \n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:22:19.146148253","type":"code"}
+[00:38:39.832] Browser LOG     [Candidate] Code updated from interviewer: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n  longUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n  \n}","endLine":null,"language":"javascript","startLine":null}
+[00:38:39.998] Browser LOG     [STOMP] Received data
+[00:38:39.998] Browser LOG     [STOMP] <<< MESSAGE
+content-length:320
+message-id:f4468b45-c505-c8f1-2139-b8058d3bc397-118
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:320
+
+
+[00:38:39.998] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n  longUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n  \n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:22:19.835398973","type":"code"}
+[00:38:39.998] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n  longUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n  \n}","endLine":null,"language":"javascript","startLine":null}
+[00:38:39.998] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:227
+
+
+[00:38:39.998] Browser LOG     [WebSocket] Code update published
+[00:38:39.998] Browser LOG     [Interviewer] Code update sent to candidate
+[00:38:39.998] Browser LOG     [STOMP] Received data
+[00:38:39.998] Browser LOG     [STOMP] <<< MESSAGE
+content-length:321
+message-id:f4468b45-c505-c8f1-2139-b8058d3bc397-120
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:321
+
+
+[00:38:39.998] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n  longUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n  sh\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:22:19.89620591","type":"code"}
+[00:38:39.998] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n  longUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n  sh\n}","endLine":null,"language":"javascript","startLine":null}
+[00:38:40.423] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:229
+
+
+[00:38:40.423] Browser LOG     [WebSocket] Code update published
+[00:38:40.423] Browser LOG     [Interviewer] Code update sent to candidate
+[00:38:40.423] Browser LOG     [STOMP] Received data
+[00:38:40.423] Browser LOG     [STOMP] <<< MESSAGE
+content-length:324
+message-id:f4468b45-c505-c8f1-2139-b8058d3bc397-122
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:324
+
+
+[00:38:40.423] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n  longUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n  sh\n}\n","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:22:20.320192158","type":"code"}
+[00:38:40.423] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n  longUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n  sh\n}\n","endLine":null,"language":"javascript","startLine":null}
+[00:38:40.833] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:225
+
+
+[00:38:40.833] Browser LOG     [WebSocket] Code update published
+[00:38:40.833] Browser LOG     Code update streamed via WebSocket for interview 1
+[00:38:40.833] Browser LOG     [STOMP] Received data
+[00:38:40.833] Browser LOG     [STOMP] <<< MESSAGE
+content-length:320
+message-id:b872a60d-406e-b527-d8d7-6df786d63681-119
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:320
+
+
+[00:38:40.833] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n  longUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n  \n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:22:19.835398973","type":"code"}
+[00:38:40.833] Browser LOG     [Candidate] Code updated from interviewer: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n  longUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n  \n}","endLine":null,"language":"javascript","startLine":null}
+[00:38:40.833] Browser LOG     [STOMP] Received data
+[00:38:40.833] Browser LOG     [STOMP] <<< MESSAGE
+content-length:321
+message-id:b872a60d-406e-b527-d8d7-6df786d63681-121
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:321
+
+
+[00:38:40.834] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n  longUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n  sh\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:22:19.89620591","type":"code"}
+[00:38:40.834] Browser LOG     [Candidate] Code updated from interviewer: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n  longUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n  sh\n}","endLine":null,"language":"javascript","startLine":null}
+[00:38:40.834] Browser LOG     [STOMP] Received data
+[00:38:40.834] Browser LOG     [STOMP] <<< MESSAGE
+content-length:324
+message-id:b872a60d-406e-b527-d8d7-6df786d63681-123
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:324
+
+
+[00:38:40.834] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n  longUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n  sh\n}\n","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:22:20.320192158","type":"code"}
+[00:38:40.834] Browser LOG     [Candidate] Code updated from interviewer: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n  longUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n  sh\n}\n","endLine":null,"language":"javascript","startLine":null}
+[00:38:40.939] Browser LOG     [STOMP] Received data
+[00:38:40.939] Browser LOG     [STOMP] <<< MESSAGE
+content-length:324
+message-id:f4468b45-c505-c8f1-2139-b8058d3bc397-124
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:324
+
+
+[00:38:40.939] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n  longUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n  sh\n}\n","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:22:20.836416433","type":"code"}
+[00:38:40.939] Browser LOG     Code updated from WebSocket: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n  longUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n  sh\n}\n","endLine":null,"language":"javascript","startLine":null}
+[00:38:41.435] Browser LOG     [STOMP] >>> SEND
+destination:/app/interview/1/code
+content-length:229
+
+
+[00:38:41.435] Browser LOG     [WebSocket] Code update published
+[00:38:41.435] Browser LOG     Code update streamed via WebSocket for interview 1
+[00:38:41.435] Browser LOG     [STOMP] Received data
+[00:38:41.435] Browser LOG     [STOMP] <<< MESSAGE
+content-length:324
+message-id:b872a60d-406e-b527-d8d7-6df786d63681-125
+subscription:sub-1
+content-type:application/json
+destination:/topic/interview/1/code
+content-length:324
+
+
+[00:38:41.435] Browser LOG     [WebSocket] Received code update: {"interviewId":1,"payload":{"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n  longUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n  sh\n}\n","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-07T11:22:20.836416433","type":"code"}
+[00:38:41.435] Browser LOG     [Candidate] Code updated from interviewer: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl\n  longUrl\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n  sh\n}\n","endLine":null,"language":"javascript","startLine":null}

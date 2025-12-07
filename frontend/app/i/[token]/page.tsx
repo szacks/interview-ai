@@ -166,6 +166,24 @@ export default function CandidateInterviewPage({
     }
   }, [conversation.messages])
 
+  // Listen for code updates from interviewer (shared codepad)
+  useEffect(() => {
+    const handleCodeUpdate = (event: Event) => {
+      const customEvent = event as CustomEvent
+      const codeUpdate = customEvent.detail
+      setCode(codeUpdate.code || '')
+      if (codeUpdate.language) {
+        setLanguage(codeUpdate.language)
+      }
+      console.log('[Candidate] Code updated from interviewer:', codeUpdate)
+    }
+
+    window.addEventListener('codeUpdate', handleCodeUpdate)
+    return () => {
+      window.removeEventListener('codeUpdate', handleCodeUpdate)
+    }
+  }, [])
+
   // Stream code updates via WebSocket (live, minimal latency)
   useEffect(() => {
     if (!interviewId || !webSocketService.isConnected()) return
@@ -199,7 +217,7 @@ export default function CandidateInterviewPage({
   }
 
   const handleSendMessage = async () => {
-    if (!chatMessage.trim()) return
+    if (!chatMessage.trim() || !interviewId) return
 
     const tempMessage: ChatMessageType = {
       role: "candidate",
@@ -208,9 +226,9 @@ export default function CandidateInterviewPage({
       senderName: "You",
     }
 
-    addMessage(interviewId, tempMessage)
+    addMessage(interviewIdStr, tempMessage)
     setChatMessage("")
-    setLoading(interviewId, true)
+    setLoading(interviewIdStr, true)
 
     try {
       await chatService.sendMessage({
@@ -222,7 +240,7 @@ export default function CandidateInterviewPage({
     } catch (error) {
       console.error("Error sending message", error)
     } finally {
-      setLoading(interviewId, false)
+      setLoading(interviewIdStr, false)
     }
   }
 

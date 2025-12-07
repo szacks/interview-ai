@@ -97,6 +97,7 @@ export default function InterviewSessionPage({
 
   // Chat state and hooks
   const scrollRef = useRef<HTMLDivElement>(null)
+  const codeDebounceRef = useRef<NodeJS.Timeout | null>(null)
   const conversation = useChatStore((state) => state.getConversation(interviewId))
   const addMessage = useChatStore((state) => state.addMessage)
   const setConnectionStatus = useChatStore((state) => state.setConnectionStatus)
@@ -367,35 +368,40 @@ export default function InterviewSessionPage({
                     <div className="px-4 py-2 border-b border-border bg-card/50 flex items-center justify-between">
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Eye className="size-4" />
-                        <span>Viewing candidate's code in real-time</span>
+                        <span>Shared code editor - Candidate sees your edits in real-time</span>
                       </div>
                       <Badge variant="outline" className="text-xs">
                         {codeLanguage}
                       </Badge>
                     </div>
                     <div className="flex-1 overflow-hidden">
-                      {candidateCode ? (
-                        <Editor
-                          height="100%"
-                          language={codeLanguage}
-                          value={candidateCode}
-                          theme="vs-dark"
-                          options={{
-                            readOnly: true,
-                            minimap: { enabled: false },
-                            fontSize: 14,
-                            lineNumbers: "on",
-                            scrollBeyondLastLine: false,
-                          }}
-                        />
-                      ) : (
-                        <div className="h-full flex items-center justify-center bg-muted/20">
-                          <div className="text-center">
-                            <Code2 className="size-12 text-muted-foreground/50 mx-auto mb-4" />
-                            <p className="text-sm text-muted-foreground">Waiting for candidate to write code...</p>
-                          </div>
-                        </div>
-                      )}
+                      <Editor
+                        height="100%"
+                        language={codeLanguage}
+                        value={candidateCode}
+                        onChange={(value) => {
+                          setCandidateCode(value || '')
+                          // Send updated code to candidate via WebSocket (with debounce)
+                          if (interviewId && webSocketService.isConnected()) {
+                            // Clear previous debounce timer
+                            if (codeDebounceRef.current) {
+                              clearTimeout(codeDebounceRef.current)
+                            }
+                            // Set new debounce timer
+                            codeDebounceRef.current = setTimeout(() => {
+                              webSocketService.publishCodeUpdate(value || '', codeLanguage)
+                              console.log('[Interviewer] Code update sent to candidate')
+                            }, 200)
+                          }
+                        }}
+                        theme="vs-dark"
+                        options={{
+                          minimap: { enabled: false },
+                          fontSize: 14,
+                          lineNumbers: "on",
+                          scrollBeyondLastLine: false,
+                        }}
+                      />
                     </div>
                   </div>
                 </TabsContent>
