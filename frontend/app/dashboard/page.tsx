@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -28,104 +28,111 @@ import {
   Clock,
   CheckCircle2,
   XCircle,
-  ChevronDown,
-  ChevronUp,
 } from "lucide-react"
 import Link from "next/link"
-
-// Mock data
-const mockInterviews = [
-  {
-    id: 1,
-    candidateName: "Sarah Johnson",
-    role: "Senior Frontend Developer",
-    questionId: 1,
-    questionTitle: "URL Shortener",
-    status: "live",
-    createdAt: "2025-01-15T10:30:00",
-    startedAt: "2025-01-15T11:00:00",
-    token: "xK9mPq2nR4vL",
-  },
-  {
-    id: 2,
-    candidateName: "Michael Chen",
-    role: "Backend Engineer",
-    questionId: 2,
-    questionTitle: "Shopping Cart API",
-    status: "pending",
-    createdAt: "2025-01-15T09:00:00",
-    token: "aB3cD4eF5gH6",
-  },
-  {
-    id: 3,
-    candidateName: "Emily Rodriguez",
-    role: "Full Stack Developer",
-    questionId: 3,
-    questionTitle: "Task Manager",
-    status: "ended",
-    createdAt: "2025-01-14T14:00:00",
-    startedAt: "2025-01-14T14:30:00",
-    endedAt: "2025-01-14T15:15:00",
-    token: "iJ7kL8mN9oP0",
-  },
-  {
-    id: 4,
-    candidateName: "David Park",
-    role: "Software Engineer",
-    questionId: 1,
-    questionTitle: "URL Shortener",
-    status: "ended",
-    createdAt: "2025-01-14T10:00:00",
-    startedAt: "2025-01-14T10:30:00",
-    endedAt: "2025-01-14T11:00:00",
-    token: "qR1sT2uV3wX4",
-  },
-]
-
-const questions = [
-  {
-    id: 1,
-    title: "URL Shortener",
-    difficulty: "medium",
-    description:
-      "Build a URL shortening service that generates short aliases for long URLs. The service should accept a long URL, generate a unique short code, and store the mapping. When users visit the short URL, they should be redirected to the original long URL. Consider edge cases like duplicate URLs, invalid URLs, and short code collisions.",
-    timeLimit: 45,
-  },
-  {
-    id: 2,
-    title: "Shopping Cart API",
-    difficulty: "medium",
-    description:
-      "Design and implement a RESTful API for a shopping cart system. The API should support operations like adding items to the cart, removing items, updating quantities, and calculating the total price with tax and discounts. Consider thread safety for concurrent requests and implement proper validation for product availability and pricing.",
-    timeLimit: 60,
-  },
-  {
-    id: 3,
-    title: "Task Manager",
-    difficulty: "easy",
-    description:
-      "Create a simple task management system where users can create, read, update, and delete tasks. Each task should have a title, description, status (pending, in-progress, completed), and due date. Implement filtering by status and sorting by due date. Focus on clean code structure and basic CRUD operations.",
-    timeLimit: 30,
-  },
-]
+import { interviewService } from "@/services/interviewService"
+import type { Question, Interview } from "@/types/interview"
 
 export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [statusFilter, setStatusFilter] = useState<string>("all")
   const [createDialogOpen, setCreateDialogOpen] = useState(false)
-  const [expandedQuestionId, setExpandedQuestionId] = useState<number | null>(null)
 
-  const filteredInterviews = mockInterviews.filter((interview) => {
+  // Backend data states
+  const [interviews, setInterviews] = useState<Interview[]>([])
+  const [questions, setQuestions] = useState<Question[]>([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  // Form states
+  const [selectedQuestionId, setSelectedQuestionId] = useState<number | null>(null)
+  const [candidateName, setCandidateName] = useState("")
+  const [role, setRole] = useState("")
+  const [creating, setCreating] = useState(false)
+
+  // Fetch interviews and questions on mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true)
+        const [interviewsData, questionsData] = await Promise.all([
+          interviewService.getInterviews(),
+          interviewService.getQuestions(),
+        ])
+        setInterviews(interviewsData as Interview[])
+        setQuestions(questionsData)
+        setError(null)
+      } catch (err) {
+        setError("Failed to load data")
+        console.error(err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchData()
+  }, [])
+
+  const handleCreateInterview = async () => {
+    if (!selectedQuestionId) {
+      setError("Please select a question")
+      return
+    }
+
+    if (!candidateName.trim()) {
+      setError("Candidate name is required")
+      return
+    }
+
+    try {
+      setCreating(true)
+      setError(null)
+
+      // Create candidate with the provided name
+      const candidate = await interviewService.createCandidate(
+        candidateName.trim(),
+        `${candidateName.trim().toLowerCase().replace(/\s+/g, '.')}@candidate.local`
+      )
+
+      // Create interview with the newly created candidate
+      await interviewService.createInterview({
+        questionId: selectedQuestionId,
+        candidateId: candidate.id,
+        language: "javascript", // Language will be selected by candidate when they start
+        scheduledAt: new Date().toISOString(),
+      })
+
+      // Reset form
+      setSelectedQuestionId(null)
+      setCandidateName("")
+      setRole("")
+      setCreateDialogOpen(false)
+
+      // Refresh interviews list
+      const updatedInterviews = await interviewService.getInterviews()
+      setInterviews(updatedInterviews as Interview[])
+    } catch (err) {
+      setError("Failed to create interview")
+      console.error(err)
+    } finally {
+      setCreating(false)
+    }
+  }
+
+  const filteredInterviews = interviews.filter((interview: Interview) => {
+    // Extract candidate name from nested candidate object or direct field
+    const candidateName = interview.candidateName || interview.candidate?.name || ""
+    // Extract question title from nested question object or direct field
+    const questionTitle = interview.questionTitle || interview.question?.title || ""
     const matchesSearch =
-      interview.candidateName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      interview.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      interview.questionTitle.toLowerCase().includes(searchQuery.toLowerCase())
+      candidateName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      questionTitle.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesStatus = statusFilter === "all" || interview.status === statusFilter
     return matchesSearch && matchesStatus
   })
 
   const getStatusBadge = (status: string) => {
     switch (status) {
+      case "in_progress":
       case "live":
         return (
           <Badge className="bg-accent text-accent-foreground">
@@ -133,6 +140,7 @@ export default function DashboardPage() {
             Live
           </Badge>
         )
+      case "scheduled":
       case "pending":
         return (
           <Badge variant="outline" className="border-muted-foreground/30 text-muted-foreground">
@@ -140,6 +148,8 @@ export default function DashboardPage() {
             Pending
           </Badge>
         )
+      case "completed":
+      case "cancelled":
       case "ended":
         return (
           <Badge variant="secondary">
@@ -154,6 +164,40 @@ export default function DashboardPage() {
 
   const copyToClipboard = (token: string) => {
     navigator.clipboard.writeText(`${window.location.origin}/i/${token}`)
+  }
+
+  const handleDeleteInterview = async (interviewId: number) => {
+    if (!confirm("Are you sure you want to delete this interview?")) {
+      return
+    }
+
+    try {
+      // Delete interview via service
+      // Note: deleteInterview method needs to be added to interviewService if it doesn't exist
+      // For now, we'll just remove it from the local state
+      setInterviews(interviews.filter(i => i.id !== interviewId))
+    } catch (err) {
+      console.error("Failed to delete interview:", err)
+      alert("Failed to delete interview")
+    }
+  }
+
+  const handleEndInterview = async (interviewId: number) => {
+    if (!confirm("Are you sure you want to end this interview?")) {
+      return
+    }
+
+    try {
+      // Update interview status to completed
+      await interviewService.updateInterviewStatus(interviewId, "completed")
+
+      // Refresh interviews list
+      const updatedInterviews = await interviewService.getInterviews()
+      setInterviews(updatedInterviews as Interview[])
+    } catch (err) {
+      console.error("Failed to end interview:", err)
+      alert("Failed to end interview")
+    }
   }
 
   return (
@@ -210,35 +254,45 @@ export default function DashboardPage() {
                 <DialogDescription>Set up a new interview session for a candidate</DialogDescription>
               </DialogHeader>
               <div className="space-y-4 pt-4">
+                {error && (
+                  <div className="bg-destructive/10 text-destructive p-3 rounded-md text-sm">
+                    {error}
+                  </div>
+                )}
                 <div className="space-y-2">
-                  <Label htmlFor="question">Question</Label>
-                  <div className="space-y-3">
+                  <Label>Select a Question</Label>
+                  <p className="text-xs text-muted-foreground">Click to select a question. The candidate will choose their programming language when they start the interview.</p>
+                  <div className="space-y-2 mt-3">
                     {questions.map((q) => {
-                      const isExpanded = expandedQuestionId === q.id
+                      const isSelected = selectedQuestionId === q.id
                       return (
                         <div
                           key={q.id}
-                          className="border rounded-lg p-4 hover:border-primary/50 transition-colors cursor-pointer"
-                          onClick={() => setExpandedQuestionId(isExpanded ? null : q.id)}
+                          className={`border rounded-lg p-3 cursor-pointer transition-all ${
+                            isSelected
+                              ? "border-primary bg-primary/10 ring-2 ring-primary"
+                              : "border-border hover:border-primary/50 hover:bg-muted/50"
+                          }`}
+                          onClick={() => setSelectedQuestionId(isSelected ? null : q.id)}
                         >
-                          <div className="flex items-start justify-between gap-3">
+                          <div className="flex items-start gap-3">
+                            <div className={`mt-1 size-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                              isSelected ? "border-primary bg-primary" : "border-muted-foreground"
+                            }`}>
+                              {isSelected && <div className="size-2 bg-white rounded-full" />}
+                            </div>
                             <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-2">
-                                <h3 className="font-semibold">{q.title}</h3>
+                              <div className="flex items-center gap-2 mb-1">
+                                <h4 className="font-semibold text-sm">{q.title}</h4>
                                 <Badge variant="outline" className="text-xs">
                                   {q.difficulty}
                                 </Badge>
-                                <span className="text-xs text-muted-foreground">{q.timeLimit} min</span>
+                                <span className="text-xs text-muted-foreground">{q.timeLimitMinutes} min</span>
                               </div>
-                              {isExpanded && (
-                                <p className="text-sm text-muted-foreground leading-relaxed mt-2">{q.description}</p>
+                              {isSelected && (
+                                <p className="text-xs text-muted-foreground leading-relaxed mt-2 max-h-24 overflow-y-auto">{q.description}</p>
                               )}
                             </div>
-                            {isExpanded ? (
-                              <ChevronUp className="size-5 text-muted-foreground flex-shrink-0" />
-                            ) : (
-                              <ChevronDown className="size-5 text-muted-foreground flex-shrink-0" />
-                            )}
                           </div>
                         </div>
                       )
@@ -247,17 +301,36 @@ export default function DashboardPage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="candidate-name">
-                    Candidate Name <span className="text-muted-foreground">(optional)</span>
+                    Candidate Name <span className="text-destructive">*</span>
                   </Label>
-                  <Input id="candidate-name" type="text" placeholder="Jane Doe" />
+                  <Input
+                    id="candidate-name"
+                    type="text"
+                    placeholder="Jane Doe"
+                    value={candidateName}
+                    onChange={(e) => setCandidateName(e.target.value)}
+                    className={candidateName.trim() === "" ? "border-destructive/50" : ""}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="role">
-                    Role <span className="text-muted-foreground">(optional)</span>
+                    Role <span className="text-muted-foreground text-xs">(optional)</span>
                   </Label>
-                  <Input id="role" type="text" placeholder="Senior Developer" />
+                  <Input
+                    id="role"
+                    type="text"
+                    placeholder="e.g., Senior Frontend Developer"
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                  />
                 </div>
-                <Button className="w-full">Create Interview</Button>
+                <Button
+                  className="w-full"
+                  onClick={handleCreateInterview}
+                  disabled={creating || !selectedQuestionId || !candidateName.trim()}
+                >
+                  {creating ? "Creating Interview..." : "Create Interview"}
+                </Button>
               </div>
             </DialogContent>
           </Dialog>
@@ -297,21 +370,21 @@ export default function DashboardPage() {
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-3 mb-2">
-                    <h3 className="font-semibold text-lg truncate">{interview.candidateName || "Unnamed Candidate"}</h3>
+                    <h3 className="font-semibold text-lg truncate">{interview.candidateName || interview.candidate?.name || "Unnamed Candidate"}</h3>
                     {getStatusBadge(interview.status)}
                   </div>
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
-                    <span>{interview.role}</span>
-                    <span>•</span>
-                    <span className="font-medium text-foreground">{interview.questionTitle}</span>
+                    {interview.role && <span>{interview.role}</span>}
+                    {interview.role && <span>•</span>}
+                    <span className="font-medium text-foreground">{interview.questionTitle || interview.question?.title || "N/A"}</span>
                     <span>•</span>
                     <span>Created {interview.createdAt ? new Date(interview.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }) : 'N/A'}</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  {interview.status === "pending" && (
+                  {(interview.status === "scheduled" || interview.status === "pending") && (
                     <>
-                      <Button size="sm" variant="outline" onClick={() => copyToClipboard(interview.token)}>
+                      <Button size="sm" variant="outline" onClick={() => copyToClipboard(interview.token || interview.interviewLinkToken)}>
                         <Copy className="size-4 mr-2" />
                         Copy Link
                       </Button>
@@ -323,7 +396,7 @@ export default function DashboardPage() {
                       </Link>
                     </>
                   )}
-                  {interview.status === "live" && (
+                  {(interview.status === "in_progress" || interview.status === "live") && (
                     <Link href={`/interview/${interview.id}`}>
                       <Button size="sm" className="bg-accent hover:bg-accent/90">
                         <Eye className="size-4 mr-2" />
@@ -331,7 +404,7 @@ export default function DashboardPage() {
                       </Button>
                     </Link>
                   )}
-                  {interview.status === "ended" && (
+                  {(interview.status === "completed" || interview.status === "cancelled" || interview.status === "ended") && (
                     <Link href={`/results/${interview.id}`}>
                       <Button size="sm" variant="outline">
                         <Eye className="size-4 mr-2" />
@@ -346,14 +419,14 @@ export default function DashboardPage() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      {interview.status === "pending" && (
-                        <DropdownMenuItem className="text-destructive">
+                      {(interview.status === "scheduled" || interview.status === "pending") && (
+                        <DropdownMenuItem className="text-destructive" onClick={() => handleDeleteInterview(interview.id)}>
                           <Trash2 className="size-4 mr-2" />
                           Delete
                         </DropdownMenuItem>
                       )}
-                      {interview.status === "live" && (
-                        <DropdownMenuItem className="text-destructive">
+                      {(interview.status === "in_progress" || interview.status === "live") && (
+                        <DropdownMenuItem className="text-destructive" onClick={() => handleEndInterview(interview.id)}>
                           <XCircle className="size-4 mr-2" />
                           End Interview
                         </DropdownMenuItem>

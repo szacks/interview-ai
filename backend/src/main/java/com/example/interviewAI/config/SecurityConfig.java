@@ -47,7 +47,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/auth/**", "/health/**", "/error", "/interviews/*/token/**", "/chat/**", "/code/**", "/ws/**").permitAll()
+                        .requestMatchers("/auth/**", "/health/**", "/error", "/interviews/*/token/**", "/questions/**", "/candidates/**", "/chat/**", "/code/**", "/ws/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

@@ -243,6 +243,16 @@ public class InterviewService {
             response.setQuestion(questionResponse);
         }
 
+        // Map candidate
+        if (interview.getCandidate() != null) {
+            CandidateResponse candidateResponse = new CandidateResponse();
+            candidateResponse.setId(interview.getCandidate().getId());
+            candidateResponse.setName(interview.getCandidate().getName());
+            candidateResponse.setEmail(interview.getCandidate().getEmail());
+            candidateResponse.setCreatedAt(interview.getCandidate().getCreatedAt());
+            response.setCandidate(candidateResponse);
+        }
+
         return response;
     }
 

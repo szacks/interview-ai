@@ -56,3 +56,163 @@ https://react.dev/link/hydration-mismatch
 [00:04:58.599] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
 [00:04:58.599] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/dashboard","route":"/dashboard"}
 [00:04:58.599] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/dashboard color: rgb(120, 120, 120) color: inherit {"dp":"/dashboard","o":"http://localhost:3000/dashboard","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1765128276852}
+[00:07:25.664] Server  LOG      ✓ Compiled in 38ms
+[00:07:39.315] Browser ERROR   uncaughtError: ReferenceError: mockInterviews is not defined
+[00:07:42.382] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:07:42.461] Server  LOG      ✓ Compiled in 32ms
+[00:07:42.735] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:07:43.316] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:07:43.316] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/dashboard","route":"/dashboard"}
+[00:07:43.317] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/dashboard color: rgb(120, 120, 120) color: inherit {"dp":"/dashboard","o":"http://localhost:3000/dashboard","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1765128441252}
+[00:07:55.372] Server  LOG      ✓ Compiled in 36ms
+[00:08:00.183] Server  LOG      ✓ Compiled in 29ms
+[00:08:12.929] Server  LOG      ✓ Compiled in 80ms
+[00:08:19.988] Server  LOG      ✓ Compiled in 36ms
+[00:08:23.305] Server  LOG      ✓ Compiled in 32ms
+[00:08:26.818] Server  LOG      ✓ Compiled in 30ms
+[00:27:49.559] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:27:49.729] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:27:49.729] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/dashboard","route":"/dashboard"}
+[00:27:49.729] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/dashboard color: rgb(120, 120, 120) color: inherit {"dp":"/dashboard","o":"http://localhost:3000/dashboard","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1765129647980}
+[00:30:28.896] Server  LOG      ✓ Compiled in 35ms
+[00:30:43.208] Server  LOG      ✓ Compiled in 88ms
+[00:30:48.041] Server  LOG      ✓ Compiled in 31ms
+[00:30:53.453] Server  LOG      ✓ Compiled in 42ms
+[00:30:54.316] Browser ERROR   uncaughtError: ReferenceError: Select is not defined
+[00:31:00.853] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:31:00.962] Server  LOG      ✓ Compiled in 33ms
+[00:31:01.162] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:31:01.316] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:31:01.316] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/dashboard","route":"/dashboard"}
+[00:31:01.316] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/dashboard color: rgb(120, 120, 120) color: inherit {"dp":"/dashboard","o":"http://localhost:3000/dashboard","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1765129839541}
+[00:31:07.294] Server  LOG      ✓ Compiled in 28ms
+[00:31:52.199] Server  LOG      ✓ Compiled in 34ms
+[00:33:05.390] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:33:05.535] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:33:05.535] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/dashboard","route":"/dashboard"}
+[00:33:05.535] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/dashboard color: rgb(120, 120, 120) color: inherit {"dp":"/dashboard","o":"http://localhost:3000/dashboard","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1765129963789}
+[00:34:59.796] Server  LOG      ✓ Compiled in 36ms
+[00:35:18.677] Server  LOG      ✓ Compiled in 32ms
+[01:07:56.921] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:07:57.066] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[01:07:57.067] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/dashboard","route":"/dashboard"}
+[01:07:57.067] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/dashboard color: rgb(120, 120, 120) color: inherit {"dp":"/dashboard","o":"http://localhost:3000/dashboard","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1765132055321}
+[01:09:06.397] Server  LOG      ✓ Compiled in 34ms
+[01:09:14.919] Server  LOG      ✓ Compiled in 39ms
+[01:09:29.432] Server  LOG      ✓ Compiled in 39ms
+[01:38:08.000] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:38:08.169] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[01:38:08.169] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/dashboard","route":"/dashboard"}
+[01:38:08.169] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/dashboard color: rgb(120, 120, 120) color: inherit {"dp":"/dashboard","o":"http://localhost:3000/dashboard","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1765133866406}
+[01:38:15.507] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/interview/1 color: rgb(120, 120, 120) color: inherit {"dp":"/interview/[id]","o":"http://localhost:3000/interview/1","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1765133873588}
+[01:38:15.507] Browser LOG     [WebSocket] Connecting to ws://localhost:8080/api/ws/interview for interview 1
+[01:38:15.507] Browser LOG     [WebSocket] Client created, activating...
+[01:38:15.507] Browser LOG     [STOMP] Opening Web Socket...
+[01:38:15.507] Browser LOG     [STOMP] Web Socket Opened...
+[01:38:15.507] Browser LOG     [STOMP] >>> CONNECT
+accept-version:1.2,1.1,1.0
+heart-beat:10000,10000
+
+
+[01:38:15.507] Browser LOG     Latest code loaded: {"code":"function shortenUrl(longUrl) {\n  // Your code here\n  longUrl.getLongUrl()\n}\n\nfunction getLongUrl(shortCode) {\n  // Your code here\n}","id":15,"language":"javascript","timestamp":"2025-12-04T15:21:52.318983"}
+[01:38:15.507] Browser LOG     [STOMP] Received data
+[01:38:15.507] Browser LOG     [STOMP] <<< CONNECTED
+heart-beat:0,0
+version:1.2
+content-length:0
+
+
+[01:38:15.507] Browser LOG     [STOMP] connected to server undefined
+[01:38:15.507] Browser LOG     [WebSocket] ✓ Connected to interview 1
+[01:38:15.507] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-0
+destination:/topic/interview/1/chat
+
+
+[01:38:15.507] Browser LOG     [WebSocket] Subscribed to /topic/interview/1/chat
+[01:38:15.507] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-1
+destination:/topic/interview/1/code
+
+
+[01:38:15.507] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/1/code
+[01:38:35.472] Browser LOG     [STOMP] >>> UNSUBSCRIBE
+id:[object Object]
+
+
+[01:38:35.472] Browser LOG     [STOMP] >>> UNSUBSCRIBE
+id:[object Object]
+
+
+[01:38:35.472] Browser LOG     [STOMP] >>> DISCONNECT
+receipt:close-2
+
+
+[01:38:35.472] Browser LOG     [WebSocket] Disconnected
+[01:38:35.472] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/dashboard color: rgb(120, 120, 120) color: inherit {"dp":"/dashboard","o":"http://localhost:3000/dashboard","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1765133893708}
+[01:38:35.472] Browser LOG     [STOMP] Received data
+[01:38:35.472] Browser LOG     [STOMP] <<< RECEIPT
+receipt-id:close-2
+content-length:0
+
+
+[01:38:35.472] Browser LOG     [WebSocket] Disconnected from interview 1
+[01:38:35.472] Browser LOG     [STOMP] Connection closed to ws://localhost:8080/api/ws/interview
+[01:38:35.473] Browser LOG     [WebSocket] WebSocket closed
+[01:38:38.102] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/interview/4 color: rgb(120, 120, 120) color: inherit {"dp":"/interview/[id]","o":"http://localhost:3000/interview/4","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1765133896305}
+[01:38:38.102] Browser LOG     [WebSocket] Connecting to ws://localhost:8080/api/ws/interview for interview 4
+[01:38:38.102] Browser LOG     [WebSocket] Client created, activating...
+[01:38:38.102] Browser LOG     [STOMP] Opening Web Socket...
+[01:38:38.102] Browser LOG     [STOMP] Web Socket Opened...
+[01:38:38.102] Browser LOG     [STOMP] >>> CONNECT
+accept-version:1.2,1.1,1.0
+heart-beat:10000,10000
+
+
+[01:38:38.102] Browser LOG     [STOMP] Received data
+[01:38:38.102] Browser LOG     [STOMP] <<< CONNECTED
+heart-beat:0,0
+version:1.2
+content-length:0
+
+
+[01:38:38.102] Browser LOG     [STOMP] connected to server undefined
+[01:38:38.102] Browser LOG     [WebSocket] ✓ Connected to interview 4
+[01:38:38.102] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-0
+destination:/topic/interview/4/chat
+
+
+[01:38:38.102] Browser LOG     [WebSocket] Subscribed to /topic/interview/4/chat
+[01:38:38.102] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-1
+destination:/topic/interview/4/code
+
+
+[01:38:38.102] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/4/code
+[01:38:38.102] Browser ERROR   API Error: {"code":"ERR_BAD_REQUEST","message":"Resource not found","status":404}
+[01:38:38.102] Browser ERROR   Error fetching latest code: {"code":"ERR_BAD_REQUEST","message":"Resource not found","status":404}
+[01:38:38.102] Browser ERROR   Error loading candidate code: {"code":"ERR_BAD_REQUEST","message":"Resource not found","status":404}
+[01:38:44.511] Browser LOG     [STOMP] >>> UNSUBSCRIBE
+id:[object Object]
+
+
+[01:38:44.511] Browser LOG     [STOMP] >>> UNSUBSCRIBE
+id:[object Object]
+
+
+[01:38:44.511] Browser LOG     [STOMP] >>> DISCONNECT
+receipt:close-2
+
+
+[01:38:44.511] Browser LOG     [WebSocket] Disconnected
+[01:38:44.511] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/dashboard color: rgb(120, 120, 120) color: inherit {"dp":"/dashboard","o":"http://localhost:3000/dashboard","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1765133902748}
+[01:38:44.511] Browser LOG     [STOMP] Received data
+[01:38:44.511] Browser LOG     [STOMP] <<< RECEIPT
+receipt-id:close-2
+content-length:0
+
+
+[01:38:44.511] Browser LOG     [WebSocket] Disconnected from interview 4
+[01:38:44.511] Browser LOG     [STOMP] Connection closed to ws://localhost:8080/api/ws/interview
+[01:38:44.511] Browser LOG     [WebSocket] WebSocket closed

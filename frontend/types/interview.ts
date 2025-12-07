@@ -2,17 +2,22 @@ export interface Interview {
   id: number
   candidateId: number
   candidateName?: string
+  role?: string
   interviewerId?: number
   questionId: number
   questionTitle?: string
   language: string
-  status: 'scheduled' | 'in_progress' | 'completed' | 'cancelled'
+  status: 'scheduled' | 'in_progress' | 'completed' | 'cancelled' | 'pending' | 'live' | 'ended'
   scheduledAt?: string
   startedAt?: string
   completedAt?: string
   interviewLinkToken: string
+  token?: string
   createdAt?: string
   updatedAt?: string
+  // Nested objects from backend
+  candidate?: Candidate
+  question?: Question
 }
 
 export interface CreateInterviewRequest {
