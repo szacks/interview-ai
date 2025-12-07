@@ -30,10 +30,12 @@ import {
   XCircle,
 } from "lucide-react"
 import Link from "next/link"
+import { useToast } from "@/hooks/use-toast"
 import { interviewService } from "@/services/interviewService"
 import type { Question, Interview } from "@/types/interview"
 
 export default function DashboardPage() {
+  const { toast } = useToast()
   const [searchQuery, setSearchQuery] = useState("")
   const [statusFilter, setStatusFilter] = useState<string>("all")
   const [createDialogOpen, setCreateDialogOpen] = useState(false)
@@ -162,8 +164,24 @@ export default function DashboardPage() {
     }
   }
 
-  const copyToClipboard = (token: string) => {
-    navigator.clipboard.writeText(`${window.location.origin}/i/${token}`)
+  const copyToClipboard = async (token: string) => {
+    try {
+      const url = `${window.location.origin}/i/${token}`
+      await navigator.clipboard.writeText(url)
+      toast({
+        title: "Link copied!",
+        description: "Interview link has been copied to your clipboard.",
+        duration: 2000,
+      })
+    } catch (err) {
+      console.error("Failed to copy to clipboard:", err)
+      toast({
+        title: "Failed to copy",
+        description: "Could not copy the link to your clipboard.",
+        variant: "destructive",
+        duration: 2000,
+      })
+    }
   }
 
   const handleDeleteInterview = async (interviewId: number) => {
