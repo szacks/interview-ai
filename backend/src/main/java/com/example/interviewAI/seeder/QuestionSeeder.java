@@ -147,8 +147,95 @@ public class QuestionSeeder implements CommandLineRunner {
         longestSubstring.setInitialCodeJavascript("function lengthOfLongestSubstring(s) { return 0; }");
         longestSubstring.setCreatedAt(LocalDateTime.now());
 
+        // Question 4: Shopping Cart with Discount Rules (Medium)
+        Question shoppingCart = new Question();
+        shoppingCart.setTitle("Shopping Cart with Discount Rules");
+        shoppingCart.setDescription("You are implementing an in-memory shopping cart for an e-commerce site.\n\n" +
+                "Each item in the cart has:\n" +
+                "- productId (string or number, up to you)\n" +
+                "- unitPrice (decimal > 0)\n" +
+                "- quantity (integer ≥ 1)\n\n" +
+                "REQUIRED OPERATIONS\n\n" +
+                "addItem(productId, unitPrice, quantity)\n" +
+                "- If the same product with the same unitPrice already exists, increase its quantity.\n" +
+                "- Otherwise, add a new item entry.\n\n" +
+                "removeItem(productId, quantity)\n" +
+                "- Reduce the quantity of that product.\n" +
+                "- If the quantity reaches 0, remove the item entirely.\n\n" +
+                "getItems()\n" +
+                "- Return the items currently in the cart (format is up to you).\n\n" +
+                "getSubtotal()\n" +
+                "- Return the sum of unitPrice * quantity for all items, BEFORE any discounts.\n\n" +
+                "getTotal()\n" +
+                "- Return the final total AFTER applying the discount rules below, in this exact order.\n\n" +
+                "DISCOUNT RULES\n\n" +
+                "1. Generalized Buy-X-Get-Y-Free Rules (per product)\n\n" +
+                "Some products may have a rule like: Buy 2 get 1 free, Buy 3 get 1 free, etc.\n" +
+                "Assume you have access to a configuration: buyXGetYRules = { \"A\": { buy: 2, free: 1 }, \"B\": { buy: 3, free: 1 } ... }\n" +
+                "For any product with such a rule:\n" +
+                "- Group size is X + Y.\n" +
+                "- For every full group, the customer pays only for X units.\n" +
+                "Example: Rule = Buy 2 Get 1 Free, Quantity = 7\n" +
+                "- Groups = floor(7 / 3) = 2\n" +
+                "- Free units = 2\n" +
+                "- Paid units = 7 - 2 = 5\n\n" +
+                "2. Subtotal Discount (10%)\n\n" +
+                "If the original subtotal (before discounts) is greater than 100, apply a 10% discount.\n\n" +
+                "3. Maximum Combined Discount\n\n" +
+                "The total discount from all rules combined must not exceed 50 (same currency as prices).\n\n" +
+                "ASSUMPTIONS\n\n" +
+                "- Single-threaded usage.\n" +
+                "- No persistence, everything is in memory.\n" +
+                "- Candidate may choose any language, style, and structure.\n" +
+                "- Only the behavior above must be implemented.");
+        shoppingCart.setDifficulty("medium");
+        shoppingCart.setTimeLimitMinutes(45);
+        shoppingCart.setSupportedLanguages("java,python,javascript");
+        shoppingCart.setRequirementsJson("{\"requirements\":[" +
+                "\"Implement ShoppingCart class with add/remove/get items operations\"," +
+                "\"Calculate subtotal (sum of unitPrice * quantity)\"," +
+                "\"Apply 10% discount if subtotal > 100\"," +
+                "\"Apply buy 2 get 1 free for product A (pay for 2 out of 3)\"," +
+                "\"Cap total discount at 50\"," +
+                "\"Handle item updates when same productId added with same price\"]}");
+        shoppingCart.setTestsJson("{\"tests\":[" +
+                "{\"input\":\"Add A(price:10,qty:3)\",\"expected\":\"subtotal:30, discount:10, total:20\",\"description\":\"Buy 2 get 1 free\"}," +
+                "{\"input\":\"Add items subtotal 150\",\"expected\":\"10% discount applied\",\"description\":\"Subtotal > 100\"}," +
+                "{\"input\":\"Add A(10,6) + B(20,5)\",\"expected\":\"discount capped at 50\",\"description\":\"Maximum discount cap\"}," +
+                "{\"input\":\"Empty cart\",\"expected\":\"subtotal:0, total:0\",\"description\":\"Empty cart\"}" +
+                "]}");
+        shoppingCart.setRubricJson("{\"categories\":[" +
+                "{\"category\":\"Correctness\",\"points\":40,\"description\":\"All calculations correct, discounts applied properly\"}," +
+                "{\"category\":\"Item Management\",\"points\":25,\"description\":\"Add/remove items work correctly, quantities updated\"}," +
+                "{\"category\":\"Discount Logic\",\"points\":20,\"description\":\"All three discount rules implemented and capped correctly\"}," +
+                "{\"category\":\"Code Quality\",\"points\":15,\"description\":\"Clean code structure, proper encapsulation\"}" +
+                "]}");
+        shoppingCart.setIntentionalBugsJson("{\"bugs\":[" +
+                "{\"name\":\"Discount cap not applied\",\"description\":\"Forgets to limit total discount to 50\",\"difficulty\":\"common\"}," +
+                "{\"name\":\"Buy 2 get 1 free miscalculation\",\"description\":\"Calculates discount incorrectly for product A\",\"difficulty\":\"medium\"}," +
+                "{\"name\":\"Duplicate items\",\"description\":\"Doesn't update quantity when same item added twice\",\"difficulty\":\"easy\"}" +
+                "]}");
+        shoppingCart.setInitialCodeJava("public class ShoppingCart {\n" +
+                "    public void addItem(String productId, double unitPrice, int quantity) { }\n" +
+                "    public void removeItem(String productId, int quantity) { }\n" +
+                "    public double getSubtotal() { return 0; }\n" +
+                "    public double getTotal() { return 0; }\n" +
+                "}");
+        shoppingCart.setInitialCodePython("class ShoppingCart:\n" +
+                "    def addItem(self, productId, unitPrice, quantity): pass\n" +
+                "    def removeItem(self, productId, quantity): pass\n" +
+                "    def getSubtotal(self): return 0\n" +
+                "    def getTotal(self): return 0");
+        shoppingCart.setInitialCodeJavascript("class ShoppingCart {\n" +
+                "    addItem(productId, unitPrice, quantity) { }\n" +
+                "    removeItem(productId, quantity) { }\n" +
+                "    getSubtotal() { return 0; }\n" +
+                "    getTotal() { return 0; }\n" +
+                "}");
+        shoppingCart.setCreatedAt(LocalDateTime.now());
+
         // Save all questions to database
-        questionRepository.saveAll(Arrays.asList(twoSum, validParentheses, longestSubstring));
-        log.info("Successfully seeded 3 questions to database: Two Sum, Valid Parentheses, Longest Substring");
+        questionRepository.saveAll(Arrays.asList(twoSum, validParentheses, longestSubstring, shoppingCart));
+        log.info("Successfully seeded 4 questions to database: Two Sum, Valid Parentheses, Longest Substring, Shopping Cart");
     }
 }

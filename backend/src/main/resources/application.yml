@@ -85,7 +85,7 @@ claude:
   model: claude-haiku-4-5-20251001
   api-url: https://api.anthropic.com/v1
   max-tokens: 1024
-  temperature: 0.7
+  temperature: 0.2
 
 # Docker Configuration
 docker:

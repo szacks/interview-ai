@@ -305,7 +305,7 @@ export default function DashboardPage() {
                     <span>•</span>
                     <span className="font-medium text-foreground">{interview.questionTitle}</span>
                     <span>•</span>
-                    <span>Created {new Date(interview.createdAt).toLocaleDateString()}</span>
+                    <span>Created {interview.createdAt ? new Date(interview.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }) : 'N/A'}</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
