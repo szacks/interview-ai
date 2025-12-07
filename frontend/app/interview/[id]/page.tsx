@@ -92,6 +92,9 @@ export default function InterviewSessionPage({
   const [candidateCode, setCandidateCode] = useState("")
   const [codeLanguage, setCodeLanguage] = useState("javascript")
 
+  // Timer state - avoid hydration mismatch
+  const [elapsedTime, setElapsedTime] = useState("0:00")
+
   // Chat state and hooks
   const scrollRef = useRef<HTMLDivElement>(null)
   const conversation = useChatStore((state) => state.getConversation(interviewId))
@@ -154,6 +157,17 @@ export default function InterviewSessionPage({
     }
   }, [])
 
+  // Update elapsed time every second (client-side only to avoid hydration mismatch)
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const elapsed = Date.now() - mockInterview.startedAt.getTime()
+      const minutes = Math.floor(elapsed / 60000)
+      const seconds = Math.floor((elapsed % 60000) / 1000)
+      setElapsedTime(`${minutes}:${seconds.toString().padStart(2, "0")}`)
+    }, 1000)
+    return () => clearInterval(timer)
+  }, [])
+
   // Load latest candidate code when interviewId is available
   useEffect(() => {
     if (!interviewId) return
@@ -206,13 +220,6 @@ export default function InterviewSessionPage({
     }
   }, [conversation.messages])
 
-  const getElapsedTime = () => {
-    const elapsed = Date.now() - mockInterview.startedAt.getTime()
-    const minutes = Math.floor(elapsed / 60000)
-    const seconds = Math.floor((elapsed % 60000) / 1000)
-    return `${minutes}:${seconds.toString().padStart(2, "0")}`
-  }
-
   const copyLink = () => {
     navigator.clipboard.writeText(`${window.location.origin}/i/xK9mPq2nR4vL`)
   }
@@ -261,7 +268,7 @@ export default function InterviewSessionPage({
               {!isPending && (
                 <div className="flex items-center gap-2 text-sm px-3 py-1.5 rounded-md bg-muted">
                   <Clock className="size-4" />
-                  <span className="font-mono">{getElapsedTime()}</span>
+                  <span className="font-mono">{elapsedTime}</span>
                 </div>
               )}
               {isPending ? (
@@ -462,7 +469,9 @@ export default function InterviewSessionPage({
                             {msg.role === "candidate" ? "Candidate" : "AI Assistant"}
                           </span>
                           <span className="text-xs text-muted-foreground">
-                            {msg.timestamp.toLocaleTimeString()}
+                            {msg.timestamp instanceof Date
+                              ? msg.timestamp.toLocaleTimeString()
+                              : new Date(msg.timestamp).toLocaleTimeString()}
                           </span>
                         </div>
                         <div className="text-sm leading-relaxed whitespace-pre-wrap">

@@ -460,7 +460,9 @@ export default function CandidateInterviewPage({
                     </div>
                     <div className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</div>
                     <div className="text-xs text-muted-foreground mt-1">
-                      {msg.timestamp.toLocaleTimeString()}
+                      {msg.timestamp instanceof Date
+                        ? msg.timestamp.toLocaleTimeString()
+                        : new Date(msg.timestamp).toLocaleTimeString()}
                     </div>
                   </div>
                 </div>

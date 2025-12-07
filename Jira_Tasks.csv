@@ -99,3 +99,4 @@ Create deployment and API documentation,Task,Documentation,Week 8,Day 40,4h,Depl
 Final bug fixes and launch preparation,Task,Launch,Week 8,Day 40,4h,Fix remaining issues verify monitoring set up on-call schedule final checks,Full Team,High,
 Configure domain email instead of localhost,Task,Configuration,Week 8,Day 40,2h,Update email templates and links to use production domain,Backend Dev,High,
 Document all paid services and costs,Task,Documentation,Week 8,Day 40,2h,Create list: Hetzner VPS Claude Haiku Stripe Resend domain with monthly costs,Backend Dev,Medium,
+timer should be optional configure,,,,,,,,,
