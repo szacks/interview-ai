@@ -61,7 +61,7 @@ const mockChatHistory = [
   },
 ]
 
-type InterviewStatus = "waiting" | "live" | "ended"
+type InterviewStatus = "setup" | "waiting" | "live" | "ended"
 
 export default function CandidateInterviewPage({
   params,
@@ -69,7 +69,7 @@ export default function CandidateInterviewPage({
   params: Promise<{ token: string }>
 }) {
   // Interview state
-  const [status, setStatus] = useState<InterviewStatus>("live") // Can be: waiting, live, ended
+  const [status, setStatus] = useState<InterviewStatus>("setup") // Can be: setup, waiting, live, ended
   const [interviewId, setInterviewId] = useState<number | null>(null)
   const [isResolvingToken, setIsResolvingToken] = useState(true)
   const [language, setLanguage] = useState("javascript")
@@ -78,6 +78,11 @@ export default function CandidateInterviewPage({
   const [testResults, setTestResults] = useState<Array<{ name: string; passed: boolean }>>([])
   const [showChat, setShowChat] = useState(false)
   const [startTime] = useState(Date.now())
+
+  // Candidate setup state
+  const [candidateFullName, setCandidateFullName] = useState("")
+  const [selectedLanguage, setSelectedLanguage] = useState("javascript")
+  const [isSubmittingSetup, setIsSubmittingSetup] = useState(false)
 
   // Local chat state
   const [chatMessage, setChatMessage] = useState("")
@@ -202,6 +207,27 @@ export default function CandidateInterviewPage({
     setCode(mockQuestion.initialCode[newLanguage as keyof typeof mockQuestion.initialCode])
   }
 
+  const handleSetupSubmit = async () => {
+    if (!candidateFullName.trim()) {
+      alert("Please enter your full name")
+      return
+    }
+
+    try {
+      setIsSubmittingSetup(true)
+      // Set the selected language for the interview
+      setLanguage(selectedLanguage)
+      setCode(mockQuestion.initialCode[selectedLanguage as keyof typeof mockQuestion.initialCode])
+      // Move to waiting state
+      setStatus("waiting")
+    } catch (error) {
+      console.error("Error submitting setup:", error)
+      alert("Failed to set up interview")
+    } finally {
+      setIsSubmittingSetup(false)
+    }
+  }
+
   const handleRunTests = () => {
     setIsRunning(true)
     // Simulate test execution
@@ -258,6 +284,86 @@ export default function CandidateInterviewPage({
         <div className="text-center">
           <Loader2 className="size-8 animate-spin text-primary mx-auto mb-4" />
           <p className="text-muted-foreground">Loading interview...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (status === "setup") {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="max-w-lg w-full">
+          <div className="rounded-lg border border-border bg-card p-8">
+            <div className="size-16 rounded-full bg-primary/10 mx-auto mb-6 flex items-center justify-center">
+              <Code2 className="size-8 text-primary" />
+            </div>
+
+            <h1 className="text-2xl font-bold text-center mb-2">Welcome to Your Interview</h1>
+            <p className="text-center text-muted-foreground mb-8">
+              Please provide your information to get started
+            </p>
+
+            <div className="space-y-6">
+              {/* Full Name Input */}
+              <div className="space-y-2">
+                <label htmlFor="fullname" className="text-sm font-medium">
+                  Full Name <span className="text-destructive">*</span>
+                </label>
+                <Input
+                  id="fullname"
+                  placeholder="e.g., John Smith"
+                  value={candidateFullName}
+                  onChange={(e) => setCandidateFullName(e.target.value)}
+                  disabled={isSubmittingSetup}
+                  className={candidateFullName.trim() === "" ? "border-destructive/50" : ""}
+                />
+              </div>
+
+              {/* Language Selection */}
+              <div className="space-y-2">
+                <label htmlFor="language" className="text-sm font-medium">
+                  Programming Language <span className="text-destructive">*</span>
+                </label>
+                <Select value={selectedLanguage} onValueChange={setSelectedLanguage} disabled={isSubmittingSetup}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="javascript">JavaScript</SelectItem>
+                    <SelectItem value="python">Python</SelectItem>
+                    <SelectItem value="java">Java</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Info Box */}
+              <div className="rounded-lg border border-border/50 bg-muted/30 p-4">
+                <p className="text-sm text-muted-foreground">
+                  You can change your programming language anytime during the interview if needed.
+                </p>
+              </div>
+
+              {/* Submit Button */}
+              <Button
+                onClick={handleSetupSubmit}
+                disabled={isSubmittingSetup || !candidateFullName.trim()}
+                className="w-full"
+                size="lg"
+              >
+                {isSubmittingSetup ? (
+                  <>
+                    <Loader2 className="size-4 mr-2 animate-spin" />
+                    Starting Interview...
+                  </>
+                ) : (
+                  <>
+                    <Play className="size-4 mr-2" />
+                    Start Interview
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     )
