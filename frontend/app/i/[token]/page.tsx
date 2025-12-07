@@ -10,7 +10,9 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Code2, Play, Send, Loader2, CheckCircle2, XCircle, Clock, MessageSquare, Terminal } from "lucide-react"
 import Editor from "@monaco-editor/react"
 import { useChatStore } from "@/stores/chatStore"
+import { useCodeStore } from "@/stores/codeStore"
 import { chatService } from "@/services/chatService"
+import { codeService } from "@/services/codeService"
 import { webSocketService } from "@/services/webSocketService"
 import type { ChatMessage as ChatMessageType } from "@/types/chat"
 
@@ -61,10 +63,15 @@ const mockChatHistory = [
 
 type InterviewStatus = "waiting" | "live" | "ended"
 
-export default function CandidateInterviewPage() {
+export default function CandidateInterviewPage({
+  params,
+}: {
+  params: Promise<{ token: string }>
+}) {
   // Interview state
   const [status, setStatus] = useState<InterviewStatus>("live") // Can be: waiting, live, ended
-  const [interviewId] = useState("1") // Get from params in real implementation
+  const [interviewId, setInterviewId] = useState<number | null>(null)
+  const [isResolvingToken, setIsResolvingToken] = useState(true)
   const [language, setLanguage] = useState("javascript")
   const [code, setCode] = useState(mockQuestion.initialCode.javascript)
   const [isRunning, setIsRunning] = useState(false)
@@ -76,15 +83,36 @@ export default function CandidateInterviewPage() {
   const [chatMessage, setChatMessage] = useState("")
   const scrollRef = useRef<HTMLDivElement>(null)
 
+  // Resolve interview token to ID on mount
+  useEffect(() => {
+    const resolveToken = async () => {
+      try {
+        // Await params first (Next.js 16 requirement)
+        const resolvedParams = await params
+        const resolved = await chatService.resolveToken(resolvedParams.token)
+        setInterviewId(resolved)
+      } catch (error) {
+        console.error("Error resolving interview token:", error)
+      } finally {
+        setIsResolvingToken(false)
+      }
+    }
+
+    resolveToken()
+  }, [params])
+
   // Chat store hooks
-  const conversation = useChatStore((state) => state.getConversation(interviewId))
+  const interviewIdStr = interviewId ? String(interviewId) : ""
+  const conversation = useChatStore((state) => state.getConversation(interviewIdStr))
   const addMessage = useChatStore((state) => state.addMessage)
   const setLoading = useChatStore((state) => state.setLoading)
   const setConnectionStatus = useChatStore((state) => state.setConnectionStatus)
   const loadHistory = useChatStore((state) => state.loadHistory)
 
-  // Load chat history on mount
+  // Load chat history when interviewId is available
   useEffect(() => {
+    if (!interviewId) return
+
     const loadChatHistory = async () => {
       try {
         const history = await chatService.getChatHistory(interviewId)
@@ -95,7 +123,7 @@ export default function CandidateInterviewPage() {
           timestamp: new Date(msg.timestamp),
           senderName: msg.senderName,
         }))
-        loadHistory(interviewId, messages)
+        loadHistory(interviewIdStr, messages)
       } catch (error) {
         console.error("Error loading chat history", error)
       }
@@ -104,18 +132,20 @@ export default function CandidateInterviewPage() {
     loadChatHistory()
   }, [interviewId, loadHistory])
 
-  // Connect to WebSocket on mount
+  // Connect to WebSocket when interviewId is available
   useEffect(() => {
+    if (!interviewId || !interviewIdStr) return
+
     const connectWebSocket = async () => {
       try {
-        await webSocketService.connect(interviewId)
+        await webSocketService.connect(String(interviewId))
 
         webSocketService.onMessage((message) => {
-          addMessage(interviewId, message)
+          addMessage(interviewIdStr, message)
         })
 
         webSocketService.onConnectionChange((connected) => {
-          setConnectionStatus(interviewId, connected)
+          setConnectionStatus(interviewIdStr, connected)
         })
       } catch (error) {
         console.error("Error connecting to WebSocket", error)
@@ -127,7 +157,7 @@ export default function CandidateInterviewPage() {
     return () => {
       webSocketService.disconnect()
     }
-  }, [interviewId, addMessage, setConnectionStatus])
+  }, [interviewId, interviewIdStr, addMessage, setConnectionStatus])
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -135,6 +165,19 @@ export default function CandidateInterviewPage() {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight
     }
   }, [conversation.messages])
+
+  // Stream code updates via WebSocket (live, minimal latency)
+  useEffect(() => {
+    if (!interviewId || !webSocketService.isConnected()) return
+
+    // Use a small debounce (200ms) to avoid too many updates while still being responsive
+    const timer = setTimeout(() => {
+      webSocketService.publishCodeUpdate(code, language)
+      console.log('Code update streamed via WebSocket for interview', interviewId)
+    }, 200)
+
+    return () => clearTimeout(timer)
+  }, [code, language, interviewId])
 
   const handleLanguageChange = (newLanguage: string) => {
     setLanguage(newLanguage)
@@ -188,6 +231,18 @@ export default function CandidateInterviewPage() {
     const minutes = Math.floor(elapsed / 60000)
     const seconds = Math.floor((elapsed % 60000) / 1000)
     return `${minutes}:${seconds.toString().padStart(2, "0")}`
+  }
+
+  // Show loading while resolving token
+  if (isResolvingToken || !interviewId) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="size-8 animate-spin text-primary mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading interview...</p>
+        </div>
+      </div>
+    )
   }
 
   if (status === "waiting") {

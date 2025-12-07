@@ -70,6 +70,29 @@ public class ChatController {
     }
 
     /**
+     * GET /api/chat/resolve-token/{token}
+     * Resolve an interview link token to an interview ID
+     *
+     * @param token The interview link token
+     * @return The interview ID
+     */
+    @GetMapping("/resolve-token/{token}")
+    public ResponseEntity<Long> resolveToken(
+            @PathVariable String token) {
+
+        log.info("Resolving interview token: {}", token);
+
+        try {
+            Long interviewId = chatService.resolveInterviewToken(token);
+            return ResponseEntity.ok(interviewId);
+
+        } catch (RuntimeException e) {
+            log.error("Error resolving token: {}", e.getMessage());
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
      * Health check endpoint for chat service
      */
     @GetMapping("/health")

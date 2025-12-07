@@ -12,8 +12,9 @@ export const chatService = {
    */
   sendMessage: async (request: ChatMessageRequest): Promise<ChatMessageResponse> => {
     try {
-      const response = await apiClient.post<ChatMessageResponse>('/chat/message', request);
-      return response.data || response;
+      // apiClient interceptor already extracts response.data
+      const data = (await apiClient.post('/chat/message', request)) as unknown as ChatMessageResponse;
+      return data;
     } catch (error) {
       console.error('Error sending chat message:', error);
       throw error;
@@ -27,12 +28,41 @@ export const chatService = {
    */
   getChatHistory: async (interviewId: string | number): Promise<ChatMessageResponse[]> => {
     try {
-      const response = await apiClient.get<ChatMessageResponse[]>(
-        `/chat/history/${interviewId}`
-      );
-      return response.data || response;
+      // apiClient interceptor already extracts response.data
+      const data = (await apiClient.get(`/chat/history/${interviewId}`)) as unknown;
+      return Array.isArray(data) ? data : [];
     } catch (error) {
       console.error('Error fetching chat history:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Resolve an interview link token to an interview ID
+   * @param token The interview link token
+   * @returns The interview ID
+   */
+  resolveToken: async (token: string): Promise<number> => {
+    try {
+      // apiClient interceptor already extracts response.data
+      const data = (await apiClient.get(`/chat/resolve-token/${token}`)) as unknown;
+
+      // Handle various response formats
+      if (typeof data === 'number') {
+        return data;
+      }
+
+      if (typeof data === 'string') {
+        const parsed = parseInt(data.trim(), 10);
+        if (isNaN(parsed)) {
+          throw new Error(`Failed to parse interview ID from response: ${data}`);
+        }
+        return parsed;
+      }
+
+      throw new Error(`Invalid response type: ${typeof data}`);
+    } catch (error) {
+      console.error('Error resolving interview token:', error);
       throw error;
     }
   },
@@ -43,8 +73,11 @@ export const chatService = {
    */
   checkHealth: async (): Promise<string> => {
     try {
-      const response = await apiClient.get<string>('/chat/health');
-      return response.data || response;
+      // apiClient interceptor already extracts response.data
+      const data = (await apiClient.get('/chat/health')) as unknown;
+      return typeof data === "string"
+        ? data
+        : JSON.stringify(data);
     } catch (error) {
       console.error('Error checking chat service health:', error);
       throw error;

@@ -152,6 +152,24 @@ public class ChatService {
     }
 
     /**
+     * Resolve an interview link token to an interview ID
+     * @param token The interview link token
+     * @return The interview ID
+     */
+    public Long resolveInterviewToken(String token) {
+        log.debug("Resolving interview token: {}", token);
+
+        Interview interview = interviewRepository.findByInterviewLinkToken(token)
+                .orElseThrow(() -> {
+                    log.error("Interview not found for token: {}", token);
+                    return new RuntimeException("Interview not found for token: " + token);
+                });
+
+        log.debug("Resolved token {} to interview ID {}", token, interview.getId());
+        return interview.getId();
+    }
+
+    /**
      * Convert ChatMessage entity to response DTO
      */
     private ChatMessageResponse mapToResponse(ChatMessage message) {

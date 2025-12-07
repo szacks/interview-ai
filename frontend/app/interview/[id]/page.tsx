@@ -25,6 +25,7 @@ import Link from "next/link"
 import Editor from "@monaco-editor/react"
 import { useChatStore } from "@/stores/chatStore"
 import { chatService } from "@/services/chatService"
+import { codeService } from "@/services/codeService"
 import { webSocketService } from "@/services/webSocketService"
 
 // Mock data
@@ -43,29 +44,6 @@ const mockInterview = {
   candidateConnected: true,
   selectedLanguage: "javascript",
 }
-
-const mockCode = `function shortenUrl(longUrl) {
-  // Generate a unique short code
-  const shortCode = generateShortCode();
-  
-  // Store mapping in database
-  urlDatabase.set(shortCode, longUrl);
-  
-  return \`https://short.url/\${shortCode}\`;
-}
-
-function generateShortCode() {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
-  for (let i = 0; i < 6; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-  return result;
-}
-
-function getLongUrl(shortCode) {
-  return urlDatabase.get(shortCode);
-}`
 
 const mockChatHistory = [
   {
@@ -99,12 +77,20 @@ const mockTestResults = [
   { name: "Should generate unique codes", passed: true },
 ]
 
-export default function InterviewSessionPage() {
+export default function InterviewSessionPage({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
   // Interview state
   const [notes, setNotes] = useState("")
   const [activeTab, setActiveTab] = useState("code")
   const [isPending, setIsPending] = useState(false)
-  const [interviewId] = useState("1") // Get from params in real implementation
+  const [interviewId, setInterviewId] = useState<string>("")
+
+  // Code state
+  const [candidateCode, setCandidateCode] = useState("")
+  const [codeLanguage, setCodeLanguage] = useState("javascript")
 
   // Chat state and hooks
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -113,8 +99,26 @@ export default function InterviewSessionPage() {
   const setConnectionStatus = useChatStore((state) => state.setConnectionStatus)
   const loadHistory = useChatStore((state) => state.loadHistory)
 
-  // Load chat history on mount
+  // Extract interview ID from params on mount
   useEffect(() => {
+    const extractId = async () => {
+      try {
+        const resolvedParams = await params
+        if (resolvedParams.id) {
+          setInterviewId(resolvedParams.id)
+        }
+      } catch (error) {
+        console.error("Error extracting interview ID from params:", error)
+      }
+    }
+
+    extractId()
+  }, [params])
+
+  // Load chat history when interviewId is available
+  useEffect(() => {
+    if (!interviewId) return
+
     const loadChatHistory = async () => {
       try {
         const history = await chatService.getChatHistory(interviewId)
@@ -134,8 +138,44 @@ export default function InterviewSessionPage() {
     loadChatHistory()
   }, [interviewId, loadHistory])
 
-  // Connect to WebSocket on mount
+  // Set up code update listener FIRST (before WebSocket)
   useEffect(() => {
+    const handleCodeUpdate = (event: Event) => {
+      const customEvent = event as CustomEvent
+      const codeUpdate = customEvent.detail
+      setCandidateCode(codeUpdate.code)
+      setCodeLanguage(codeUpdate.language)
+      console.log('Code updated from WebSocket:', codeUpdate)
+    }
+
+    window.addEventListener('codeUpdate', handleCodeUpdate)
+    return () => {
+      window.removeEventListener('codeUpdate', handleCodeUpdate)
+    }
+  }, [])
+
+  // Load latest candidate code when interviewId is available
+  useEffect(() => {
+    if (!interviewId) return
+
+    const loadLatestCode = async () => {
+      try {
+        const codeResponse = await codeService.getLatestCode(interviewId)
+        setCandidateCode(codeResponse.code)
+        setCodeLanguage(codeResponse.language)
+        console.log('Latest code loaded:', codeResponse)
+      } catch (error) {
+        console.error("Error loading candidate code:", error)
+      }
+    }
+
+    loadLatestCode()
+  }, [interviewId])
+
+  // Connect to WebSocket when interviewId is available
+  useEffect(() => {
+    if (!interviewId) return
+
     const connectWebSocket = async () => {
       try {
         await webSocketService.connect(interviewId)
@@ -323,23 +363,32 @@ export default function InterviewSessionPage() {
                         <span>Viewing candidate's code in real-time</span>
                       </div>
                       <Badge variant="outline" className="text-xs">
-                        {mockInterview.selectedLanguage}
+                        {codeLanguage}
                       </Badge>
                     </div>
                     <div className="flex-1 overflow-hidden">
-                      <Editor
-                        height="100%"
-                        language={mockInterview.selectedLanguage}
-                        value={mockCode}
-                        theme="vs-dark"
-                        options={{
-                          readOnly: true,
-                          minimap: { enabled: false },
-                          fontSize: 14,
-                          lineNumbers: "on",
-                          scrollBeyondLastLine: false,
-                        }}
-                      />
+                      {candidateCode ? (
+                        <Editor
+                          height="100%"
+                          language={codeLanguage}
+                          value={candidateCode}
+                          theme="vs-dark"
+                          options={{
+                            readOnly: true,
+                            minimap: { enabled: false },
+                            fontSize: 14,
+                            lineNumbers: "on",
+                            scrollBeyondLastLine: false,
+                          }}
+                        />
+                      ) : (
+                        <div className="h-full flex items-center justify-center bg-muted/20">
+                          <div className="text-center">
+                            <Code2 className="size-12 text-muted-foreground/50 mx-auto mb-4" />
+                            <p className="text-sm text-muted-foreground">Waiting for candidate to write code...</p>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </TabsContent>
@@ -374,7 +423,7 @@ export default function InterviewSessionPage() {
               </Tabs>
             </div>
 
-            {/* AI Chat Sidebar - Read-only for Interviewer */}
+            {/* AI Chat Sidebar - Live sync with Candidate */}
             <div className="w-96 border-l border-border bg-card flex flex-col">
               {/* Header */}
               <div className="p-4 border-b border-border">
@@ -383,9 +432,9 @@ export default function InterviewSessionPage() {
                     <MessageSquare className="size-4 text-accent" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-sm">AI Chat</h3>
+                    <h3 className="font-semibold text-sm">Candidate AI Chat</h3>
                     <p className="text-xs text-muted-foreground">
-                      {conversation.isConnected ? "● Connected" : "○ Disconnected"}
+                      {conversation.isConnected ? "● Live Sync" : "○ Syncing..."}
                     </p>
                   </div>
                 </div>
@@ -431,9 +480,11 @@ export default function InterviewSessionPage() {
                 </div>
               </ScrollArea>
 
-              {/* Footer - Read-only indicator */}
-              <div className="p-4 border-t border-border">
-                <p className="text-xs text-muted-foreground text-center">Read-only view of candidate&apos;s AI conversation</p>
+              {/* Footer - Live sync indicator */}
+              <div className="p-4 border-t border-border bg-accent/5">
+                <p className="text-xs text-muted-foreground text-center">
+                  Live synchronized with candidate&apos;s AI conversation
+                </p>
               </div>
             </div>
           </div>
