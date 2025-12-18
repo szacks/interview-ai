@@ -27,23 +27,8 @@ import { useChatStore } from "@/stores/chatStore"
 import { chatService } from "@/services/chatService"
 import { codeService } from "@/services/codeService"
 import { webSocketService } from "@/services/webSocketService"
-
-// Mock data
-const mockInterview = {
-  id: 1,
-  candidateName: "Sarah Johnson",
-  role: "Senior Frontend Developer",
-  question: {
-    title: "URL Shortener",
-    description:
-      "Build a URL shortening service that converts long URLs into short, unique identifiers. Implement functions to shorten URLs and retrieve original URLs from shortened versions.",
-    difficulty: "medium",
-  },
-  status: "live",
-  startedAt: new Date(Date.now() - 15 * 60000), // 15 minutes ago
-  candidateConnected: true,
-  selectedLanguage: "javascript",
-}
+import apiClient from "@/services/apiClient"
+import { interviewService } from "@/services/interviewService"
 
 const mockChatHistory = [
   {
@@ -85,8 +70,11 @@ export default function InterviewSessionPage({
   // Interview state
   const [notes, setNotes] = useState("")
   const [activeTab, setActiveTab] = useState("code")
-  const [isPending, setIsPending] = useState(false)
+  const [isPending, setIsPending] = useState(true) // Default to true, will be updated after fetch
+  const [isLoadingInterview, setIsLoadingInterview] = useState(true)
+  const [isStarting, setIsStarting] = useState(false)
   const [interviewId, setInterviewId] = useState<string>("")
+  const [interview, setInterview] = useState<any>(null)
 
   // Code state
   const [candidateCode, setCandidateCode] = useState("")
@@ -110,6 +98,7 @@ export default function InterviewSessionPage({
         const resolvedParams = await params
         if (resolvedParams.id) {
           setInterviewId(resolvedParams.id)
+          console.log("[Interviewer] Interview ID from URL:", resolvedParams.id)
         }
       } catch (error) {
         console.error("Error extracting interview ID from params:", error)
@@ -118,6 +107,40 @@ export default function InterviewSessionPage({
 
     extractId()
   }, [params])
+
+  // Verify interview exists and fetch status when interviewId is available
+  useEffect(() => {
+    if (!interviewId) return
+
+    const verifyInterview = async () => {
+      try {
+        console.log("[Interviewer] Verifying interview exists with ID:", interviewId)
+        const interviewData = await apiClient.get(`/interviews/${interviewId}`)
+        console.log("[Interviewer] Interview found:", interviewData)
+        console.log("[Interviewer] Interview status:", interviewData?.status)
+
+        // Store the interview data for use in UI
+        setInterview(interviewData)
+
+        // Set isPending to true if interview status is "scheduled"
+        if (interviewData?.status === "scheduled") {
+          console.log("[Interviewer] Setting isPending to true - interview is scheduled")
+          setIsPending(true)
+        } else {
+          console.log("[Interviewer] Setting isPending to false - interview is already", interviewData?.status)
+          setIsPending(false)
+        }
+      } catch (error: any) {
+        console.error("[Interviewer] Interview not found or error fetching:", error?.message)
+        console.error("[Interviewer] Status:", error?.status)
+        setIsPending(false)
+      } finally {
+        setIsLoadingInterview(false)
+      }
+    }
+
+    verifyInterview()
+  }, [interviewId])
 
   // Load chat history when interviewId is available
   useEffect(() => {
@@ -160,18 +183,43 @@ export default function InterviewSessionPage({
 
   // Update elapsed time every second (client-side only to avoid hydration mismatch)
   useEffect(() => {
+    if (!interview?.startedAt) return
+
     const timer = setInterval(() => {
-      const elapsed = Date.now() - mockInterview.startedAt.getTime()
+      const startTime = new Date(interview.startedAt).getTime()
+      const elapsed = Date.now() - startTime
       const minutes = Math.floor(elapsed / 60000)
       const seconds = Math.floor((elapsed % 60000) / 1000)
       setElapsedTime(`${minutes}:${seconds.toString().padStart(2, "0")}`)
     }, 1000)
     return () => clearInterval(timer)
-  }, [])
+  }, [interview?.startedAt])
+
+  // Poll interview status to detect when interview is started (transitions from pending to live)
+  useEffect(() => {
+    if (!interviewId || isPending === false) return
+
+    const pollInterval = setInterval(async () => {
+      try {
+        const interview = await apiClient.get(`/interviews/${interviewId}`)
+        console.log("[Interviewer Poll] Current status:", interview?.status, "isPending:", isPending)
+
+        // If status changed from "scheduled" to "in_progress", transition to live
+        if (interview?.status === "in_progress" && isPending === true) {
+          console.log("[Interviewer Poll] Interview started, transitioning to live view")
+          setIsPending(false)
+        }
+      } catch (error) {
+        console.debug("[Interviewer Poll] Error polling status:", error)
+      }
+    }, 1000) // Poll every 1 second
+
+    return () => clearInterval(pollInterval)
+  }, [interviewId, isPending])
 
   // Load latest candidate code when interviewId is available
   useEffect(() => {
-    if (!interviewId) return
+    if (!interviewId || isPending) return
 
     const loadLatestCode = async () => {
       try {
@@ -185,7 +233,7 @@ export default function InterviewSessionPage({
     }
 
     loadLatestCode()
-  }, [interviewId])
+  }, [interviewId, isPending])
 
   // Connect to WebSocket when interviewId is available
   useEffect(() => {
@@ -225,6 +273,56 @@ export default function InterviewSessionPage({
     navigator.clipboard.writeText(`${window.location.origin}/i/xK9mPq2nR4vL`)
   }
 
+  const handleStartInterview = async () => {
+    if (!interviewId) {
+      console.error("[Interviewer] Interview ID not available")
+      alert("Interview ID not found. Please refresh the page.")
+      return
+    }
+
+    try {
+      setIsStarting(true)
+      console.log("[Interviewer] Starting interview with ID:", interviewId, "Type:", typeof interviewId)
+
+      // Call backend API to start the interview using the service
+      const interviewIdAsNumber = parseInt(interviewId, 10)
+      if (isNaN(interviewIdAsNumber)) {
+        throw new Error("Invalid interview ID: must be a number")
+      }
+
+      const response = await interviewService.startInterview(interviewIdAsNumber)
+      console.log("[Interviewer] API Response:", response)
+
+      // Update local state to show live view
+      setIsPending(false)
+      console.log("[Interviewer] Interview started successfully")
+    } catch (error: any) {
+      console.error("[Interviewer] Full error object:", error)
+      console.error("[Interviewer] Error starting interview:", error?.message)
+      console.error("[Interviewer] Error details:", {
+        message: error?.message,
+        status: error?.status,
+        code: error?.code,
+        response: error?.response,
+      })
+      alert(`Failed to start interview: ${error?.message || "Unknown error"}`)
+    } finally {
+      setIsStarting(false)
+    }
+  }
+
+  // Show loading while fetching interview data
+  if (isLoadingInterview) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="size-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading interview...</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
@@ -241,7 +339,7 @@ export default function InterviewSessionPage({
               <div className="h-8 w-px bg-border" />
               <div>
                 <div className="flex items-center gap-3">
-                  <h1 className="text-lg font-semibold">{mockInterview.candidateName}</h1>
+                  <h1 className="text-lg font-semibold">{interview?.candidate?.name || "Candidate"}</h1>
                   {isPending ? (
                     <Badge variant="outline" className="border-muted-foreground/30 text-muted-foreground">
                       <Clock className="size-3 mr-1" />
@@ -253,15 +351,9 @@ export default function InterviewSessionPage({
                       Live
                     </Badge>
                   )}
-                  {!isPending && mockInterview.candidateConnected && (
-                    <Badge variant="secondary" className="text-xs">
-                      <Users className="size-3 mr-1" />
-                      Candidate Connected
-                    </Badge>
-                  )}
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  {mockInterview.role} • {mockInterview.question.title}
+                  {interview?.question?.title || "Loading question..."}
                 </p>
               </div>
             </div>
@@ -278,9 +370,9 @@ export default function InterviewSessionPage({
                     <Copy className="size-4 mr-2" />
                     Copy Link
                   </Button>
-                  <Button onClick={() => setIsPending(false)}>
+                  <Button onClick={handleStartInterview} disabled={isStarting}>
                     <PlayCircle className="size-4 mr-2" />
-                    Start Interview
+                    {isStarting ? "Starting..." : "Start Interview"}
                   </Button>
                 </>
               ) : (
@@ -311,28 +403,28 @@ export default function InterviewSessionPage({
               <div className="space-y-3 text-left">
                 <div className="flex items-start gap-3">
                   <span className="text-muted-foreground min-w-24">Candidate:</span>
-                  <span className="font-medium">{mockInterview.candidateName}</span>
-                </div>
-                <div className="flex items-start gap-3">
-                  <span className="text-muted-foreground min-w-24">Role:</span>
-                  <span>{mockInterview.role}</span>
+                  <span className="font-medium">{interview?.candidate?.name || "Loading..."}</span>
                 </div>
                 <div className="flex items-start gap-3">
                   <span className="text-muted-foreground min-w-24">Question:</span>
-                  <span>{mockInterview.question.title}</span>
+                  <span>{interview?.question?.title || "Loading..."}</span>
                 </div>
                 <div className="flex items-start gap-3">
                   <span className="text-muted-foreground min-w-24">Difficulty:</span>
                   <Badge variant="outline" className="text-xs">
-                    {mockInterview.question.difficulty}
+                    {interview?.question?.difficulty || "medium"}
                   </Badge>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-muted-foreground min-w-24">Language:</span>
+                  <span className="capitalize">{interview?.language || "javascript"}</span>
                 </div>
               </div>
             </div>
 
             <div className="rounded-lg border border-border bg-card p-6 text-left">
               <h3 className="font-semibold mb-2">Question Description</h3>
-              <p className="text-muted-foreground leading-relaxed">{mockInterview.question.description}</p>
+              <p className="text-muted-foreground leading-relaxed">{interview?.question?.description || "Loading question description..."}</p>
             </div>
           </div>
         </div>

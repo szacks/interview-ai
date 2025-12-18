@@ -106,3 +106,5 @@ Candidate name persistence in dashboard,Task,Interview Creation,Week 3,Day 12,4h
 Three dots menu actions (delete/end interview),Task,Interview Creation,Week 3,Day 15,2h,Wire dropdown menu items to delete and end interview handlers,Frontend Dev,Medium,✓
 Interview status display unified handling,Task,Interview Creation,Week 3,Day 12,2h,Handle both backend and frontend status values for consistent UI,Frontend Dev,Medium,✓
 Copy link functionality with user feedback,Task,Interview Creation,Week 3,Day 14,2h,Implement interview link copy with toast notifications,Frontend Dev,Medium,✓
+Add Shopping Cart Basics interview question,Task,Interview Creation,Week 3,Day 13,1h,Add easy shopping cart question with basic requirements,Backend Dev,Medium,✓
+Update Claude system prompt for realistic AI assistance,Task,Interview Session,Week 4,Day 20,2h,New prompt that evaluates AI collaboration skills realistically,Backend Dev,High,✓

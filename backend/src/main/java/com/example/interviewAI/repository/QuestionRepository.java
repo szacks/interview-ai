@@ -13,6 +13,8 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     List<Question> findBySupportedLanguagesContaining(String language);
 
+    List<Question> findByTitle(String title);
+
     @Query("SELECT q FROM Question q WHERE q.difficulty = ?1 AND q.supportedLanguages LIKE %?2%")
     List<Question> findByDifficultyAndLanguage(String difficulty, String language);
 

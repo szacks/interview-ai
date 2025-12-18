@@ -14,43 +14,8 @@ import { useCodeStore } from "@/stores/codeStore"
 import { chatService } from "@/services/chatService"
 import { codeService } from "@/services/codeService"
 import { webSocketService } from "@/services/webSocketService"
+import apiClient from "@/services/apiClient"
 import type { ChatMessage as ChatMessageType } from "@/types/chat"
-
-// Mock data
-const mockQuestion = {
-  title: "URL Shortener",
-  description:
-    "Build a URL shortening service that converts long URLs into short, unique identifiers. Implement functions to shorten URLs and retrieve original URLs from shortened versions.",
-  difficulty: "medium",
-  timeLimit: 30,
-  initialCode: {
-    javascript: `function shortenUrl(longUrl) {
-  // Your code here
-}
-
-function getLongUrl(shortCode) {
-  // Your code here
-}`,
-    python: `def shorten_url(long_url):
-    # Your code here
-    pass
-
-def get_long_url(short_code):
-    # Your code here
-    pass`,
-    java: `public class UrlShortener {
-    public String shortenUrl(String longUrl) {
-        // Your code here
-        return null;
-    }
-    
-    public String getLongUrl(String shortCode) {
-        // Your code here
-        return null;
-    }
-}`,
-  },
-}
 
 const mockChatHistory = [
   {
@@ -71,9 +36,11 @@ export default function CandidateInterviewPage({
   // Interview state
   const [status, setStatus] = useState<InterviewStatus>("setup") // Can be: setup, waiting, live, ended
   const [interviewId, setInterviewId] = useState<number | null>(null)
+  const [interviewToken, setInterviewToken] = useState<string | null>(null)
   const [isResolvingToken, setIsResolvingToken] = useState(true)
+  const [interview, setInterview] = useState<any>(null)
   const [language, setLanguage] = useState("javascript")
-  const [code, setCode] = useState(mockQuestion.initialCode.javascript)
+  const [code, setCode] = useState("")
   const [isRunning, setIsRunning] = useState(false)
   const [testResults, setTestResults] = useState<Array<{ name: string; passed: boolean }>>([])
   const [showChat, setShowChat] = useState(false)
@@ -94,6 +61,7 @@ export default function CandidateInterviewPage({
       try {
         // Await params first (Next.js 16 requirement)
         const resolvedParams = await params
+        setInterviewToken(resolvedParams.token)
         const resolved = await chatService.resolveToken(resolvedParams.token)
         setInterviewId(resolved)
       } catch (error) {
@@ -105,6 +73,60 @@ export default function CandidateInterviewPage({
 
     resolveToken()
   }, [params])
+
+  // Fetch interview details when interviewId is available
+  useEffect(() => {
+    if (!interviewId) return
+
+    const fetchInterviewDetails = async () => {
+      try {
+        const interviewData = await apiClient.get(`/interviews/${interviewId}`)
+        console.log("[Candidate] Interview details fetched:", interviewData)
+        setInterview(interviewData)
+
+        // Set initial language from interview
+        if (interviewData?.language) {
+          setLanguage(interviewData.language)
+        }
+
+        // Set initial code based on language and question
+        if (interviewData?.question?.initialCodeJava && interviewData.language === "java") {
+          setCode(interviewData.question.initialCodeJava)
+        } else if (interviewData?.question?.initialCodePython && interviewData.language === "python") {
+          setCode(interviewData.question.initialCodePython)
+        } else if (interviewData?.question?.initialCodeJavascript && interviewData.language === "javascript") {
+          setCode(interviewData.question.initialCodeJavascript)
+        }
+      } catch (error) {
+        console.error("[Candidate] Error fetching interview details:", error)
+      }
+    }
+
+    fetchInterviewDetails()
+  }, [interviewId])
+
+  // Poll interview status to detect when interviewer starts the session
+  useEffect(() => {
+    if (!interviewToken || status === "live" || status === "setup") return
+
+    const pollInterval = setInterval(async () => {
+      try {
+        const interview = (await apiClient.get(`/interviews/link/${interviewToken}`)) as any
+        console.log("[Poll] Interview status:", interview?.status, "Current frontend status:", status)
+
+        // Map backend status to frontend status
+        if (interview?.status === "in_progress" && status === "waiting") {
+          console.log("✓ Interview started by interviewer, transitioning to live")
+          setStatus("live")
+        }
+      } catch (error) {
+        // Silently ignore errors during polling - normal if interview not found yet
+        console.debug("[Poll] Error:", error)
+      }
+    }, 1000) // Poll every 1 second
+
+    return () => clearInterval(pollInterval)
+  }, [interviewToken, status])
 
   // Chat store hooks
   const interviewIdStr = interviewId ? String(interviewId) : ""
@@ -204,7 +226,16 @@ export default function CandidateInterviewPage({
 
   const handleLanguageChange = (newLanguage: string) => {
     setLanguage(newLanguage)
-    setCode(mockQuestion.initialCode[newLanguage as keyof typeof mockQuestion.initialCode])
+    // Load initial code for the selected language from the interview
+    if (interview?.question) {
+      if (newLanguage === "java" && interview.question.initialCodeJava) {
+        setCode(interview.question.initialCodeJava)
+      } else if (newLanguage === "python" && interview.question.initialCodePython) {
+        setCode(interview.question.initialCodePython)
+      } else if (newLanguage === "javascript" && interview.question.initialCodeJavascript) {
+        setCode(interview.question.initialCodeJavascript)
+      }
+    }
   }
 
   const handleSetupSubmit = async () => {
@@ -217,7 +248,16 @@ export default function CandidateInterviewPage({
       setIsSubmittingSetup(true)
       // Set the selected language for the interview
       setLanguage(selectedLanguage)
-      setCode(mockQuestion.initialCode[selectedLanguage as keyof typeof mockQuestion.initialCode])
+      // Load initial code for the selected language
+      if (interview?.question) {
+        if (selectedLanguage === "java" && interview.question.initialCodeJava) {
+          setCode(interview.question.initialCodeJava)
+        } else if (selectedLanguage === "python" && interview.question.initialCodePython) {
+          setCode(interview.question.initialCodePython)
+        } else if (selectedLanguage === "javascript" && interview.question.initialCodeJavascript) {
+          setCode(interview.question.initialCodeJavascript)
+        }
+      }
       // Move to waiting state
       setStatus("waiting")
     } catch (error) {
@@ -447,13 +487,13 @@ export default function CandidateInterviewPage({
                 <Code2 className="size-5 text-primary-foreground" />
               </div>
               <div>
-                <h1 className="text-lg font-semibold">{mockQuestion.title}</h1>
+                <h1 className="text-lg font-semibold">{interview?.question?.title || "Loading..."}</h1>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Badge variant="outline" className="text-xs">
-                    {mockQuestion.difficulty}
+                    {interview?.question?.difficulty || "medium"}
                   </Badge>
                   <span>•</span>
-                  <span>{mockQuestion.timeLimit} minutes</span>
+                  <span>{interview?.question?.timeLimitMinutes || 30} minutes</span>
                 </div>
               </div>
             </div>
@@ -477,7 +517,7 @@ export default function CandidateInterviewPage({
           {/* Question Panel */}
           <div className="border-b border-border bg-card p-4">
             <h2 className="font-semibold mb-2">Problem Description</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">{mockQuestion.description}</p>
+            <p className="text-sm text-muted-foreground leading-relaxed">{interview?.question?.description || "Loading question description..."}</p>
           </div>
 
           {/* Editor Controls */}

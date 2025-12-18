@@ -33,6 +33,9 @@ apiClient.interceptors.request.use(
     const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      console.log('[API Client] Adding auth token to request:', config.url);
+    } else {
+      console.log('[API Client] No auth token found for request:', config.url);
     }
     return config;
   },
@@ -46,6 +49,7 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response: AxiosResponse) => {
     // Handle successful responses
+    console.log('[API Client] Successful response:', response.config.url, response.status);
     return response.data;
   },
   (error: AxiosError<ApiResponse>) => {
@@ -60,6 +64,13 @@ apiClient.interceptors.response.use(
       // Server responded with error status
       apiError.message = error.response.data?.error || error.response.data?.message || 'Server error';
       apiError.status = error.response.status;
+
+      console.log('[API Client] Error response:', {
+        url: error.config?.url,
+        status: error.response.status,
+        message: apiError.message,
+        data: error.response.data,
+      });
 
       // Handle specific status codes
       switch (error.response.status) {
@@ -88,12 +99,14 @@ apiClient.interceptors.response.use(
     } else if (error.request) {
       // Request made but no response
       apiError.message = 'No response from server';
+      console.log('[API Client] No response from server:', error.request);
     } else {
       // Error setting up request
       apiError.message = error.message || 'Request setup failed';
+      console.log('[API Client] Error setting up request:', error.message);
     }
 
-    console.error('API Error:', apiError);
+    console.error('[API Client] Final API Error:', apiError);
     return Promise.reject(apiError);
   }
 );

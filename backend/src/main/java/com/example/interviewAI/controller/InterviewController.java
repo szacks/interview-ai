@@ -168,14 +168,22 @@ public class InterviewController {
             @RequestHeader("Authorization") String bearerToken) {
         log.info("Starting interview with ID: {}", interviewId);
         User user = extractUserFromToken(bearerToken);
+        log.info("[Start Interview] User: {} (ID: {}), Role: {}", user.getName(), user.getId(), user.getRole());
+
         InterviewResponse interview = interviewService.getInterviewById(interviewId);
+        log.info("[Start Interview] Interview found - Status: {}, Interviewer ID: {}, Company ID: {}",
+                interview.getStatus(), interview.getInterviewerId(), interview.getCompanyId());
 
         // Authorization check
         if (!isUserAuthorizedForInterview(user, interview)) {
+            log.warn("[Start Interview] Authorization failed - User {} not authorized for interview {}",
+                    user.getId(), interviewId);
             throw new ForbiddenException("You are not authorized to start this interview");
         }
 
+        log.info("[Start Interview] Authorization passed, updating status to in_progress");
         InterviewResponse started = interviewService.startInterview(interviewId);
+        log.info("[Start Interview] Interview started successfully - New Status: {}", started.getStatus());
         return ResponseEntity.ok(started);
     }
 
@@ -232,15 +240,21 @@ public class InterviewController {
     private boolean isUserAuthorizedForInterview(User user, InterviewResponse interview) {
         // Admins can access all interviews in their company
         if (user.getRole().equals(RoleEnum.ADMIN)) {
-            return user.getCompany() != null &&
+            boolean isInCompany = user.getCompany() != null &&
                    user.getCompany().getId().equals(interview.getCompanyId());
+            log.debug("[Auth Check] Admin user {} - Company match: {}", user.getId(), isInCompany);
+            return isInCompany;
         }
 
         // Interviewers can only access interviews they're assigned to
         if (user.getRole().equals(RoleEnum.INTERVIEWER)) {
-            return user.getId().equals(interview.getInterviewerId());
+            boolean isAssigned = user.getId().equals(interview.getInterviewerId());
+            log.debug("[Auth Check] Interviewer user {} - Interview assigned to {}, Match: {}",
+                    user.getId(), interview.getInterviewerId(), isAssigned);
+            return isAssigned;
         }
 
+        log.debug("[Auth Check] User {} has unrecognized role: {}", user.getId(), user.getRole());
         return false;
     }
 }
