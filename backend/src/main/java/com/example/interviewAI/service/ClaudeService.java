@@ -77,12 +77,21 @@ public class ClaudeService {
      */
     private ClaudeEvaluationResponse callClaudeAPI(String prompt) {
         try {
+            // Validate API key is configured
+            if (claudeProperties.getApiKey() == null || claudeProperties.getApiKey().isEmpty()) {
+                log.error("CLAUDE_API_KEY environment variable is not set. Code evaluation will not work.");
+                return null;
+            }
+
             // Prepare request
             ClaudeEvaluationRequest request = buildClaudeRequest(prompt);
 
+            String apiUrl = claudeProperties.getApiUrl() + "/messages";
+            log.debug("Calling Claude API at: {} with model: {}", apiUrl, claudeProperties.getModel());
+
             // Make API call
             ClaudeEvaluationResponse response = restTemplate.postForObject(
-                    claudeProperties.getApiUrl() + "/messages",
+                    apiUrl,
                     createHttpEntity(request),
                     ClaudeEvaluationResponse.class
             );
@@ -92,7 +101,7 @@ public class ClaudeService {
             return response;
 
         } catch (Exception e) {
-            log.error("Error calling Claude API: {}", e.getMessage(), e);
+            log.error("Error calling Claude API: {} - {}", e.getClass().getSimpleName(), e.getMessage(), e);
             return null;
         }
     }
@@ -410,8 +419,17 @@ public class ClaudeService {
      */
     private ClaudeEvaluationResponse callClaudeAPIWithCustomRequest(ClaudeEvaluationRequest request) {
         try {
+            // Validate API key is configured
+            if (claudeProperties.getApiKey() == null || claudeProperties.getApiKey().isEmpty()) {
+                log.error("CLAUDE_API_KEY environment variable is not set. AI chat will not work.");
+                return null;
+            }
+
+            String apiUrl = claudeProperties.getApiUrl() + "/messages";
+            log.debug("Calling Claude API at: {}", apiUrl);
+
             ClaudeEvaluationResponse response = restTemplate.postForObject(
-                    claudeProperties.getApiUrl() + "/messages",
+                    apiUrl,
                     createHttpEntity(request),
                     ClaudeEvaluationResponse.class
             );
@@ -420,7 +438,7 @@ public class ClaudeService {
             return response;
 
         } catch (Exception e) {
-            log.error("Error calling Claude API for chat: {}", e.getMessage(), e);
+            log.error("Error calling Claude API for chat: {} - {}", e.getClass().getSimpleName(), e.getMessage(), e);
             return null;
         }
     }
