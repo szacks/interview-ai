@@ -19,6 +19,10 @@ public class QuestionSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        // Note: Shopping Cart Basics was replaced with Rate Limiter.
+        // The Rate Limiter question is already seeded, so we just skip if questions exist.
+        // Removal of old Shopping Cart Basics is handled by the application if needed.
+
         // Check if we need to add new questions
         long existingCount = questionRepository.count();
 
@@ -240,22 +244,22 @@ public class QuestionSeeder implements CommandLineRunner {
         rateLimiter.setTitle("Rate Limiter");
         rateLimiter.setDescription("Build a rate limiter that controls how many requests are allowed in a time window.\n\n" +
                 "FUNCTIONS TO IMPLEMENT:\n\n" +
-                "1. createRateLimiter(maxRequests, windowMs)\n" +
-                "   - Creates a rate limiter\n" +
+                "1. RateLimiter(maxRequests, windowMs)\n" +
+                "   - Constructor that creates a rate limiter\n" +
                 "   - maxRequests: maximum allowed requests in the window\n" +
                 "   - windowMs: time window in milliseconds\n\n" +
-                "2. allowRequest(rateLimiter)\n" +
-                "   - Call this for each incoming request\n" +
+                "2. allowRequest()\n" +
+                "   - Instance method: call this for each incoming request\n" +
                 "   - Returns true if request is allowed\n" +
                 "   - Returns false if limit exceeded\n\n" +
                 "EXAMPLE:\n" +
-                "  const limiter = createRateLimiter(5, 1000);  // 5 requests per second\n" +
-                "  allowRequest(limiter);  // true\n" +
-                "  allowRequest(limiter);  // true\n" +
-                "  allowRequest(limiter);  // true\n" +
-                "  allowRequest(limiter);  // true\n" +
-                "  allowRequest(limiter);  // true\n" +
-                "  allowRequest(limiter);  // false (limit reached)\n" +
+                "  const limiter = new RateLimiter(5, 1000);  // 5 requests per second\n" +
+                "  limiter.allowRequest();  // true\n" +
+                "  limiter.allowRequest();  // true\n" +
+                "  limiter.allowRequest();  // true\n" +
+                "  limiter.allowRequest();  // true\n" +
+                "  limiter.allowRequest();  // true\n" +
+                "  limiter.allowRequest();  // false (limit reached)\n" +
                 "  // After 1 second passes, requests are allowed again\n\n" +
                 "USE CASE:\n" +
                 "Imagine this protects an API endpoint. You want to allow each user maximum 100 requests per minute to prevent abuse.\n\n" +
@@ -295,30 +299,33 @@ public class QuestionSeeder implements CommandLineRunner {
                 "import java.util.*;\n\n" +
                 "public class RateLimiter {\n" +
                 "    \n" +
-                "    public static Map<String, Object> createRateLimiter(int maxRequests, long windowMs) {\n" +
-                "        // TODO: Create and return a rate limiter object\n" +
-                "        return null;\n" +
+                "    public RateLimiter(int maxRequests, long windowMs) {\n" +
+                "        // TODO: Initialize the rate limiter\n" +
                 "    }\n" +
                 "    \n" +
-                "    public static boolean allowRequest(Map<String, Object> rateLimiter) {\n" +
+                "    public boolean allowRequest() {\n" +
                 "        // TODO: Return true if request allowed, false if limit exceeded\n" +
                 "        return false;\n" +
                 "    }\n" +
                 "}");
         rateLimiter.setInitialCodePython("# Rate Limiter\n" +
                 "import time\n\n" +
-                "def create_rate_limiter(max_requests, window_ms):\n" +
-                "    # TODO: Create and return a rate limiter object (use dict)\n" +
-                "    pass\n\n" +
-                "def allow_request(rate_limiter):\n" +
-                "    # TODO: Return True if request allowed, False if limit exceeded\n" +
-                "    pass");
+                "class RateLimiter:\n" +
+                "    def __init__(self, max_requests, window_ms):\n" +
+                "        # TODO: Initialize the rate limiter\n" +
+                "        pass\n\n" +
+                "    def allow_request(self):\n" +
+                "        # TODO: Return True if request allowed, False if limit exceeded\n" +
+                "        return False");
         rateLimiter.setInitialCodeJavascript("// Rate Limiter\n\n" +
-                "function createRateLimiter(maxRequests, windowMs) {\n" +
-                "  // TODO: Create and return a rate limiter object\n" +
-                "}\n\n" +
-                "function allowRequest(rateLimiter) {\n" +
-                "  // TODO: Return true if request allowed, false if limit exceeded\n" +
+                "class RateLimiter {\n" +
+                "  constructor(maxRequests, windowMs) {\n" +
+                "    // TODO: Initialize the rate limiter\n" +
+                "  }\n\n" +
+                "  allowRequest() {\n" +
+                "    // TODO: Return true if request allowed, false if limit exceeded\n" +
+                "    return false;\n" +
+                "  }\n" +
                 "}");
         rateLimiter.setCreatedAt(LocalDateTime.now());
 

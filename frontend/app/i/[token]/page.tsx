@@ -9,6 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Code2, Play, Send, Loader2, CheckCircle2, XCircle, Clock, MessageSquare, Terminal } from "lucide-react"
 import Editor from "@monaco-editor/react"
+import { Textarea } from "@/components/ui/textarea"
 import { useChatStore } from "@/stores/chatStore"
 import { useCodeStore } from "@/stores/codeStore"
 import { chatService } from "@/services/chatService"
@@ -515,7 +516,7 @@ export default function CandidateInterviewPage({
         {/* Main Editor Area */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Question Panel */}
-          <div className="border-b border-border bg-card p-4">
+          <div className="border-b border-border bg-card p-4 flex-shrink-0">
             <h2 className="font-semibold mb-2">Problem Description</h2>
             <p className="text-sm text-muted-foreground leading-relaxed">{interview?.question?.description || "Loading question description..."}</p>
           </div>
@@ -645,26 +646,32 @@ export default function CandidateInterviewPage({
           </ScrollArea>
 
           {/* Chat Input */}
-          <div className="p-4 border-t border-border">
-            <div className="flex gap-2">
-              <Input
-                placeholder="Ask a question..."
+          <div className="p-4 border-t border-border flex-shrink-0 bg-card">
+            <div className="flex gap-2 items-end">
+              <Textarea
+                placeholder="Ask a question... (Shift+Enter to send)"
                 value={chatMessage}
                 onChange={(e) => setChatMessage(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && !conversation.isLoading && handleSendMessage()}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && e.shiftKey && !conversation.isLoading) {
+                    e.preventDefault()
+                    handleSendMessage()
+                  }
+                }}
                 disabled={conversation.isLoading}
-                className="flex-1"
+                className="flex-1 h-16 resize-none overflow-y-auto"
               />
               <Button
                 size="icon"
                 onClick={handleSendMessage}
                 disabled={conversation.isLoading || !chatMessage.trim()}
+                className="flex-shrink-0"
               >
                 <Send className="size-4" />
               </Button>
             </div>
             <p className="text-xs text-muted-foreground mt-2">
-              The AI and interviewer can see this conversation
+              Shift+Enter to send • The AI and interviewer can see this conversation
             </p>
           </div>
         </div>

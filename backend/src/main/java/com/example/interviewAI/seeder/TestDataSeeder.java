@@ -51,6 +51,9 @@ public class TestDataSeeder implements CommandLineRunner {
             log.info("No interviews found. Creating test interviews...");
             seedTestInterviews();
             log.info("Test interviews created successfully");
+        } else {
+            // Check if Rate Limiter interview exists
+            ensureRateLimiterInterview();
         }
     }
 
@@ -98,6 +101,157 @@ public class TestDataSeeder implements CommandLineRunner {
         }
     }
 
+    private void ensureRateLimiterInterview() {
+        try {
+            // Check if Rate Limiter interview already exists
+            java.util.List<Interview> rateLimiterInterviews = interviewRepository.findAll().stream()
+                    .filter(i -> i.getQuestion() != null && "Rate Limiter".equals(i.getQuestion().getTitle()))
+                    .collect(java.util.stream.Collectors.toList());
+
+            if (!rateLimiterInterviews.isEmpty()) {
+                log.info("Rate Limiter interview already exists, updating question code templates");
+                // Update the Rate Limiter question with new code templates
+                updateRateLimiterQuestion();
+                return;
+            }
+
+            // Get first company
+            java.util.List<Company> companies = (java.util.List<Company>) companyRepository.findAll();
+            if (companies.isEmpty()) {
+                log.warn("No companies found, cannot create Rate Limiter interview");
+                return;
+            }
+            Company company = companies.get(0);
+
+            // Get first interviewer
+            java.util.List<User> interviewers = (java.util.List<User>) userRepository.findAll();
+            User interviewer = null;
+            for (User user : interviewers) {
+                if (user.getRole() == RoleEnum.INTERVIEWER) {
+                    interviewer = user;
+                    break;
+                }
+            }
+            if (interviewer == null && !interviewers.isEmpty()) {
+                interviewer = interviewers.get(0);
+            }
+            if (interviewer == null) {
+                log.warn("No interviewers found, cannot create Rate Limiter interview");
+                return;
+            }
+
+            // Get first candidate
+            java.util.List<Candidate> candidates = (java.util.List<Candidate>) candidateRepository.findAll();
+            if (candidates.isEmpty()) {
+                log.warn("No candidates found, cannot create Rate Limiter interview");
+                return;
+            }
+            Candidate candidate = candidates.get(0);
+
+            // Get Rate Limiter question
+            java.util.List<Question> rateLimiterQuestions = questionRepository.findByTitle("Rate Limiter");
+            if (rateLimiterQuestions.isEmpty()) {
+                log.warn("Rate Limiter question not found in database");
+                return;
+            }
+            Question rateLimiterQuestion = rateLimiterQuestions.get(0);
+
+            // Create Rate Limiter interview
+            Interview rateLimiterInterview = new Interview();
+            rateLimiterInterview.setCompany(company);
+            rateLimiterInterview.setCandidate(candidate);
+            rateLimiterInterview.setQuestion(rateLimiterQuestion);
+            rateLimiterInterview.setInterviewer(interviewer);
+            rateLimiterInterview.setLanguage("javascript");
+            rateLimiterInterview.setStatus("in_progress");
+            rateLimiterInterview.setInterviewLinkToken(UUID.randomUUID().toString());
+            rateLimiterInterview.setScheduledAt(LocalDateTime.now());
+            rateLimiterInterview.setStartedAt(LocalDateTime.now());
+            rateLimiterInterview = interviewRepository.save(rateLimiterInterview);
+            log.info("Created Rate Limiter in_progress interview: {} (Token: {})", rateLimiterInterview.getId(), rateLimiterInterview.getInterviewLinkToken());
+            log.info("Rate Limiter Test Page: http://localhost:3000/i/{}", rateLimiterInterview.getInterviewLinkToken());
+            log.info("Rate Limiter Interviewer Page: http://localhost:3000/interview/{}", rateLimiterInterview.getId());
+        } catch (Exception e) {
+            log.error("Error ensuring Rate Limiter interview", e);
+        }
+    }
+
+    private void updateRateLimiterQuestion() {
+        try {
+            java.util.List<Question> rateLimiterQuestions = questionRepository.findByTitle("Rate Limiter");
+            if (rateLimiterQuestions.isEmpty()) {
+                return;
+            }
+
+            Question rateLimiter = rateLimiterQuestions.get(0);
+
+            // Update description with new function signatures
+            rateLimiter.setDescription("Build a rate limiter that controls how many requests are allowed in a time window.\n\n" +
+                    "FUNCTIONS TO IMPLEMENT:\n\n" +
+                    "1. RateLimiter(maxRequests, windowMs)\n" +
+                    "   - Constructor that creates a rate limiter\n" +
+                    "   - maxRequests: maximum allowed requests in the window\n" +
+                    "   - windowMs: time window in milliseconds\n\n" +
+                    "2. allowRequest()\n" +
+                    "   - Instance method: call this for each incoming request\n" +
+                    "   - Returns true if request is allowed\n" +
+                    "   - Returns false if limit exceeded\n\n" +
+                    "EXAMPLE:\n" +
+                    "  const limiter = new RateLimiter(5, 1000);  // 5 requests per second\n" +
+                    "  limiter.allowRequest();  // true\n" +
+                    "  limiter.allowRequest();  // true\n" +
+                    "  limiter.allowRequest();  // true\n" +
+                    "  limiter.allowRequest();  // true\n" +
+                    "  limiter.allowRequest();  // true\n" +
+                    "  limiter.allowRequest();  // false (limit reached)\n" +
+                    "  // After 1 second passes, requests are allowed again\n\n" +
+                    "USE CASE:\n" +
+                    "Imagine this protects an API endpoint. You want to allow each user maximum 100 requests per minute to prevent abuse.\n\n" +
+                    "HINT: Use Date.now() to get the current timestamp in milliseconds.");
+
+            // Update with new code templates
+            rateLimiter.setInitialCodeJava("// Rate Limiter\n" +
+                    "import java.util.*;\n\n" +
+                    "public class RateLimiter {\n" +
+                    "    \n" +
+                    "    public RateLimiter(int maxRequests, long windowMs) {\n" +
+                    "        // TODO: Initialize the rate limiter\n" +
+                    "    }\n" +
+                    "    \n" +
+                    "    public boolean allowRequest() {\n" +
+                    "        // TODO: Return true if request allowed, false if limit exceeded\n" +
+                    "        return false;\n" +
+                    "    }\n" +
+                    "}");
+
+            rateLimiter.setInitialCodePython("# Rate Limiter\n" +
+                    "import time\n\n" +
+                    "class RateLimiter:\n" +
+                    "    def __init__(self, max_requests, window_ms):\n" +
+                    "        # TODO: Initialize the rate limiter\n" +
+                    "        pass\n\n" +
+                    "    def allow_request(self):\n" +
+                    "        # TODO: Return True if request allowed, False if limit exceeded\n" +
+                    "        return False");
+
+            rateLimiter.setInitialCodeJavascript("// Rate Limiter\n\n" +
+                    "class RateLimiter {\n" +
+                    "  constructor(maxRequests, windowMs) {\n" +
+                    "    // TODO: Initialize the rate limiter\n" +
+                    "  }\n\n" +
+                    "  allowRequest() {\n" +
+                    "    // TODO: Return true if request allowed, false if limit exceeded\n" +
+                    "    return false;\n" +
+                    "  }\n" +
+                    "}");
+
+            questionRepository.save(rateLimiter);
+            log.info("Updated Rate Limiter question with new code templates");
+        } catch (Exception e) {
+            log.error("Error updating Rate Limiter question", e);
+        }
+    }
+
     private void seedTestInterviews() {
         try {
             // Get first company (or create one if none exists)
@@ -135,11 +289,13 @@ public class TestDataSeeder implements CommandLineRunner {
             // Get seeded questions
             java.util.List<Question> easyQuestions = questionRepository.findByDifficulty("easy");
             java.util.List<Question> mediumQuestions = questionRepository.findByDifficulty("medium");
+            java.util.List<Question> rateLimiterQuestions = questionRepository.findByTitle("Rate Limiter");
 
             Question question1 = !easyQuestions.isEmpty() ? easyQuestions.get(0) : null;
             Question question2 = !mediumQuestions.isEmpty() ? mediumQuestions.get(0) : null;
+            Question rateLimiterQuestion = !rateLimiterQuestions.isEmpty() ? rateLimiterQuestions.get(0) : null;
 
-            if (question1 != null && question2 != null && interviewer != null && candidate1 != null && candidate2 != null && company != null) {
+            if (question1 != null && question2 != null && rateLimiterQuestion != null && interviewer != null && candidate1 != null && candidate2 != null && company != null) {
                 // Create "in_progress" interview for testing chat
                 Interview interview1 = new Interview();
                 interview1.setCompany(company);
@@ -167,17 +323,32 @@ public class TestDataSeeder implements CommandLineRunner {
                 interview2 = interviewRepository.save(interview2);
                 log.info("Created scheduled interview: {} (Token: {})", interview2.getId(), interview2.getInterviewLinkToken());
 
+                // Create Rate Limiter "in_progress" interview
+                Interview rateLimiterInterview = new Interview();
+                rateLimiterInterview.setCompany(company);
+                rateLimiterInterview.setCandidate(candidate1);
+                rateLimiterInterview.setQuestion(rateLimiterQuestion);
+                rateLimiterInterview.setInterviewer(interviewer);
+                rateLimiterInterview.setLanguage("javascript");
+                rateLimiterInterview.setStatus("in_progress");
+                rateLimiterInterview.setInterviewLinkToken(UUID.randomUUID().toString());
+                rateLimiterInterview.setScheduledAt(LocalDateTime.now());
+                rateLimiterInterview.setStartedAt(LocalDateTime.now());
+                rateLimiterInterview = interviewRepository.save(rateLimiterInterview);
+                log.info("Created Rate Limiter in_progress interview: {} (Token: {})", rateLimiterInterview.getId(), rateLimiterInterview.getInterviewLinkToken());
+
                 // Log URLs for easy testing
                 log.info("================== TEST INTERVIEWS CREATED ==================");
                 log.info("Test Candidate Page (Chat Enabled): http://localhost:3000/i/{}", interview1.getInterviewLinkToken());
                 log.info("Interviewer Page: http://localhost:3000/interview/{}", interview1.getId());
-                log.info("Interview ID for chat testing: {}", interview1.getId());
+                log.info("Rate Limiter Test Page: http://localhost:3000/i/{}", rateLimiterInterview.getInterviewLinkToken());
+                log.info("Rate Limiter Interviewer Page: http://localhost:3000/interview/{}", rateLimiterInterview.getId());
                 log.info("===========================================================");
             } else {
                 log.warn("Cannot create test interviews. Missing required data:");
-                log.warn("  Company: {}, Interviewer: {}, Candidate1: {}, Candidate2: {}, Questions: {}, {}",
+                log.warn("  Company: {}, Interviewer: {}, Candidate1: {}, Candidate2: {}, Questions: {}, {}, RateLimiter: {}",
                     company != null, interviewer != null, candidate1 != null, candidate2 != null,
-                    question1 != null, question2 != null);
+                    question1 != null, question2 != null, rateLimiterQuestion != null);
             }
         } catch (Exception e) {
             log.error("Error seeding test interviews", e);
