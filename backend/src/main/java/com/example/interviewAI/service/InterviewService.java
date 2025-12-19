@@ -45,6 +45,9 @@ public class InterviewService {
     private UserRepository userRepository;
 
     @Autowired
+    private QuestionService questionService;
+
+    @Autowired
     private EmailService emailService;
 
     /**
@@ -223,23 +226,9 @@ public class InterviewService {
             response.setCompany(companyResponse);
         }
 
-        // Map question
+        // Map question with follow-up questions and test cases
         if (interview.getQuestion() != null) {
-            QuestionResponse questionResponse = new QuestionResponse();
-            questionResponse.setId(interview.getQuestion().getId());
-            questionResponse.setTitle(interview.getQuestion().getTitle());
-            questionResponse.setDescription(interview.getQuestion().getDescription());
-            questionResponse.setDifficulty(interview.getQuestion().getDifficulty());
-            questionResponse.setTimeLimitMinutes(interview.getQuestion().getTimeLimitMinutes());
-            questionResponse.setSupportedLanguages(interview.getQuestion().getSupportedLanguages());
-            questionResponse.setRequirementsJson(interview.getQuestion().getRequirementsJson());
-            questionResponse.setTestsJson(interview.getQuestion().getTestsJson());
-            questionResponse.setRubricJson(interview.getQuestion().getRubricJson());
-            questionResponse.setIntentionalBugsJson(interview.getQuestion().getIntentionalBugsJson());
-            questionResponse.setInitialCodeJava(interview.getQuestion().getInitialCodeJava());
-            questionResponse.setInitialCodePython(interview.getQuestion().getInitialCodePython());
-            questionResponse.setInitialCodeJavascript(interview.getQuestion().getInitialCodeJavascript());
-            questionResponse.setCreatedAt(interview.getQuestion().getCreatedAt());
+            QuestionResponse questionResponse = questionService.getQuestionById(interview.getQuestion().getId());
             response.setQuestion(questionResponse);
         }
 
