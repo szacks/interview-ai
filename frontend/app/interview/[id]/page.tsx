@@ -330,7 +330,7 @@ export default function InterviewSessionPage({
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="h-screen bg-background flex flex-col overflow-hidden">
       {/* Header */}
       <header className="border-b border-border bg-card">
         <div className="container mx-auto px-4 py-3">
@@ -483,7 +483,7 @@ export default function InterviewSessionPage({
             </div>
 
             {/* Tabs Section - Chat, Tests, Follow-ups */}
-            <div className="w-96 flex flex-col border-r border-border">
+            <div className="w-96 flex flex-col border-r border-border overflow-hidden">
               <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
                 <div className="border-b border-border px-4 bg-card">
                   <TabsList className="bg-transparent p-0 h-auto w-full">

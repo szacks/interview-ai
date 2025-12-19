@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Code2, Play, Send, Loader2, CheckCircle2, XCircle, Clock, MessageSquare, Terminal } from "lucide-react"
 import Editor from "@monaco-editor/react"
@@ -478,7 +477,7 @@ export default function CandidateInterviewPage({
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="h-screen bg-background flex flex-col overflow-hidden">
       {/* Header */}
       <header className="border-b border-border bg-card">
         <div className="container mx-auto px-4 py-3">
@@ -601,8 +600,8 @@ export default function CandidateInterviewPage({
           </div>
 
           {/* Chat Messages */}
-          <ScrollArea
-            className="flex-1 p-4 space-y-4"
+          <div
+            className="flex-1 overflow-y-auto p-4 space-y-4"
             ref={scrollRef}
           >
             <div className="space-y-4">
@@ -643,7 +642,7 @@ export default function CandidateInterviewPage({
                 </div>
               )}
             </div>
-          </ScrollArea>
+          </div>
 
           {/* Chat Input */}
           <div className="p-4 border-t border-border flex-shrink-0 bg-card">
