@@ -19,155 +19,15 @@ public class QuestionSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Check if we need to add new questions (for updates)
+        // Check if we need to add new questions
         long existingCount = questionRepository.count();
 
         if (existingCount == 0) {
             log.info("Starting question database seeding...");
             seedQuestions();
             log.info("Question seeding completed successfully");
-        } else if (existingCount < 5) {
-            log.info("Detected missing questions. Adding new questions to database...");
-            // Add missing questions (Shopping Cart and Shopping Cart Basics)
-            addMissingQuestions();
-            log.info("Missing questions added successfully");
         } else {
-            log.info("All questions already exist in database, skipping seeding");
-        }
-    }
-
-    private void addMissingQuestions() {
-        // Check if Shopping Cart Basics exists
-        if (questionRepository.findByTitle("Shopping Cart Basics").size() == 0) {
-            Question shoppingCartBasics = new Question();
-            shoppingCartBasics.setTitle("Shopping Cart Basics");
-            shoppingCartBasics.setDescription("Build a shopping cart system with the following features:\n\n" +
-                    "**Requirements:**\n" +
-                    "1. Create a cart\n" +
-                    "2. Add items to cart (each item has: id, name, price)\n" +
-                    "3. Remove items from cart by item ID\n" +
-                    "4. Get total price\n" +
-                    "5. Apply a percentage discount to the total\n\n" +
-                    "**Rules:**\n" +
-                    "- If the same item is added twice, increment quantity (don't duplicate)\n" +
-                    "- Removing an item that doesn't exist should not throw an error\n" +
-                    "- Discount should be between 0-100%\n" +
-                    "- All prices should be rounded to 2 decimal places");
-            shoppingCartBasics.setDifficulty("easy");
-            shoppingCartBasics.setTimeLimitMinutes(30);
-            shoppingCartBasics.setSupportedLanguages("java,python,javascript");
-            shoppingCartBasics.setRequirementsJson("{\"requirements\":[" +
-                    "\"Create a cart data structure\"," +
-                    "\"Add items with id, name, and price\"," +
-                    "\"Remove items by ID (no error if not found)\"," +
-                    "\"Calculate total price\"," +
-                    "\"Apply percentage discount (0-100%)\"," +
-                    "\"Increment quantity for duplicate items\"," +
-                    "\"Round all prices to 2 decimal places\"]}");
-            shoppingCartBasics.setTestsJson("{\"tests\":[" +
-                    "{\"testCase\":\"TC1\",\"name\":\"Add single item\",\"operations\":[{\"method\":\"addItem\",\"params\":[1,\"Apple\",1.50]}],\"assertions\":[{\"method\":\"getTotal\",\"expected\":1.50},{\"method\":\"getItemCount\",\"expected\":1}],\"description\":\"Add a single item to empty cart and verify total\"}," +
-                    "{\"testCase\":\"TC2\",\"name\":\"Add duplicate item increments quantity\",\"operations\":[{\"method\":\"addItem\",\"params\":[1,\"Apple\",1.50]},{\"method\":\"addItem\",\"params\":[1,\"Apple\",1.50]}],\"assertions\":[{\"method\":\"getTotal\",\"expected\":3.00},{\"method\":\"getQuantity\",\"params\":[1],\"expected\":2}],\"description\":\"Adding same item twice should increment quantity, not create duplicate\"}," +
-                    "{\"testCase\":\"TC3\",\"name\":\"Add multiple different items\",\"operations\":[{\"method\":\"addItem\",\"params\":[1,\"Apple\",1.50]},{\"method\":\"addItem\",\"params\":[2,\"Banana\",0.99]},{\"method\":\"addItem\",\"params\":[3,\"Orange\",2.49]}],\"assertions\":[{\"method\":\"getTotal\",\"expected\":4.98},{\"method\":\"getItemCount\",\"expected\":3}],\"description\":\"Add three different items and verify total calculation\"}," +
-                    "{\"testCase\":\"TC4\",\"name\":\"Remove existing item\",\"operations\":[{\"method\":\"addItem\",\"params\":[1,\"Apple\",1.50]},{\"method\":\"addItem\",\"params\":[2,\"Banana\",0.99]},{\"method\":\"removeItem\",\"params\":[1]}],\"assertions\":[{\"method\":\"getTotal\",\"expected\":0.99},{\"method\":\"getItemCount\",\"expected\":1},{\"method\":\"getQuantity\",\"params\":[1],\"expected\":0}],\"description\":\"Remove an item from cart and verify total updates\"}," +
-                    "{\"testCase\":\"TC5\",\"name\":\"Remove non-existent item gracefully\",\"operations\":[{\"method\":\"addItem\",\"params\":[1,\"Apple\",1.50]},{\"method\":\"removeItem\",\"params\":[99]}],\"assertions\":[{\"method\":\"getTotal\",\"expected\":1.50},{\"method\":\"getItemCount\",\"expected\":1}],\"description\":\"Removing non-existent item should not throw error or modify cart\"}," +
-                    "{\"testCase\":\"TC6\",\"name\":\"Apply 10% discount\",\"operations\":[{\"method\":\"addItem\",\"params\":[1,\"Item\",100.00]},{\"method\":\"applyDiscount\",\"params\":[10]}],\"assertions\":[{\"method\":\"getTotal\",\"expected\":90.00}],\"description\":\"Apply 10% discount to cart total of 100, result should be 90.00\"}," +
-                    "{\"testCase\":\"TC7\",\"name\":\"Apply 50% discount\",\"operations\":[{\"method\":\"addItem\",\"params\":[1,\"Item\",80.00]},{\"method\":\"applyDiscount\",\"params\":[50]}],\"assertions\":[{\"method\":\"getTotal\",\"expected\":40.00}],\"description\":\"Apply 50% discount to verify discount calculation accuracy\"}," +
-                    "{\"testCase\":\"TC8\",\"name\":\"Apply 0% discount (no change)\",\"operations\":[{\"method\":\"addItem\",\"params\":[1,\"Item\",50.00]},{\"method\":\"applyDiscount\",\"params\":[0]}],\"assertions\":[{\"method\":\"getTotal\",\"expected\":50.00}],\"description\":\"Apply 0% discount should not change total\"}," +
-                    "{\"testCase\":\"TC9\",\"name\":\"Apply 100% discount\",\"operations\":[{\"method\":\"addItem\",\"params\":[1,\"Item\",75.00]},{\"method\":\"applyDiscount\",\"params\":[100]}],\"assertions\":[{\"method\":\"getTotal\",\"expected\":0.00}],\"description\":\"Apply 100% discount should make total 0\"}," +
-                    "{\"testCase\":\"TC10\",\"name\":\"Invalid discount > 100% (should handle gracefully)\",\"operations\":[{\"method\":\"addItem\",\"params\":[1,\"Item\",100.00]},{\"method\":\"applyDiscount\",\"params\":[150]}],\"assertions\":[{\"method\":\"shouldNotThrowError\",\"expected\":true},{\"method\":\"getTotal\",\"shouldBeNonNegative\":true}],\"description\":\"Applying discount > 100% should either clamp to 100% or reject\"}," +
-                    "{\"testCase\":\"TC11\",\"name\":\"Negative discount (should handle gracefully)\",\"operations\":[{\"method\":\"addItem\",\"params\":[1,\"Item\",100.00]},{\"method\":\"applyDiscount\",\"params\":[-10]}],\"assertions\":[{\"method\":\"shouldNotThrowError\",\"expected\":true},{\"method\":\"getTotal\",\"expected\":100.00}],\"description\":\"Negative discount should be rejected or treated as 0%\"}," +
-                    "{\"testCase\":\"TC12\",\"name\":\"Rounding to 2 decimal places\",\"operations\":[{\"method\":\"addItem\",\"params\":[1,\"Item\",10.335]}],\"assertions\":[{\"method\":\"getTotal\",\"expected\":10.34}],\"description\":\"Prices with more than 2 decimals should be rounded correctly\"}," +
-                    "{\"testCase\":\"TC13\",\"name\":\"Multiple items with rounding\",\"operations\":[{\"method\":\"addItem\",\"params\":[1,\"Item1\",10.999]},{\"method\":\"addItem\",\"params\":[2,\"Item2\",20.001]}],\"assertions\":[{\"method\":\"getTotal\",\"expected\":31.00}],\"description\":\"Multiple items should each round, then total should be accurate\"}," +
-                    "{\"testCase\":\"TC14\",\"name\":\"Discount applied with rounding\",\"operations\":[{\"method\":\"addItem\",\"params\":[1,\"Item\",33.33]},{\"method\":\"applyDiscount\",\"params\":[15]}],\"assertions\":[{\"method\":\"getTotal\",\"expected\":28.33}],\"description\":\"After discount, result should be properly rounded to 2 decimals\"}," +
-                    "{\"testCase\":\"TC15\",\"name\":\"Empty cart has zero total\",\"operations\":[],\"assertions\":[{\"method\":\"getTotal\",\"expected\":0.00},{\"method\":\"getItemCount\",\"expected\":0}],\"description\":\"Empty cart should return total of 0 and item count of 0\"}" +
-                    "]}");
-            shoppingCartBasics.setRubricJson("{\"categories\":[" +
-                    "{\"category\":\"Correctness\",\"points\":40,\"description\":\"All operations work correctly\"}," +
-                    "{\"category\":\"Edge Cases\",\"points\":25,\"description\":\"Handles duplicates, missing items, invalid discounts\"}," +
-                    "{\"category\":\"Code Quality\",\"points\":20,\"description\":\"Clean structure, proper naming, readable code\"}," +
-                    "{\"category\":\"Rounding\",\"points\":15,\"description\":\"Correctly rounds prices to 2 decimal places\"}" +
-                    "]}");
-            shoppingCartBasics.setIntentionalBugsJson("{\"bugs\":[" +
-                    "{\"name\":\"No quantity tracking\",\"description\":\"Creates duplicate entries instead of incrementing quantity\",\"difficulty\":\"common\"}," +
-                    "{\"name\":\"Throws on missing item\",\"description\":\"Throws error when removing non-existent item\",\"difficulty\":\"easy\"}," +
-                    "{\"name\":\"No rounding\",\"description\":\"Returns prices with many decimal places\",\"difficulty\":\"common\"}," +
-                    "{\"name\":\"Discount validation\",\"description\":\"Accepts discounts > 100% or negative\",\"difficulty\":\"medium\"}" +
-                    "]}");
-            shoppingCartBasics.setInitialCodeJava("class CartItem {\n" +
-                    "    int id;\n" +
-                    "    String name;\n" +
-                    "    double price;\n" +
-                    "    int quantity;\n" +
-                    "}\n\n" +
-                    "public class ShoppingCart {\n" +
-                    "    // TODO: Add cart storage\n\n" +
-                    "    public void addItem(int id, String name, double price) {\n" +
-                    "        // TODO: Implement\n" +
-                    "    }\n\n" +
-                    "    public void removeItem(int id) {\n" +
-                    "        // TODO: Implement\n" +
-                    "    }\n\n" +
-                    "    public double getTotal() {\n" +
-                    "        // TODO: Implement\n" +
-                    "        return 0;\n" +
-                    "    }\n\n" +
-                    "    public double applyDiscount(double percentage) {\n" +
-                    "        // TODO: Implement\n" +
-                    "        return 0;\n" +
-                    "    }\n" +
-                    "}");
-            shoppingCartBasics.setInitialCodePython("class CartItem:\n" +
-                    "    def __init__(self, id, name, price):\n" +
-                    "        self.id = id\n" +
-                    "        self.name = name\n" +
-                    "        self.price = price\n" +
-                    "        self.quantity = 1\n\n" +
-                    "class ShoppingCart:\n" +
-                    "    def __init__(self):\n" +
-                    "        # TODO: Add cart storage\n" +
-                    "        pass\n\n" +
-                    "    def add_item(self, id, name, price):\n" +
-                    "        # TODO: Implement\n" +
-                    "        pass\n\n" +
-                    "    def remove_item(self, id):\n" +
-                    "        # TODO: Implement\n" +
-                    "        pass\n\n" +
-                    "    def get_total(self):\n" +
-                    "        # TODO: Implement\n" +
-                    "        return 0\n\n" +
-                    "    def apply_discount(self, percentage):\n" +
-                    "        # TODO: Implement\n" +
-                    "        return 0");
-            shoppingCartBasics.setInitialCodeJavascript("class CartItem {\n" +
-                    "    constructor(id, name, price) {\n" +
-                    "        this.id = id;\n" +
-                    "        this.name = name;\n" +
-                    "        this.price = price;\n" +
-                    "        this.quantity = 1;\n" +
-                    "    }\n" +
-                    "}\n\n" +
-                    "class ShoppingCart {\n" +
-                    "    constructor() {\n" +
-                    "        // TODO: Add cart storage\n" +
-                    "    }\n\n" +
-                    "    addItem(id, name, price) {\n" +
-                    "        // TODO: Implement\n" +
-                    "    }\n\n" +
-                    "    removeItem(id) {\n" +
-                    "        // TODO: Implement\n" +
-                    "    }\n\n" +
-                    "    getTotal() {\n" +
-                    "        // TODO: Implement\n" +
-                    "        return 0;\n" +
-                    "    }\n\n" +
-                    "    applyDiscount(percentage) {\n" +
-                    "        // TODO: Implement\n" +
-                    "        return 0;\n" +
-                    "    }\n" +
-                    "}");
-            shoppingCartBasics.setCreatedAt(LocalDateTime.now());
-            questionRepository.save(shoppingCartBasics);
-            log.info("Added Shopping Cart Basics question");
+            log.info("Questions already exist in database, skipping seeding");
         }
     }
 
@@ -375,129 +235,95 @@ public class QuestionSeeder implements CommandLineRunner {
                 "}");
         shoppingCart.setCreatedAt(LocalDateTime.now());
 
-        // Question 5: Shopping Cart Basics (Easy)
-        Question shoppingCartBasics = new Question();
-        shoppingCartBasics.setTitle("Shopping Cart Basics");
-        shoppingCartBasics.setDescription("Build a shopping cart system with the following features:\n\n" +
-                "**Requirements:**\n" +
-                "1. Create a cart\n" +
-                "2. Add items to cart (each item has: id, name, price)\n" +
-                "3. Remove items from cart by item ID\n" +
-                "4. Get total price\n" +
-                "5. Apply a percentage discount to the total\n\n" +
-                "**Rules:**\n" +
-                "- If the same item is added twice, increment quantity (don't duplicate)\n" +
-                "- Removing an item that doesn't exist should not throw an error\n" +
-                "- Discount should be between 0-100%\n" +
-                "- All prices should be rounded to 2 decimal places");
-        shoppingCartBasics.setDifficulty("easy");
-        shoppingCartBasics.setTimeLimitMinutes(30);
-        shoppingCartBasics.setSupportedLanguages("java,python,javascript");
-        shoppingCartBasics.setRequirementsJson("{\"requirements\":[" +
-                "\"Create a cart data structure\"," +
-                "\"Add items with id, name, and price\"," +
-                "\"Remove items by ID (no error if not found)\"," +
-                "\"Calculate total price\"," +
-                "\"Apply percentage discount (0-100%)\"," +
-                "\"Increment quantity for duplicate items\"," +
-                "\"Round all prices to 2 decimal places\"]}");
-        shoppingCartBasics.setTestsJson("{\"tests\":[" +
-                "{\"input\":\"Add item {id:1, name:'Apple', price:1.50}\",\"expected\":\"total: 1.50\",\"description\":\"Add single item\"}," +
-                "{\"input\":\"Add same item twice\",\"expected\":\"quantity: 2, total: 3.00\",\"description\":\"Duplicate items increment quantity\"}," +
-                "{\"input\":\"Remove item id:1\",\"expected\":\"cart empty, total: 0\",\"description\":\"Remove existing item\"}," +
-                "{\"input\":\"Remove non-existent item id:99\",\"expected\":\"no error\",\"description\":\"Remove non-existent item gracefully\"}," +
-                "{\"input\":\"Total 100, apply 10% discount\",\"expected\":\"total: 90.00\",\"description\":\"Apply percentage discount\"}," +
-                "{\"input\":\"Apply 150% discount\",\"expected\":\"error or clamped to 100%\",\"description\":\"Invalid discount handling\"}," +
-                "{\"input\":\"Price 1.999 after calc\",\"expected\":\"2.00\",\"description\":\"Rounding to 2 decimals\"}" +
+        // Question 5: Rate Limiter (Medium)
+        Question rateLimiter = new Question();
+        rateLimiter.setTitle("Rate Limiter");
+        rateLimiter.setDescription("Build a rate limiter that controls how many requests are allowed in a time window.\n\n" +
+                "FUNCTIONS TO IMPLEMENT:\n\n" +
+                "1. createRateLimiter(maxRequests, windowMs)\n" +
+                "   - Creates a rate limiter\n" +
+                "   - maxRequests: maximum allowed requests in the window\n" +
+                "   - windowMs: time window in milliseconds\n\n" +
+                "2. allowRequest(rateLimiter)\n" +
+                "   - Call this for each incoming request\n" +
+                "   - Returns true if request is allowed\n" +
+                "   - Returns false if limit exceeded\n\n" +
+                "EXAMPLE:\n" +
+                "  const limiter = createRateLimiter(5, 1000);  // 5 requests per second\n" +
+                "  allowRequest(limiter);  // true\n" +
+                "  allowRequest(limiter);  // true\n" +
+                "  allowRequest(limiter);  // true\n" +
+                "  allowRequest(limiter);  // true\n" +
+                "  allowRequest(limiter);  // true\n" +
+                "  allowRequest(limiter);  // false (limit reached)\n" +
+                "  // After 1 second passes, requests are allowed again\n\n" +
+                "USE CASE:\n" +
+                "Imagine this protects an API endpoint. You want to allow each user maximum 100 requests per minute to prevent abuse.\n\n" +
+                "HINT: Use Date.now() to get the current timestamp in milliseconds.");
+        rateLimiter.setDifficulty("medium");
+        rateLimiter.setTimeLimitMinutes(30);
+        rateLimiter.setSupportedLanguages("java,python,javascript");
+        rateLimiter.setRequirementsJson("{\"requirements\":[" +
+                "\"Create a rate limiter with max requests and time window\"," +
+                "\"Implement allowRequest function\"," +
+                "\"Track request timestamps efficiently\"," +
+                "\"Handle time window expiration\"," +
+                "\"Support multiple independent limiters\"]}");
+        rateLimiter.setTestsJson("{\"tests\":[" +
+                "{\"testCase\":\"TC1\",\"name\":\"allows requests under limit\",\"operations\":[],\"assertions\":[],\"description\":\"3 requests with limit 3 should all be true\"}," +
+                "{\"testCase\":\"TC2\",\"name\":\"blocks request when limit reached\",\"operations\":[],\"assertions\":[],\"description\":\"3rd request with limit 2 should be false\"}," +
+                "{\"testCase\":\"TC3\",\"name\":\"allows request after window expires\",\"operations\":[],\"assertions\":[],\"description\":\"After window expires, new requests should be allowed\"}," +
+                "{\"testCase\":\"TC4\",\"name\":\"each limiter is independent\",\"operations\":[],\"assertions\":[],\"description\":\"Two limiters should track separately\"}," +
+                "{\"testCase\":\"TC5\",\"name\":\"handles limit of 1\",\"operations\":[],\"assertions\":[],\"description\":\"Single request limit should work correctly\"}," +
+                "{\"testCase\":\"TC6\",\"name\":\"sliding window - partial expiry\",\"operations\":[],\"assertions\":[],\"description\":\"Sliding window should handle partial expiry correctly\"}," +
+                "{\"testCase\":\"TC7\",\"name\":\"high volume - 10 requests with limit 10\",\"operations\":[],\"assertions\":[],\"description\":\"Should handle high volume requests\"}" +
                 "]}");
-        shoppingCartBasics.setRubricJson("{\"categories\":[" +
-                "{\"category\":\"Correctness\",\"points\":40,\"description\":\"All operations work correctly\"}," +
-                "{\"category\":\"Edge Cases\",\"points\":25,\"description\":\"Handles duplicates, missing items, invalid discounts\"}," +
-                "{\"category\":\"Code Quality\",\"points\":20,\"description\":\"Clean structure, proper naming, readable code\"}," +
-                "{\"category\":\"Rounding\",\"points\":15,\"description\":\"Correctly rounds prices to 2 decimal places\"}" +
+        rateLimiter.setRubricJson("{\"categories\":[" +
+                "{\"category\":\"Correctness\",\"points\":25,\"description\":\"Basic solution passes tests\"}," +
+                "{\"category\":\"Edge Cases\",\"points\":15,\"description\":\"Handles edge cases (limit=1, empty, boundary)\"}," +
+                "{\"category\":\"Memory Efficiency\",\"points\":20,\"description\":\"Recognizes memory problem with high traffic\"}," +
+                "{\"category\":\"Alternative Solutions\",\"points\":20,\"description\":\"Discusses or implements memory-efficient alternative\"}," +
+                "{\"category\":\"AI Collaboration\",\"points\":20,\"description\":\"Uses AI effectively - asks good questions, reviews critically\"}" +
                 "]}");
-        shoppingCartBasics.setIntentionalBugsJson("{\"bugs\":[" +
-                "{\"name\":\"No quantity tracking\",\"description\":\"Creates duplicate entries instead of incrementing quantity\",\"difficulty\":\"common\"}," +
-                "{\"name\":\"Throws on missing item\",\"description\":\"Throws error when removing non-existent item\",\"difficulty\":\"easy\"}," +
-                "{\"name\":\"No rounding\",\"description\":\"Returns prices with many decimal places\",\"difficulty\":\"common\"}," +
-                "{\"name\":\"Discount validation\",\"description\":\"Accepts discounts > 100% or negative\",\"difficulty\":\"medium\"}" +
+        rateLimiter.setIntentionalBugsJson("{\"bugs\":[" +
+                "{\"name\":\"Memory grows unbounded\",\"description\":\"Stores all timestamps causing memory issues with high traffic\",\"difficulty\":\"common\"}," +
+                "{\"name\":\"Doesn't filter expired requests\",\"description\":\"Counts expired requests towards the limit\",\"difficulty\":\"medium\"}," +
+                "{\"name\":\"Off-by-one error\",\"description\":\"Allows one too many or too few requests\",\"difficulty\":\"common\"}," +
+                "{\"name\":\"No window reset\",\"description\":\"Never allows new requests after window fills up\",\"difficulty\":\"hard\"}" +
                 "]}");
-        shoppingCartBasics.setInitialCodeJava("class CartItem {\n" +
-                "    int id;\n" +
-                "    String name;\n" +
-                "    double price;\n" +
-                "    int quantity;\n" +
-                "}\n\n" +
-                "public class ShoppingCart {\n" +
-                "    // TODO: Add cart storage\n\n" +
-                "    public void addItem(int id, String name, double price) {\n" +
-                "        // TODO: Implement\n" +
-                "    }\n\n" +
-                "    public void removeItem(int id) {\n" +
-                "        // TODO: Implement\n" +
-                "    }\n\n" +
-                "    public double getTotal() {\n" +
-                "        // TODO: Implement\n" +
-                "        return 0;\n" +
-                "    }\n\n" +
-                "    public double applyDiscount(double percentage) {\n" +
-                "        // TODO: Implement\n" +
-                "        return 0;\n" +
+        rateLimiter.setInitialCodeJava("// Rate Limiter\n" +
+                "import java.util.*;\n\n" +
+                "public class RateLimiter {\n" +
+                "    \n" +
+                "    public static Map<String, Object> createRateLimiter(int maxRequests, long windowMs) {\n" +
+                "        // TODO: Create and return a rate limiter object\n" +
+                "        return null;\n" +
+                "    }\n" +
+                "    \n" +
+                "    public static boolean allowRequest(Map<String, Object> rateLimiter) {\n" +
+                "        // TODO: Return true if request allowed, false if limit exceeded\n" +
+                "        return false;\n" +
                 "    }\n" +
                 "}");
-        shoppingCartBasics.setInitialCodePython("class CartItem:\n" +
-                "    def __init__(self, id, name, price):\n" +
-                "        self.id = id\n" +
-                "        self.name = name\n" +
-                "        self.price = price\n" +
-                "        self.quantity = 1\n\n" +
-                "class ShoppingCart:\n" +
-                "    def __init__(self):\n" +
-                "        # TODO: Add cart storage\n" +
-                "        pass\n\n" +
-                "    def add_item(self, id, name, price):\n" +
-                "        # TODO: Implement\n" +
-                "        pass\n\n" +
-                "    def remove_item(self, id):\n" +
-                "        # TODO: Implement\n" +
-                "        pass\n\n" +
-                "    def get_total(self):\n" +
-                "        # TODO: Implement\n" +
-                "        return 0\n\n" +
-                "    def apply_discount(self, percentage):\n" +
-                "        # TODO: Implement\n" +
-                "        return 0");
-        shoppingCartBasics.setInitialCodeJavascript("class CartItem {\n" +
-                "    constructor(id, name, price) {\n" +
-                "        this.id = id;\n" +
-                "        this.name = name;\n" +
-                "        this.price = price;\n" +
-                "        this.quantity = 1;\n" +
-                "    }\n" +
+        rateLimiter.setInitialCodePython("# Rate Limiter\n" +
+                "import time\n\n" +
+                "def create_rate_limiter(max_requests, window_ms):\n" +
+                "    # TODO: Create and return a rate limiter object (use dict)\n" +
+                "    pass\n\n" +
+                "def allow_request(rate_limiter):\n" +
+                "    # TODO: Return True if request allowed, False if limit exceeded\n" +
+                "    pass");
+        rateLimiter.setInitialCodeJavascript("// Rate Limiter\n\n" +
+                "function createRateLimiter(maxRequests, windowMs) {\n" +
+                "  // TODO: Create and return a rate limiter object\n" +
                 "}\n\n" +
-                "class ShoppingCart {\n" +
-                "    constructor() {\n" +
-                "        // TODO: Add cart storage\n" +
-                "    }\n\n" +
-                "    addItem(id, name, price) {\n" +
-                "        // TODO: Implement\n" +
-                "    }\n\n" +
-                "    removeItem(id) {\n" +
-                "        // TODO: Implement\n" +
-                "    }\n\n" +
-                "    getTotal() {\n" +
-                "        // TODO: Implement\n" +
-                "        return 0;\n" +
-                "    }\n\n" +
-                "    applyDiscount(percentage) {\n" +
-                "        // TODO: Implement\n" +
-                "        return 0;\n" +
-                "    }\n" +
+                "function allowRequest(rateLimiter) {\n" +
+                "  // TODO: Return true if request allowed, false if limit exceeded\n" +
                 "}");
-        shoppingCartBasics.setCreatedAt(LocalDateTime.now());
+        rateLimiter.setCreatedAt(LocalDateTime.now());
 
         // Save all questions to database
-        questionRepository.saveAll(Arrays.asList(twoSum, validParentheses, longestSubstring, shoppingCart, shoppingCartBasics));
-        log.info("Successfully seeded 5 questions to database: Two Sum, Valid Parentheses, Longest Substring, Shopping Cart Advanced, Shopping Cart Basics");
+        questionRepository.saveAll(Arrays.asList(twoSum, validParentheses, longestSubstring, shoppingCart, rateLimiter));
+        log.info("Successfully seeded 5 questions to database: Two Sum, Valid Parentheses, Longest Substring, Shopping Cart Advanced, Rate Limiter");
     }
 }

@@ -90,22 +90,32 @@ public class FollowUpQuestionSeeder implements CommandLineRunner {
                     "O(min(m, n)) where m is the charset size and n is the string length.",
                     "Space complexity is O(min(m, n)) where m is the character set size (e.g., 26 for lowercase, 128 for ASCII) and n is string length. For Unicode, it depends on distinct characters in the string.",
                     2));
-            } else if (question.getTitle().equals("Shopping Cart Basics")) {
+            } else if (question.getTitle().equals("Rate Limiter")) {
                 followUps.add(createFollowUpQuestion(question,
-                    "How would you persist this data?",
-                    "You could use a database to store cart items with a cart ID.",
-                    "Implement database persistence with cart tables, items tables, and relationships. Use transactions to ensure consistency when adding/removing items.",
+                    "What happens if this API gets 10,000 requests per second?",
+                    "The timestamps array would grow to 10,000 entries, using a lot of memory. We should consider a more memory-efficient approach.",
+                    "We could use a sliding window counter with fixed buckets, or a token bucket algorithm. These use O(1) memory regardless of traffic.",
                     0));
                 followUps.add(createFollowUpQuestion(question,
-                    "What about handling concurrent updates?",
-                    "You could use locks or optimistic concurrency control.",
-                    "Use database locks (pessimistic) or version fields (optimistic) to handle concurrent updates. Ensure atomicity of operations like checking quantity and updating total.",
+                    "Can you think of a solution that uses fixed memory regardless of traffic?",
+                    "You could divide time into buckets and store counts instead of timestamps.",
+                    "Sliding Window Counter - divide window into smaller buckets, store count per bucket, sum recent buckets. This achieves O(k) space where k = number of buckets, independent of traffic.",
                     1));
                 followUps.add(createFollowUpQuestion(question,
-                    "How would this scale with millions of items?",
-                    "You might need to partition the cart or use caching.",
-                    "Use caching (Redis) for frequently accessed carts, partition data by user/cart ID, implement pagination for retrieving items, and optimize database indexes.",
+                    "What's the tradeoff between your current solution and a fixed-memory solution?",
+                    "Current solution is precise but uses O(n) memory. Fixed-memory solutions are approximate but use O(1) memory.",
+                    "Current solution trades precision and simplicity for memory usage. Fixed-memory solutions like sliding window counter offer better scalability but sacrifice precision at bucket boundaries.",
                     2));
+                followUps.add(createFollowUpQuestion(question,
+                    "What if this needs to work across multiple servers?",
+                    "You would need to store the rate limiter state in a shared location like Redis.",
+                    "Use Redis or a distributed cache to store the rate limiter state. Handle race conditions with atomic operations or Lua scripts. Consider eventual consistency trade-offs.",
+                    3));
+                followUps.add(createFollowUpQuestion(question,
+                    "How would you properly test a time-based function like this?",
+                    "Inject the time function so tests don't depend on real time. Mock Date.now() to control the clock.",
+                    "Dependency injection for the time source enables deterministic testing. Mock Date.now() to test boundary conditions and edge cases without waiting for real time to pass.",
+                    4));
             } else if (question.getTitle().equals("Shopping Cart with Discount Rules")) {
                 followUps.add(createFollowUpQuestion(question,
                     "How would you handle dynamic discount rules?",
