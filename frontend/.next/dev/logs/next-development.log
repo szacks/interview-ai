@@ -1,170 +1,695 @@
-[00:00:00.657] Server  LOG      ✓ Ready in 447ms
-[00:00:33.367] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:00:33.504] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
-[00:00:33.504] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/","route":"/"}
-[00:00:33.504] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {"dp":"/","o":"http://localhost:3000/","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1766042440762}
-[00:00:36.407] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/login color: rgb(120, 120, 120) color: inherit {"dp":"/login","o":"http://localhost:3000/login","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1766042443664}
-[00:00:38.610] Browser LOG     [API Client] Adding auth token to request: /auth/login
-[00:00:38.898] Browser LOG     [API Client] Successful response: /auth/login 200
-[00:00:39.308] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/dashboard color: rgb(120, 120, 120) color: inherit {"dp":"/dashboard","o":"http://localhost:3000/dashboard","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1766042446564}
-[00:00:39.736] Browser LOG     [API Client] Adding auth token to request: /interviews
-[00:00:39.736] Browser LOG     [API Client] Adding auth token to request: /questions
-[00:00:39.736] Browser LOG     [API Client] Adding auth token to request: /interviews
-[00:00:39.736] Browser LOG     [API Client] Adding auth token to request: /questions
-[00:00:39.736] Browser LOG     [API Client] Successful response: /questions 200
-[00:00:39.737] Browser LOG     [API Client] Successful response: /questions 200
-[00:00:39.737] Browser LOG     [API Client] Successful response: /interviews 200
-[00:00:39.737] Browser LOG     [API Client] Successful response: /interviews 200
-[00:11:57.276] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/interview/6 color: rgb(120, 120, 120) color: inherit {"dp":"/interview/[id]","o":"http://localhost:3000/interview/6","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1766043124441}
-[00:11:57.276] Browser LOG     [Interviewer] Interview ID from URL: 6
-[00:11:57.276] Browser LOG     [Interviewer] Interview ID from URL: 6
-[00:11:57.276] Browser LOG     [Interviewer] Verifying interview exists with ID: 6
-[00:11:57.276] Browser LOG     [WebSocket] Connecting to ws://localhost:8080/api/ws/interview for interview 6
-[00:11:57.276] Browser LOG     [WebSocket] Client created, activating...
-[00:11:57.276] Browser LOG     [API Client] Adding auth token to request: /interviews/6
-[00:11:57.276] Browser LOG     [API Client] Adding auth token to request: /chat/history/6
-[00:11:57.276] Browser LOG     [STOMP] Opening Web Socket...
-[00:11:57.276] Browser LOG     [STOMP] Web Socket Opened...
-[00:11:57.276] Browser LOG     [STOMP] >>> CONNECT
+[00:00:00.695] Server  LOG      ✓ Ready in 468ms
+[00:00:06.923] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:07.069] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:00:07.069] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/","route":"/"}
+[00:00:07.069] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {"dp":"/","o":"http://localhost:3000/","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1766130477094}
+[00:00:10.959] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/login color: rgb(120, 120, 120) color: inherit {"dp":"/login","o":"http://localhost:3000/login","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1766130480984}
+[00:00:12.560] Browser LOG     [API Client] Adding auth token to request: /auth/login
+[00:00:12.856] Browser LOG     [API Client] Successful response: /auth/login 200
+[00:00:13.330] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/dashboard color: rgb(120, 120, 120) color: inherit {"dp":"/dashboard","o":"http://localhost:3000/dashboard","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1766130483354}
+[00:00:13.764] Browser LOG     [API Client] Adding auth token to request: /interviews
+[00:00:13.764] Browser LOG     [API Client] Adding auth token to request: /questions
+[00:00:13.764] Browser LOG     [API Client] Adding auth token to request: /interviews
+[00:00:13.764] Browser LOG     [API Client] Adding auth token to request: /questions
+[00:00:13.764] Browser LOG     [API Client] Successful response: /questions 200
+[00:00:13.764] Browser LOG     [API Client] Successful response: /questions 200
+[00:00:13.764] Browser LOG     [API Client] Successful response: /interviews 200
+[00:00:13.764] Browser LOG     [API Client] Successful response: /interviews 200
+[00:00:18.283] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/interview/6 color: rgb(120, 120, 120) color: inherit {"dp":"/interview/[id]","o":"http://localhost:3000/interview/6","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1766130488232}
+[00:00:18.283] Browser LOG     [Interviewer] Interview ID from URL: 6
+[00:00:18.283] Browser LOG     [Interviewer] Interview ID from URL: 6
+[00:00:18.283] Browser LOG     [Interviewer] Verifying interview exists with ID: 6
+[00:00:18.283] Browser LOG     [WebSocket] Connecting to ws://localhost:8080/api/ws/interview for interview 6
+[00:00:18.283] Browser LOG     [WebSocket] Client created, activating...
+[00:00:18.283] Browser LOG     [API Client] Adding auth token to request: /interviews/6
+[00:00:18.283] Browser LOG     [API Client] Adding auth token to request: /chat/history/6
+[00:00:18.283] Browser LOG     [STOMP] Opening Web Socket...
+[00:00:18.283] Browser LOG     [API Client] Successful response: /interviews/6 200
+[00:00:18.283] Browser LOG     [Interviewer] Interview found: {"candidate":{"createdAt":"2025-12-17T10:31:55.643858","email":"joe@candidate.local","id":5,"name":"joe"},"candidateId":5,"company":{"createdAt":"2025-11-29T18:48:03.177823","email":"shaniravia@gmail.com","id":1,"logoUrl":null,"name":"zacksventures","subscriptionTier":"starter","updatedAt":"2025-11-29T18:48:03.177825"},"companyId":1,"completedAt":null,"createdAt":"2025-12-17T10:31:55.679684","id":6,"interviewLinkToken":"95e1b050-2335-4b9d-a1ea-81f1c61fbf7c","interviewer":null,"interviewerId":1,"language":"javascript","question":{"createdAt":"2025-12-17T10:30:20.065788","description":"Build a shopping cart system with the following features:\n\n**Requirements:**\n1. Create a cart\n2. Add items to cart (each item has: id, name, price)\n3. Remove items from cart by item ID\n4. Get total price\n5. Apply a percentage discount to the total\n\n**Rules:**\n- If the same item is added twice, increment quantity (don't duplicate)\n- Removing an item that doesn't exist should not throw an error\n- Discount should be between 0-100%\n- All prices should be rounded to 2 decimal places","difficulty":"easy","id":4,"initialCodeJava":"class CartItem {\n    int id;\n    String name;\n    double price;\n    int quantity;\n}\n\npublic class ShoppingCart {\n    // TODO: Add cart storage\n\n    public void addItem(int id, String name, double price) {\n        // TODO: Implement\n    }\n\n    public void removeItem(int id) {\n        // TODO: Implement\n    }\n\n    public double getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    public double applyDiscount(double percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","initialCodeJavascript":"class CartItem {\n    constructor(id, name, price) {\n        this.id = id;\n        this.name = name;\n        this.price = price;\n        this.quantity = 1;\n    }\n}\n\nclass ShoppingCart {\n    constructor() {\n        // TODO: Add cart storage\n    }\n\n    addItem(id, name, price) {\n        // TODO: Implement\n    }\n\n    removeItem(id) {\n        // TODO: Implement\n    }\n\n    getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    applyDiscount(percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","initialCodePython":"class CartItem:\n    def __init__(self, id, name, price):\n        self.id = id\n        self.name = name\n        self.price = price\n        self.quantity = 1\n\nclass ShoppingCart:\n    def __init__(self):\n        # TODO: Add cart storage\n        pass\n\n    def add_item(self, id, name, price):\n        # TODO: Implement\n        pass\n\n    def remove_item(self, id):\n        # TODO: Implement\n        pass\n\n    def get_total(self):\n        # TODO: Implement\n        return 0\n\n    def apply_discount(self, percentage):\n        # TODO: Implement\n        return 0","intentionalBugsJson":"{\"bugs\":[{\"name\":\"No quantity tracking\",\"description\":\"Creates duplicate entries instead of incrementing quantity\",\"difficulty\":\"common\"},{\"name\":\"Throws on missing item\",\"description\":\"Throws error when removing non-existent item\",\"difficulty\":\"easy\"},{\"name\":\"No rounding\",\"description\":\"Returns prices with many decimal places\",\"difficulty\":\"common\"},{\"name\":\"Discount validation\",\"description\":\"Accepts discounts > 100% or negative\",\"difficulty\":\"medium\"}]}","requirementsJson":"{\"requirements\":[\"Create a cart data structure\",\"Add items with id, name, and price\",\"Remove items by ID (no error if not found)\",\"Calculate total price\",\"Apply percentage discount (0-100%)\",\"Increment quantity for duplicate items\",\"Round all prices to 2 decimal places\"]}","rubricJson":"{\"categories\":[{\"category\":\"Correctness\",\"points\":40,\"description\":\"All operations work correctly\"},{\"category\":\"Edge Cases\",\"points\":25,\"description\":\"Handles duplicates, missing items, invalid discounts\"},{\"category\":\"Code Quality\",\"points\":20,\"description\":\"Clean structure, proper naming, readable code\"},{\"category\":\"Rounding\",\"points\":15,\"description\":\"Correctly rounds prices to 2 decimal places\"}]}","supportedLanguages":"java,python,javascript","testsJson":"{\"tests\":[{\"input\":\"Add item {id:1, name:'Apple', price:1.50}\",\"expected\":\"total: 1.50\",\"description\":\"Add single item\"},{\"input\":\"Add same item twice\",\"expected\":\"quantity: 2, total: 3.00\",\"description\":\"Duplicate items increment quantity\"},{\"input\":\"Remove item id:1\",\"expected\":\"cart empty, total: 0\",\"description\":\"Remove existing item\"},{\"input\":\"Remove non-existent item id:99\",\"expected\":\"no error\",\"description\":\"Remove non-existent item gracefully\"},{\"input\":\"Total 100, apply 10% discount\",\"expected\":\"total: 90.00\",\"description\":\"Apply percentage discount\"},{\"input\":\"Apply 150% discount\",\"expected\":\"error or clamped to 100%\",\"description\":\"Invalid discount handling\"},{\"input\":\"Price 1.999 after calc\",\"expected\":\"2.00\",\"description\":\"Rounding to 2 decimals\"}]}","timeLimitMinutes":30,"title":"Shopping Cart Basics"},"questionId":4,"scheduledAt":"2025-12-17T08:31:55.657","startedAt":"2025-12-17T19:40:58.918971","status":"in_progress"}
+[00:00:18.283] Browser LOG     [Interviewer] Interview status: in_progress
+[00:00:18.283] Browser LOG     [Interviewer] Setting isPending to false - interview is already in_progress
+[00:00:18.283] Browser LOG     [API Client] Adding auth token to request: /code/latest/6
+[00:00:18.283] Browser LOG     [STOMP] Web Socket Opened...
+[00:00:18.283] Browser LOG     [STOMP] >>> CONNECT
 accept-version:1.2,1.1,1.0
 heart-beat:10000,10000
 
 
-[00:11:57.276] Browser LOG     [API Client] Successful response: /interviews/6 200
-[00:11:57.276] Browser LOG     [Interviewer] Interview found: {"candidate":{"createdAt":"2025-12-17T10:31:55.643858","email":"joe@candidate.local","id":5,"name":"joe"},"candidateId":5,"company":{"createdAt":"2025-11-29T18:48:03.177823","email":"shaniravia@gmail.com","id":1,"logoUrl":null,"name":"zacksventures","subscriptionTier":"starter","updatedAt":"2025-11-29T18:48:03.177825"},"companyId":1,"completedAt":null,"createdAt":"2025-12-17T10:31:55.679684","id":6,"interviewLinkToken":"95e1b050-2335-4b9d-a1ea-81f1c61fbf7c","interviewer":null,"interviewerId":1,"language":"javascript","question":{"createdAt":"2025-12-17T10:30:20.065788","description":"Build a shopping cart system with the following features:\n\n**Requirements:**\n1. Create a cart\n2. Add items to cart (each item has: id, name, price)\n3. Remove items from cart by item ID\n4. Get total price\n5. Apply a percentage discount to the total\n\n**Rules:**\n- If the same item is added twice, increment quantity (don't duplicate)\n- Removing an item that doesn't exist should not throw an error\n- Discount should be between 0-100%\n- All prices should be rounded to 2 decimal places","difficulty":"easy","id":4,"initialCodeJava":"class CartItem {\n    int id;\n    String name;\n    double price;\n    int quantity;\n}\n\npublic class ShoppingCart {\n    // TODO: Add cart storage\n\n    public void addItem(int id, String name, double price) {\n        // TODO: Implement\n    }\n\n    public void removeItem(int id) {\n        // TODO: Implement\n    }\n\n    public double getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    public double applyDiscount(double percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","initialCodeJavascript":"class CartItem {\n    constructor(id, name, price) {\n        this.id = id;\n        this.name = name;\n        this.price = price;\n        this.quantity = 1;\n    }\n}\n\nclass ShoppingCart {\n    constructor() {\n        // TODO: Add cart storage\n    }\n\n    addItem(id, name, price) {\n        // TODO: Implement\n    }\n\n    removeItem(id) {\n        // TODO: Implement\n    }\n\n    getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    applyDiscount(percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","initialCodePython":"class CartItem:\n    def __init__(self, id, name, price):\n        self.id = id\n        self.name = name\n        self.price = price\n        self.quantity = 1\n\nclass ShoppingCart:\n    def __init__(self):\n        # TODO: Add cart storage\n        pass\n\n    def add_item(self, id, name, price):\n        # TODO: Implement\n        pass\n\n    def remove_item(self, id):\n        # TODO: Implement\n        pass\n\n    def get_total(self):\n        # TODO: Implement\n        return 0\n\n    def apply_discount(self, percentage):\n        # TODO: Implement\n        return 0","intentionalBugsJson":"{\"bugs\":[{\"name\":\"No quantity tracking\",\"description\":\"Creates duplicate entries instead of incrementing quantity\",\"difficulty\":\"common\"},{\"name\":\"Throws on missing item\",\"description\":\"Throws error when removing non-existent item\",\"difficulty\":\"easy\"},{\"name\":\"No rounding\",\"description\":\"Returns prices with many decimal places\",\"difficulty\":\"common\"},{\"name\":\"Discount validation\",\"description\":\"Accepts discounts > 100% or negative\",\"difficulty\":\"medium\"}]}","requirementsJson":"{\"requirements\":[\"Create a cart data structure\",\"Add items with id, name, and price\",\"Remove items by ID (no error if not found)\",\"Calculate total price\",\"Apply percentage discount (0-100%)\",\"Increment quantity for duplicate items\",\"Round all prices to 2 decimal places\"]}","rubricJson":"{\"categories\":[{\"category\":\"Correctness\",\"points\":40,\"description\":\"All operations work correctly\"},{\"category\":\"Edge Cases\",\"points\":25,\"description\":\"Handles duplicates, missing items, invalid discounts\"},{\"category\":\"Code Quality\",\"points\":20,\"description\":\"Clean structure, proper naming, readable code\"},{\"category\":\"Rounding\",\"points\":15,\"description\":\"Correctly rounds prices to 2 decimal places\"}]}","supportedLanguages":"java,python,javascript","testsJson":"{\"tests\":[{\"input\":\"Add item {id:1, name:'Apple', price:1.50}\",\"expected\":\"total: 1.50\",\"description\":\"Add single item\"},{\"input\":\"Add same item twice\",\"expected\":\"quantity: 2, total: 3.00\",\"description\":\"Duplicate items increment quantity\"},{\"input\":\"Remove item id:1\",\"expected\":\"cart empty, total: 0\",\"description\":\"Remove existing item\"},{\"input\":\"Remove non-existent item id:99\",\"expected\":\"no error\",\"description\":\"Remove non-existent item gracefully\"},{\"input\":\"Total 100, apply 10% discount\",\"expected\":\"total: 90.00\",\"description\":\"Apply percentage discount\"},{\"input\":\"Apply 150% discount\",\"expected\":\"error or clamped to 100%\",\"description\":\"Invalid discount handling\"},{\"input\":\"Price 1.999 after calc\",\"expected\":\"2.00\",\"description\":\"Rounding to 2 decimals\"}]}","timeLimitMinutes":30,"title":"Shopping Cart Basics"},"questionId":4,"scheduledAt":"2025-12-17T08:31:55.657","startedAt":"2025-12-17T19:40:58.918971","status":"in_progress"}
-[00:11:57.276] Browser LOG     [Interviewer] Interview status: in_progress
-[00:11:57.276] Browser LOG     [Interviewer] Setting isPending to false - interview is already in_progress
-[00:11:57.276] Browser LOG     [API Client] Adding auth token to request: /code/latest/6
-[00:11:57.276] Browser LOG     [API Client] Successful response: /chat/history/6 200
-[00:11:57.276] Browser LOG     [STOMP] Received data
-[00:11:57.276] Browser LOG     [STOMP] <<< CONNECTED
+[00:00:18.283] Browser LOG     [API Client] Successful response: /chat/history/6 200
+[00:00:18.283] Browser LOG     [STOMP] Received data
+[00:00:18.283] Browser LOG     [STOMP] <<< CONNECTED
 heart-beat:0,0
 version:1.2
 content-length:0
 
 
-[00:11:57.276] Browser LOG     [STOMP] connected to server undefined
-[00:11:57.276] Browser LOG     [WebSocket] ✓ Connected to interview 6
-[00:11:57.276] Browser LOG     [STOMP] >>> SUBSCRIBE
+[00:00:18.283] Browser LOG     [STOMP] connected to server undefined
+[00:00:18.283] Browser LOG     [WebSocket] ✓ Connected to interview 6
+[00:00:18.283] Browser LOG     [STOMP] >>> SUBSCRIBE
 id:sub-0
 destination:/topic/interview/6/chat
 
 
-[00:11:57.276] Browser LOG     [WebSocket] Subscribed to /topic/interview/6/chat
-[00:11:57.276] Browser LOG     [STOMP] >>> SUBSCRIBE
+[00:00:18.283] Browser LOG     [WebSocket] Subscribed to /topic/interview/6/chat
+[00:00:18.283] Browser LOG     [STOMP] >>> SUBSCRIBE
 id:sub-1
 destination:/topic/interview/6/code
 
 
-[00:11:57.276] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/6/code
-[00:11:57.276] Browser LOG     [API Client] Error response: {"data":"","message":"Server error","status":404,"url":"/code/latest/6"}
-[00:11:57.276] Browser ERROR   [API Client] Final API Error: {"code":"ERR_BAD_REQUEST","message":"Resource not found","status":404}
-[00:11:57.276] Browser ERROR   Error fetching latest code: {"code":"ERR_BAD_REQUEST","message":"Resource not found","status":404}
-[00:11:57.276] Browser ERROR   Error loading candidate code: {"code":"ERR_BAD_REQUEST","message":"Resource not found","status":404}
-[00:13:28.608] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:13:28.806] Browser LOG     [API Client] Adding auth token to request: /chat/resolve-token/95e1b050-2335-4b9d-a1ea-81f1c61fbf7c
-[00:13:28.807] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
-[00:13:28.807] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/i/95e1b050-2335-4b9d-a1ea-81f1c61fbf7c","route":"/i/[token]"}
-[00:13:28.807] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/i/95e1b050-2335-4b9d-a1ea-81f1c61fbf7c color: rgb(120, 120, 120) color: inherit {"dp":"/i/[token]","o":"http://localhost:3000/i/95e1b050-2335-4b9d-a1ea-81f1c61fbf7c","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1766043216010}
-[00:13:28.807] Browser LOG     [API Client] Successful response: /chat/resolve-token/95e1b050-2335-4b9d-a1ea-81f1c61fbf7c 200
-[00:13:28.807] Browser LOG     [WebSocket] Connecting to ws://localhost:8080/api/ws/interview for interview 6
-[00:13:28.807] Browser LOG     [WebSocket] Client created, activating...
-[00:13:28.807] Browser LOG     [API Client] Adding auth token to request: /interviews/6
-[00:13:28.807] Browser LOG     [API Client] Adding auth token to request: /chat/history/6
-[00:13:28.807] Browser LOG     [STOMP] Opening Web Socket...
-[00:13:28.807] Browser LOG     [STOMP] Web Socket Opened...
-[00:13:28.807] Browser LOG     [STOMP] >>> CONNECT
+[00:00:18.283] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/6/code
+[00:00:18.283] Browser LOG     [API Client] Error response: {"data":"","message":"Server error","status":404,"url":"/code/latest/6"}
+[00:00:18.283] Browser ERROR   [API Client] Final API Error: {"code":"ERR_BAD_REQUEST","message":"Resource not found","status":404}
+[00:00:18.283] Browser ERROR   Error fetching latest code: {"code":"ERR_BAD_REQUEST","message":"Resource not found","status":404}
+[00:00:18.283] Browser ERROR   Error loading candidate code: {"code":"ERR_BAD_REQUEST","message":"Resource not found","status":404}
+[00:02:33.883] Server  LOG      ✓ Compiled in 50ms
+[00:02:34.037] Browser LOG     [STOMP] >>> UNSUBSCRIBE
+id:[object Object]
+
+
+[00:02:34.037] Browser LOG     [STOMP] >>> UNSUBSCRIBE
+id:[object Object]
+
+
+[00:02:34.037] Browser LOG     [STOMP] >>> DISCONNECT
+receipt:close-2
+
+
+[00:02:34.037] Browser LOG     [WebSocket] Disconnected
+[00:02:34.037] Browser LOG     [Interviewer] Interview ID from URL: 6
+[00:02:34.037] Browser LOG     [STOMP] Received data
+[00:02:34.037] Browser LOG     [STOMP] <<< RECEIPT
+receipt-id:close-2
+content-length:0
+
+
+[00:02:34.037] Browser LOG     [WebSocket] Disconnected from interview 6
+[00:02:34.037] Browser LOG     [Interviewer] Verifying interview exists with ID: 6
+[00:02:34.037] Browser LOG     [WebSocket] Connecting to ws://localhost:8080/api/ws/interview for interview 6
+[00:02:34.037] Browser LOG     [WebSocket] Client created, activating...
+[00:02:34.037] Browser LOG     [API Client] Adding auth token to request: /interviews/6
+[00:02:34.037] Browser LOG     [API Client] Adding auth token to request: /chat/history/6
+[00:02:34.037] Browser LOG     [STOMP] Opening Web Socket...
+[00:02:34.037] Browser LOG     [STOMP] Connection closed to ws://localhost:8080/api/ws/interview
+[00:02:34.037] Browser LOG     [WebSocket] WebSocket closed
+[00:02:34.037] Browser LOG     [STOMP] Web Socket Opened...
+[00:02:34.037] Browser LOG     [STOMP] >>> CONNECT
 accept-version:1.2,1.1,1.0
 heart-beat:10000,10000
 
 
-[00:13:28.807] Browser LOG     [STOMP] Received data
-[00:13:28.807] Browser LOG     [STOMP] <<< CONNECTED
+[00:02:34.037] Browser LOG     [STOMP] Received data
+[00:02:34.037] Browser LOG     [STOMP] <<< CONNECTED
 heart-beat:0,0
 version:1.2
 content-length:0
 
 
-[00:13:28.807] Browser LOG     [STOMP] connected to server undefined
-[00:13:28.807] Browser LOG     [WebSocket] ✓ Connected to interview 6
-[00:13:28.807] Browser LOG     [STOMP] >>> SUBSCRIBE
+[00:02:34.037] Browser LOG     [STOMP] connected to server undefined
+[00:02:34.037] Browser LOG     [WebSocket] ✓ Connected to interview 6
+[00:02:34.037] Browser LOG     [STOMP] >>> SUBSCRIBE
 id:sub-0
 destination:/topic/interview/6/chat
 
 
-[00:13:28.807] Browser LOG     [WebSocket] Subscribed to /topic/interview/6/chat
-[00:13:28.807] Browser LOG     [STOMP] >>> SUBSCRIBE
+[00:02:34.037] Browser LOG     [WebSocket] Subscribed to /topic/interview/6/chat
+[00:02:34.037] Browser LOG     [STOMP] >>> SUBSCRIBE
 id:sub-1
 destination:/topic/interview/6/code
 
 
-[00:13:28.807] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/6/code
-[00:13:28.807] Browser LOG     [API Client] Successful response: /chat/history/6 200
-[00:13:28.807] Browser LOG     [API Client] Successful response: /interviews/6 200
-[00:13:28.807] Browser LOG     [Candidate] Interview details fetched: {"candidate":{"createdAt":"2025-12-17T10:31:55.643858","email":"joe@candidate.local","id":5,"name":"joe"},"candidateId":5,"company":{"createdAt":"2025-11-29T18:48:03.177823","email":"shaniravia@gmail.com","id":1,"logoUrl":null,"name":"zacksventures","subscriptionTier":"starter","updatedAt":"2025-11-29T18:48:03.177825"},"companyId":1,"completedAt":null,"createdAt":"2025-12-17T10:31:55.679684","id":6,"interviewLinkToken":"95e1b050-2335-4b9d-a1ea-81f1c61fbf7c","interviewer":null,"interviewerId":1,"language":"javascript","question":{"createdAt":"2025-12-17T10:30:20.065788","description":"Build a shopping cart system with the following features:\n\n**Requirements:**\n1. Create a cart\n2. Add items to cart (each item has: id, name, price)\n3. Remove items from cart by item ID\n4. Get total price\n5. Apply a percentage discount to the total\n\n**Rules:**\n- If the same item is added twice, increment quantity (don't duplicate)\n- Removing an item that doesn't exist should not throw an error\n- Discount should be between 0-100%\n- All prices should be rounded to 2 decimal places","difficulty":"easy","id":4,"initialCodeJava":"class CartItem {\n    int id;\n    String name;\n    double price;\n    int quantity;\n}\n\npublic class ShoppingCart {\n    // TODO: Add cart storage\n\n    public void addItem(int id, String name, double price) {\n        // TODO: Implement\n    }\n\n    public void removeItem(int id) {\n        // TODO: Implement\n    }\n\n    public double getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    public double applyDiscount(double percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","initialCodeJavascript":"class CartItem {\n    constructor(id, name, price) {\n        this.id = id;\n        this.name = name;\n        this.price = price;\n        this.quantity = 1;\n    }\n}\n\nclass ShoppingCart {\n    constructor() {\n        // TODO: Add cart storage\n    }\n\n    addItem(id, name, price) {\n        // TODO: Implement\n    }\n\n    removeItem(id) {\n        // TODO: Implement\n    }\n\n    getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    applyDiscount(percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","initialCodePython":"class CartItem:\n    def __init__(self, id, name, price):\n        self.id = id\n        self.name = name\n        self.price = price\n        self.quantity = 1\n\nclass ShoppingCart:\n    def __init__(self):\n        # TODO: Add cart storage\n        pass\n\n    def add_item(self, id, name, price):\n        # TODO: Implement\n        pass\n\n    def remove_item(self, id):\n        # TODO: Implement\n        pass\n\n    def get_total(self):\n        # TODO: Implement\n        return 0\n\n    def apply_discount(self, percentage):\n        # TODO: Implement\n        return 0","intentionalBugsJson":"{\"bugs\":[{\"name\":\"No quantity tracking\",\"description\":\"Creates duplicate entries instead of incrementing quantity\",\"difficulty\":\"common\"},{\"name\":\"Throws on missing item\",\"description\":\"Throws error when removing non-existent item\",\"difficulty\":\"easy\"},{\"name\":\"No rounding\",\"description\":\"Returns prices with many decimal places\",\"difficulty\":\"common\"},{\"name\":\"Discount validation\",\"description\":\"Accepts discounts > 100% or negative\",\"difficulty\":\"medium\"}]}","requirementsJson":"{\"requirements\":[\"Create a cart data structure\",\"Add items with id, name, and price\",\"Remove items by ID (no error if not found)\",\"Calculate total price\",\"Apply percentage discount (0-100%)\",\"Increment quantity for duplicate items\",\"Round all prices to 2 decimal places\"]}","rubricJson":"{\"categories\":[{\"category\":\"Correctness\",\"points\":40,\"description\":\"All operations work correctly\"},{\"category\":\"Edge Cases\",\"points\":25,\"description\":\"Handles duplicates, missing items, invalid discounts\"},{\"category\":\"Code Quality\",\"points\":20,\"description\":\"Clean structure, proper naming, readable code\"},{\"category\":\"Rounding\",\"points\":15,\"description\":\"Correctly rounds prices to 2 decimal places\"}]}","supportedLanguages":"java,python,javascript","testsJson":"{\"tests\":[{\"input\":\"Add item {id:1, name:'Apple', price:1.50}\",\"expected\":\"total: 1.50\",\"description\":\"Add single item\"},{\"input\":\"Add same item twice\",\"expected\":\"quantity: 2, total: 3.00\",\"description\":\"Duplicate items increment quantity\"},{\"input\":\"Remove item id:1\",\"expected\":\"cart empty, total: 0\",\"description\":\"Remove existing item\"},{\"input\":\"Remove non-existent item id:99\",\"expected\":\"no error\",\"description\":\"Remove non-existent item gracefully\"},{\"input\":\"Total 100, apply 10% discount\",\"expected\":\"total: 90.00\",\"description\":\"Apply percentage discount\"},{\"input\":\"Apply 150% discount\",\"expected\":\"error or clamped to 100%\",\"description\":\"Invalid discount handling\"},{\"input\":\"Price 1.999 after calc\",\"expected\":\"2.00\",\"description\":\"Rounding to 2 decimals\"}]}","timeLimitMinutes":30,"title":"Shopping Cart Basics"},"questionId":4,"scheduledAt":"2025-12-17T08:31:55.657","startedAt":"2025-12-17T19:40:58.918971","status":"in_progress"}
-[00:13:29.037] Browser LOG     [STOMP] >>> SEND
+[00:02:34.037] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/6/code
+[00:02:34.037] Browser LOG     [API Client] Successful response: /chat/history/6 200
+[00:02:34.037] Browser LOG     [API Client] Successful response: /interviews/6 200
+[00:02:34.037] Browser LOG     [Interviewer] Interview found: {"candidate":{"createdAt":"2025-12-17T10:31:55.643858","email":"joe@candidate.local","id":5,"name":"joe"},"candidateId":5,"company":{"createdAt":"2025-11-29T18:48:03.177823","email":"shaniravia@gmail.com","id":1,"logoUrl":null,"name":"zacksventures","subscriptionTier":"starter","updatedAt":"2025-11-29T18:48:03.177825"},"companyId":1,"completedAt":null,"createdAt":"2025-12-17T10:31:55.679684","id":6,"interviewLinkToken":"95e1b050-2335-4b9d-a1ea-81f1c61fbf7c","interviewer":null,"interviewerId":1,"language":"javascript","question":{"createdAt":"2025-12-17T10:30:20.065788","description":"Build a shopping cart system with the following features:\n\n**Requirements:**\n1. Create a cart\n2. Add items to cart (each item has: id, name, price)\n3. Remove items from cart by item ID\n4. Get total price\n5. Apply a percentage discount to the total\n\n**Rules:**\n- If the same item is added twice, increment quantity (don't duplicate)\n- Removing an item that doesn't exist should not throw an error\n- Discount should be between 0-100%\n- All prices should be rounded to 2 decimal places","difficulty":"easy","id":4,"initialCodeJava":"class CartItem {\n    int id;\n    String name;\n    double price;\n    int quantity;\n}\n\npublic class ShoppingCart {\n    // TODO: Add cart storage\n\n    public void addItem(int id, String name, double price) {\n        // TODO: Implement\n    }\n\n    public void removeItem(int id) {\n        // TODO: Implement\n    }\n\n    public double getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    public double applyDiscount(double percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","initialCodeJavascript":"class CartItem {\n    constructor(id, name, price) {\n        this.id = id;\n        this.name = name;\n        this.price = price;\n        this.quantity = 1;\n    }\n}\n\nclass ShoppingCart {\n    constructor() {\n        // TODO: Add cart storage\n    }\n\n    addItem(id, name, price) {\n        // TODO: Implement\n    }\n\n    removeItem(id) {\n        // TODO: Implement\n    }\n\n    getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    applyDiscount(percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","initialCodePython":"class CartItem:\n    def __init__(self, id, name, price):\n        self.id = id\n        self.name = name\n        self.price = price\n        self.quantity = 1\n\nclass ShoppingCart:\n    def __init__(self):\n        # TODO: Add cart storage\n        pass\n\n    def add_item(self, id, name, price):\n        # TODO: Implement\n        pass\n\n    def remove_item(self, id):\n        # TODO: Implement\n        pass\n\n    def get_total(self):\n        # TODO: Implement\n        return 0\n\n    def apply_discount(self, percentage):\n        # TODO: Implement\n        return 0","intentionalBugsJson":"{\"bugs\":[{\"name\":\"No quantity tracking\",\"description\":\"Creates duplicate entries instead of incrementing quantity\",\"difficulty\":\"common\"},{\"name\":\"Throws on missing item\",\"description\":\"Throws error when removing non-existent item\",\"difficulty\":\"easy\"},{\"name\":\"No rounding\",\"description\":\"Returns prices with many decimal places\",\"difficulty\":\"common\"},{\"name\":\"Discount validation\",\"description\":\"Accepts discounts > 100% or negative\",\"difficulty\":\"medium\"}]}","requirementsJson":"{\"requirements\":[\"Create a cart data structure\",\"Add items with id, name, and price\",\"Remove items by ID (no error if not found)\",\"Calculate total price\",\"Apply percentage discount (0-100%)\",\"Increment quantity for duplicate items\",\"Round all prices to 2 decimal places\"]}","rubricJson":"{\"categories\":[{\"category\":\"Correctness\",\"points\":40,\"description\":\"All operations work correctly\"},{\"category\":\"Edge Cases\",\"points\":25,\"description\":\"Handles duplicates, missing items, invalid discounts\"},{\"category\":\"Code Quality\",\"points\":20,\"description\":\"Clean structure, proper naming, readable code\"},{\"category\":\"Rounding\",\"points\":15,\"description\":\"Correctly rounds prices to 2 decimal places\"}]}","supportedLanguages":"java,python,javascript","testsJson":"{\"tests\":[{\"input\":\"Add item {id:1, name:'Apple', price:1.50}\",\"expected\":\"total: 1.50\",\"description\":\"Add single item\"},{\"input\":\"Add same item twice\",\"expected\":\"quantity: 2, total: 3.00\",\"description\":\"Duplicate items increment quantity\"},{\"input\":\"Remove item id:1\",\"expected\":\"cart empty, total: 0\",\"description\":\"Remove existing item\"},{\"input\":\"Remove non-existent item id:99\",\"expected\":\"no error\",\"description\":\"Remove non-existent item gracefully\"},{\"input\":\"Total 100, apply 10% discount\",\"expected\":\"total: 90.00\",\"description\":\"Apply percentage discount\"},{\"input\":\"Apply 150% discount\",\"expected\":\"error or clamped to 100%\",\"description\":\"Invalid discount handling\"},{\"input\":\"Price 1.999 after calc\",\"expected\":\"2.00\",\"description\":\"Rounding to 2 decimals\"}]}","timeLimitMinutes":30,"title":"Shopping Cart Basics"},"questionId":4,"scheduledAt":"2025-12-17T08:31:55.657","startedAt":"2025-12-17T19:40:58.918971","status":"in_progress"}
+[00:02:34.037] Browser LOG     [Interviewer] Interview status: in_progress
+[00:02:34.037] Browser LOG     [Interviewer] Setting isPending to false - interview is already in_progress
+[00:02:34.037] Browser LOG     [API Client] Adding auth token to request: /code/latest/6
+[00:02:34.037] Browser LOG     [API Client] Error response: {"data":"","message":"Server error","status":404,"url":"/code/latest/6"}
+[00:02:34.037] Browser ERROR   [API Client] Final API Error: {"code":"ERR_BAD_REQUEST","message":"Resource not found","status":404}
+[00:02:34.037] Browser ERROR   Error fetching latest code: {"code":"ERR_BAD_REQUEST","message":"Resource not found","status":404}
+[00:02:34.037] Browser ERROR   Error loading candidate code: {"code":"ERR_BAD_REQUEST","message":"Resource not found","status":404}
+[00:12:16.379] Server  LOG      ✓ Compiled in 81ms
+[00:12:16.513] Browser ERROR   uncaughtError: ReferenceError: mockTestResults is not defined
+[00:12:16.513] Browser LOG     [STOMP] >>> UNSUBSCRIBE
+id:[object Object]
+
+
+[00:12:16.513] Browser LOG     [STOMP] >>> UNSUBSCRIBE
+id:[object Object]
+
+
+[00:12:16.513] Browser LOG     [STOMP] >>> DISCONNECT
+receipt:close-2
+
+
+[00:12:16.513] Browser LOG     [WebSocket] Disconnected
+[00:12:16.513] Browser LOG     [STOMP] Received data
+[00:12:16.513] Browser LOG     [STOMP] <<< RECEIPT
+receipt-id:close-2
+content-length:0
+
+
+[00:12:16.513] Browser LOG     [WebSocket] Disconnected from interview 6
+[00:12:16.513] Browser LOG     [STOMP] Connection closed to ws://localhost:8080/api/ws/interview
+[00:12:16.513] Browser LOG     [WebSocket] WebSocket closed
+[00:12:20.590] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:12:20.754] Server  LOG      ✓ Compiled in 75ms
+[00:12:20.910] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/interview/6 color: rgb(120, 120, 120) color: inherit {"dp":"/interview/[id]","o":"http://localhost:3000/interview/6","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1766131210727}
+[00:12:20.910] Browser LOG     [Interviewer] Interview ID from URL: 6
+[00:12:20.910] Browser LOG     [Interviewer] Verifying interview exists with ID: 6
+[00:12:20.910] Browser LOG     [WebSocket] Connecting to ws://localhost:8080/api/ws/interview for interview 6
+[00:12:20.910] Browser LOG     [WebSocket] Client created, activating...
+[00:12:20.910] Browser LOG     [API Client] Adding auth token to request: /interviews/6
+[00:12:20.910] Browser LOG     [API Client] Adding auth token to request: /chat/history/6
+[00:12:20.910] Browser LOG     [STOMP] Opening Web Socket...
+[00:12:20.910] Browser LOG     [STOMP] Web Socket Opened...
+[00:12:20.910] Browser LOG     [STOMP] >>> CONNECT
+accept-version:1.2,1.1,1.0
+heart-beat:10000,10000
+
+
+[00:12:20.910] Browser LOG     [STOMP] Received data
+[00:12:20.910] Browser LOG     [STOMP] <<< CONNECTED
+heart-beat:0,0
+version:1.2
+content-length:0
+
+
+[00:12:20.910] Browser LOG     [STOMP] connected to server undefined
+[00:12:20.910] Browser LOG     [WebSocket] ✓ Connected to interview 6
+[00:12:20.910] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-0
+destination:/topic/interview/6/chat
+
+
+[00:12:20.910] Browser LOG     [WebSocket] Subscribed to /topic/interview/6/chat
+[00:12:20.910] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-1
+destination:/topic/interview/6/code
+
+
+[00:12:20.910] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/6/code
+[00:12:20.910] Browser LOG     [API Client] Successful response: /chat/history/6 200
+[00:12:20.910] Browser LOG     [API Client] Successful response: /interviews/6 200
+[00:12:20.910] Browser LOG     [Interviewer] Interview found: {"candidate":{"createdAt":"2025-12-17T10:31:55.643858","email":"joe@candidate.local","id":5,"name":"joe"},"candidateId":5,"company":{"createdAt":"2025-11-29T18:48:03.177823","email":"shaniravia@gmail.com","id":1,"logoUrl":null,"name":"zacksventures","subscriptionTier":"starter","updatedAt":"2025-11-29T18:48:03.177825"},"companyId":1,"completedAt":null,"createdAt":"2025-12-17T10:31:55.679684","id":6,"interviewLinkToken":"95e1b050-2335-4b9d-a1ea-81f1c61fbf7c","interviewer":null,"interviewerId":1,"language":"javascript","question":{"createdAt":"2025-12-17T10:30:20.065788","description":"Build a shopping cart system with the following features:\n\n**Requirements:**\n1. Create a cart\n2. Add items to cart (each item has: id, name, price)\n3. Remove items from cart by item ID\n4. Get total price\n5. Apply a percentage discount to the total\n\n**Rules:**\n- If the same item is added twice, increment quantity (don't duplicate)\n- Removing an item that doesn't exist should not throw an error\n- Discount should be between 0-100%\n- All prices should be rounded to 2 decimal places","difficulty":"easy","id":4,"initialCodeJava":"class CartItem {\n    int id;\n    String name;\n    double price;\n    int quantity;\n}\n\npublic class ShoppingCart {\n    // TODO: Add cart storage\n\n    public void addItem(int id, String name, double price) {\n        // TODO: Implement\n    }\n\n    public void removeItem(int id) {\n        // TODO: Implement\n    }\n\n    public double getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    public double applyDiscount(double percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","initialCodeJavascript":"class CartItem {\n    constructor(id, name, price) {\n        this.id = id;\n        this.name = name;\n        this.price = price;\n        this.quantity = 1;\n    }\n}\n\nclass ShoppingCart {\n    constructor() {\n        // TODO: Add cart storage\n    }\n\n    addItem(id, name, price) {\n        // TODO: Implement\n    }\n\n    removeItem(id) {\n        // TODO: Implement\n    }\n\n    getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    applyDiscount(percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","initialCodePython":"class CartItem:\n    def __init__(self, id, name, price):\n        self.id = id\n        self.name = name\n        self.price = price\n        self.quantity = 1\n\nclass ShoppingCart:\n    def __init__(self):\n        # TODO: Add cart storage\n        pass\n\n    def add_item(self, id, name, price):\n        # TODO: Implement\n        pass\n\n    def remove_item(self, id):\n        # TODO: Implement\n        pass\n\n    def get_total(self):\n        # TODO: Implement\n        return 0\n\n    def apply_discount(self, percentage):\n        # TODO: Implement\n        return 0","intentionalBugsJson":"{\"bugs\":[{\"name\":\"No quantity tracking\",\"description\":\"Creates duplicate entries instead of incrementing quantity\",\"difficulty\":\"common\"},{\"name\":\"Throws on missing item\",\"description\":\"Throws error when removing non-existent item\",\"difficulty\":\"easy\"},{\"name\":\"No rounding\",\"description\":\"Returns prices with many decimal places\",\"difficulty\":\"common\"},{\"name\":\"Discount validation\",\"description\":\"Accepts discounts > 100% or negative\",\"difficulty\":\"medium\"}]}","requirementsJson":"{\"requirements\":[\"Create a cart data structure\",\"Add items with id, name, and price\",\"Remove items by ID (no error if not found)\",\"Calculate total price\",\"Apply percentage discount (0-100%)\",\"Increment quantity for duplicate items\",\"Round all prices to 2 decimal places\"]}","rubricJson":"{\"categories\":[{\"category\":\"Correctness\",\"points\":40,\"description\":\"All operations work correctly\"},{\"category\":\"Edge Cases\",\"points\":25,\"description\":\"Handles duplicates, missing items, invalid discounts\"},{\"category\":\"Code Quality\",\"points\":20,\"description\":\"Clean structure, proper naming, readable code\"},{\"category\":\"Rounding\",\"points\":15,\"description\":\"Correctly rounds prices to 2 decimal places\"}]}","supportedLanguages":"java,python,javascript","testsJson":"{\"tests\":[{\"input\":\"Add item {id:1, name:'Apple', price:1.50}\",\"expected\":\"total: 1.50\",\"description\":\"Add single item\"},{\"input\":\"Add same item twice\",\"expected\":\"quantity: 2, total: 3.00\",\"description\":\"Duplicate items increment quantity\"},{\"input\":\"Remove item id:1\",\"expected\":\"cart empty, total: 0\",\"description\":\"Remove existing item\"},{\"input\":\"Remove non-existent item id:99\",\"expected\":\"no error\",\"description\":\"Remove non-existent item gracefully\"},{\"input\":\"Total 100, apply 10% discount\",\"expected\":\"total: 90.00\",\"description\":\"Apply percentage discount\"},{\"input\":\"Apply 150% discount\",\"expected\":\"error or clamped to 100%\",\"description\":\"Invalid discount handling\"},{\"input\":\"Price 1.999 after calc\",\"expected\":\"2.00\",\"description\":\"Rounding to 2 decimals\"}]}","timeLimitMinutes":30,"title":"Shopping Cart Basics"},"questionId":4,"scheduledAt":"2025-12-17T08:31:55.657","startedAt":"2025-12-17T19:40:58.918971","status":"in_progress"}
+[00:12:20.910] Browser LOG     [Interviewer] Interview status: in_progress
+[00:12:20.910] Browser LOG     [Interviewer] Setting isPending to false - interview is already in_progress
+[00:12:20.910] Browser ERROR   uncaughtError: ReferenceError: mockFollowUpQuestions is not defined
+[00:12:20.910] Browser LOG     [STOMP] >>> UNSUBSCRIBE
+id:[object Object]
+
+
+[00:12:20.910] Browser LOG     [STOMP] >>> UNSUBSCRIBE
+id:[object Object]
+
+
+[00:12:20.910] Browser LOG     [STOMP] >>> DISCONNECT
+receipt:close-2
+
+
+[00:12:20.910] Browser LOG     [WebSocket] Disconnected
+[00:12:20.910] Browser LOG     [STOMP] Received data
+[00:12:20.910] Browser LOG     [STOMP] <<< RECEIPT
+receipt-id:close-2
+content-length:0
+
+
+[00:12:20.910] Browser LOG     [WebSocket] Disconnected from interview 6
+[00:12:20.910] Browser LOG     [STOMP] Connection closed to ws://localhost:8080/api/ws/interview
+[00:12:20.910] Browser LOG     [WebSocket] WebSocket closed
+[00:12:21.069] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:12:21.255] Browser LOG     [Interviewer] Interview ID from URL: 6
+[00:12:21.255] Browser LOG     [Interviewer] Verifying interview exists with ID: 6
+[00:12:21.255] Browser LOG     [WebSocket] Connecting to ws://localhost:8080/api/ws/interview for interview 6
+[00:12:21.255] Browser LOG     [WebSocket] Client created, activating...
+[00:12:21.255] Browser LOG     [API Client] Adding auth token to request: /interviews/6
+[00:12:21.255] Browser LOG     [API Client] Adding auth token to request: /chat/history/6
+[00:12:21.255] Browser LOG     [STOMP] Opening Web Socket...
+[00:12:21.255] Browser LOG     [STOMP] Web Socket Opened...
+[00:12:21.255] Browser LOG     [STOMP] >>> CONNECT
+accept-version:1.2,1.1,1.0
+heart-beat:10000,10000
+
+
+[00:12:21.255] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:12:21.255] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/interview/6","route":"/interview/[id]"}
+[00:12:21.255] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/interview/6 color: rgb(120, 120, 120) color: inherit {"dp":"/interview/[id]","o":"http://localhost:3000/interview/6","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1766131211249}
+[00:12:21.255] Browser LOG     [STOMP] Received data
+[00:12:21.255] Browser LOG     [STOMP] <<< CONNECTED
+heart-beat:0,0
+version:1.2
+content-length:0
+
+
+[00:12:21.255] Browser LOG     [STOMP] connected to server undefined
+[00:12:21.255] Browser LOG     [WebSocket] ✓ Connected to interview 6
+[00:12:21.255] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-0
+destination:/topic/interview/6/chat
+
+
+[00:12:21.255] Browser LOG     [WebSocket] Subscribed to /topic/interview/6/chat
+[00:12:21.255] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-1
+destination:/topic/interview/6/code
+
+
+[00:12:21.255] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/6/code
+[00:12:21.255] Browser LOG     [API Client] Successful response: /chat/history/6 200
+[00:12:21.255] Browser LOG     [API Client] Successful response: /interviews/6 200
+[00:12:21.255] Browser LOG     [Interviewer] Interview found: {"candidate":{"createdAt":"2025-12-17T10:31:55.643858","email":"joe@candidate.local","id":5,"name":"joe"},"candidateId":5,"company":{"createdAt":"2025-11-29T18:48:03.177823","email":"shaniravia@gmail.com","id":1,"logoUrl":null,"name":"zacksventures","subscriptionTier":"starter","updatedAt":"2025-11-29T18:48:03.177825"},"companyId":1,"completedAt":null,"createdAt":"2025-12-17T10:31:55.679684","id":6,"interviewLinkToken":"95e1b050-2335-4b9d-a1ea-81f1c61fbf7c","interviewer":null,"interviewerId":1,"language":"javascript","question":{"createdAt":"2025-12-17T10:30:20.065788","description":"Build a shopping cart system with the following features:\n\n**Requirements:**\n1. Create a cart\n2. Add items to cart (each item has: id, name, price)\n3. Remove items from cart by item ID\n4. Get total price\n5. Apply a percentage discount to the total\n\n**Rules:**\n- If the same item is added twice, increment quantity (don't duplicate)\n- Removing an item that doesn't exist should not throw an error\n- Discount should be between 0-100%\n- All prices should be rounded to 2 decimal places","difficulty":"easy","id":4,"initialCodeJava":"class CartItem {\n    int id;\n    String name;\n    double price;\n    int quantity;\n}\n\npublic class ShoppingCart {\n    // TODO: Add cart storage\n\n    public void addItem(int id, String name, double price) {\n        // TODO: Implement\n    }\n\n    public void removeItem(int id) {\n        // TODO: Implement\n    }\n\n    public double getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    public double applyDiscount(double percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","initialCodeJavascript":"class CartItem {\n    constructor(id, name, price) {\n        this.id = id;\n        this.name = name;\n        this.price = price;\n        this.quantity = 1;\n    }\n}\n\nclass ShoppingCart {\n    constructor() {\n        // TODO: Add cart storage\n    }\n\n    addItem(id, name, price) {\n        // TODO: Implement\n    }\n\n    removeItem(id) {\n        // TODO: Implement\n    }\n\n    getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    applyDiscount(percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","initialCodePython":"class CartItem:\n    def __init__(self, id, name, price):\n        self.id = id\n        self.name = name\n        self.price = price\n        self.quantity = 1\n\nclass ShoppingCart:\n    def __init__(self):\n        # TODO: Add cart storage\n        pass\n\n    def add_item(self, id, name, price):\n        # TODO: Implement\n        pass\n\n    def remove_item(self, id):\n        # TODO: Implement\n        pass\n\n    def get_total(self):\n        # TODO: Implement\n        return 0\n\n    def apply_discount(self, percentage):\n        # TODO: Implement\n        return 0","intentionalBugsJson":"{\"bugs\":[{\"name\":\"No quantity tracking\",\"description\":\"Creates duplicate entries instead of incrementing quantity\",\"difficulty\":\"common\"},{\"name\":\"Throws on missing item\",\"description\":\"Throws error when removing non-existent item\",\"difficulty\":\"easy\"},{\"name\":\"No rounding\",\"description\":\"Returns prices with many decimal places\",\"difficulty\":\"common\"},{\"name\":\"Discount validation\",\"description\":\"Accepts discounts > 100% or negative\",\"difficulty\":\"medium\"}]}","requirementsJson":"{\"requirements\":[\"Create a cart data structure\",\"Add items with id, name, and price\",\"Remove items by ID (no error if not found)\",\"Calculate total price\",\"Apply percentage discount (0-100%)\",\"Increment quantity for duplicate items\",\"Round all prices to 2 decimal places\"]}","rubricJson":"{\"categories\":[{\"category\":\"Correctness\",\"points\":40,\"description\":\"All operations work correctly\"},{\"category\":\"Edge Cases\",\"points\":25,\"description\":\"Handles duplicates, missing items, invalid discounts\"},{\"category\":\"Code Quality\",\"points\":20,\"description\":\"Clean structure, proper naming, readable code\"},{\"category\":\"Rounding\",\"points\":15,\"description\":\"Correctly rounds prices to 2 decimal places\"}]}","supportedLanguages":"java,python,javascript","testsJson":"{\"tests\":[{\"input\":\"Add item {id:1, name:'Apple', price:1.50}\",\"expected\":\"total: 1.50\",\"description\":\"Add single item\"},{\"input\":\"Add same item twice\",\"expected\":\"quantity: 2, total: 3.00\",\"description\":\"Duplicate items increment quantity\"},{\"input\":\"Remove item id:1\",\"expected\":\"cart empty, total: 0\",\"description\":\"Remove existing item\"},{\"input\":\"Remove non-existent item id:99\",\"expected\":\"no error\",\"description\":\"Remove non-existent item gracefully\"},{\"input\":\"Total 100, apply 10% discount\",\"expected\":\"total: 90.00\",\"description\":\"Apply percentage discount\"},{\"input\":\"Apply 150% discount\",\"expected\":\"error or clamped to 100%\",\"description\":\"Invalid discount handling\"},{\"input\":\"Price 1.999 after calc\",\"expected\":\"2.00\",\"description\":\"Rounding to 2 decimals\"}]}","timeLimitMinutes":30,"title":"Shopping Cart Basics"},"questionId":4,"scheduledAt":"2025-12-17T08:31:55.657","startedAt":"2025-12-17T19:40:58.918971","status":"in_progress"}
+[00:12:21.255] Browser LOG     [Interviewer] Interview status: in_progress
+[00:12:21.255] Browser LOG     [Interviewer] Setting isPending to false - interview is already in_progress
+[00:12:21.255] Browser ERROR   uncaughtError: ReferenceError: mockFollowUpQuestions is not defined
+[00:12:21.255] Browser LOG     [STOMP] >>> UNSUBSCRIBE
+id:[object Object]
+
+
+[00:12:21.255] Browser LOG     [STOMP] >>> UNSUBSCRIBE
+id:[object Object]
+
+
+[00:12:21.255] Browser LOG     [STOMP] >>> DISCONNECT
+receipt:close-2
+
+
+[00:12:21.255] Browser LOG     [WebSocket] Disconnected
+[00:12:21.255] Browser LOG     [STOMP] Received data
+[00:12:21.255] Browser LOG     [STOMP] <<< RECEIPT
+receipt-id:close-2
+content-length:0
+
+
+[00:12:21.255] Browser LOG     [WebSocket] Disconnected from interview 6
+[00:12:21.255] Browser LOG     [STOMP] Connection closed to ws://localhost:8080/api/ws/interview
+[00:12:21.255] Browser LOG     [WebSocket] WebSocket closed
+[00:12:26.263] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:12:26.420] Server  LOG      ✓ Compiled in 50ms
+[00:12:26.700] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:12:26.881] Browser LOG     [Interviewer] Interview ID from URL: 6
+[00:12:26.881] Browser LOG     [Interviewer] Verifying interview exists with ID: 6
+[00:12:26.881] Browser LOG     [WebSocket] Connecting to ws://localhost:8080/api/ws/interview for interview 6
+[00:12:26.881] Browser LOG     [WebSocket] Client created, activating...
+[00:12:26.881] Browser LOG     [API Client] Adding auth token to request: /interviews/6
+[00:12:26.881] Browser LOG     [API Client] Adding auth token to request: /chat/history/6
+[00:12:26.881] Browser LOG     [STOMP] Opening Web Socket...
+[00:12:26.881] Browser LOG     [STOMP] Web Socket Opened...
+[00:12:26.881] Browser LOG     [STOMP] >>> CONNECT
+accept-version:1.2,1.1,1.0
+heart-beat:10000,10000
+
+
+[00:12:26.882] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:12:26.882] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/interview/6","route":"/interview/[id]"}
+[00:12:26.882] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/interview/6 color: rgb(120, 120, 120) color: inherit {"dp":"/interview/[id]","o":"http://localhost:3000/interview/6","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1766131216873}
+[00:12:26.882] Browser LOG     [STOMP] Received data
+[00:12:26.882] Browser LOG     [STOMP] <<< CONNECTED
+heart-beat:0,0
+version:1.2
+content-length:0
+
+
+[00:12:26.882] Browser LOG     [STOMP] connected to server undefined
+[00:12:26.882] Browser LOG     [WebSocket] ✓ Connected to interview 6
+[00:12:26.882] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-0
+destination:/topic/interview/6/chat
+
+
+[00:12:26.882] Browser LOG     [WebSocket] Subscribed to /topic/interview/6/chat
+[00:12:26.882] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-1
+destination:/topic/interview/6/code
+
+
+[00:12:26.882] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/6/code
+[00:12:26.882] Browser LOG     [API Client] Successful response: /chat/history/6 200
+[00:12:26.882] Browser LOG     [API Client] Successful response: /interviews/6 200
+[00:12:26.882] Browser LOG     [Interviewer] Interview found: {"candidate":{"createdAt":"2025-12-17T10:31:55.643858","email":"joe@candidate.local","id":5,"name":"joe"},"candidateId":5,"company":{"createdAt":"2025-11-29T18:48:03.177823","email":"shaniravia@gmail.com","id":1,"logoUrl":null,"name":"zacksventures","subscriptionTier":"starter","updatedAt":"2025-11-29T18:48:03.177825"},"companyId":1,"completedAt":null,"createdAt":"2025-12-17T10:31:55.679684","id":6,"interviewLinkToken":"95e1b050-2335-4b9d-a1ea-81f1c61fbf7c","interviewer":null,"interviewerId":1,"language":"javascript","question":{"createdAt":"2025-12-17T10:30:20.065788","description":"Build a shopping cart system with the following features:\n\n**Requirements:**\n1. Create a cart\n2. Add items to cart (each item has: id, name, price)\n3. Remove items from cart by item ID\n4. Get total price\n5. Apply a percentage discount to the total\n\n**Rules:**\n- If the same item is added twice, increment quantity (don't duplicate)\n- Removing an item that doesn't exist should not throw an error\n- Discount should be between 0-100%\n- All prices should be rounded to 2 decimal places","difficulty":"easy","id":4,"initialCodeJava":"class CartItem {\n    int id;\n    String name;\n    double price;\n    int quantity;\n}\n\npublic class ShoppingCart {\n    // TODO: Add cart storage\n\n    public void addItem(int id, String name, double price) {\n        // TODO: Implement\n    }\n\n    public void removeItem(int id) {\n        // TODO: Implement\n    }\n\n    public double getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    public double applyDiscount(double percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","initialCodeJavascript":"class CartItem {\n    constructor(id, name, price) {\n        this.id = id;\n        this.name = name;\n        this.price = price;\n        this.quantity = 1;\n    }\n}\n\nclass ShoppingCart {\n    constructor() {\n        // TODO: Add cart storage\n    }\n\n    addItem(id, name, price) {\n        // TODO: Implement\n    }\n\n    removeItem(id) {\n        // TODO: Implement\n    }\n\n    getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    applyDiscount(percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","initialCodePython":"class CartItem:\n    def __init__(self, id, name, price):\n        self.id = id\n        self.name = name\n        self.price = price\n        self.quantity = 1\n\nclass ShoppingCart:\n    def __init__(self):\n        # TODO: Add cart storage\n        pass\n\n    def add_item(self, id, name, price):\n        # TODO: Implement\n        pass\n\n    def remove_item(self, id):\n        # TODO: Implement\n        pass\n\n    def get_total(self):\n        # TODO: Implement\n        return 0\n\n    def apply_discount(self, percentage):\n        # TODO: Implement\n        return 0","intentionalBugsJson":"{\"bugs\":[{\"name\":\"No quantity tracking\",\"description\":\"Creates duplicate entries instead of incrementing quantity\",\"difficulty\":\"common\"},{\"name\":\"Throws on missing item\",\"description\":\"Throws error when removing non-existent item\",\"difficulty\":\"easy\"},{\"name\":\"No rounding\",\"description\":\"Returns prices with many decimal places\",\"difficulty\":\"common\"},{\"name\":\"Discount validation\",\"description\":\"Accepts discounts > 100% or negative\",\"difficulty\":\"medium\"}]}","requirementsJson":"{\"requirements\":[\"Create a cart data structure\",\"Add items with id, name, and price\",\"Remove items by ID (no error if not found)\",\"Calculate total price\",\"Apply percentage discount (0-100%)\",\"Increment quantity for duplicate items\",\"Round all prices to 2 decimal places\"]}","rubricJson":"{\"categories\":[{\"category\":\"Correctness\",\"points\":40,\"description\":\"All operations work correctly\"},{\"category\":\"Edge Cases\",\"points\":25,\"description\":\"Handles duplicates, missing items, invalid discounts\"},{\"category\":\"Code Quality\",\"points\":20,\"description\":\"Clean structure, proper naming, readable code\"},{\"category\":\"Rounding\",\"points\":15,\"description\":\"Correctly rounds prices to 2 decimal places\"}]}","supportedLanguages":"java,python,javascript","testsJson":"{\"tests\":[{\"input\":\"Add item {id:1, name:'Apple', price:1.50}\",\"expected\":\"total: 1.50\",\"description\":\"Add single item\"},{\"input\":\"Add same item twice\",\"expected\":\"quantity: 2, total: 3.00\",\"description\":\"Duplicate items increment quantity\"},{\"input\":\"Remove item id:1\",\"expected\":\"cart empty, total: 0\",\"description\":\"Remove existing item\"},{\"input\":\"Remove non-existent item id:99\",\"expected\":\"no error\",\"description\":\"Remove non-existent item gracefully\"},{\"input\":\"Total 100, apply 10% discount\",\"expected\":\"total: 90.00\",\"description\":\"Apply percentage discount\"},{\"input\":\"Apply 150% discount\",\"expected\":\"error or clamped to 100%\",\"description\":\"Invalid discount handling\"},{\"input\":\"Price 1.999 after calc\",\"expected\":\"2.00\",\"description\":\"Rounding to 2 decimals\"}]}","timeLimitMinutes":30,"title":"Shopping Cart Basics"},"questionId":4,"scheduledAt":"2025-12-17T08:31:55.657","startedAt":"2025-12-17T19:40:58.918971","status":"in_progress"}
+[00:12:26.882] Browser LOG     [Interviewer] Interview status: in_progress
+[00:12:26.882] Browser LOG     [Interviewer] Setting isPending to false - interview is already in_progress
+[00:12:26.882] Browser ERROR   uncaughtError: ReferenceError: mockFollowUpQuestions is not defined
+[00:12:26.882] Browser LOG     [STOMP] >>> UNSUBSCRIBE
+id:[object Object]
+
+
+[00:12:26.882] Browser LOG     [STOMP] >>> UNSUBSCRIBE
+id:[object Object]
+
+
+[00:12:26.882] Browser LOG     [STOMP] >>> DISCONNECT
+receipt:close-2
+
+
+[00:12:26.882] Browser LOG     [WebSocket] Disconnected
+[00:12:26.882] Browser LOG     [STOMP] Received data
+[00:12:26.882] Browser LOG     [STOMP] <<< RECEIPT
+receipt-id:close-2
+content-length:0
+
+
+[00:12:26.882] Browser LOG     [WebSocket] Disconnected from interview 6
+[00:12:26.882] Browser LOG     [STOMP] Connection closed to ws://localhost:8080/api/ws/interview
+[00:12:26.882] Browser LOG     [WebSocket] WebSocket closed
+[00:12:30.458] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:12:30.598] Server  LOG      ✓ Compiled in 50ms
+[00:12:30.846] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:12:31.024] Browser LOG     [Interviewer] Interview ID from URL: 6
+[00:12:31.024] Browser LOG     [Interviewer] Verifying interview exists with ID: 6
+[00:12:31.024] Browser LOG     [WebSocket] Connecting to ws://localhost:8080/api/ws/interview for interview 6
+[00:12:31.025] Browser LOG     [WebSocket] Client created, activating...
+[00:12:31.025] Browser LOG     [API Client] Adding auth token to request: /interviews/6
+[00:12:31.025] Browser LOG     [API Client] Adding auth token to request: /chat/history/6
+[00:12:31.025] Browser LOG     [STOMP] Opening Web Socket...
+[00:12:31.025] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:12:31.025] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/interview/6","route":"/interview/[id]"}
+[00:12:31.025] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/interview/6 color: rgb(120, 120, 120) color: inherit {"dp":"/interview/[id]","o":"http://localhost:3000/interview/6","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1766131221015}
+[00:12:31.025] Browser LOG     [STOMP] Web Socket Opened...
+[00:12:31.025] Browser LOG     [STOMP] >>> CONNECT
+accept-version:1.2,1.1,1.0
+heart-beat:10000,10000
+
+
+[00:12:31.025] Browser LOG     [STOMP] Received data
+[00:12:31.025] Browser LOG     [STOMP] <<< CONNECTED
+heart-beat:0,0
+version:1.2
+content-length:0
+
+
+[00:12:31.025] Browser LOG     [STOMP] connected to server undefined
+[00:12:31.025] Browser LOG     [WebSocket] ✓ Connected to interview 6
+[00:12:31.025] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-0
+destination:/topic/interview/6/chat
+
+
+[00:12:31.025] Browser LOG     [WebSocket] Subscribed to /topic/interview/6/chat
+[00:12:31.025] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-1
+destination:/topic/interview/6/code
+
+
+[00:12:31.025] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/6/code
+[00:12:31.025] Browser LOG     [API Client] Successful response: /chat/history/6 200
+[00:12:31.025] Browser LOG     [API Client] Successful response: /interviews/6 200
+[00:12:31.025] Browser LOG     [Interviewer] Interview found: {"candidate":{"createdAt":"2025-12-17T10:31:55.643858","email":"joe@candidate.local","id":5,"name":"joe"},"candidateId":5,"company":{"createdAt":"2025-11-29T18:48:03.177823","email":"shaniravia@gmail.com","id":1,"logoUrl":null,"name":"zacksventures","subscriptionTier":"starter","updatedAt":"2025-11-29T18:48:03.177825"},"companyId":1,"completedAt":null,"createdAt":"2025-12-17T10:31:55.679684","id":6,"interviewLinkToken":"95e1b050-2335-4b9d-a1ea-81f1c61fbf7c","interviewer":null,"interviewerId":1,"language":"javascript","question":{"createdAt":"2025-12-17T10:30:20.065788","description":"Build a shopping cart system with the following features:\n\n**Requirements:**\n1. Create a cart\n2. Add items to cart (each item has: id, name, price)\n3. Remove items from cart by item ID\n4. Get total price\n5. Apply a percentage discount to the total\n\n**Rules:**\n- If the same item is added twice, increment quantity (don't duplicate)\n- Removing an item that doesn't exist should not throw an error\n- Discount should be between 0-100%\n- All prices should be rounded to 2 decimal places","difficulty":"easy","id":4,"initialCodeJava":"class CartItem {\n    int id;\n    String name;\n    double price;\n    int quantity;\n}\n\npublic class ShoppingCart {\n    // TODO: Add cart storage\n\n    public void addItem(int id, String name, double price) {\n        // TODO: Implement\n    }\n\n    public void removeItem(int id) {\n        // TODO: Implement\n    }\n\n    public double getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    public double applyDiscount(double percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","initialCodeJavascript":"class CartItem {\n    constructor(id, name, price) {\n        this.id = id;\n        this.name = name;\n        this.price = price;\n        this.quantity = 1;\n    }\n}\n\nclass ShoppingCart {\n    constructor() {\n        // TODO: Add cart storage\n    }\n\n    addItem(id, name, price) {\n        // TODO: Implement\n    }\n\n    removeItem(id) {\n        // TODO: Implement\n    }\n\n    getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    applyDiscount(percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","initialCodePython":"class CartItem:\n    def __init__(self, id, name, price):\n        self.id = id\n        self.name = name\n        self.price = price\n        self.quantity = 1\n\nclass ShoppingCart:\n    def __init__(self):\n        # TODO: Add cart storage\n        pass\n\n    def add_item(self, id, name, price):\n        # TODO: Implement\n        pass\n\n    def remove_item(self, id):\n        # TODO: Implement\n        pass\n\n    def get_total(self):\n        # TODO: Implement\n        return 0\n\n    def apply_discount(self, percentage):\n        # TODO: Implement\n        return 0","intentionalBugsJson":"{\"bugs\":[{\"name\":\"No quantity tracking\",\"description\":\"Creates duplicate entries instead of incrementing quantity\",\"difficulty\":\"common\"},{\"name\":\"Throws on missing item\",\"description\":\"Throws error when removing non-existent item\",\"difficulty\":\"easy\"},{\"name\":\"No rounding\",\"description\":\"Returns prices with many decimal places\",\"difficulty\":\"common\"},{\"name\":\"Discount validation\",\"description\":\"Accepts discounts > 100% or negative\",\"difficulty\":\"medium\"}]}","requirementsJson":"{\"requirements\":[\"Create a cart data structure\",\"Add items with id, name, and price\",\"Remove items by ID (no error if not found)\",\"Calculate total price\",\"Apply percentage discount (0-100%)\",\"Increment quantity for duplicate items\",\"Round all prices to 2 decimal places\"]}","rubricJson":"{\"categories\":[{\"category\":\"Correctness\",\"points\":40,\"description\":\"All operations work correctly\"},{\"category\":\"Edge Cases\",\"points\":25,\"description\":\"Handles duplicates, missing items, invalid discounts\"},{\"category\":\"Code Quality\",\"points\":20,\"description\":\"Clean structure, proper naming, readable code\"},{\"category\":\"Rounding\",\"points\":15,\"description\":\"Correctly rounds prices to 2 decimal places\"}]}","supportedLanguages":"java,python,javascript","testsJson":"{\"tests\":[{\"input\":\"Add item {id:1, name:'Apple', price:1.50}\",\"expected\":\"total: 1.50\",\"description\":\"Add single item\"},{\"input\":\"Add same item twice\",\"expected\":\"quantity: 2, total: 3.00\",\"description\":\"Duplicate items increment quantity\"},{\"input\":\"Remove item id:1\",\"expected\":\"cart empty, total: 0\",\"description\":\"Remove existing item\"},{\"input\":\"Remove non-existent item id:99\",\"expected\":\"no error\",\"description\":\"Remove non-existent item gracefully\"},{\"input\":\"Total 100, apply 10% discount\",\"expected\":\"total: 90.00\",\"description\":\"Apply percentage discount\"},{\"input\":\"Apply 150% discount\",\"expected\":\"error or clamped to 100%\",\"description\":\"Invalid discount handling\"},{\"input\":\"Price 1.999 after calc\",\"expected\":\"2.00\",\"description\":\"Rounding to 2 decimals\"}]}","timeLimitMinutes":30,"title":"Shopping Cart Basics"},"questionId":4,"scheduledAt":"2025-12-17T08:31:55.657","startedAt":"2025-12-17T19:40:58.918971","status":"in_progress"}
+[00:12:31.025] Browser LOG     [Interviewer] Interview status: in_progress
+[00:12:31.025] Browser LOG     [Interviewer] Setting isPending to false - interview is already in_progress
+[00:12:31.025] Browser ERROR   uncaughtError: ReferenceError: mockFollowUpQuestions is not defined
+[00:12:31.025] Browser LOG     [STOMP] >>> UNSUBSCRIBE
+id:[object Object]
+
+
+[00:12:31.025] Browser LOG     [STOMP] >>> UNSUBSCRIBE
+id:[object Object]
+
+
+[00:12:31.025] Browser LOG     [STOMP] >>> DISCONNECT
+receipt:close-2
+
+
+[00:12:31.025] Browser LOG     [WebSocket] Disconnected
+[00:12:31.025] Browser LOG     [STOMP] Received data
+[00:12:31.025] Browser LOG     [STOMP] <<< RECEIPT
+receipt-id:close-2
+content-length:0
+
+
+[00:12:31.025] Browser LOG     [WebSocket] Disconnected from interview 6
+[00:12:31.025] Browser LOG     [STOMP] Connection closed to ws://localhost:8080/api/ws/interview
+[00:12:31.025] Browser LOG     [WebSocket] WebSocket closed
+[00:12:35.721] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:12:35.860] Server  LOG      ✓ Compiled in 54ms
+[00:12:36.155] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:12:36.350] Browser LOG     [Interviewer] Interview ID from URL: 6
+[00:12:36.350] Browser LOG     [Interviewer] Verifying interview exists with ID: 6
+[00:12:36.350] Browser LOG     [WebSocket] Connecting to ws://localhost:8080/api/ws/interview for interview 6
+[00:12:36.350] Browser LOG     [WebSocket] Client created, activating...
+[00:12:36.350] Browser LOG     [API Client] Adding auth token to request: /interviews/6
+[00:12:36.350] Browser LOG     [API Client] Adding auth token to request: /chat/history/6
+[00:12:36.350] Browser LOG     [STOMP] Opening Web Socket...
+[00:12:36.350] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:12:36.350] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/interview/6","route":"/interview/[id]"}
+[00:12:36.350] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/interview/6 color: rgb(120, 120, 120) color: inherit {"dp":"/interview/[id]","o":"http://localhost:3000/interview/6","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1766131226333}
+[00:12:36.350] Browser LOG     [STOMP] Web Socket Opened...
+[00:12:36.350] Browser LOG     [STOMP] >>> CONNECT
+accept-version:1.2,1.1,1.0
+heart-beat:10000,10000
+
+
+[00:12:36.350] Browser LOG     [STOMP] Received data
+[00:12:36.350] Browser LOG     [STOMP] <<< CONNECTED
+heart-beat:0,0
+version:1.2
+content-length:0
+
+
+[00:12:36.350] Browser LOG     [STOMP] connected to server undefined
+[00:12:36.350] Browser LOG     [WebSocket] ✓ Connected to interview 6
+[00:12:36.350] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-0
+destination:/topic/interview/6/chat
+
+
+[00:12:36.350] Browser LOG     [WebSocket] Subscribed to /topic/interview/6/chat
+[00:12:36.350] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-1
+destination:/topic/interview/6/code
+
+
+[00:12:36.350] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/6/code
+[00:12:36.350] Browser LOG     [API Client] Successful response: /chat/history/6 200
+[00:12:36.350] Browser LOG     [API Client] Successful response: /interviews/6 200
+[00:12:36.350] Browser LOG     [Interviewer] Interview found: {"candidate":{"createdAt":"2025-12-17T10:31:55.643858","email":"joe@candidate.local","id":5,"name":"joe"},"candidateId":5,"company":{"createdAt":"2025-11-29T18:48:03.177823","email":"shaniravia@gmail.com","id":1,"logoUrl":null,"name":"zacksventures","subscriptionTier":"starter","updatedAt":"2025-11-29T18:48:03.177825"},"companyId":1,"completedAt":null,"createdAt":"2025-12-17T10:31:55.679684","id":6,"interviewLinkToken":"95e1b050-2335-4b9d-a1ea-81f1c61fbf7c","interviewer":null,"interviewerId":1,"language":"javascript","question":{"createdAt":"2025-12-17T10:30:20.065788","description":"Build a shopping cart system with the following features:\n\n**Requirements:**\n1. Create a cart\n2. Add items to cart (each item has: id, name, price)\n3. Remove items from cart by item ID\n4. Get total price\n5. Apply a percentage discount to the total\n\n**Rules:**\n- If the same item is added twice, increment quantity (don't duplicate)\n- Removing an item that doesn't exist should not throw an error\n- Discount should be between 0-100%\n- All prices should be rounded to 2 decimal places","difficulty":"easy","id":4,"initialCodeJava":"class CartItem {\n    int id;\n    String name;\n    double price;\n    int quantity;\n}\n\npublic class ShoppingCart {\n    // TODO: Add cart storage\n\n    public void addItem(int id, String name, double price) {\n        // TODO: Implement\n    }\n\n    public void removeItem(int id) {\n        // TODO: Implement\n    }\n\n    public double getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    public double applyDiscount(double percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","initialCodeJavascript":"class CartItem {\n    constructor(id, name, price) {\n        this.id = id;\n        this.name = name;\n        this.price = price;\n        this.quantity = 1;\n    }\n}\n\nclass ShoppingCart {\n    constructor() {\n        // TODO: Add cart storage\n    }\n\n    addItem(id, name, price) {\n        // TODO: Implement\n    }\n\n    removeItem(id) {\n        // TODO: Implement\n    }\n\n    getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    applyDiscount(percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","initialCodePython":"class CartItem:\n    def __init__(self, id, name, price):\n        self.id = id\n        self.name = name\n        self.price = price\n        self.quantity = 1\n\nclass ShoppingCart:\n    def __init__(self):\n        # TODO: Add cart storage\n        pass\n\n    def add_item(self, id, name, price):\n        # TODO: Implement\n        pass\n\n    def remove_item(self, id):\n        # TODO: Implement\n        pass\n\n    def get_total(self):\n        # TODO: Implement\n        return 0\n\n    def apply_discount(self, percentage):\n        # TODO: Implement\n        return 0","intentionalBugsJson":"{\"bugs\":[{\"name\":\"No quantity tracking\",\"description\":\"Creates duplicate entries instead of incrementing quantity\",\"difficulty\":\"common\"},{\"name\":\"Throws on missing item\",\"description\":\"Throws error when removing non-existent item\",\"difficulty\":\"easy\"},{\"name\":\"No rounding\",\"description\":\"Returns prices with many decimal places\",\"difficulty\":\"common\"},{\"name\":\"Discount validation\",\"description\":\"Accepts discounts > 100% or negative\",\"difficulty\":\"medium\"}]}","requirementsJson":"{\"requirements\":[\"Create a cart data structure\",\"Add items with id, name, and price\",\"Remove items by ID (no error if not found)\",\"Calculate total price\",\"Apply percentage discount (0-100%)\",\"Increment quantity for duplicate items\",\"Round all prices to 2 decimal places\"]}","rubricJson":"{\"categories\":[{\"category\":\"Correctness\",\"points\":40,\"description\":\"All operations work correctly\"},{\"category\":\"Edge Cases\",\"points\":25,\"description\":\"Handles duplicates, missing items, invalid discounts\"},{\"category\":\"Code Quality\",\"points\":20,\"description\":\"Clean structure, proper naming, readable code\"},{\"category\":\"Rounding\",\"points\":15,\"description\":\"Correctly rounds prices to 2 decimal places\"}]}","supportedLanguages":"java,python,javascript","testsJson":"{\"tests\":[{\"input\":\"Add item {id:1, name:'Apple', price:1.50}\",\"expected\":\"total: 1.50\",\"description\":\"Add single item\"},{\"input\":\"Add same item twice\",\"expected\":\"quantity: 2, total: 3.00\",\"description\":\"Duplicate items increment quantity\"},{\"input\":\"Remove item id:1\",\"expected\":\"cart empty, total: 0\",\"description\":\"Remove existing item\"},{\"input\":\"Remove non-existent item id:99\",\"expected\":\"no error\",\"description\":\"Remove non-existent item gracefully\"},{\"input\":\"Total 100, apply 10% discount\",\"expected\":\"total: 90.00\",\"description\":\"Apply percentage discount\"},{\"input\":\"Apply 150% discount\",\"expected\":\"error or clamped to 100%\",\"description\":\"Invalid discount handling\"},{\"input\":\"Price 1.999 after calc\",\"expected\":\"2.00\",\"description\":\"Rounding to 2 decimals\"}]}","timeLimitMinutes":30,"title":"Shopping Cart Basics"},"questionId":4,"scheduledAt":"2025-12-17T08:31:55.657","startedAt":"2025-12-17T19:40:58.918971","status":"in_progress"}
+[00:12:36.350] Browser LOG     [Interviewer] Interview status: in_progress
+[00:12:36.350] Browser LOG     [Interviewer] Setting isPending to false - interview is already in_progress
+[00:12:36.350] Browser ERROR   uncaughtError: ReferenceError: mockFollowUpQuestions is not defined
+[00:12:36.350] Browser LOG     [STOMP] >>> UNSUBSCRIBE
+id:[object Object]
+
+
+[00:12:36.350] Browser LOG     [STOMP] >>> UNSUBSCRIBE
+id:[object Object]
+
+
+[00:12:36.350] Browser LOG     [STOMP] >>> DISCONNECT
+receipt:close-2
+
+
+[00:12:36.350] Browser LOG     [WebSocket] Disconnected
+[00:12:36.350] Browser LOG     [STOMP] Received data
+[00:12:36.350] Browser LOG     [STOMP] <<< RECEIPT
+receipt-id:close-2
+content-length:0
+
+
+[00:12:36.350] Browser LOG     [WebSocket] Disconnected from interview 6
+[00:12:36.350] Browser LOG     [STOMP] Connection closed to ws://localhost:8080/api/ws/interview
+[00:12:36.350] Browser LOG     [WebSocket] WebSocket closed
+[00:12:49.498] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:12:49.671] Server  LOG      ✓ Compiled in 105ms
+[00:12:49.946] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:12:50.201] Browser LOG     [Interviewer] Interview ID from URL: 6
+[00:12:50.201] Browser LOG     [Interviewer] Verifying interview exists with ID: 6
+[00:12:50.201] Browser LOG     [WebSocket] Connecting to ws://localhost:8080/api/ws/interview for interview 6
+[00:12:50.201] Browser LOG     [WebSocket] Client created, activating...
+[00:12:50.201] Browser LOG     [API Client] Adding auth token to request: /interviews/6
+[00:12:50.201] Browser LOG     [API Client] Adding auth token to request: /chat/history/6
+[00:12:50.201] Browser LOG     [STOMP] Opening Web Socket...
+[00:12:50.201] Browser LOG     [STOMP] Web Socket Opened...
+[00:12:50.201] Browser LOG     [STOMP] >>> CONNECT
+accept-version:1.2,1.1,1.0
+heart-beat:10000,10000
+
+
+[00:12:50.201] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:12:50.201] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/interview/6","route":"/interview/[id]"}
+[00:12:50.201] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/interview/6 color: rgb(120, 120, 120) color: inherit {"dp":"/interview/[id]","o":"http://localhost:3000/interview/6","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1766131240135}
+[00:12:50.201] Browser LOG     [STOMP] Received data
+[00:12:50.201] Browser LOG     [STOMP] <<< CONNECTED
+heart-beat:0,0
+version:1.2
+content-length:0
+
+
+[00:12:50.201] Browser LOG     [STOMP] connected to server undefined
+[00:12:50.201] Browser LOG     [WebSocket] ✓ Connected to interview 6
+[00:12:50.201] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-0
+destination:/topic/interview/6/chat
+
+
+[00:12:50.201] Browser LOG     [WebSocket] Subscribed to /topic/interview/6/chat
+[00:12:50.201] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-1
+destination:/topic/interview/6/code
+
+
+[00:12:50.201] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/6/code
+[00:12:50.201] Browser LOG     [API Client] Successful response: /chat/history/6 200
+[00:12:50.201] Browser LOG     [API Client] Successful response: /interviews/6 200
+[00:12:50.201] Browser LOG     [Interviewer] Interview found: {"candidate":{"createdAt":"2025-12-17T10:31:55.643858","email":"joe@candidate.local","id":5,"name":"joe"},"candidateId":5,"company":{"createdAt":"2025-11-29T18:48:03.177823","email":"shaniravia@gmail.com","id":1,"logoUrl":null,"name":"zacksventures","subscriptionTier":"starter","updatedAt":"2025-11-29T18:48:03.177825"},"companyId":1,"completedAt":null,"createdAt":"2025-12-17T10:31:55.679684","id":6,"interviewLinkToken":"95e1b050-2335-4b9d-a1ea-81f1c61fbf7c","interviewer":null,"interviewerId":1,"language":"javascript","question":{"createdAt":"2025-12-17T10:30:20.065788","description":"Build a shopping cart system with the following features:\n\n**Requirements:**\n1. Create a cart\n2. Add items to cart (each item has: id, name, price)\n3. Remove items from cart by item ID\n4. Get total price\n5. Apply a percentage discount to the total\n\n**Rules:**\n- If the same item is added twice, increment quantity (don't duplicate)\n- Removing an item that doesn't exist should not throw an error\n- Discount should be between 0-100%\n- All prices should be rounded to 2 decimal places","difficulty":"easy","id":4,"initialCodeJava":"class CartItem {\n    int id;\n    String name;\n    double price;\n    int quantity;\n}\n\npublic class ShoppingCart {\n    // TODO: Add cart storage\n\n    public void addItem(int id, String name, double price) {\n        // TODO: Implement\n    }\n\n    public void removeItem(int id) {\n        // TODO: Implement\n    }\n\n    public double getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    public double applyDiscount(double percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","initialCodeJavascript":"class CartItem {\n    constructor(id, name, price) {\n        this.id = id;\n        this.name = name;\n        this.price = price;\n        this.quantity = 1;\n    }\n}\n\nclass ShoppingCart {\n    constructor() {\n        // TODO: Add cart storage\n    }\n\n    addItem(id, name, price) {\n        // TODO: Implement\n    }\n\n    removeItem(id) {\n        // TODO: Implement\n    }\n\n    getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    applyDiscount(percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","initialCodePython":"class CartItem:\n    def __init__(self, id, name, price):\n        self.id = id\n        self.name = name\n        self.price = price\n        self.quantity = 1\n\nclass ShoppingCart:\n    def __init__(self):\n        # TODO: Add cart storage\n        pass\n\n    def add_item(self, id, name, price):\n        # TODO: Implement\n        pass\n\n    def remove_item(self, id):\n        # TODO: Implement\n        pass\n\n    def get_total(self):\n        # TODO: Implement\n        return 0\n\n    def apply_discount(self, percentage):\n        # TODO: Implement\n        return 0","intentionalBugsJson":"{\"bugs\":[{\"name\":\"No quantity tracking\",\"description\":\"Creates duplicate entries instead of incrementing quantity\",\"difficulty\":\"common\"},{\"name\":\"Throws on missing item\",\"description\":\"Throws error when removing non-existent item\",\"difficulty\":\"easy\"},{\"name\":\"No rounding\",\"description\":\"Returns prices with many decimal places\",\"difficulty\":\"common\"},{\"name\":\"Discount validation\",\"description\":\"Accepts discounts > 100% or negative\",\"difficulty\":\"medium\"}]}","requirementsJson":"{\"requirements\":[\"Create a cart data structure\",\"Add items with id, name, and price\",\"Remove items by ID (no error if not found)\",\"Calculate total price\",\"Apply percentage discount (0-100%)\",\"Increment quantity for duplicate items\",\"Round all prices to 2 decimal places\"]}","rubricJson":"{\"categories\":[{\"category\":\"Correctness\",\"points\":40,\"description\":\"All operations work correctly\"},{\"category\":\"Edge Cases\",\"points\":25,\"description\":\"Handles duplicates, missing items, invalid discounts\"},{\"category\":\"Code Quality\",\"points\":20,\"description\":\"Clean structure, proper naming, readable code\"},{\"category\":\"Rounding\",\"points\":15,\"description\":\"Correctly rounds prices to 2 decimal places\"}]}","supportedLanguages":"java,python,javascript","testsJson":"{\"tests\":[{\"input\":\"Add item {id:1, name:'Apple', price:1.50}\",\"expected\":\"total: 1.50\",\"description\":\"Add single item\"},{\"input\":\"Add same item twice\",\"expected\":\"quantity: 2, total: 3.00\",\"description\":\"Duplicate items increment quantity\"},{\"input\":\"Remove item id:1\",\"expected\":\"cart empty, total: 0\",\"description\":\"Remove existing item\"},{\"input\":\"Remove non-existent item id:99\",\"expected\":\"no error\",\"description\":\"Remove non-existent item gracefully\"},{\"input\":\"Total 100, apply 10% discount\",\"expected\":\"total: 90.00\",\"description\":\"Apply percentage discount\"},{\"input\":\"Apply 150% discount\",\"expected\":\"error or clamped to 100%\",\"description\":\"Invalid discount handling\"},{\"input\":\"Price 1.999 after calc\",\"expected\":\"2.00\",\"description\":\"Rounding to 2 decimals\"}]}","timeLimitMinutes":30,"title":"Shopping Cart Basics"},"questionId":4,"scheduledAt":"2025-12-17T08:31:55.657","startedAt":"2025-12-17T19:40:58.918971","status":"in_progress"}
+[00:12:50.201] Browser LOG     [Interviewer] Interview status: in_progress
+[00:12:50.201] Browser LOG     [Interviewer] Setting isPending to false - interview is already in_progress
+[00:12:50.201] Browser LOG     [API Client] Adding auth token to request: /code/latest/6
+[00:12:50.201] Browser LOG     [API Client] Error response: {"data":"","message":"Server error","status":404,"url":"/code/latest/6"}
+[00:12:50.202] Browser ERROR   [API Client] Final API Error: {"code":"ERR_BAD_REQUEST","message":"Resource not found","status":404}
+[00:12:50.202] Browser ERROR   Error fetching latest code: {"code":"ERR_BAD_REQUEST","message":"Resource not found","status":404}
+[00:12:50.202] Browser ERROR   Error loading candidate code: {"code":"ERR_BAD_REQUEST","message":"Resource not found","status":404}
+[00:15:25.697] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:15:25.939] Browser LOG     [Interviewer] Interview ID from URL: 6
+[00:15:25.939] Browser LOG     [Interviewer] Verifying interview exists with ID: 6
+[00:15:25.939] Browser LOG     [WebSocket] Connecting to ws://localhost:8080/api/ws/interview for interview 6
+[00:15:25.939] Browser LOG     [WebSocket] Client created, activating...
+[00:15:25.939] Browser LOG     [API Client] Adding auth token to request: /interviews/6
+[00:15:25.939] Browser LOG     [API Client] Adding auth token to request: /chat/history/6
+[00:15:25.939] Browser LOG     [STOMP] Opening Web Socket...
+[00:15:25.939] Browser LOG     [STOMP] Web Socket Opened...
+[00:15:25.939] Browser LOG     [STOMP] >>> CONNECT
+accept-version:1.2,1.1,1.0
+heart-beat:10000,10000
+
+
+[00:15:25.939] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:15:25.939] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/interview/6","route":"/interview/[id]"}
+[00:15:25.939] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/interview/6 color: rgb(120, 120, 120) color: inherit {"dp":"/interview/[id]","o":"http://localhost:3000/interview/6","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1766131395868}
+[00:15:25.939] Browser LOG     [STOMP] Received data
+[00:15:25.939] Browser LOG     [STOMP] <<< CONNECTED
+heart-beat:0,0
+version:1.2
+content-length:0
+
+
+[00:15:25.939] Browser LOG     [STOMP] connected to server undefined
+[00:15:25.939] Browser LOG     [WebSocket] ✓ Connected to interview 6
+[00:15:25.939] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-0
+destination:/topic/interview/6/chat
+
+
+[00:15:25.939] Browser LOG     [WebSocket] Subscribed to /topic/interview/6/chat
+[00:15:25.939] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-1
+destination:/topic/interview/6/code
+
+
+[00:15:25.939] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/6/code
+[00:15:25.939] Browser LOG     [API Client] Successful response: /chat/history/6 200
+[00:15:25.939] Browser LOG     [API Client] Successful response: /interviews/6 200
+[00:15:25.939] Browser LOG     [Interviewer] Interview found: {"candidate":{"createdAt":"2025-12-17T10:31:55.643858","email":"joe@candidate.local","id":5,"name":"joe"},"candidateId":5,"company":{"createdAt":"2025-11-29T18:48:03.177823","email":"shaniravia@gmail.com","id":1,"logoUrl":null,"name":"zacksventures","subscriptionTier":"starter","updatedAt":"2025-11-29T18:48:03.177825"},"companyId":1,"completedAt":null,"createdAt":"2025-12-17T10:31:55.679684","id":6,"interviewLinkToken":"95e1b050-2335-4b9d-a1ea-81f1c61fbf7c","interviewer":null,"interviewerId":1,"language":"javascript","question":{"createdAt":"2025-12-17T10:30:20.065788","description":"Build a shopping cart system with the following features:\n\n**Requirements:**\n1. Create a cart\n2. Add items to cart (each item has: id, name, price)\n3. Remove items from cart by item ID\n4. Get total price\n5. Apply a percentage discount to the total\n\n**Rules:**\n- If the same item is added twice, increment quantity (don't duplicate)\n- Removing an item that doesn't exist should not throw an error\n- Discount should be between 0-100%\n- All prices should be rounded to 2 decimal places","difficulty":"easy","id":4,"initialCodeJava":"class CartItem {\n    int id;\n    String name;\n    double price;\n    int quantity;\n}\n\npublic class ShoppingCart {\n    // TODO: Add cart storage\n\n    public void addItem(int id, String name, double price) {\n        // TODO: Implement\n    }\n\n    public void removeItem(int id) {\n        // TODO: Implement\n    }\n\n    public double getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    public double applyDiscount(double percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","initialCodeJavascript":"class CartItem {\n    constructor(id, name, price) {\n        this.id = id;\n        this.name = name;\n        this.price = price;\n        this.quantity = 1;\n    }\n}\n\nclass ShoppingCart {\n    constructor() {\n        // TODO: Add cart storage\n    }\n\n    addItem(id, name, price) {\n        // TODO: Implement\n    }\n\n    removeItem(id) {\n        // TODO: Implement\n    }\n\n    getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    applyDiscount(percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","initialCodePython":"class CartItem:\n    def __init__(self, id, name, price):\n        self.id = id\n        self.name = name\n        self.price = price\n        self.quantity = 1\n\nclass ShoppingCart:\n    def __init__(self):\n        # TODO: Add cart storage\n        pass\n\n    def add_item(self, id, name, price):\n        # TODO: Implement\n        pass\n\n    def remove_item(self, id):\n        # TODO: Implement\n        pass\n\n    def get_total(self):\n        # TODO: Implement\n        return 0\n\n    def apply_discount(self, percentage):\n        # TODO: Implement\n        return 0","intentionalBugsJson":"{\"bugs\":[{\"name\":\"No quantity tracking\",\"description\":\"Creates duplicate entries instead of incrementing quantity\",\"difficulty\":\"common\"},{\"name\":\"Throws on missing item\",\"description\":\"Throws error when removing non-existent item\",\"difficulty\":\"easy\"},{\"name\":\"No rounding\",\"description\":\"Returns prices with many decimal places\",\"difficulty\":\"common\"},{\"name\":\"Discount validation\",\"description\":\"Accepts discounts > 100% or negative\",\"difficulty\":\"medium\"}]}","requirementsJson":"{\"requirements\":[\"Create a cart data structure\",\"Add items with id, name, and price\",\"Remove items by ID (no error if not found)\",\"Calculate total price\",\"Apply percentage discount (0-100%)\",\"Increment quantity for duplicate items\",\"Round all prices to 2 decimal places\"]}","rubricJson":"{\"categories\":[{\"category\":\"Correctness\",\"points\":40,\"description\":\"All operations work correctly\"},{\"category\":\"Edge Cases\",\"points\":25,\"description\":\"Handles duplicates, missing items, invalid discounts\"},{\"category\":\"Code Quality\",\"points\":20,\"description\":\"Clean structure, proper naming, readable code\"},{\"category\":\"Rounding\",\"points\":15,\"description\":\"Correctly rounds prices to 2 decimal places\"}]}","supportedLanguages":"java,python,javascript","testsJson":"{\"tests\":[{\"input\":\"Add item {id:1, name:'Apple', price:1.50}\",\"expected\":\"total: 1.50\",\"description\":\"Add single item\"},{\"input\":\"Add same item twice\",\"expected\":\"quantity: 2, total: 3.00\",\"description\":\"Duplicate items increment quantity\"},{\"input\":\"Remove item id:1\",\"expected\":\"cart empty, total: 0\",\"description\":\"Remove existing item\"},{\"input\":\"Remove non-existent item id:99\",\"expected\":\"no error\",\"description\":\"Remove non-existent item gracefully\"},{\"input\":\"Total 100, apply 10% discount\",\"expected\":\"total: 90.00\",\"description\":\"Apply percentage discount\"},{\"input\":\"Apply 150% discount\",\"expected\":\"error or clamped to 100%\",\"description\":\"Invalid discount handling\"},{\"input\":\"Price 1.999 after calc\",\"expected\":\"2.00\",\"description\":\"Rounding to 2 decimals\"}]}","timeLimitMinutes":30,"title":"Shopping Cart Basics"},"questionId":4,"scheduledAt":"2025-12-17T08:31:55.657","startedAt":"2025-12-17T19:40:58.918971","status":"in_progress"}
+[00:15:25.939] Browser LOG     [Interviewer] Interview status: in_progress
+[00:15:25.939] Browser LOG     [Interviewer] Setting isPending to false - interview is already in_progress
+[00:15:25.939] Browser LOG     [API Client] Adding auth token to request: /code/latest/6
+[00:15:25.939] Browser LOG     [API Client] Error response: {"data":"","message":"Server error","status":404,"url":"/code/latest/6"}
+[00:15:25.939] Browser ERROR   [API Client] Final API Error: {"code":"ERR_BAD_REQUEST","message":"Resource not found","status":404}
+[00:15:25.939] Browser ERROR   Error fetching latest code: {"code":"ERR_BAD_REQUEST","message":"Resource not found","status":404}
+[00:15:25.939] Browser ERROR   Error loading candidate code: {"code":"ERR_BAD_REQUEST","message":"Resource not found","status":404}
+[00:16:11.837] Server  LOG      ✓ Compiled in 52ms
+[00:16:29.947] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:16:30.185] Browser LOG     [API Client] Adding auth token to request: /chat/resolve-token/95e1b050-2335-4b9d-a1ea-81f1c61fbf7c
+[00:16:30.185] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:16:30.185] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/i/95e1b050-2335-4b9d-a1ea-81f1c61fbf7c","route":"/i/[token]"}
+[00:16:30.185] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/i/95e1b050-2335-4b9d-a1ea-81f1c61fbf7c color: rgb(120, 120, 120) color: inherit {"dp":"/i/[token]","o":"http://localhost:3000/i/95e1b050-2335-4b9d-a1ea-81f1c61fbf7c","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1766131460139}
+[00:16:30.185] Browser LOG     [API Client] Successful response: /chat/resolve-token/95e1b050-2335-4b9d-a1ea-81f1c61fbf7c 200
+[00:16:30.185] Browser LOG     [WebSocket] Connecting to ws://localhost:8080/api/ws/interview for interview 6
+[00:16:30.185] Browser LOG     [WebSocket] Client created, activating...
+[00:16:30.185] Browser LOG     [API Client] Adding auth token to request: /interviews/6
+[00:16:30.185] Browser LOG     [API Client] Adding auth token to request: /chat/history/6
+[00:16:30.185] Browser LOG     [STOMP] Opening Web Socket...
+[00:16:30.185] Browser LOG     [STOMP] Web Socket Opened...
+[00:16:30.185] Browser LOG     [STOMP] >>> CONNECT
+accept-version:1.2,1.1,1.0
+heart-beat:10000,10000
+
+
+[00:16:30.185] Browser LOG     [STOMP] Received data
+[00:16:30.185] Browser LOG     [STOMP] <<< CONNECTED
+heart-beat:0,0
+version:1.2
+content-length:0
+
+
+[00:16:30.185] Browser LOG     [STOMP] connected to server undefined
+[00:16:30.185] Browser LOG     [WebSocket] ✓ Connected to interview 6
+[00:16:30.185] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-0
+destination:/topic/interview/6/chat
+
+
+[00:16:30.185] Browser LOG     [WebSocket] Subscribed to /topic/interview/6/chat
+[00:16:30.185] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-1
+destination:/topic/interview/6/code
+
+
+[00:16:30.185] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/6/code
+[00:16:30.185] Browser LOG     [API Client] Successful response: /chat/history/6 200
+[00:16:30.185] Browser LOG     [API Client] Successful response: /interviews/6 200
+[00:16:30.185] Browser LOG     [Candidate] Interview details fetched: {"candidate":{"createdAt":"2025-12-17T10:31:55.643858","email":"joe@candidate.local","id":5,"name":"joe"},"candidateId":5,"company":{"createdAt":"2025-11-29T18:48:03.177823","email":"shaniravia@gmail.com","id":1,"logoUrl":null,"name":"zacksventures","subscriptionTier":"starter","updatedAt":"2025-11-29T18:48:03.177825"},"companyId":1,"completedAt":null,"createdAt":"2025-12-17T10:31:55.679684","id":6,"interviewLinkToken":"95e1b050-2335-4b9d-a1ea-81f1c61fbf7c","interviewer":null,"interviewerId":1,"language":"javascript","question":{"createdAt":"2025-12-17T10:30:20.065788","description":"Build a shopping cart system with the following features:\n\n**Requirements:**\n1. Create a cart\n2. Add items to cart (each item has: id, name, price)\n3. Remove items from cart by item ID\n4. Get total price\n5. Apply a percentage discount to the total\n\n**Rules:**\n- If the same item is added twice, increment quantity (don't duplicate)\n- Removing an item that doesn't exist should not throw an error\n- Discount should be between 0-100%\n- All prices should be rounded to 2 decimal places","difficulty":"easy","id":4,"initialCodeJava":"class CartItem {\n    int id;\n    String name;\n    double price;\n    int quantity;\n}\n\npublic class ShoppingCart {\n    // TODO: Add cart storage\n\n    public void addItem(int id, String name, double price) {\n        // TODO: Implement\n    }\n\n    public void removeItem(int id) {\n        // TODO: Implement\n    }\n\n    public double getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    public double applyDiscount(double percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","initialCodeJavascript":"class CartItem {\n    constructor(id, name, price) {\n        this.id = id;\n        this.name = name;\n        this.price = price;\n        this.quantity = 1;\n    }\n}\n\nclass ShoppingCart {\n    constructor() {\n        // TODO: Add cart storage\n    }\n\n    addItem(id, name, price) {\n        // TODO: Implement\n    }\n\n    removeItem(id) {\n        // TODO: Implement\n    }\n\n    getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    applyDiscount(percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","initialCodePython":"class CartItem:\n    def __init__(self, id, name, price):\n        self.id = id\n        self.name = name\n        self.price = price\n        self.quantity = 1\n\nclass ShoppingCart:\n    def __init__(self):\n        # TODO: Add cart storage\n        pass\n\n    def add_item(self, id, name, price):\n        # TODO: Implement\n        pass\n\n    def remove_item(self, id):\n        # TODO: Implement\n        pass\n\n    def get_total(self):\n        # TODO: Implement\n        return 0\n\n    def apply_discount(self, percentage):\n        # TODO: Implement\n        return 0","intentionalBugsJson":"{\"bugs\":[{\"name\":\"No quantity tracking\",\"description\":\"Creates duplicate entries instead of incrementing quantity\",\"difficulty\":\"common\"},{\"name\":\"Throws on missing item\",\"description\":\"Throws error when removing non-existent item\",\"difficulty\":\"easy\"},{\"name\":\"No rounding\",\"description\":\"Returns prices with many decimal places\",\"difficulty\":\"common\"},{\"name\":\"Discount validation\",\"description\":\"Accepts discounts > 100% or negative\",\"difficulty\":\"medium\"}]}","requirementsJson":"{\"requirements\":[\"Create a cart data structure\",\"Add items with id, name, and price\",\"Remove items by ID (no error if not found)\",\"Calculate total price\",\"Apply percentage discount (0-100%)\",\"Increment quantity for duplicate items\",\"Round all prices to 2 decimal places\"]}","rubricJson":"{\"categories\":[{\"category\":\"Correctness\",\"points\":40,\"description\":\"All operations work correctly\"},{\"category\":\"Edge Cases\",\"points\":25,\"description\":\"Handles duplicates, missing items, invalid discounts\"},{\"category\":\"Code Quality\",\"points\":20,\"description\":\"Clean structure, proper naming, readable code\"},{\"category\":\"Rounding\",\"points\":15,\"description\":\"Correctly rounds prices to 2 decimal places\"}]}","supportedLanguages":"java,python,javascript","testsJson":"{\"tests\":[{\"input\":\"Add item {id:1, name:'Apple', price:1.50}\",\"expected\":\"total: 1.50\",\"description\":\"Add single item\"},{\"input\":\"Add same item twice\",\"expected\":\"quantity: 2, total: 3.00\",\"description\":\"Duplicate items increment quantity\"},{\"input\":\"Remove item id:1\",\"expected\":\"cart empty, total: 0\",\"description\":\"Remove existing item\"},{\"input\":\"Remove non-existent item id:99\",\"expected\":\"no error\",\"description\":\"Remove non-existent item gracefully\"},{\"input\":\"Total 100, apply 10% discount\",\"expected\":\"total: 90.00\",\"description\":\"Apply percentage discount\"},{\"input\":\"Apply 150% discount\",\"expected\":\"error or clamped to 100%\",\"description\":\"Invalid discount handling\"},{\"input\":\"Price 1.999 after calc\",\"expected\":\"2.00\",\"description\":\"Rounding to 2 decimals\"}]}","timeLimitMinutes":30,"title":"Shopping Cart Basics"},"questionId":4,"scheduledAt":"2025-12-17T08:31:55.657","startedAt":"2025-12-17T19:40:58.918971","status":"in_progress"}
+[00:16:30.414] Browser LOG     [STOMP] >>> SEND
 destination:/app/interview/6/code
 content-length:624
 
 
-[00:13:29.037] Browser LOG     [WebSocket] Code update published
-[00:13:29.037] Browser LOG     Code update streamed via WebSocket for interview 6
-[00:13:29.037] Browser LOG     [STOMP] Received data
-[00:13:29.037] Browser LOG     [STOMP] <<< MESSAGE
+[00:16:30.414] Browser LOG     [WebSocket] Code update published
+[00:16:30.414] Browser LOG     Code update streamed via WebSocket for interview 6
+[00:16:30.414] Browser LOG     [STOMP] Received data
+[00:16:30.414] Browser LOG     [STOMP] <<< MESSAGE
 content-length:719
-message-id:084d7d8b-da82-b781-212b-a0bb883269c2-0
+message-id:94d8a2de-a26e-8c95-ee47-961898803531-0
 subscription:sub-1
 content-type:application/json
 destination:/topic/interview/6/code
 content-length:719
 
 
-[00:13:29.037] Browser LOG     [WebSocket] Received code update: {"interviewId":6,"payload":{"code":"class CartItem {\n    constructor(id, name, price) {\n        this.id = id;\n        this.name = name;\n        this.price = price;\n        this.quantity = 1;\n    }\n}\n\nclass ShoppingCart {\n    constructor() {\n        // TODO: Add cart storage\n    }\n\n    addItem(id, name, price) {\n        // TODO: Implement\n    }\n\n    removeItem(id) {\n        // TODO: Implement\n    }\n\n    getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    applyDiscount(percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-18T09:33:36.284484813","type":"code"}
-[00:13:29.037] Browser LOG     [Candidate] Code updated from interviewer: {"code":"class CartItem {\n    constructor(id, name, price) {\n        this.id = id;\n        this.name = name;\n        this.price = price;\n        this.quantity = 1;\n    }\n}\n\nclass ShoppingCart {\n    constructor() {\n        // TODO: Add cart storage\n    }\n\n    addItem(id, name, price) {\n        // TODO: Implement\n    }\n\n    removeItem(id) {\n        // TODO: Implement\n    }\n\n    getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    applyDiscount(percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","endLine":null,"language":"javascript","startLine":null}
-[00:13:29.656] Browser LOG     [STOMP] Received data
-[00:13:29.656] Browser LOG     [STOMP] <<< MESSAGE
+[00:16:30.414] Browser LOG     [WebSocket] Received code update: {"interviewId":6,"payload":{"code":"class CartItem {\n    constructor(id, name, price) {\n        this.id = id;\n        this.name = name;\n        this.price = price;\n        this.quantity = 1;\n    }\n}\n\nclass ShoppingCart {\n    constructor() {\n        // TODO: Add cart storage\n    }\n\n    addItem(id, name, price) {\n        // TODO: Implement\n    }\n\n    removeItem(id) {\n        // TODO: Implement\n    }\n\n    getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    applyDiscount(percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-19T10:04:20.429824665","type":"code"}
+[00:16:30.414] Browser LOG     [Candidate] Code updated from interviewer: {"code":"class CartItem {\n    constructor(id, name, price) {\n        this.id = id;\n        this.name = name;\n        this.price = price;\n        this.quantity = 1;\n    }\n}\n\nclass ShoppingCart {\n    constructor() {\n        // TODO: Add cart storage\n    }\n\n    addItem(id, name, price) {\n        // TODO: Implement\n    }\n\n    removeItem(id) {\n        // TODO: Implement\n    }\n\n    getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    applyDiscount(percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","endLine":null,"language":"javascript","startLine":null}
+[00:16:30.415] Browser LOG     [STOMP] Received data
+[00:16:30.415] Browser LOG     [STOMP] <<< MESSAGE
 content-length:719
-message-id:debea0d5-1dd5-c2b3-300a-9f60259f3097-1
+message-id:44e0f95e-b747-3453-f567-04bcb9c6d843-1
 subscription:sub-1
 content-type:application/json
 destination:/topic/interview/6/code
 content-length:719
 
 
-[00:13:29.657] Browser LOG     [WebSocket] Received code update: {"interviewId":6,"payload":{"code":"class CartItem {\n    constructor(id, name, price) {\n        this.id = id;\n        this.name = name;\n        this.price = price;\n        this.quantity = 1;\n    }\n}\n\nclass ShoppingCart {\n    constructor() {\n        // TODO: Add cart storage\n    }\n\n    addItem(id, name, price) {\n        // TODO: Implement\n    }\n\n    removeItem(id) {\n        // TODO: Implement\n    }\n\n    getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    applyDiscount(percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-18T09:33:36.284484813","type":"code"}
-[00:13:29.657] Browser LOG     Code updated from WebSocket: {"code":"class CartItem {\n    constructor(id, name, price) {\n        this.id = id;\n        this.name = name;\n        this.price = price;\n        this.quantity = 1;\n    }\n}\n\nclass ShoppingCart {\n    constructor() {\n        // TODO: Add cart storage\n    }\n\n    addItem(id, name, price) {\n        // TODO: Implement\n    }\n\n    removeItem(id) {\n        // TODO: Implement\n    }\n\n    getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    applyDiscount(percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","endLine":null,"language":"javascript","startLine":null}
-[00:13:35.636] Browser LOG     [STOMP] >>> SEND
+[00:16:30.415] Browser LOG     [WebSocket] Received code update: {"interviewId":6,"payload":{"code":"class CartItem {\n    constructor(id, name, price) {\n        this.id = id;\n        this.name = name;\n        this.price = price;\n        this.quantity = 1;\n    }\n}\n\nclass ShoppingCart {\n    constructor() {\n        // TODO: Add cart storage\n    }\n\n    addItem(id, name, price) {\n        // TODO: Implement\n    }\n\n    removeItem(id) {\n        // TODO: Implement\n    }\n\n    getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    applyDiscount(percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","endLine":null,"language":"javascript","startLine":null},"senderId":null,"timestamp":"2025-12-19T10:04:20.429824665","type":"code"}
+[00:16:30.415] Browser LOG     Code updated from WebSocket: {"code":"class CartItem {\n    constructor(id, name, price) {\n        this.id = id;\n        this.name = name;\n        this.price = price;\n        this.quantity = 1;\n    }\n}\n\nclass ShoppingCart {\n    constructor() {\n        // TODO: Add cart storage\n    }\n\n    addItem(id, name, price) {\n        // TODO: Implement\n    }\n\n    removeItem(id) {\n        // TODO: Implement\n    }\n\n    getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    applyDiscount(percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","endLine":null,"language":"javascript","startLine":null}
+[00:16:36.757] Browser LOG     [STOMP] >>> SEND
 destination:/app/interview/6/code
 content-length:593
 
 
-[00:13:35.636] Browser LOG     [WebSocket] Code update published
-[00:13:35.636] Browser LOG     Code update streamed via WebSocket for interview 6
-[00:13:35.636] Browser LOG     [STOMP] Received data
-[00:13:35.636] Browser LOG     [STOMP] <<< MESSAGE
+[00:16:36.757] Browser LOG     [WebSocket] Code update published
+[00:16:36.757] Browser LOG     Code update streamed via WebSocket for interview 6
+[00:16:36.757] Browser LOG     [STOMP] Received data
+[00:16:36.757] Browser LOG     [STOMP] <<< MESSAGE
 content-length:688
-message-id:084d7d8b-da82-b781-212b-a0bb883269c2-2
+message-id:94d8a2de-a26e-8c95-ee47-961898803531-2
 subscription:sub-1
 content-type:application/json
 destination:/topic/interview/6/code
 content-length:688
 
 
-[00:13:35.636] Browser LOG     [WebSocket] Received code update: {"interviewId":6,"payload":{"code":"class CartItem {\n    int id;\n    String name;\n    double price;\n    int quantity;\n}\n\npublic class ShoppingCart {\n    // TODO: Add cart storage\n\n    public void addItem(int id, String name, double price) {\n        // TODO: Implement\n    }\n\n    public void removeItem(int id) {\n        // TODO: Implement\n    }\n\n    public double getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    public double applyDiscount(double percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","endLine":null,"language":"java","startLine":null},"senderId":null,"timestamp":"2025-12-18T09:33:42.891240325","type":"code"}
-[00:13:35.636] Browser LOG     [Candidate] Code updated from interviewer: {"code":"class CartItem {\n    int id;\n    String name;\n    double price;\n    int quantity;\n}\n\npublic class ShoppingCart {\n    // TODO: Add cart storage\n\n    public void addItem(int id, String name, double price) {\n        // TODO: Implement\n    }\n\n    public void removeItem(int id) {\n        // TODO: Implement\n    }\n\n    public double getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    public double applyDiscount(double percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","endLine":null,"language":"java","startLine":null}
-[00:13:35.650] Browser LOG     [STOMP] Received data
-[00:13:35.650] Browser LOG     [STOMP] <<< MESSAGE
+[00:16:36.757] Browser LOG     [WebSocket] Received code update: {"interviewId":6,"payload":{"code":"class CartItem {\n    int id;\n    String name;\n    double price;\n    int quantity;\n}\n\npublic class ShoppingCart {\n    // TODO: Add cart storage\n\n    public void addItem(int id, String name, double price) {\n        // TODO: Implement\n    }\n\n    public void removeItem(int id) {\n        // TODO: Implement\n    }\n\n    public double getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    public double applyDiscount(double percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","endLine":null,"language":"java","startLine":null},"senderId":null,"timestamp":"2025-12-19T10:04:26.780628734","type":"code"}
+[00:16:36.757] Browser LOG     [Candidate] Code updated from interviewer: {"code":"class CartItem {\n    int id;\n    String name;\n    double price;\n    int quantity;\n}\n\npublic class ShoppingCart {\n    // TODO: Add cart storage\n\n    public void addItem(int id, String name, double price) {\n        // TODO: Implement\n    }\n\n    public void removeItem(int id) {\n        // TODO: Implement\n    }\n\n    public double getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    public double applyDiscount(double percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","endLine":null,"language":"java","startLine":null}
+[00:16:37.502] Browser LOG     [STOMP] Received data
+[00:16:37.502] Browser LOG     [STOMP] <<< MESSAGE
 content-length:688
-message-id:debea0d5-1dd5-c2b3-300a-9f60259f3097-3
+message-id:44e0f95e-b747-3453-f567-04bcb9c6d843-3
 subscription:sub-1
 content-type:application/json
 destination:/topic/interview/6/code
 content-length:688
 
 
-[00:13:35.650] Browser LOG     [WebSocket] Received code update: {"interviewId":6,"payload":{"code":"class CartItem {\n    int id;\n    String name;\n    double price;\n    int quantity;\n}\n\npublic class ShoppingCart {\n    // TODO: Add cart storage\n\n    public void addItem(int id, String name, double price) {\n        // TODO: Implement\n    }\n\n    public void removeItem(int id) {\n        // TODO: Implement\n    }\n\n    public double getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    public double applyDiscount(double percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","endLine":null,"language":"java","startLine":null},"senderId":null,"timestamp":"2025-12-18T09:33:42.891240325","type":"code"}
-[00:13:35.650] Browser LOG     Code updated from WebSocket: {"code":"class CartItem {\n    int id;\n    String name;\n    double price;\n    int quantity;\n}\n\npublic class ShoppingCart {\n    // TODO: Add cart storage\n\n    public void addItem(int id, String name, double price) {\n        // TODO: Implement\n    }\n\n    public void removeItem(int id) {\n        // TODO: Implement\n    }\n\n    public double getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    public double applyDiscount(double percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","endLine":null,"language":"java","startLine":null}
-[00:13:36.478] Browser LOG     [API Client] Adding auth token to request: /interviews/link/95e1b050-2335-4b9d-a1ea-81f1c61fbf7c
-[00:13:36.478] Browser LOG     [API Client] Successful response: /interviews/link/95e1b050-2335-4b9d-a1ea-81f1c61fbf7c 200
-[00:13:36.478] Browser LOG     [Poll] Interview status: in_progress Current frontend status: waiting
-[00:13:36.478] Browser LOG     ✓ Interview started by interviewer, transitioning to live
+[00:16:37.502] Browser LOG     [WebSocket] Received code update: {"interviewId":6,"payload":{"code":"class CartItem {\n    int id;\n    String name;\n    double price;\n    int quantity;\n}\n\npublic class ShoppingCart {\n    // TODO: Add cart storage\n\n    public void addItem(int id, String name, double price) {\n        // TODO: Implement\n    }\n\n    public void removeItem(int id) {\n        // TODO: Implement\n    }\n\n    public double getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    public double applyDiscount(double percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","endLine":null,"language":"java","startLine":null},"senderId":null,"timestamp":"2025-12-19T10:04:26.780628734","type":"code"}
+[00:16:37.502] Browser LOG     Code updated from WebSocket: {"code":"class CartItem {\n    int id;\n    String name;\n    double price;\n    int quantity;\n}\n\npublic class ShoppingCart {\n    // TODO: Add cart storage\n\n    public void addItem(int id, String name, double price) {\n        // TODO: Implement\n    }\n\n    public void removeItem(int id) {\n        // TODO: Implement\n    }\n\n    public double getTotal() {\n        // TODO: Implement\n        return 0;\n    }\n\n    public double applyDiscount(double percentage) {\n        // TODO: Implement\n        return 0;\n    }\n}","endLine":null,"language":"java","startLine":null}
+[00:16:37.630] Browser LOG     [API Client] Adding auth token to request: /interviews/link/95e1b050-2335-4b9d-a1ea-81f1c61fbf7c
+[00:16:37.630] Browser LOG     [API Client] Successful response: /interviews/link/95e1b050-2335-4b9d-a1ea-81f1c61fbf7c 200
+[00:16:37.630] Browser LOG     [Poll] Interview status: in_progress Current frontend status: waiting
+[00:16:37.630] Browser LOG     ✓ Interview started by interviewer, transitioning to live

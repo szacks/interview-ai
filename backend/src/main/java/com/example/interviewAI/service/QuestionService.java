@@ -1,7 +1,11 @@
 package com.example.interviewAI.service;
 
 import com.example.interviewAI.dto.QuestionResponse;
+import com.example.interviewAI.dto.FollowUpQuestionResponse;
+import com.example.interviewAI.dto.TestCaseResponse;
 import com.example.interviewAI.entity.Question;
+import com.example.interviewAI.entity.FollowUpQuestion;
+import com.example.interviewAI.entity.TestCase;
 import com.example.interviewAI.repository.QuestionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,6 +89,54 @@ public class QuestionService {
         response.setInitialCodePython(question.getInitialCodePython());
         response.setInitialCodeJavascript(question.getInitialCodeJavascript());
         response.setCreatedAt(question.getCreatedAt());
+
+        // Map follow-up questions
+        if (question.getFollowUpQuestions() != null && !question.getFollowUpQuestions().isEmpty()) {
+            response.setFollowUpQuestions(
+                    question.getFollowUpQuestions().stream()
+                            .map(this::convertFollowUpQuestionToResponse)
+                            .collect(Collectors.toList())
+            );
+        }
+
+        // Map test cases
+        if (question.getTestCases() != null && !question.getTestCases().isEmpty()) {
+            response.setTestCases(
+                    question.getTestCases().stream()
+                            .map(this::convertTestCaseToResponse)
+                            .collect(Collectors.toList())
+            );
+        }
+
+        return response;
+    }
+
+    /**
+     * Convert FollowUpQuestion entity to FollowUpQuestionResponse DTO
+     */
+    private FollowUpQuestionResponse convertFollowUpQuestionToResponse(FollowUpQuestion followUpQuestion) {
+        FollowUpQuestionResponse response = new FollowUpQuestionResponse();
+        response.setId(followUpQuestion.getId());
+        response.setQuestion(followUpQuestion.getQuestionText());
+        response.setGoodAnswer(followUpQuestion.getGoodAnswer());
+        response.setGreatAnswer(followUpQuestion.getGreatAnswer());
+        response.setOrderIndex(followUpQuestion.getOrderIndex());
+        return response;
+    }
+
+    /**
+     * Convert TestCase entity to TestCaseResponse DTO
+     */
+    private TestCaseResponse convertTestCaseToResponse(TestCase testCase) {
+        TestCaseResponse response = new TestCaseResponse();
+        response.setId(testCase.getId());
+        response.setTestName(testCase.getTestName());
+        response.setTestCase(testCase.getTestCase());
+        response.setDescription(testCase.getDescription());
+        response.setOperationsJson(testCase.getOperationsJson());
+        response.setAssertionsJson(testCase.getAssertionsJson());
+        response.setOrderIndex(testCase.getOrderIndex());
+        response.setPassed(testCase.getPassed());
         return response;
     }
 }

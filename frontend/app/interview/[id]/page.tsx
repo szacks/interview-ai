@@ -20,6 +20,14 @@ import {
   Eye,
   ArrowLeft,
   Terminal,
+  HelpCircle,
+  ChevronDown,
+  ChevronUp,
+  Lightbulb,
+  Target,
+  Star,
+  Play,
+  Loader2,
 } from "lucide-react"
 import Link from "next/link"
 import Editor from "@monaco-editor/react"
@@ -30,37 +38,6 @@ import { webSocketService } from "@/services/webSocketService"
 import apiClient from "@/services/apiClient"
 import { interviewService } from "@/services/interviewService"
 
-const mockChatHistory = [
-  {
-    role: "candidate",
-    message: "How should I handle collisions in the short code generation?",
-    timestamp: new Date(Date.now() - 10 * 60000),
-  },
-  {
-    role: "ai",
-    message:
-      "Great question! There are a few approaches to handle collisions:\n\n1. Check if the generated code exists before storing\n2. Use a counter-based approach\n3. Increase the length of the short code\n\nFor this problem, I recommend checking if the code exists and regenerating if there's a collision.",
-    timestamp: new Date(Date.now() - 10 * 60000),
-  },
-  {
-    role: "candidate",
-    message: "Should I implement the database or just assume it exists?",
-    timestamp: new Date(Date.now() - 5 * 60000),
-  },
-  {
-    role: "ai",
-    message:
-      "For this interview, you can assume a simple key-value store exists. Focus on the core logic of URL shortening and retrieval. You can use a Map or object to simulate the database.",
-    timestamp: new Date(Date.now() - 5 * 60000),
-  },
-]
-
-const mockTestResults = [
-  { name: "Should shorten a valid URL", passed: true },
-  { name: "Should retrieve original URL", passed: true },
-  { name: "Should handle multiple URLs", passed: false },
-  { name: "Should generate unique codes", passed: true },
-]
 
 export default function InterviewSessionPage({
   params,
@@ -69,7 +46,7 @@ export default function InterviewSessionPage({
 }) {
   // Interview state
   const [notes, setNotes] = useState("")
-  const [activeTab, setActiveTab] = useState("code")
+  const [activeTab, setActiveTab] = useState("chat")
   const [isPending, setIsPending] = useState(true) // Default to true, will be updated after fetch
   const [isLoadingInterview, setIsLoadingInterview] = useState(true)
   const [isStarting, setIsStarting] = useState(false)
@@ -82,6 +59,11 @@ export default function InterviewSessionPage({
 
   // Timer state - avoid hydration mismatch
   const [elapsedTime, setElapsedTime] = useState("0:00")
+
+  // Test and questions state
+  const [expandedQuestions, setExpandedQuestions] = useState<number[]>([])
+  const [isRunningTests, setIsRunningTests] = useState(false)
+  const [testsRun, setTestsRun] = useState(false)
 
   // Chat state and hooks
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -224,11 +206,16 @@ export default function InterviewSessionPage({
     const loadLatestCode = async () => {
       try {
         const codeResponse = await codeService.getLatestCode(interviewId)
-        setCandidateCode(codeResponse.code)
-        setCodeLanguage(codeResponse.language)
-        console.log('Latest code loaded:', codeResponse)
+        if (codeResponse && codeResponse.code) {
+          setCandidateCode(codeResponse.code)
+          if (codeResponse.language) {
+            setCodeLanguage(codeResponse.language)
+          }
+          console.log('Latest code loaded:', codeResponse)
+        }
       } catch (error) {
-        console.error("Error loading candidate code:", error)
+        // It's OK if no previous code exists - start with empty editor
+        console.debug("No previous code found or error loading:", error instanceof Error ? error.message : 'Unknown error')
       }
     }
 
@@ -268,6 +255,25 @@ export default function InterviewSessionPage({
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight
     }
   }, [conversation.messages])
+
+  const toggleQuestion = (index: number) => {
+    setExpandedQuestions((prev) => (prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]))
+  }
+
+  const handleRunTests = () => {
+    setIsRunningTests(true)
+    setTimeout(() => {
+      setIsRunningTests(false)
+      setTestsRun(true)
+      setActiveTab("tests")
+    }, 2000)
+  }
+
+  const testCases = interview?.question?.testCases || []
+  const testsPassed = testCases.filter((t) => t.passed).length
+  const allTestsPassed = testsPassed === testCases.length
+
+  const followUpQuestions = interview?.question?.followUpQuestions || []
 
   const copyLink = () => {
     navigator.clipboard.writeText(`${window.location.origin}/i/xK9mPq2nR4vL`)
@@ -431,168 +437,258 @@ export default function InterviewSessionPage({
       ) : (
         /* Live State */
         <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Main Content Area with Code and Chat Side by Side */}
+          {/* Main Content Area with Code on Left and Tabs on Right */}
           <div className="flex-1 flex overflow-hidden">
-            {/* Code and Tests Area */}
-            <div className="flex-1 flex flex-col overflow-hidden">
-              <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
-                <div className="border-b border-border px-4">
-                  <TabsList className="bg-transparent p-0 h-auto">
+            {/* Code Area */}
+            <div className="flex-1 flex flex-col overflow-hidden border-r border-border">
+              <div className="px-4 py-2 border-b border-border bg-card/50 flex items-center justify-between">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Eye className="size-4" />
+                  <span>Viewing candidate's code in real-time</span>
+                </div>
+                <Badge variant="outline" className="text-xs">
+                  {codeLanguage}
+                </Badge>
+              </div>
+              <div className="flex-1 overflow-hidden">
+                <Editor
+                  height="100%"
+                  language={codeLanguage}
+                  value={candidateCode}
+                  onChange={(value) => {
+                    setCandidateCode(value || '')
+                    // Send updated code to candidate via WebSocket (with debounce)
+                    if (interviewId && webSocketService.isConnected()) {
+                      // Clear previous debounce timer
+                      if (codeDebounceRef.current) {
+                        clearTimeout(codeDebounceRef.current)
+                      }
+                      // Set new debounce timer
+                      codeDebounceRef.current = setTimeout(() => {
+                        webSocketService.publishCodeUpdate(value || '', codeLanguage)
+                        console.log('[Interviewer] Code update sent to candidate')
+                      }, 200)
+                    }
+                  }}
+                  theme="vs-dark"
+                  options={{
+                    readOnly: false,
+                    minimap: { enabled: false },
+                    fontSize: 14,
+                    lineNumbers: "on",
+                    scrollBeyondLastLine: false,
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Tabs Section - Chat, Tests, Follow-ups */}
+            <div className="w-96 flex flex-col border-r border-border">
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
+                <div className="border-b border-border px-4 bg-card">
+                  <TabsList className="bg-transparent p-0 h-auto w-full">
                     <TabsTrigger
-                      value="code"
-                      className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+                      value="chat"
+                      className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
                     >
-                      <Code2 className="size-4 mr-2" />
-                      Code
+                      <HelpCircle className="size-4 mr-2" />
+                      AI Chat
                     </TabsTrigger>
                     <TabsTrigger
                       value="tests"
-                      className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+                      className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
                     >
                       <PlayCircle className="size-4 mr-2" />
                       Tests
+                      {testsRun && (
+                        <Badge variant={allTestsPassed ? "default" : "destructive"} className="ml-2 text-xs">
+                          {testsPassed}/{testCases.length}
+                        </Badge>
+                      )}
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="questions"
+                      className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+                    >
+                      <HelpCircle className="size-4 mr-2" />
+                      Follow-ups
                     </TabsTrigger>
                   </TabsList>
                 </div>
 
-                <TabsContent value="code" className="flex-1 m-0 overflow-hidden">
-                  <div className="h-full flex flex-col">
-                    <div className="px-4 py-2 border-b border-border bg-card/50 flex items-center justify-between">
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Eye className="size-4" />
-                        <span>Shared code editor - Candidate sees your edits in real-time</span>
+                {/* AI Chat Tab */}
+                <TabsContent value="chat" className="flex-1 m-0 overflow-hidden flex flex-col">
+                  <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                    <div className="mb-2">
+                      <h3 className="text-sm font-semibold mb-1">AI Conversation</h3>
+                      <p className="text-xs text-muted-foreground">Monitor the candidate's questions and AI guidance</p>
+                    </div>
+
+                    {conversation.messages.map((msg, idx) => (
+                      <div key={idx} className="space-y-2">
+                        <div className={`flex ${msg.role === "candidate" ? "justify-end" : "justify-start"}`}>
+                          <div
+                            className={`max-w-[85%] rounded-lg p-3 ${
+                              msg.role === "candidate"
+                                ? "bg-primary text-primary-foreground"
+                                : "bg-muted text-foreground"
+                            }`}
+                          >
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-xs font-semibold">
+                                {msg.role === "candidate" ? "Candidate" : "AI Assistant"}
+                              </span>
+                              <span className="text-xs opacity-70">
+                                {msg.timestamp instanceof Date
+                                  ? msg.timestamp.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+                                  : new Date(msg.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                              </span>
+                            </div>
+                            <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+                          </div>
+                        </div>
                       </div>
-                      <Badge variant="outline" className="text-xs">
-                        {codeLanguage}
-                      </Badge>
-                    </div>
-                    <div className="flex-1 overflow-hidden">
-                      <Editor
-                        height="100%"
-                        language={codeLanguage}
-                        value={candidateCode}
-                        onChange={(value) => {
-                          setCandidateCode(value || '')
-                          // Send updated code to candidate via WebSocket (with debounce)
-                          if (interviewId && webSocketService.isConnected()) {
-                            // Clear previous debounce timer
-                            if (codeDebounceRef.current) {
-                              clearTimeout(codeDebounceRef.current)
-                            }
-                            // Set new debounce timer
-                            codeDebounceRef.current = setTimeout(() => {
-                              webSocketService.publishCodeUpdate(value || '', codeLanguage)
-                              console.log('[Interviewer] Code update sent to candidate')
-                            }, 200)
-                          }
-                        }}
-                        theme="vs-dark"
-                        options={{
-                          minimap: { enabled: false },
-                          fontSize: 14,
-                          lineNumbers: "on",
-                          scrollBeyondLastLine: false,
-                        }}
-                      />
-                    </div>
+                    ))}
+
+                    {conversation.messages.length === 0 && (
+                      <div className="flex-1 flex items-center justify-center p-4">
+                        <div className="text-center">
+                          <HelpCircle className="size-12 text-muted-foreground mx-auto mb-3 opacity-50" />
+                          <p className="text-sm text-muted-foreground">No AI conversation yet</p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </TabsContent>
 
-                <TabsContent value="tests" className="flex-1 m-0 overflow-hidden">
-                  <div className="h-full p-4 overflow-y-auto">
-                    <div className="space-y-2">
-                      {mockTestResults.map((test, idx) => (
-                        <div
-                          key={idx}
-                          className={`rounded-lg border p-4 flex items-center gap-3 ${
-                            test.passed ? "border-chart-3/30 bg-chart-3/5" : "border-destructive/30 bg-destructive/5"
-                          }`}
-                        >
-                          {test.passed ? (
-                            <CheckCircle2 className="size-5 text-chart-3 flex-shrink-0" />
-                          ) : (
-                            <XCircle className="size-5 text-destructive flex-shrink-0" />
-                          )}
-                          <span className="text-sm">{test.name}</span>
+                {/* Tests Tab */}
+                <TabsContent value="tests" className="flex-1 m-0 overflow-hidden flex flex-col">
+                  <div className="p-4 border-b border-border">
+                    <button
+                      onClick={handleRunTests}
+                      disabled={isRunningTests}
+                      className="w-full inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground px-3 py-2 text-sm font-medium hover:bg-primary/90 disabled:opacity-50"
+                    >
+                      {isRunningTests ? (
+                        <>
+                          <Loader2 className="size-4 mr-2 animate-spin" />
+                          Running Tests...
+                        </>
+                      ) : (
+                        <>
+                          <Play className="size-4 mr-2" />
+                          Run Tests
+                        </>
+                      )}
+                    </button>
+                  </div>
+
+                  {testsRun && (
+                    <div className="flex-1 overflow-y-auto p-4">
+                      <div className="mb-4 p-3 rounded-lg border border-border bg-card">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-sm font-semibold">Test Summary</span>
+                          <Badge variant={allTestsPassed ? "default" : "destructive"} className="text-xs">
+                            {testsPassed} / {testCases.length}
+                          </Badge>
                         </div>
-                      ))}
-                    </div>
-                    <div className="mt-4 p-4 rounded-lg border border-border bg-card">
-                      <div className="text-sm text-muted-foreground mb-1">Test Results</div>
-                      <div className="text-2xl font-bold">
-                        {mockTestResults.filter((t) => t.passed).length} / {mockTestResults.length} Passed
+                        <p className="text-xs text-muted-foreground">
+                          {allTestsPassed
+                            ? "All tests passed!"
+                            : "Some tests failed. Guide the candidate to fix issues."}
+                        </p>
                       </div>
+
+                      <div className="space-y-2">
+                        {testCases.map((test, idx) => (
+                          <div
+                            key={idx}
+                            className={`rounded-lg border p-3 flex items-start gap-2 ${
+                              test.passed ? "border-chart-3/30 bg-chart-3/5" : "border-destructive/30 bg-destructive/5"
+                            }`}
+                          >
+                            {test.passed ? (
+                              <CheckCircle2 className="size-4 text-chart-3 flex-shrink-0 mt-0.5" />
+                            ) : (
+                              <XCircle className="size-4 text-destructive flex-shrink-0 mt-0.5" />
+                            )}
+                            <span className="text-xs font-medium leading-relaxed">{test.testName}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {!testsRun && (
+                    <div className="flex-1 flex items-center justify-center p-4">
+                      <div className="text-center">
+                        <Terminal className="size-12 text-muted-foreground mx-auto mb-3 opacity-50" />
+                        <p className="text-sm text-muted-foreground">Click "Run Tests" to evaluate the code</p>
+                      </div>
+                    </div>
+                  )}
+                </TabsContent>
+
+                {/* Follow-up Questions Tab */}
+                <TabsContent value="questions" className="flex-1 m-0 overflow-y-auto">
+                  <div className="p-4">
+                    <div className="mb-4">
+                      <h3 className="text-sm font-semibold mb-1">Follow-up Questions</h3>
+                      <p className="text-xs text-muted-foreground">
+                        Assess deeper understanding and problem-solving approach
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      {followUpQuestions.map((q, idx) => {
+                        const isExpanded = expandedQuestions.includes(idx)
+                        return (
+                          <div key={idx} className="rounded-lg border border-border bg-card overflow-hidden">
+                            <button
+                              onClick={() => toggleQuestion(idx)}
+                              className="w-full p-3 flex items-start gap-2 hover:bg-accent/5 transition-colors text-left"
+                            >
+                              <span className="flex-shrink-0 size-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-semibold mt-0.5">
+                                {idx + 1}
+                              </span>
+                              <span className="flex-1 text-sm font-medium leading-relaxed">{q.question}</span>
+                              {isExpanded ? (
+                                <ChevronUp className="size-4 text-muted-foreground flex-shrink-0 mt-0.5" />
+                              ) : (
+                                <ChevronDown className="size-4 text-muted-foreground flex-shrink-0 mt-0.5" />
+                              )}
+                            </button>
+
+                            {isExpanded && (
+                              <div className="px-3 pb-3 space-y-3 text-xs">
+                                {q.goodAnswer && (
+                                  <div className="p-2 rounded bg-chart-3/5 border border-chart-3/20">
+                                    <div className="flex items-center gap-1.5 mb-1">
+                                      <CheckCircle2 className="size-3.5 text-chart-3" />
+                                      <span className="font-semibold text-chart-3">Good Answer</span>
+                                    </div>
+                                    <p className="text-foreground leading-relaxed">{q.goodAnswer}</p>
+                                  </div>
+                                )}
+
+                                {q.greatAnswer && (
+                                  <div className="p-2 rounded bg-chart-1/5 border border-chart-1/20">
+                                    <div className="flex items-center gap-1.5 mb-1.5">
+                                      <Star className="size-3.5 text-chart-1" />
+                                      <span className="font-semibold text-chart-1">Great Answer</span>
+                                    </div>
+                                    <p className="text-foreground leading-relaxed">{q.greatAnswer}</p>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        )
+                      })}
                     </div>
                   </div>
                 </TabsContent>
               </Tabs>
-            </div>
-
-            {/* AI Chat Sidebar - Live sync with Candidate */}
-            <div className="w-96 border-l border-border bg-card flex flex-col">
-              {/* Header */}
-              <div className="p-4 border-b border-border">
-                <div className="flex items-center gap-2">
-                  <div className="size-8 rounded-lg bg-accent/10 flex items-center justify-center">
-                    <MessageSquare className="size-4 text-accent" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-sm">Candidate AI Chat</h3>
-                    <p className="text-xs text-muted-foreground">
-                      {conversation.isConnected ? "● Live Sync" : "○ Syncing..."}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Chat Messages - Read Only */}
-              <ScrollArea className="flex-1 p-4 space-y-4" ref={scrollRef}>
-                <div className="space-y-4">
-                  {conversation.messages.map((msg, idx) => (
-                    <div key={idx} className="flex gap-3">
-                      <div
-                        className={`size-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                          msg.role === "candidate" ? "bg-primary/10 text-primary" : "bg-accent/10 text-accent"
-                        }`}
-                      >
-                        {msg.role === "candidate" ? (
-                          <Terminal className="size-4" />
-                        ) : (
-                          <MessageSquare className="size-4" />
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="font-medium text-xs">
-                            {msg.role === "candidate" ? "Candidate" : "AI Assistant"}
-                          </span>
-                          <span className="text-xs text-muted-foreground">
-                            {msg.timestamp instanceof Date
-                              ? msg.timestamp.toLocaleTimeString()
-                              : new Date(msg.timestamp).toLocaleTimeString()}
-                          </span>
-                        </div>
-                        <div className="text-sm leading-relaxed whitespace-pre-wrap">
-                          {msg.content}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-
-                  {conversation.messages.length === 0 && !conversation.hasHistory && (
-                    <div className="text-center text-xs text-muted-foreground py-8">
-                      No messages yet
-                    </div>
-                  )}
-                </div>
-              </ScrollArea>
-
-              {/* Footer - Live sync indicator */}
-              <div className="p-4 border-t border-border bg-accent/5">
-                <p className="text-xs text-muted-foreground text-center">
-                  Live synchronized with candidate&apos;s AI conversation
-                </p>
-              </div>
             </div>
           </div>
 
