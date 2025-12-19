@@ -584,7 +584,7 @@ export default function CandidateInterviewPage({
         </div>
 
         {/* AI Chat Sidebar */}
-        <div className="w-96 border-l border-border bg-card flex flex-col">
+        <div className="w-96 border-l border-border bg-card flex flex-col overflow-hidden">
           {/* Header */}
           <div className="p-4 border-b border-border">
             <div className="flex items-center gap-2">
@@ -649,11 +649,11 @@ export default function CandidateInterviewPage({
           <div className="p-4 border-t border-border flex-shrink-0 bg-card">
             <div className="flex gap-2 items-end">
               <Textarea
-                placeholder="Ask a question... (Shift+Enter to send)"
+                placeholder="Ask a question..."
                 value={chatMessage}
                 onChange={(e) => setChatMessage(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" && e.shiftKey && !conversation.isLoading) {
+                  if (e.key === "Enter" && !e.shiftKey && !conversation.isLoading) {
                     e.preventDefault()
                     handleSendMessage()
                   }
@@ -670,9 +670,6 @@ export default function CandidateInterviewPage({
                 <Send className="size-4" />
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground mt-2">
-              Shift+Enter to send • The AI and interviewer can see this conversation
-            </p>
           </div>
         </div>
       </div>
