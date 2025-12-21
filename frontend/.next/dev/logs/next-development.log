@@ -4124,3 +4124,418 @@ content-length:496
 [00:28:48.298] Browser LOG     [API Client] Successful response: /interviews/link/0855036a-6cb6-41d8-929c-e4b916c8eecb 200
 [00:28:48.298] Browser LOG     [Poll] Interview status: in_progress Current frontend status: waiting
 [00:28:48.298] Browser LOG     ✓ Interview started by interviewer, transitioning to live
+[00:26:48.274] Browser LOG     [STOMP] Connection closed to ws://localhost:8080/api/ws/interview
+[00:26:48.274] Browser LOG     [WebSocket] WebSocket closed
+[00:26:48.274] Browser LOG     [STOMP] STOMP: scheduling reconnection in 5000ms
+[00:26:49.192] Browser LOG     [STOMP] Connection closed to ws://localhost:8080/api/ws/interview
+[00:26:49.192] Browser LOG     [WebSocket] WebSocket closed
+[00:26:49.192] Browser LOG     [STOMP] STOMP: scheduling reconnection in 5000ms
+[00:26:49.193] Browser LOG     [STOMP] Connection closed to ws://localhost:8080/api/ws/interview
+[00:26:49.193] Browser LOG     [WebSocket] WebSocket closed
+[00:26:49.193] Browser LOG     [STOMP] STOMP: scheduling reconnection in 5000ms
+[00:26:53.255] Browser LOG     [STOMP] Opening Web Socket...
+[00:26:53.255] Browser LOG     [STOMP] Web Socket Opened...
+[00:26:53.255] Browser LOG     [STOMP] >>> CONNECT
+accept-version:1.2,1.1,1.0
+heart-beat:10000,10000
+
+
+[00:26:53.255] Browser LOG     [STOMP] Received data
+[00:26:53.255] Browser LOG     [STOMP] <<< CONNECTED
+heart-beat:0,0
+version:1.2
+content-length:0
+
+
+[00:26:53.255] Browser LOG     [STOMP] connected to server undefined
+[00:26:53.255] Browser LOG     [WebSocket] ✓ Connected to interview 7
+[00:26:53.255] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-0
+destination:/topic/interview/7/chat
+
+
+[00:26:53.255] Browser LOG     [WebSocket] Subscribed to /topic/interview/7/chat
+[00:26:53.255] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-1
+destination:/topic/interview/7/code
+
+
+[00:26:53.255] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/7/code
+[00:26:53.829] Browser LOG     [STOMP] Connection closed to ws://localhost:8080/api/ws/interview
+[00:26:53.829] Browser LOG     [WebSocket] WebSocket closed
+[00:26:53.829] Browser LOG     [STOMP] STOMP: scheduling reconnection in 5000ms
+[00:26:54.192] Browser LOG     [STOMP] Opening Web Socket...
+[00:26:54.192] Browser LOG     [STOMP] Web Socket Opened...
+[00:26:54.192] Browser LOG     [STOMP] >>> CONNECT
+accept-version:1.2,1.1,1.0
+heart-beat:10000,10000
+
+
+[00:26:54.192] Browser LOG     [STOMP] Received data
+[00:26:54.192] Browser LOG     [STOMP] <<< CONNECTED
+heart-beat:0,0
+version:1.2
+content-length:0
+
+
+[00:26:54.192] Browser LOG     [STOMP] connected to server undefined
+[00:26:54.192] Browser LOG     [WebSocket] ✓ Connected to interview 7
+[00:26:54.192] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-0
+destination:/topic/interview/7/chat
+
+
+[00:26:54.192] Browser LOG     [WebSocket] Subscribed to /topic/interview/7/chat
+[00:26:54.192] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-1
+destination:/topic/interview/7/code
+
+
+[00:26:54.192] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/7/code
+[00:26:54.192] Browser LOG     [STOMP] Connection closed to ws://localhost:8080/api/ws/interview
+[00:26:54.193] Browser LOG     [WebSocket] WebSocket closed
+[00:26:54.193] Browser LOG     [STOMP] STOMP: scheduling reconnection in 5000ms
+[00:26:55.192] Browser LOG     [STOMP] Opening Web Socket...
+[00:26:55.192] Browser ERROR   [WebSocket Error] Connection failed: {"isTrusted":true}
+[00:26:55.192] Browser ERROR   [WebSocket] Attempted URL: ws://localhost:8080/api/ws/interview
+[00:26:55.192] Browser ERROR   [WebSocket] Interview ID: 7
+[00:26:55.192] Browser LOG     [STOMP] Connection closed to ws://localhost:8080/api/ws/interview
+[00:26:55.192] Browser LOG     [WebSocket] WebSocket closed
+[00:26:55.192] Browser LOG     [STOMP] STOMP: scheduling reconnection in 5000ms
+[00:26:58.846] Browser LOG     [STOMP] Opening Web Socket...
+[00:26:58.846] Browser LOG     [STOMP] Web Socket Opened...
+[00:26:58.846] Browser LOG     [STOMP] >>> CONNECT
+accept-version:1.2,1.1,1.0
+heart-beat:10000,10000
+
+
+[00:26:58.846] Browser LOG     [STOMP] Received data
+[00:26:58.846] Browser LOG     [STOMP] <<< CONNECTED
+heart-beat:0,0
+version:1.2
+content-length:0
+
+
+[00:26:58.846] Browser LOG     [STOMP] connected to server undefined
+[00:26:58.846] Browser LOG     [WebSocket] ✓ Connected to interview 7
+[00:26:58.846] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-0
+destination:/topic/interview/7/chat
+
+
+[00:26:58.846] Browser LOG     [WebSocket] Subscribed to /topic/interview/7/chat
+[00:26:58.846] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-1
+destination:/topic/interview/7/code
+
+
+[00:26:58.846] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/7/code
+[00:27:00.192] Browser LOG     [STOMP] Opening Web Socket...
+[00:27:00.192] Browser LOG     [STOMP] Web Socket Opened...
+[00:27:00.192] Browser LOG     [STOMP] >>> CONNECT
+accept-version:1.2,1.1,1.0
+heart-beat:10000,10000
+
+
+[00:27:00.192] Browser LOG     [STOMP] Received data
+[00:27:00.192] Browser LOG     [STOMP] <<< CONNECTED
+heart-beat:0,0
+version:1.2
+content-length:0
+
+
+[00:27:00.192] Browser LOG     [STOMP] connected to server undefined
+[00:27:00.192] Browser LOG     [WebSocket] ✓ Connected to interview 7
+[00:27:00.192] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-0
+destination:/topic/interview/7/chat
+
+
+[00:27:00.192] Browser LOG     [WebSocket] Subscribed to /topic/interview/7/chat
+[00:27:00.192] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-1
+destination:/topic/interview/7/code
+
+
+[00:27:00.192] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/7/code
+[00:27:01.193] Browser LOG     [STOMP] Opening Web Socket...
+[00:27:01.193] Browser LOG     [STOMP] Web Socket Opened...
+[00:27:01.193] Browser LOG     [STOMP] >>> CONNECT
+accept-version:1.2,1.1,1.0
+heart-beat:10000,10000
+
+
+[00:27:01.193] Browser LOG     [STOMP] Received data
+[00:27:01.193] Browser LOG     [STOMP] <<< CONNECTED
+heart-beat:0,0
+version:1.2
+content-length:0
+
+
+[00:27:01.193] Browser LOG     [STOMP] connected to server undefined
+[00:27:01.193] Browser LOG     [WebSocket] ✓ Connected to interview 7
+[00:27:01.193] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-0
+destination:/topic/interview/7/chat
+
+
+[00:27:01.193] Browser LOG     [WebSocket] Subscribed to /topic/interview/7/chat
+[00:27:01.193] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-1
+destination:/topic/interview/7/code
+
+
+[00:27:01.193] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/7/code
+[00:33:57.015] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:33:57.322] Browser LOG     [Interviewer] Interview ID from URL: 7
+[00:33:57.322] Browser LOG     [Interviewer] Verifying interview exists with ID: 7
+[00:33:57.322] Browser LOG     [WebSocket] Connecting to ws://localhost:8080/api/ws/interview for interview 7
+[00:33:57.322] Browser LOG     [WebSocket] Client created, activating...
+[00:33:57.322] Browser LOG     [API Client] Adding auth token to request: /interviews/7
+[00:33:57.322] Browser LOG     [API Client] Adding auth token to request: /chat/history/7
+[00:33:57.322] Browser LOG     [STOMP] Opening Web Socket...
+[00:33:57.322] Browser LOG     [STOMP] Web Socket Opened...
+[00:33:57.322] Browser LOG     [STOMP] >>> CONNECT
+accept-version:1.2,1.1,1.0
+heart-beat:10000,10000
+
+
+[00:33:57.322] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:33:57.322] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/interview/7","route":"/interview/[id]"}
+[00:33:57.322] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/interview/7 color: rgb(120, 120, 120) color: inherit {"dp":"/interview/[id]","o":"http://localhost:3000/interview/7","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1766305944416}
+[00:33:57.322] Browser LOG     [STOMP] Received data
+[00:33:57.322] Browser LOG     [STOMP] <<< CONNECTED
+heart-beat:0,0
+version:1.2
+content-length:0
+
+
+[00:33:57.322] Browser LOG     [STOMP] connected to server undefined
+[00:33:57.322] Browser LOG     [WebSocket] ✓ Connected to interview 7
+[00:33:57.322] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-0
+destination:/topic/interview/7/chat
+
+
+[00:33:57.322] Browser LOG     [WebSocket] Subscribed to /topic/interview/7/chat
+[00:33:57.323] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-1
+destination:/topic/interview/7/code
+
+
+[00:33:57.323] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/7/code
+[00:33:57.323] Browser LOG     [API Client] Successful response: /chat/history/7 200
+[00:33:57.323] Browser LOG     [API Client] Successful response: /interviews/7 200
+[00:33:57.323] Browser LOG     [Interviewer] Interview found: {"candidate":{"createdAt":"2025-12-02T11:34:14.588229","email":"testcandidate@example.com","id":1,"name":"Test Candidate"},"candidateId":1,"company":{"createdAt":"2025-11-29T18:48:03.177823","email":"shaniravia@gmail.com","id":1,"logoUrl":null,"name":"zacksventures","subscriptionTier":"starter","updatedAt":"2025-11-29T18:48:03.177825"},"companyId":1,"completedAt":null,"createdAt":"2025-12-19T12:34:04.371205","id":7,"interviewLinkToken":"0855036a-6cb6-41d8-929c-e4b916c8eecb","interviewer":null,"interviewerId":2,"language":"javascript","question":{"createdAt":"2025-12-19T10:13:16.75455","description":"Build a rate limiter that controls how many requests are allowed in a time window.\n\nFUNCTIONS TO IMPLEMENT:\n\n1. RateLimiter(maxRequests, windowMs)\n   - Constructor that creates a rate limiter\n   - maxRequests: maximum allowed requests in the window\n   - windowMs: time window in milliseconds\n\n2. allowRequest()\n   - Instance method: call this for each incoming request\n   - Returns true if request is allowed\n   - Returns false if limit exceeded\n\nEXAMPLE:\n  const limiter = new RateLimiter(5, 1000);  // 5 requests per second\n  limiter.allowRequest();  // true\n  limiter.allowRequest();  // true\n  limiter.allowRequest();  // true\n  limiter.allowRequest();  // true\n  limiter.allowRequest();  // true\n  limiter.allowRequest();  // false (limit reached)\n  // After 1 second passes, requests are allowed again\n\nUSE CASE:\nImagine this protects an API endpoint. You want to allow each user maximum 100 requests per minute to prevent abuse.\n\nHINT: Use Date.now() to get the current timestamp in milliseconds.","difficulty":"medium","followUpQuestions":[{"goodAnswer":"The timestamps array would grow to 10,000 entries, using a lot of memory. We should consider a more memory-efficient approach.","greatAnswer":"We could use a sliding window counter with fixed buckets, or a token bucket algorithm. These use O(1) memory regardless of traffic.","id":49,"orderIndex":0,"question":"What happens if this API gets 10,000 requests per second?"},{"goodAnswer":"Current solution is precise but uses O(n) memory. Fixed-memory solutions are approximate but use O(1) memory.","greatAnswer":"Current solution trades precision and simplicity for memory usage. Fixed-memory solutions like sliding window counter offer better scalability but sacrifice precision at bucket boundaries.","id":50,"orderIndex":1,"question":"What's the tradeoff between your current solution and a fixed-memory solution?"},{"goodAnswer":"You would need to store the rate limiter state in a shared location like Redis.","greatAnswer":"Use Redis or a distributed cache to store the rate limiter state. Handle race conditions with atomic operations or Lua scripts. Consider eventual consistency trade-offs.","id":51,"orderIndex":2,"question":"What if this needs to work across multiple servers?"},{"goodAnswer":"Inject the time function so tests don't depend on real time. Mock Date.now() to control the clock.","greatAnswer":"Dependency injection for the time source enables deterministic testing. Mock Date.now() to test boundary conditions and edge cases without waiting for real time to pass.","id":52,"orderIndex":3,"question":"How would you properly test a time-based function like this?"}],"id":5,"initialCodeJava":"// Rate Limiter\nimport java.util.*;\n\npublic class RateLimiter {\n    \n    public RateLimiter(int maxRequests, long windowMs) {\n        // TODO: Initialize the rate limiter\n    }\n    \n    public boolean allowRequest() {\n        // TODO: Return true if request allowed, false if limit exceeded\n        return false;\n    }\n}","initialCodeJavascript":"// Rate Limiter\n\nclass RateLimiter {\n  constructor(maxRequests, windowMs) {\n    // TODO: Initialize the rate limiter\n  }\n\n  allowRequest() {\n    // TODO: Return true if request allowed, false if limit exceeded\n    return false;\n  }\n}","initialCodePython":"# Rate Limiter\nimport time\n\nclass RateLimiter:\n    def __init__(self, max_requests, window_ms):\n        # TODO: Initialize the rate limiter\n        pass\n\n    def allow_request(self):\n        # TODO: Return True if request allowed, False if limit exceeded\n        return False","intentionalBugsJson":"{\"bugs\":[{\"name\":\"Memory grows unbounded\",\"description\":\"Stores all timestamps causing memory issues with high traffic\",\"difficulty\":\"common\"},{\"name\":\"Doesn't filter expired requests\",\"description\":\"Counts expired requests towards the limit\",\"difficulty\":\"medium\"},{\"name\":\"Off-by-one error\",\"description\":\"Allows one too many or too few requests\",\"difficulty\":\"common\"},{\"name\":\"No window reset\",\"description\":\"Never allows new requests after window fills up\",\"difficulty\":\"hard\"}]}","requirementsJson":"{\"requirements\":[\"Create a rate limiter with max requests and time window\",\"Implement allowRequest function\",\"Track request timestamps efficiently\",\"Handle time window expiration\",\"Support multiple independent limiters\"]}","rubricJson":"{\"categories\":[{\"category\":\"Correctness\",\"points\":25,\"description\":\"Basic solution passes tests\"},{\"category\":\"Edge Cases\",\"points\":15,\"description\":\"Handles edge cases (limit=1, empty, boundary)\"},{\"category\":\"Memory Efficiency\",\"points\":20,\"description\":\"Recognizes memory problem with high traffic\"},{\"category\":\"Alternative Solutions\",\"points\":20,\"description\":\"Discusses or implements memory-efficient alternative\"},{\"category\":\"AI Collaboration\",\"points\":20,\"description\":\"Uses AI effectively - asks good questions, reviews critically\"}]}","supportedLanguages":"java,python,javascript","testCases":[{"assertionsJson":"[]","description":"3 requests with limit 3 should all be true","id":25,"operationsJson":"[]","orderIndex":0,"passed":false,"testCase":"TC1","testName":"allows requests under limit"},{"assertionsJson":"[]","description":"3rd request with limit 2 should be false","id":26,"operationsJson":"[]","orderIndex":1,"passed":false,"testCase":"TC2","testName":"blocks request when limit reached"},{"assertionsJson":"[]","description":"After window expires, new requests should be allowed","id":27,"operationsJson":"[]","orderIndex":2,"passed":false,"testCase":"TC3","testName":"allows request after window expires"},{"assertionsJson":"[]","description":"Two limiters should track separately","id":28,"operationsJson":"[]","orderIndex":3,"passed":false,"testCase":"TC4","testName":"each limiter is independent"},{"assertionsJson":"[]","description":"Single request limit should work correctly","id":29,"operationsJson":"[]","orderIndex":4,"passed":false,"testCase":"TC5","testName":"handles limit of 1"},{"assertionsJson":"[]","description":"Sliding window should handle partial expiry correctly","id":30,"operationsJson":"[]","orderIndex":5,"passed":false,"testCase":"TC6","testName":"sliding window - partial expiry"},{"assertionsJson":"[]","description":"Should handle high volume requests","id":31,"operationsJson":"[]","orderIndex":6,"passed":false,"testCase":"TC7","testName":"high volume - 10 requests with limit 10"}],"testsJson":"{\"tests\":[{\"testCase\":\"TC1\",\"name\":\"allows requests under limit\",\"operations\":[],\"assertions\":[],\"description\":\"3 requests with limit 3 should all be true\"},{\"testCase\":\"TC2\",\"name\":\"blocks request when limit reached\",\"operations\":[],\"assertions\":[],\"description\":\"3rd request with limit 2 should be false\"},{\"testCase\":\"TC3\",\"name\":\"allows request after window expires\",\"operations\":[],\"assertions\":[],\"description\":\"After window expires, new requests should be allowed\"},{\"testCase\":\"TC4\",\"name\":\"each limiter is independent\",\"operations\":[],\"assertions\":[],\"description\":\"Two limiters should track separately\"},{\"testCase\":\"TC5\",\"name\":\"handles limit of 1\",\"operations\":[],\"assertions\":[],\"description\":\"Single request limit should work correctly\"},{\"testCase\":\"TC6\",\"name\":\"sliding window - partial expiry\",\"operations\":[],\"assertions\":[],\"description\":\"Sliding window should handle partial expiry correctly\"},{\"testCase\":\"TC7\",\"name\":\"high volume - 10 requests with limit 10\",\"operations\":[],\"assertions\":[],\"description\":\"Should handle high volume requests\"}]}","timeLimitMinutes":30,"title":"Rate Limiter"},"questionId":5,"scheduledAt":"2025-12-19T12:34:04.371279","startedAt":"2025-12-19T12:34:04.37128","status":"in_progress"}
+[00:33:57.323] Browser LOG     [Interviewer] Interview status: in_progress
+[00:33:57.323] Browser LOG     [Interviewer] Setting isPending to false - interview is already in_progress
+[00:33:57.323] Browser LOG     [API Client] Adding auth token to request: /code/latest/7
+[00:33:57.323] Browser LOG     [API Client] Error response: {"data":"","message":"Server error","status":404,"url":"/code/latest/7"}
+[00:33:57.323] Browser ERROR   [API Client] Final API Error: {"code":"ERR_BAD_REQUEST","message":"Resource not found","status":404}
+[00:33:57.323] Browser ERROR   Error fetching latest code: {"code":"ERR_BAD_REQUEST","message":"Resource not found","status":404}
+[00:33:57.323] Browser DEBUG   No previous code found or error loading: Unknown error
+[00:40:51.145] Browser LOG     [STOMP] >>> UNSUBSCRIBE
+id:[object Object]
+
+
+[00:40:51.145] Browser LOG     [STOMP] >>> UNSUBSCRIBE
+id:[object Object]
+
+
+[00:40:51.145] Browser LOG     [STOMP] >>> DISCONNECT
+receipt:close-2
+
+
+[00:40:51.145] Browser LOG     [WebSocket] Disconnected
+[00:40:51.145] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/dashboard color: rgb(120, 120, 120) color: inherit {"dp":"/dashboard","o":"http://localhost:3000/dashboard","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1766306358222}
+[00:40:51.145] Browser LOG     [STOMP] Received data
+[00:40:51.145] Browser LOG     [STOMP] <<< RECEIPT
+receipt-id:close-2
+content-length:0
+
+
+[00:40:51.145] Browser LOG     [WebSocket] Disconnected from interview 7
+[00:40:51.145] Browser LOG     [STOMP] Connection closed to ws://localhost:8080/api/ws/interview
+[00:40:51.145] Browser LOG     [WebSocket] WebSocket closed
+[00:40:51.145] Browser LOG     [API Client] Adding auth token to request: /interviews
+[00:40:51.145] Browser LOG     [API Client] Adding auth token to request: /questions
+[00:40:51.145] Browser LOG     [API Client] Adding auth token to request: /interviews
+[00:40:51.145] Browser LOG     [API Client] Adding auth token to request: /questions
+[00:40:51.145] Browser LOG     [API Client] Successful response: /questions 200
+[00:40:51.145] Browser LOG     [API Client] Successful response: /interviews 200
+[00:40:51.145] Browser LOG     [API Client] Successful response: /questions 200
+[00:40:51.145] Browser LOG     [API Client] Successful response: /interviews 200
+[00:42:46.192] Browser LOG     [STOMP] Connection closed to ws://localhost:8080/api/ws/interview
+[00:42:46.192] Browser LOG     [WebSocket] WebSocket closed
+[00:42:46.192] Browser LOG     [STOMP] STOMP: scheduling reconnection in 5000ms
+[00:42:46.193] Browser LOG     [STOMP] Connection closed to ws://localhost:8080/api/ws/interview
+[00:42:46.193] Browser LOG     [WebSocket] WebSocket closed
+[00:42:46.193] Browser LOG     [STOMP] STOMP: scheduling reconnection in 5000ms
+[00:42:52.192] Browser LOG     [STOMP] Opening Web Socket...
+[00:42:52.192] Browser ERROR   [WebSocket Error] Connection failed: {"isTrusted":true}
+[00:42:52.192] Browser ERROR   [WebSocket] Attempted URL: ws://localhost:8080/api/ws/interview
+[00:42:52.192] Browser ERROR   [WebSocket] Interview ID: 7
+[00:42:52.192] Browser LOG     [STOMP] Connection closed to ws://localhost:8080/api/ws/interview
+[00:42:52.192] Browser LOG     [WebSocket] WebSocket closed
+[00:42:52.192] Browser LOG     [STOMP] STOMP: scheduling reconnection in 5000ms
+[00:42:52.193] Browser LOG     [STOMP] Opening Web Socket...
+[00:42:52.193] Browser ERROR   [WebSocket Error] Connection failed: {"isTrusted":true}
+[00:42:52.193] Browser ERROR   [WebSocket] Attempted URL: ws://localhost:8080/api/ws/interview
+[00:42:52.193] Browser ERROR   [WebSocket] Interview ID: 7
+[00:42:52.193] Browser LOG     [STOMP] Connection closed to ws://localhost:8080/api/ws/interview
+[00:42:52.193] Browser LOG     [WebSocket] WebSocket closed
+[00:42:52.193] Browser LOG     [STOMP] STOMP: scheduling reconnection in 5000ms
+[00:42:58.192] Browser LOG     [STOMP] Opening Web Socket...
+[00:42:58.192] Browser LOG     [STOMP] Web Socket Opened...
+[00:42:58.192] Browser LOG     [STOMP] >>> CONNECT
+accept-version:1.2,1.1,1.0
+heart-beat:10000,10000
+
+
+[00:42:58.193] Browser LOG     [STOMP] Received data
+[00:42:58.193] Browser LOG     [STOMP] <<< CONNECTED
+heart-beat:0,0
+version:1.2
+content-length:0
+
+
+[00:42:58.193] Browser LOG     [STOMP] connected to server undefined
+[00:42:58.193] Browser LOG     [WebSocket] ✓ Connected to interview 7
+[00:42:58.193] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-0
+destination:/topic/interview/7/chat
+
+
+[00:42:58.193] Browser LOG     [WebSocket] Subscribed to /topic/interview/7/chat
+[00:42:58.193] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-1
+destination:/topic/interview/7/code
+
+
+[00:42:58.193] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/7/code
+[00:42:58.193] Browser LOG     [STOMP] Opening Web Socket...
+[00:42:58.193] Browser LOG     [STOMP] Web Socket Opened...
+[00:42:58.193] Browser LOG     [STOMP] >>> CONNECT
+accept-version:1.2,1.1,1.0
+heart-beat:10000,10000
+
+
+[00:42:58.193] Browser LOG     [STOMP] Received data
+[00:42:58.193] Browser LOG     [STOMP] <<< CONNECTED
+heart-beat:0,0
+version:1.2
+content-length:0
+
+
+[00:42:58.193] Browser LOG     [STOMP] connected to server undefined
+[00:42:58.193] Browser LOG     [WebSocket] ✓ Connected to interview 7
+[00:42:58.193] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-0
+destination:/topic/interview/7/chat
+
+
+[00:42:58.193] Browser LOG     [WebSocket] Subscribed to /topic/interview/7/chat
+[00:42:58.193] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-1
+destination:/topic/interview/7/code
+
+
+[00:42:58.193] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/7/code
+[01:27:17.968] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:27:18.249] Browser LOG     [Interviewer] Interview ID from URL: 7
+[01:27:18.249] Browser LOG     [Interviewer] Verifying interview exists with ID: 7
+[01:27:18.249] Browser LOG     [WebSocket] Connecting to ws://localhost:8080/api/ws/interview for interview 7
+[01:27:18.249] Browser LOG     [WebSocket] Client created, activating...
+[01:27:18.249] Browser LOG     [API Client] Adding auth token to request: /interviews/7
+[01:27:18.249] Browser LOG     [API Client] Adding auth token to request: /chat/history/7
+[01:27:18.249] Browser LOG     [STOMP] Opening Web Socket...
+[01:27:18.249] Browser LOG     [STOMP] Web Socket Opened...
+[01:27:18.249] Browser LOG     [STOMP] >>> CONNECT
+accept-version:1.2,1.1,1.0
+heart-beat:10000,10000
+
+
+[01:27:18.249] Browser LOG     [STOMP] Received data
+[01:27:18.249] Browser LOG     [STOMP] <<< CONNECTED
+heart-beat:0,0
+version:1.2
+content-length:0
+
+
+[01:27:18.249] Browser LOG     [STOMP] connected to server undefined
+[01:27:18.249] Browser LOG     [WebSocket] ✓ Connected to interview 7
+[01:27:18.249] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-0
+destination:/topic/interview/7/chat
+
+
+[01:27:18.249] Browser LOG     [WebSocket] Subscribed to /topic/interview/7/chat
+[01:27:18.249] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-1
+destination:/topic/interview/7/code
+
+
+[01:27:18.249] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/7/code
+[01:27:18.249] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[01:27:18.249] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/interview/7","route":"/interview/[id]"}
+[01:27:18.249] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/interview/7 color: rgb(120, 120, 120) color: inherit {"dp":"/interview/[id]","o":"http://localhost:3000/interview/7","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1766309145360}
+[01:27:18.249] Browser LOG     [API Client] Successful response: /chat/history/7 200
+[01:27:18.249] Browser LOG     [API Client] Successful response: /interviews/7 200
+[01:27:18.249] Browser LOG     [Interviewer] Interview found: {"candidate":{"createdAt":"2025-12-02T11:34:14.588229","email":"testcandidate@example.com","id":1,"name":"Test Candidate"},"candidateId":1,"company":{"createdAt":"2025-11-29T18:48:03.177823","email":"shaniravia@gmail.com","id":1,"logoUrl":null,"name":"zacksventures","subscriptionTier":"starter","updatedAt":"2025-11-29T18:48:03.177825"},"companyId":1,"completedAt":null,"createdAt":"2025-12-19T12:34:04.371205","id":7,"interviewLinkToken":"0855036a-6cb6-41d8-929c-e4b916c8eecb","interviewer":null,"interviewerId":2,"language":"javascript","question":{"createdAt":"2025-12-19T10:13:16.75455","description":"Build a rate limiter that controls how many requests are allowed in a time window.\n\nFUNCTIONS TO IMPLEMENT:\n\n1. RateLimiter(maxRequests, windowMs)\n   - Constructor that creates a rate limiter\n   - maxRequests: maximum allowed requests in the window\n   - windowMs: time window in milliseconds\n\n2. allowRequest()\n   - Instance method: call this for each incoming request\n   - Returns true if request is allowed\n   - Returns false if limit exceeded\n\nEXAMPLE:\n  const limiter = new RateLimiter(5, 1000);  // 5 requests per second\n  limiter.allowRequest();  // true\n  limiter.allowRequest();  // true\n  limiter.allowRequest();  // true\n  limiter.allowRequest();  // true\n  limiter.allowRequest();  // true\n  limiter.allowRequest();  // false (limit reached)\n  // After 1 second passes, requests are allowed again\n\nUSE CASE:\nImagine this protects an API endpoint. You want to allow each user maximum 100 requests per minute to prevent abuse.\n\nHINT: Use Date.now() to get the current timestamp in milliseconds.","difficulty":"medium","followUpQuestions":[{"answer":"The timestamps array would grow to 10,000 entries, using a lot of memory. We could use a sliding window counter with fixed buckets, or a token bucket algorithm. These use O(1) memory regardless of traffic.","id":53,"orderIndex":0,"question":"What happens if this API gets 10,000 requests per second?"},{"answer":"Current solution is precise but uses O(n) memory. Fixed-memory solutions are approximate but use O(1) memory. Current solution trades precision and simplicity for memory usage. Fixed-memory solutions like sliding window counter offer better scalability but sacrifice precision at bucket boundaries.","id":54,"orderIndex":1,"question":"What's the tradeoff between your current solution and a fixed-memory solution?"},{"answer":"You would need to store the rate limiter state in a shared location like Redis. Use Redis or a distributed cache to store the rate limiter state. Handle race conditions with atomic operations or Lua scripts. Consider eventual consistency trade-offs.","id":55,"orderIndex":2,"question":"What if this needs to work across multiple servers?"},{"answer":"Inject the time function so tests don't depend on real time. Mock Date.now() to control the clock. Dependency injection for the time source enables deterministic testing. Mock Date.now() to test boundary conditions and edge cases without waiting for real time to pass.","id":56,"orderIndex":3,"question":"How would you properly test a time-based function like this?"}],"id":5,"initialCodeJava":"// Rate Limiter\nimport java.util.*;\n\npublic class RateLimiter {\n    \n    public RateLimiter(int maxRequests, long windowMs) {\n        // TODO: Initialize the rate limiter\n    }\n    \n    public boolean allowRequest() {\n        // TODO: Return true if request allowed, false if limit exceeded\n        return false;\n    }\n}","initialCodeJavascript":"// Rate Limiter\n\nclass RateLimiter {\n  constructor(maxRequests, windowMs) {\n    // TODO: Initialize the rate limiter\n  }\n\n  allowRequest() {\n    // TODO: Return true if request allowed, false if limit exceeded\n    return false;\n  }\n}","initialCodePython":"# Rate Limiter\nimport time\n\nclass RateLimiter:\n    def __init__(self, max_requests, window_ms):\n        # TODO: Initialize the rate limiter\n        pass\n\n    def allow_request(self):\n        # TODO: Return True if request allowed, False if limit exceeded\n        return False","intentionalBugsJson":"{\"bugs\":[{\"name\":\"Memory grows unbounded\",\"description\":\"Stores all timestamps causing memory issues with high traffic\",\"difficulty\":\"common\"},{\"name\":\"Doesn't filter expired requests\",\"description\":\"Counts expired requests towards the limit\",\"difficulty\":\"medium\"},{\"name\":\"Off-by-one error\",\"description\":\"Allows one too many or too few requests\",\"difficulty\":\"common\"},{\"name\":\"No window reset\",\"description\":\"Never allows new requests after window fills up\",\"difficulty\":\"hard\"}]}","requirementsJson":"{\"requirements\":[\"Create a rate limiter with max requests and time window\",\"Implement allowRequest function\",\"Track request timestamps efficiently\",\"Handle time window expiration\",\"Support multiple independent limiters\"]}","rubricJson":"{\"categories\":[{\"category\":\"Correctness\",\"points\":25,\"description\":\"Basic solution passes tests\"},{\"category\":\"Edge Cases\",\"points\":15,\"description\":\"Handles edge cases (limit=1, empty, boundary)\"},{\"category\":\"Memory Efficiency\",\"points\":20,\"description\":\"Recognizes memory problem with high traffic\"},{\"category\":\"Alternative Solutions\",\"points\":20,\"description\":\"Discusses or implements memory-efficient alternative\"},{\"category\":\"AI Collaboration\",\"points\":20,\"description\":\"Uses AI effectively - asks good questions, reviews critically\"}]}","supportedLanguages":"java,python,javascript","testCases":[{"assertionsJson":"[]","description":"3 requests with limit 3 should all be true","id":25,"operationsJson":"[]","orderIndex":0,"passed":false,"testCase":"TC1","testName":"allows requests under limit"},{"assertionsJson":"[]","description":"3rd request with limit 2 should be false","id":26,"operationsJson":"[]","orderIndex":1,"passed":false,"testCase":"TC2","testName":"blocks request when limit reached"},{"assertionsJson":"[]","description":"After window expires, new requests should be allowed","id":27,"operationsJson":"[]","orderIndex":2,"passed":false,"testCase":"TC3","testName":"allows request after window expires"},{"assertionsJson":"[]","description":"Two limiters should track separately","id":28,"operationsJson":"[]","orderIndex":3,"passed":false,"testCase":"TC4","testName":"each limiter is independent"},{"assertionsJson":"[]","description":"Single request limit should work correctly","id":29,"operationsJson":"[]","orderIndex":4,"passed":false,"testCase":"TC5","testName":"handles limit of 1"},{"assertionsJson":"[]","description":"Sliding window should handle partial expiry correctly","id":30,"operationsJson":"[]","orderIndex":5,"passed":false,"testCase":"TC6","testName":"sliding window - partial expiry"},{"assertionsJson":"[]","description":"Should handle high volume requests","id":31,"operationsJson":"[]","orderIndex":6,"passed":false,"testCase":"TC7","testName":"high volume - 10 requests with limit 10"}],"testsJson":"{\"tests\":[{\"testCase\":\"TC1\",\"name\":\"allows requests under limit\",\"operations\":[],\"assertions\":[],\"description\":\"3 requests with limit 3 should all be true\"},{\"testCase\":\"TC2\",\"name\":\"blocks request when limit reached\",\"operations\":[],\"assertions\":[],\"description\":\"3rd request with limit 2 should be false\"},{\"testCase\":\"TC3\",\"name\":\"allows request after window expires\",\"operations\":[],\"assertions\":[],\"description\":\"After window expires, new requests should be allowed\"},{\"testCase\":\"TC4\",\"name\":\"each limiter is independent\",\"operations\":[],\"assertions\":[],\"description\":\"Two limiters should track separately\"},{\"testCase\":\"TC5\",\"name\":\"handles limit of 1\",\"operations\":[],\"assertions\":[],\"description\":\"Single request limit should work correctly\"},{\"testCase\":\"TC6\",\"name\":\"sliding window - partial expiry\",\"operations\":[],\"assertions\":[],\"description\":\"Sliding window should handle partial expiry correctly\"},{\"testCase\":\"TC7\",\"name\":\"high volume - 10 requests with limit 10\",\"operations\":[],\"assertions\":[],\"description\":\"Should handle high volume requests\"}]}","timeLimitMinutes":30,"title":"Rate Limiter"},"questionId":5,"scheduledAt":"2025-12-19T12:34:04.371279","startedAt":"2025-12-19T12:34:04.37128","status":"in_progress"}
+[01:27:18.249] Browser LOG     [Interviewer] Interview status: in_progress
+[01:27:18.249] Browser LOG     [Interviewer] Setting isPending to false - interview is already in_progress
+[01:27:18.249] Browser LOG     [API Client] Adding auth token to request: /code/latest/7
+[01:27:18.249] Browser LOG     [API Client] Error response: {"data":"","message":"Server error","status":404,"url":"/code/latest/7"}
+[01:27:18.249] Browser ERROR   [API Client] Final API Error: {"code":"ERR_BAD_REQUEST","message":"Resource not found","status":404}
+[01:27:18.249] Browser ERROR   Error fetching latest code: {"code":"ERR_BAD_REQUEST","message":"Resource not found","status":404}
+[01:27:18.249] Browser DEBUG   No previous code found or error loading: Unknown error
+[01:28:23.179] Server  LOG      ✓ Compiled in 54ms
+[01:28:30.607] Server  LOG      ✓ Compiled in 35ms
+[01:50:01.049] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:50:01.301] Browser LOG     [Interviewer] Interview ID from URL: 7
+[01:50:01.301] Browser LOG     [Interviewer] Verifying interview exists with ID: 7
+[01:50:01.301] Browser LOG     [WebSocket] Connecting to ws://localhost:8080/api/ws/interview for interview 7
+[01:50:01.301] Browser LOG     [WebSocket] Client created, activating...
+[01:50:01.301] Browser LOG     [API Client] Adding auth token to request: /interviews/7
+[01:50:01.301] Browser LOG     [API Client] Adding auth token to request: /chat/history/7
+[01:50:01.301] Browser LOG     [STOMP] Opening Web Socket...
+[01:50:01.301] Browser LOG     [STOMP] Web Socket Opened...
+[01:50:01.301] Browser LOG     [STOMP] >>> CONNECT
+accept-version:1.2,1.1,1.0
+heart-beat:10000,10000
+
+
+[01:50:01.301] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[01:50:01.301] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/interview/7","route":"/interview/[id]"}
+[01:50:01.301] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/interview/7 color: rgb(120, 120, 120) color: inherit {"dp":"/interview/[id]","o":"http://localhost:3000/interview/7","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1766310508454}
+[01:50:01.301] Browser LOG     [STOMP] Received data
+[01:50:01.301] Browser LOG     [STOMP] <<< CONNECTED
+heart-beat:0,0
+version:1.2
+content-length:0
+
+
+[01:50:01.301] Browser LOG     [STOMP] connected to server undefined
+[01:50:01.301] Browser LOG     [WebSocket] ✓ Connected to interview 7
+[01:50:01.301] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-0
+destination:/topic/interview/7/chat
+
+
+[01:50:01.301] Browser LOG     [WebSocket] Subscribed to /topic/interview/7/chat
+[01:50:01.301] Browser LOG     [STOMP] >>> SUBSCRIBE
+id:sub-1
+destination:/topic/interview/7/code
+
+
+[01:50:01.301] Browser LOG     [WebSocket] Subscribed to code updates at /topic/interview/7/code
+[01:50:01.301] Browser LOG     [API Client] Successful response: /chat/history/7 200
+[01:50:01.301] Browser LOG     [API Client] Successful response: /interviews/7 200
+[01:50:01.301] Browser LOG     [Interviewer] Interview found: {"candidate":{"createdAt":"2025-12-02T11:34:14.588229","email":"testcandidate@example.com","id":1,"name":"Test Candidate"},"candidateId":1,"company":{"createdAt":"2025-11-29T18:48:03.177823","email":"shaniravia@gmail.com","id":1,"logoUrl":null,"name":"zacksventures","subscriptionTier":"starter","updatedAt":"2025-11-29T18:48:03.177825"},"companyId":1,"completedAt":null,"createdAt":"2025-12-19T12:34:04.371205","id":7,"interviewLinkToken":"0855036a-6cb6-41d8-929c-e4b916c8eecb","interviewer":null,"interviewerId":2,"language":"javascript","question":{"createdAt":"2025-12-19T10:13:16.75455","description":"Build a rate limiter that controls how many requests are allowed in a time window.\n\nFUNCTIONS TO IMPLEMENT:\n\n1. RateLimiter(maxRequests, windowMs)\n   - Constructor that creates a rate limiter\n   - maxRequests: maximum allowed requests in the window\n   - windowMs: time window in milliseconds\n\n2. allowRequest()\n   - Instance method: call this for each incoming request\n   - Returns true if request is allowed\n   - Returns false if limit exceeded\n\nEXAMPLE:\n  const limiter = new RateLimiter(5, 1000);  // 5 requests per second\n  limiter.allowRequest();  // true\n  limiter.allowRequest();  // true\n  limiter.allowRequest();  // true\n  limiter.allowRequest();  // true\n  limiter.allowRequest();  // true\n  limiter.allowRequest();  // false (limit reached)\n  // After 1 second passes, requests are allowed again\n\nUSE CASE:\nImagine this protects an API endpoint. You want to allow each user maximum 100 requests per minute to prevent abuse.\n\nHINT: Use Date.now() to get the current timestamp in milliseconds.","difficulty":"medium","followUpQuestions":[{"answer":"The timestamps array would grow to 10,000 entries, using a lot of memory. We could use a sliding window counter with fixed buckets, or a token bucket algorithm. These use O(1) memory regardless of traffic.","id":53,"orderIndex":0,"question":"What happens if this API gets 10,000 requests per second?"},{"answer":"Current solution is precise but uses O(n) memory. Fixed-memory solutions are approximate but use O(1) memory. Current solution trades precision and simplicity for memory usage. Fixed-memory solutions like sliding window counter offer better scalability but sacrifice precision at bucket boundaries.","id":54,"orderIndex":1,"question":"What's the tradeoff between your current solution and a fixed-memory solution?"},{"answer":"You would need to store the rate limiter state in a shared location like Redis. Use Redis or a distributed cache to store the rate limiter state. Handle race conditions with atomic operations or Lua scripts. Consider eventual consistency trade-offs.","id":55,"orderIndex":2,"question":"What if this needs to work across multiple servers?"},{"answer":"Inject the time function so tests don't depend on real time. Mock Date.now() to control the clock. Dependency injection for the time source enables deterministic testing. Mock Date.now() to test boundary conditions and edge cases without waiting for real time to pass.","id":56,"orderIndex":3,"question":"How would you properly test a time-based function like this?"}],"id":5,"initialCodeJava":"// Rate Limiter\nimport java.util.*;\n\npublic class RateLimiter {\n    \n    public RateLimiter(int maxRequests, long windowMs) {\n        // TODO: Initialize the rate limiter\n    }\n    \n    public boolean allowRequest() {\n        // TODO: Return true if request allowed, false if limit exceeded\n        return false;\n    }\n}","initialCodeJavascript":"// Rate Limiter\n\nclass RateLimiter {\n  constructor(maxRequests, windowMs) {\n    // TODO: Initialize the rate limiter\n  }\n\n  allowRequest() {\n    // TODO: Return true if request allowed, false if limit exceeded\n    return false;\n  }\n}","initialCodePython":"# Rate Limiter\nimport time\n\nclass RateLimiter:\n    def __init__(self, max_requests, window_ms):\n        # TODO: Initialize the rate limiter\n        pass\n\n    def allow_request(self):\n        # TODO: Return True if request allowed, False if limit exceeded\n        return False","intentionalBugsJson":"{\"bugs\":[{\"name\":\"Memory grows unbounded\",\"description\":\"Stores all timestamps causing memory issues with high traffic\",\"difficulty\":\"common\"},{\"name\":\"Doesn't filter expired requests\",\"description\":\"Counts expired requests towards the limit\",\"difficulty\":\"medium\"},{\"name\":\"Off-by-one error\",\"description\":\"Allows one too many or too few requests\",\"difficulty\":\"common\"},{\"name\":\"No window reset\",\"description\":\"Never allows new requests after window fills up\",\"difficulty\":\"hard\"}]}","requirementsJson":"{\"requirements\":[\"Create a rate limiter with max requests and time window\",\"Implement allowRequest function\",\"Track request timestamps efficiently\",\"Handle time window expiration\",\"Support multiple independent limiters\"]}","rubricJson":"{\"categories\":[{\"category\":\"Correctness\",\"points\":25,\"description\":\"Basic solution passes tests\"},{\"category\":\"Edge Cases\",\"points\":15,\"description\":\"Handles edge cases (limit=1, empty, boundary)\"},{\"category\":\"Memory Efficiency\",\"points\":20,\"description\":\"Recognizes memory problem with high traffic\"},{\"category\":\"Alternative Solutions\",\"points\":20,\"description\":\"Discusses or implements memory-efficient alternative\"},{\"category\":\"AI Collaboration\",\"points\":20,\"description\":\"Uses AI effectively - asks good questions, reviews critically\"}]}","supportedLanguages":"java,python,javascript","testCases":[{"assertionsJson":"[]","description":"3 requests with limit 3 should all be true","id":25,"operationsJson":"[]","orderIndex":0,"passed":false,"testCase":"TC1","testName":"allows requests under limit"},{"assertionsJson":"[]","description":"3rd request with limit 2 should be false","id":26,"operationsJson":"[]","orderIndex":1,"passed":false,"testCase":"TC2","testName":"blocks request when limit reached"},{"assertionsJson":"[]","description":"After window expires, new requests should be allowed","id":27,"operationsJson":"[]","orderIndex":2,"passed":false,"testCase":"TC3","testName":"allows request after window expires"},{"assertionsJson":"[]","description":"Two limiters should track separately","id":28,"operationsJson":"[]","orderIndex":3,"passed":false,"testCase":"TC4","testName":"each limiter is independent"},{"assertionsJson":"[]","description":"Single request limit should work correctly","id":29,"operationsJson":"[]","orderIndex":4,"passed":false,"testCase":"TC5","testName":"handles limit of 1"},{"assertionsJson":"[]","description":"Sliding window should handle partial expiry correctly","id":30,"operationsJson":"[]","orderIndex":5,"passed":false,"testCase":"TC6","testName":"sliding window - partial expiry"},{"assertionsJson":"[]","description":"Should handle high volume requests","id":31,"operationsJson":"[]","orderIndex":6,"passed":false,"testCase":"TC7","testName":"high volume - 10 requests with limit 10"}],"testsJson":"{\"tests\":[{\"testCase\":\"TC1\",\"name\":\"allows requests under limit\",\"operations\":[],\"assertions\":[],\"description\":\"3 requests with limit 3 should all be true\"},{\"testCase\":\"TC2\",\"name\":\"blocks request when limit reached\",\"operations\":[],\"assertions\":[],\"description\":\"3rd request with limit 2 should be false\"},{\"testCase\":\"TC3\",\"name\":\"allows request after window expires\",\"operations\":[],\"assertions\":[],\"description\":\"After window expires, new requests should be allowed\"},{\"testCase\":\"TC4\",\"name\":\"each limiter is independent\",\"operations\":[],\"assertions\":[],\"description\":\"Two limiters should track separately\"},{\"testCase\":\"TC5\",\"name\":\"handles limit of 1\",\"operations\":[],\"assertions\":[],\"description\":\"Single request limit should work correctly\"},{\"testCase\":\"TC6\",\"name\":\"sliding window - partial expiry\",\"operations\":[],\"assertions\":[],\"description\":\"Sliding window should handle partial expiry correctly\"},{\"testCase\":\"TC7\",\"name\":\"high volume - 10 requests with limit 10\",\"operations\":[],\"assertions\":[],\"description\":\"Should handle high volume requests\"}]}","timeLimitMinutes":30,"title":"Rate Limiter"},"questionId":5,"scheduledAt":"2025-12-19T12:34:04.371279","startedAt":"2025-12-19T12:34:04.37128","status":"in_progress"}
+[01:50:01.301] Browser LOG     [Interviewer] Interview status: in_progress
+[01:50:01.301] Browser LOG     [Interviewer] Setting isPending to false - interview is already in_progress
+[01:50:01.301] Browser LOG     [API Client] Adding auth token to request: /code/latest/7
+[01:50:01.301] Browser LOG     [API Client] Error response: {"data":"","message":"Server error","status":404,"url":"/code/latest/7"}
+[01:50:01.301] Browser ERROR   [API Client] Final API Error: {"code":"ERR_BAD_REQUEST","message":"Resource not found","status":404}
+[01:50:01.301] Browser ERROR   Error fetching latest code: {"code":"ERR_BAD_REQUEST","message":"Resource not found","status":404}
+[01:50:01.301] Browser DEBUG   No previous code found or error loading: Unknown error

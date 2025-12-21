@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 public class FollowUpQuestionResponse {
     private Long id;
     private String question;
-    private String goodAnswer;
-    private String greatAnswer;
+    private String answer;
     private Integer orderIndex;
 }

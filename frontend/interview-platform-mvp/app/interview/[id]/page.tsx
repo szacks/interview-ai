@@ -103,10 +103,8 @@ const mockTestResults = [
 const mockFollowUpQuestions = [
   {
     question: "What happens if this API gets 10,000 requests per second?",
-    goodAnswer:
-      "The timestamps array would grow to 10,000 entries, using a lot of memory. We should consider a more memory-efficient approach.",
-    greatAnswer:
-      "We could use a sliding window counter with fixed buckets, or a token bucket algorithm. These use O(1) memory regardless of traffic.",
+    answer:
+      "The timestamps array would grow to 10,000 entries, using a lot of memory. We could use a sliding window counter with fixed buckets, or a token bucket algorithm. These use O(1) memory regardless of traffic.",
   },
   {
     question: "Can you think of a solution that uses fixed memory regardless of traffic?",
@@ -116,8 +114,8 @@ const mockFollowUpQuestions = [
   },
   {
     question: "What's the tradeoff between your current solution and a fixed-memory solution?",
-    goodAnswer:
-      "Current solution is precise but uses O(n) memory. Fixed-memory solutions are approximate but use O(1) memory.",
+    answer:
+      "Current solution is precise but uses O(n) memory. Fixed-memory solutions are approximate but use O(1) memory. Current solution trades precision and simplicity for memory usage. Fixed-memory solutions like sliding window counter offer better scalability but sacrifice precision at bucket boundaries.",
     keyPoints: ["Precision vs memory", "Simplicity vs scalability", "Use case dependent"],
   },
   {
@@ -127,9 +125,7 @@ const mockFollowUpQuestions = [
   },
   {
     question: "How would you properly test a time-based function like this?",
-    goodAnswer: "Inject the time function so tests don't depend on real time. Mock Date.now() to control the clock.",
-    greatAnswer:
-      "Dependency injection for time source, deterministic tests, test boundary conditions, test concurrent access",
+    answer: "Inject the time function so tests don't depend on real time. Mock Date.now() to control the clock. Dependency injection for time source enables deterministic testing. Mock Date.now() to test boundary conditions and edge cases without waiting for real time to pass.",
   },
 ]
 
@@ -484,23 +480,13 @@ export default function InterviewSessionPage() {
 
                             {isExpanded && (
                               <div className="px-3 pb-3 space-y-3 text-xs">
-                                {q.goodAnswer && (
-                                  <div className="p-2 rounded bg-chart-3/5 border border-chart-3/20">
-                                    <div className="flex items-center gap-1.5 mb-1">
-                                      <CheckCircle2 className="size-3.5 text-chart-3" />
-                                      <span className="font-semibold text-chart-3">Good Answer</span>
-                                    </div>
-                                    <p className="text-foreground leading-relaxed">{q.goodAnswer}</p>
-                                  </div>
-                                )}
-
-                                {q.greatAnswer && (
+                                {q.answer && (
                                   <div className="p-2 rounded bg-chart-1/5 border border-chart-1/20">
                                     <div className="flex items-center gap-1.5 mb-1.5">
                                       <Star className="size-3.5 text-chart-1" />
-                                      <span className="font-semibold text-chart-1">Great Answer</span>
+                                      <span className="font-semibold text-chart-1">Answer</span>
                                     </div>
-                                    <p className="text-foreground leading-relaxed">{q.greatAnswer}</p>
+                                    <p className="text-foreground leading-relaxed">{q.answer}</p>
                                   </div>
                                 )}
 

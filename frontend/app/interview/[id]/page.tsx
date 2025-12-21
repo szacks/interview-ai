@@ -25,7 +25,6 @@ import {
   ChevronUp,
   Lightbulb,
   Target,
-  Star,
   Play,
   Loader2,
 } from "lucide-react"
@@ -682,23 +681,13 @@ export default function InterviewSessionPage({
 
                             {isExpanded && (
                               <div className="px-3 pb-3 space-y-3 text-xs">
-                                {q.goodAnswer && (
-                                  <div className="p-2 rounded bg-chart-3/5 border border-chart-3/20">
-                                    <div className="flex items-center gap-1.5 mb-1">
-                                      <CheckCircle2 className="size-3.5 text-chart-3" />
-                                      <span className="font-semibold text-chart-3">Good Answer</span>
-                                    </div>
-                                    <p className="text-foreground leading-relaxed">{q.goodAnswer}</p>
-                                  </div>
-                                )}
-
-                                {q.greatAnswer && (
+                                {q.answer && (
                                   <div className="p-2 rounded bg-chart-1/5 border border-chart-1/20">
                                     <div className="flex items-center gap-1.5 mb-1.5">
-                                      <Star className="size-3.5 text-chart-1" />
-                                      <span className="font-semibold text-chart-1">Great Answer</span>
+                                      <Lightbulb className="size-3.5 text-chart-1" />
+                                      <span className="font-semibold text-chart-1">Answer</span>
                                     </div>
-                                    <p className="text-foreground leading-relaxed">{q.greatAnswer}</p>
+                                    <p className="text-foreground leading-relaxed">{q.answer}</p>
                                   </div>
                                 )}
                               </div>

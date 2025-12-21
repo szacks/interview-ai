@@ -24,10 +24,7 @@ public class FollowUpQuestion {
     private String questionText;
 
     @Column(columnDefinition = "TEXT")
-    private String goodAnswer;
-
-    @Column(columnDefinition = "TEXT")
-    private String greatAnswer;
+    private String answer;
 
     @Column(nullable = false)
     private Integer orderIndex = 0;

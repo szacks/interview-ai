@@ -118,8 +118,7 @@ public class QuestionService {
         FollowUpQuestionResponse response = new FollowUpQuestionResponse();
         response.setId(followUpQuestion.getId());
         response.setQuestion(followUpQuestion.getQuestionText());
-        response.setGoodAnswer(followUpQuestion.getGoodAnswer());
-        response.setGreatAnswer(followUpQuestion.getGreatAnswer());
+        response.setAnswer(followUpQuestion.getAnswer());
         response.setOrderIndex(followUpQuestion.getOrderIndex());
         return response;
     }
