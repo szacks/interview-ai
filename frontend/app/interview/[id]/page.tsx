@@ -483,7 +483,7 @@ export default function InterviewSessionPage({
             </div>
 
             {/* Tabs Section - Chat, Tests, Follow-ups */}
-            <div className="w-96 flex flex-col border-r border-border overflow-hidden">
+            <div className="w-[550px] flex flex-col border-r border-border overflow-hidden">
               <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
                 <div className="border-b border-border px-4 bg-card">
                   <TabsList className="bg-transparent p-0 h-auto w-full">
@@ -544,7 +544,28 @@ export default function InterviewSessionPage({
                                   : new Date(msg.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                               </span>
                             </div>
-                            <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+                            <div className="text-sm leading-relaxed space-y-2">
+                              {msg.content.split(/```[\s\S]*?```|```/g).map((part, i) => {
+                                const codeMatch = msg.content.match(/```([\s\S]*?)```/g);
+                                if (i % 2 === 1 && codeMatch) {
+                                  const codeContent = codeMatch[Math.floor(i / 2)]
+                                    .replace(/```/g, '')
+                                    .trim();
+                                  return (
+                                    <div key={i} className="bg-gray-800 rounded-lg overflow-hidden my-2 border border-gray-700">
+                                      <pre className="text-gray-100 p-3 font-mono text-sm leading-relaxed whitespace-pre-wrap break-all">
+                                        <code>{codeContent}</code>
+                                      </pre>
+                                    </div>
+                                  );
+                                }
+                                return (
+                                  <span key={i} className="whitespace-pre-wrap">
+                                    {part}
+                                  </span>
+                                );
+                              })}
+                            </div>
                           </div>
                         </div>
                       </div>

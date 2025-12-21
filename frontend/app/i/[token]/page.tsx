@@ -583,7 +583,7 @@ export default function CandidateInterviewPage({
         </div>
 
         {/* AI Chat Sidebar */}
-        <div className="w-96 border-l border-border bg-card flex flex-col overflow-hidden">
+        <div className="w-[550px] border-l border-border bg-card flex flex-col overflow-hidden">
           {/* Header */}
           <div className="p-4 border-b border-border">
             <div className="flex items-center gap-2">
@@ -622,7 +622,28 @@ export default function CandidateInterviewPage({
                     <div className="text-xs text-muted-foreground mb-1">
                       {msg.role === "candidate" ? "You" : "AI Assistant"}
                     </div>
-                    <div className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</div>
+                    <div className="text-sm leading-relaxed space-y-2">
+                      {msg.content.split(/```[\s\S]*?```|```/g).map((part, i) => {
+                        const codeMatch = msg.content.match(/```([\s\S]*?)```/g);
+                        if (i % 2 === 1 && codeMatch) {
+                          const codeContent = codeMatch[Math.floor(i / 2)]
+                            .replace(/```/g, '')
+                            .trim();
+                          return (
+                            <div key={i} className="bg-gray-800 rounded-lg overflow-hidden my-2 border border-gray-700">
+                              <pre className="text-gray-100 p-3 font-mono text-sm leading-relaxed whitespace-pre-wrap break-all">
+                                <code>{codeContent}</code>
+                              </pre>
+                            </div>
+                          );
+                        }
+                        return (
+                          <div key={i} className="whitespace-pre-wrap">
+                            {part}
+                          </div>
+                        );
+                      })}
+                    </div>
                     <div className="text-xs text-muted-foreground mt-1">
                       {msg.timestamp instanceof Date
                         ? msg.timestamp.toLocaleTimeString()
