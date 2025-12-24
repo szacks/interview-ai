@@ -502,10 +502,6 @@ export default function CandidateInterviewPage({
                 <Clock className="size-4" />
                 <span className="font-mono">{getElapsedTime()}</span>
               </div>
-              <Button>
-                <CheckCircle2 className="size-4 mr-2" />
-                Submit
-              </Button>
             </div>
           </div>
         </div>

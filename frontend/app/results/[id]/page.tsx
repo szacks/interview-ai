@@ -1,13 +1,16 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { Slider } from "@/components/ui/slider"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Input } from "@/components/ui/input"
+import { Slider } from "@/components/ui/slider"
 import {
   Code2,
   ArrowLeft,
@@ -15,439 +18,913 @@ import {
   XCircle,
   MessageSquare,
   FileText,
-  TrendingUp,
-  TrendingDown,
-  Minus,
   Download,
+  ChevronDown,
+  ChevronUp,
+  Lightbulb,
+  AlertTriangle,
+  CheckCircle,
+  Save,
+  Loader2,
 } from "lucide-react"
 import Link from "next/link"
 import Editor from "@monaco-editor/react"
+import { evaluationService, EvaluationResponse } from "@/services/evaluationService"
+import { chatService } from "@/services/chatService"
+import { codeService } from "@/services/codeService"
+import type { ChatMessageResponse } from "@/types/chat"
 
-// Mock data
-const mockResult = {
-  id: 1,
-  candidateName: "Sarah Johnson",
-  role: "Senior Frontend Developer",
-  question: "URL Shortener",
-  difficulty: "medium",
-  status: "ended",
-  startedAt: "2025-01-15T11:00:00",
-  endedAt: "2025-01-15T11:45:00",
-  duration: 45,
-  language: "javascript",
-  automatedScore: 75,
-  testsPassed: 3,
-  testsTotal: 4,
-  code: `function shortenUrl(longUrl) {
-  // Generate a unique short code
-  const shortCode = generateShortCode();
-  
-  // Store mapping in database
-  urlDatabase.set(shortCode, longUrl);
-  
-  return \`https://short.url/\${shortCode}\`;
+interface TestResult {
+  name: string
+  passed: boolean
 }
 
-function generateShortCode() {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
-  for (let i = 0; i < 6; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-  return result;
+interface ScoringSection {
+  id: string
+  title: string
+  description: string
+  whatToAssess: string[]
+  questions: string[]
+  redFlags: string[]
+  greenFlags: string[]
 }
 
-function getLongUrl(shortCode) {
-  return urlDatabase.get(shortCode);
-}`,
-  chatHistory: [
-    {
-      role: "candidate",
-      message: "How should I handle collisions in the short code generation?",
-      timestamp: "11:10 AM",
-    },
-    {
-      role: "ai",
-      message: "Great question! There are a few approaches to handle collisions...",
-      timestamp: "11:10 AM",
-    },
-    {
-      role: "candidate",
-      message: "Should I implement the database or just assume it exists?",
-      timestamp: "11:25 AM",
-    },
-    {
-      role: "ai",
-      message: "For this interview, you can assume a simple key-value store exists...",
-      timestamp: "11:25 AM",
-    },
-  ],
-  testResults: [
-    { name: "Should shorten a valid URL", passed: true },
-    { name: "Should retrieve original URL", passed: true },
-    { name: "Should handle multiple URLs", passed: false },
-    { name: "Should generate unique codes", passed: true },
-  ],
-  interviewerNotes:
-    "Candidate showed good problem-solving approach. Asked relevant questions about implementation details.",
-  scorecard: {
-    understanding: 8,
-    problemSolving: 7,
-    aiCollaboration: 9,
-    communication: 8,
-    strengths: "",
-    weaknesses: "",
+const scoringSections: ScoringSection[] = [
+  {
+    id: "communication",
+    title: "Communication",
+    description: "Can they explain their thinking clearly?",
+    whatToAssess: [
+      "Can explain solution step-by-step",
+      "Uses correct technical terminology",
+      "Can trace through examples",
+      "Responsive to clarifying questions",
+    ],
+    questions: [
+      "Walk me through your solution. How does it work?",
+      "Can you explain this part in more detail?",
+      "Let me give you an example - can you trace through?",
+    ],
+    redFlags: [
+      "Can't explain the code",
+      "Gets defensive when questioned",
+      "Can't trace through own examples",
+      "Uses vague explanations",
+    ],
+    greenFlags: [
+      "Clear step-by-step explanation",
+      "Uses correct terminology naturally",
+      "Adjusts explanation for different levels",
+      "Asks clarifying questions back",
+    ],
   },
-}
+  {
+    id: "algorithmic",
+    title: "Algorithmic Thinking",
+    description: "Do they think about edge cases and alternatives?",
+    whatToAssess: [
+      "Identifies edge cases proactively",
+      "Considers alternative approaches",
+      "Discusses time/space tradeoffs",
+      "Tests boundary conditions",
+    ],
+    questions: [
+      "What edge cases did you consider?",
+      "Are there alternative approaches?",
+      "What are the time and space complexity tradeoffs?",
+      "Did you test with boundary conditions?",
+    ],
+    redFlags: [
+      "Didn't think about edge cases",
+      "Only one approach considered",
+      "Can't identify potential issues",
+      "No discussion of complexity",
+    ],
+    greenFlags: [
+      "Proactively mentions edge cases",
+      "Discusses multiple approaches with tradeoffs",
+      "Identifies time/space complexity",
+      "Tests with specific edge cases",
+    ],
+  },
+  {
+    id: "problemSolving",
+    title: "Problem Solving",
+    description: "Is their code clean and do they debug systematically?",
+    whatToAssess: [
+      "Code is clean and readable",
+      "Proper error handling",
+      "Systematic debugging approach",
+      "Willing to refactor for clarity",
+    ],
+    questions: [
+      "Walk me through your code structure",
+      "How did you debug when tests failed?",
+      "Can you refactor this section?",
+      "How do you handle errors?",
+    ],
+    redFlags: [
+      "Tried random things until it worked",
+      "Code is messy and hard to follow",
+      "No error handling",
+      "Gets defensive about code quality",
+    ],
+    greenFlags: [
+      "Clean, readable code",
+      "Comprehensive error handling",
+      "Systematic debugging approach",
+      "Willing to refactor",
+    ],
+  },
+  {
+    id: "aiCollaboration",
+    title: "AI Collaboration",
+    description: "Do they use AI effectively and understand it?",
+    whatToAssess: [
+      "Used AI for implementation help",
+      "Understands AI-generated code",
+      "Tests AI suggestions before using",
+      "Reviews and improves upon AI code",
+    ],
+    questions: [
+      "Did you use AI to help? Where?",
+      "Can you explain the AI-generated parts?",
+      "Did you test the AI code?",
+      "Did you improve anything the AI wrote?",
+    ],
+    redFlags: [
+      "Just copied AI code as-is",
+      "Didn't test AI suggestions",
+      "Can't explain AI parts",
+      "Gets defensive about AI usage",
+    ],
+    greenFlags: [
+      "Tested each suggestion before using",
+      "Reviewed and found bugs",
+      "Refactored for clarity",
+      "Questioned approaches and tried alternatives",
+    ],
+  },
+]
 
-export default function ResultsPage() {
-  const [scorecard, setScorecard] = useState(mockResult.scorecard)
-  const [recommendation, setRecommendation] = useState<"hire" | "maybe" | "no" | null>(null)
+export default function ScoringPage() {
+  const params = useParams()
+  const router = useRouter()
+  const interviewId = Number(params.id)
 
-  const calculateFinalScore = () => {
-    const manualScore =
-      ((scorecard.understanding + scorecard.problemSolving + scorecard.aiCollaboration + scorecard.communication) / 4) *
-      10
-    return Math.round(mockResult.automatedScore * 0.4 + manualScore * 0.6)
-  }
+  // Loading states
+  const [loading, setLoading] = useState(true)
+  const [submitting, setSubmitting] = useState(false)
+  const [savingDraft, setSavingDraft] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const getRecommendationBadge = () => {
-    if (!recommendation) return null
+  // Data from API
+  const [evaluation, setEvaluation] = useState<EvaluationResponse | null>(null)
+  const [chatHistory, setChatHistory] = useState<ChatMessageResponse[]>([])
+  const [code, setCode] = useState("")
+  const [testResults, setTestResults] = useState<TestResult[]>([])
 
-    const config = {
-      hire: { text: "Hire", icon: TrendingUp, className: "bg-chart-3 text-white" },
-      maybe: { text: "Maybe", icon: Minus, className: "bg-chart-4 text-white" },
-      no: { text: "No Hire", icon: TrendingDown, className: "bg-destructive text-destructive-foreground" },
+  // Form state
+  const [adjustAutoScore, setAdjustAutoScore] = useState(false)
+  const [autoScoreAdjusted, setAutoScoreAdjusted] = useState(0)
+  const [autoScoreReason, setAutoScoreReason] = useState("")
+
+  const [manualScores, setManualScores] = useState({
+    communication: 0,
+    algorithmic: 0,
+    problemSolving: 0,
+    aiCollaboration: 0,
+  })
+
+  const [notes, setNotes] = useState({
+    communication: "",
+    algorithmic: "",
+    problemSolving: "",
+    aiCollaboration: "",
+  })
+
+  const [customObservations, setCustomObservations] = useState("")
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({})
+  const [reviewSectionExpanded, setReviewSectionExpanded] = useState(false)
+
+  // Fetch evaluation data on mount
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!interviewId || isNaN(interviewId)) {
+        setError("Invalid interview ID")
+        setLoading(false)
+        return
+      }
+
+      try {
+        setLoading(true)
+        setError(null)
+
+        // Fetch evaluation, chat history, and code in parallel
+        const [evalData, chatData, codeData] = await Promise.all([
+          evaluationService.getEvaluation(interviewId),
+          chatService.getChatHistory(interviewId).catch(() => []),
+          codeService.getLatestCode(interviewId).catch(() => null),
+        ])
+
+        setEvaluation(evalData)
+        setChatHistory(chatData)
+
+        if (codeData) {
+          setCode(codeData.code || "")
+          // Parse test results if available
+          if (codeData.testResults) {
+            try {
+              const parsed = JSON.parse(codeData.testResults)
+              if (Array.isArray(parsed)) {
+                setTestResults(parsed)
+              }
+            } catch {
+              // Test results not in expected format
+            }
+          }
+        }
+
+        // Populate form with existing evaluation data
+        if (evalData) {
+          if (evalData.autoScoreAdjusted !== undefined && evalData.autoScoreAdjusted !== null) {
+            setAdjustAutoScore(true)
+            setAutoScoreAdjusted(evalData.autoScoreAdjusted)
+            setAutoScoreReason(evalData.autoScoreAdjustedReason || "")
+          } else {
+            setAutoScoreAdjusted(evalData.autoScoreOriginal || 0)
+          }
+
+          setManualScores({
+            communication: evalData.manualScoreCommunication || 0,
+            algorithmic: evalData.manualScoreAlgorithmic || 0,
+            problemSolving: evalData.manualScoreProblemSolving || 0,
+            aiCollaboration: evalData.manualScoreAiCollaboration || 0,
+          })
+
+          setNotes({
+            communication: evalData.notesCommunication || "",
+            algorithmic: evalData.notesAlgorithmic || "",
+            problemSolving: evalData.notesProblemSolving || "",
+            aiCollaboration: evalData.notesAiCollaboration || "",
+          })
+
+          setCustomObservations(evalData.customObservations || "")
+        }
+      } catch (err) {
+        console.error("Failed to fetch evaluation data:", err)
+        setError("Failed to load evaluation data")
+      } finally {
+        setLoading(false)
+      }
     }
 
-    const { text, icon: Icon, className } = config[recommendation]
+    fetchData()
+  }, [interviewId])
 
+  // Handle submit evaluation
+  const handleSubmit = async () => {
+    if (!evaluation) return
+
+    try {
+      setSubmitting(true)
+      await evaluationService.submitEvaluation({
+        interviewId,
+        autoScoreAdjusted: adjustAutoScore ? autoScoreAdjusted : undefined,
+        autoScoreAdjustedReason: adjustAutoScore ? autoScoreReason : undefined,
+        manualScoreCommunication: manualScores.communication,
+        manualScoreAlgorithmic: manualScores.algorithmic,
+        manualScoreProblemSolving: manualScores.problemSolving,
+        manualScoreAiCollaboration: manualScores.aiCollaboration,
+        notesCommunication: notes.communication,
+        notesAlgorithmic: notes.algorithmic,
+        notesProblemSolving: notes.problemSolving,
+        notesAiCollaboration: notes.aiCollaboration,
+        customObservations,
+        isDraft: false,
+      })
+      router.push("/dashboard")
+    } catch (err) {
+      console.error("Failed to submit evaluation:", err)
+      setError("Failed to submit evaluation")
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  // Handle save draft
+  const handleSaveDraft = async () => {
+    if (!evaluation) return
+
+    try {
+      setSavingDraft(true)
+      const updated = await evaluationService.saveDraft({
+        interviewId,
+        autoScoreAdjusted: adjustAutoScore ? autoScoreAdjusted : undefined,
+        autoScoreAdjustedReason: adjustAutoScore ? autoScoreReason : undefined,
+        manualScoreCommunication: manualScores.communication,
+        manualScoreAlgorithmic: manualScores.algorithmic,
+        manualScoreProblemSolving: manualScores.problemSolving,
+        manualScoreAiCollaboration: manualScores.aiCollaboration,
+        notesCommunication: notes.communication,
+        notesAlgorithmic: notes.algorithmic,
+        notesProblemSolving: notes.problemSolving,
+        notesAiCollaboration: notes.aiCollaboration,
+        customObservations,
+      })
+      setEvaluation(updated)
+    } catch (err) {
+      console.error("Failed to save draft:", err)
+      setError("Failed to save draft")
+    } finally {
+      setSavingDraft(false)
+    }
+  }
+
+  const calculateManualScore = () => {
+    const total =
+      manualScores.communication + manualScores.algorithmic + manualScores.problemSolving + manualScores.aiCollaboration
+    // Each parameter is 1-10, so max total is 40. Normalize to 100: (total / 40) * 100
+    return Math.round((total / 40) * 100)
+  }
+
+  const calculateFinalScore = () => {
+    const autoScore = adjustAutoScore ? autoScoreAdjusted : (evaluation?.autoScoreOriginal || 0)
+    const manualScore = calculateManualScore()
+    return Math.round(autoScore * 0.4 + manualScore * 0.6)
+  }
+
+  // Loading state
+  if (loading) {
     return (
-      <Badge className={className}>
-        <Icon className="size-3 mr-1" />
-        {text}
-      </Badge>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="size-8 animate-spin mx-auto mb-4 text-primary" />
+          <p className="text-muted-foreground">Loading evaluation...</p>
+        </div>
+      </div>
     )
   }
+
+  // Error state
+  if (error && !evaluation) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <XCircle className="size-8 mx-auto mb-4 text-destructive" />
+          <p className="text-destructive mb-4">{error}</p>
+          <Link href="/dashboard">
+            <Button>Back to Dashboard</Button>
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
+  if (!evaluation) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <XCircle className="size-8 mx-auto mb-4 text-destructive" />
+          <p className="text-muted-foreground mb-4">Evaluation not found</p>
+          <Link href="/dashboard">
+            <Button>Back to Dashboard</Button>
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
+  const toggleSection = (id: string) => {
+    setExpandedSections((prev) => ({ ...prev, [id]: !prev[id] }))
+  }
+
+  const getFinalScoreInterpretation = (score: number) => {
+    if (score >= 91) return { text: "Exceptional", color: "text-chart-3", icon: CheckCircle2 }
+    if (score >= 81) return { text: "Strong", color: "text-chart-3", icon: CheckCircle2 }
+    if (score >= 71) return { text: "Good", color: "text-chart-4", icon: CheckCircle2 }
+    if (score >= 51) return { text: "Concerning", color: "text-destructive", icon: XCircle }
+    return { text: "Not Ready", color: "text-destructive", icon: XCircle }
+  }
+
+  const finalScore = calculateFinalScore()
+  const interpretation = getFinalScoreInterpretation(finalScore)
+  const manualScore = calculateManualScore()
+  const ScoreIcon = interpretation.icon
 
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b border-border bg-card">
+      <header className="border-b border-border bg-card sticky top-0 z-10">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link href="/dashboard">
                 <Button variant="ghost" size="sm">
                   <ArrowLeft className="size-4 mr-2" />
-                  Back to Dashboard
+                  Dashboard
                 </Button>
               </Link>
               <div className="h-8 w-px bg-border" />
               <div>
                 <div className="flex items-center gap-3">
-                  <h1 className="text-lg font-semibold">{mockResult.candidateName}</h1>
+                  <h1 className="text-lg font-semibold">{evaluation.candidateName || "Unknown Candidate"}</h1>
                   <Badge variant="secondary">
                     <CheckCircle2 className="size-3 mr-1" />
-                    Completed
+                    {evaluation.interviewStatus === "completed" ? "Interview Completed" : evaluation.interviewStatus}
                   </Badge>
-                  {getRecommendationBadge()}
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  {mockResult.role} • {mockResult.question}
+                  {evaluation.questionTitle}
                 </p>
               </div>
             </div>
-            <Button variant="outline">
-              <Download className="size-4 mr-2" />
-              Export PDF
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm">
+                <Download className="size-4 mr-2" />
+                Export
+              </Button>
+            </div>
           </div>
         </div>
       </header>
 
       <div className="container mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-3 gap-6">
-          {/* Main Content */}
+        <div className="grid lg:grid-cols-3 gap-6 items-start">
+          {/* Main Content - Scoring */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Overview Cards */}
-            <div className="grid sm:grid-cols-2 gap-4">
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">Automated Score</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold">{mockResult.automatedScore}%</div>
-                  <p className="text-sm text-muted-foreground mt-1">Based on test results</p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">Tests Passed</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold">
-                    {mockResult.testsPassed} / {mockResult.testsTotal}
-                  </div>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {Math.round((mockResult.testsPassed / mockResult.testsTotal) * 100)}% success rate
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">Duration</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold">{mockResult.duration} min</div>
-                  <p className="text-sm text-muted-foreground mt-1">Completed interview</p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">Final Score</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-primary">{calculateFinalScore()}%</div>
-                  <p className="text-sm text-muted-foreground mt-1">Combined assessment</p>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Content Tabs */}
-            <Tabs defaultValue="code" className="space-y-4">
-              <TabsList>
-                <TabsTrigger value="code">
-                  <Code2 className="size-4 mr-2" />
-                  Code Solution
-                </TabsTrigger>
-                <TabsTrigger value="chat">
-                  <MessageSquare className="size-4 mr-2" />
-                  AI Conversation
-                </TabsTrigger>
-                <TabsTrigger value="tests">
-                  <CheckCircle2 className="size-4 mr-2" />
-                  Test Results
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="code" className="space-y-4">
-                <Card>
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <CardTitle>Submitted Code</CardTitle>
-                      <Badge variant="outline">{mockResult.language}</Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="p-0">
-                    <div className="h-96 overflow-hidden rounded-b-lg">
-                      <Editor
-                        height="100%"
-                        language={mockResult.language}
-                        value={mockResult.code}
-                        theme="vs-dark"
-                        options={{
-                          readOnly: true,
-                          minimap: { enabled: false },
-                          fontSize: 14,
-                          lineNumbers: "on",
-                          scrollBeyondLastLine: false,
-                        }}
-                      />
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {mockResult.interviewerNotes && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Interviewer Notes</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-muted-foreground leading-relaxed">{mockResult.interviewerNotes}</p>
-                    </CardContent>
-                  </Card>
-                )}
-              </TabsContent>
-
-              <TabsContent value="chat" className="space-y-4">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>AI Conversation Log</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    {mockResult.chatHistory.map((chat, idx) => (
-                      <div key={idx} className="flex gap-3">
-                        <div
-                          className={`size-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                            chat.role === "candidate" ? "bg-primary/10 text-primary" : "bg-accent/10 text-accent"
-                          }`}
-                        >
-                          {chat.role === "candidate" ? (
-                            <FileText className="size-4" />
-                          ) : (
-                            <MessageSquare className="size-4" />
-                          )}
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="font-medium text-sm">
-                              {chat.role === "candidate" ? "Candidate" : "AI Assistant"}
-                            </span>
-                            <span className="text-xs text-muted-foreground">{chat.timestamp}</span>
-                          </div>
-                          <p className="text-sm text-muted-foreground leading-relaxed">{chat.message}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-              <TabsContent value="tests" className="space-y-4">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Test Execution Results</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-2">
-                    {mockResult.testResults.map((test, idx) => (
-                      <div
-                        key={idx}
-                        className={`rounded-lg border p-4 flex items-center gap-3 ${
-                          test.passed ? "border-chart-3/30 bg-chart-3/5" : "border-destructive/30 bg-destructive/5"
-                        }`}
-                      >
-                        {test.passed ? (
-                          <CheckCircle2 className="size-5 text-chart-3 flex-shrink-0" />
-                        ) : (
-                          <XCircle className="size-5 text-destructive flex-shrink-0" />
-                        )}
-                        <span className="text-sm">{test.name}</span>
-                      </div>
-                    ))}
-                  </CardContent>
-                </Card>
-              </TabsContent>
-            </Tabs>
-          </div>
-
-          {/* Scorecard Sidebar */}
-          <div className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Evaluation Scorecard</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <CheckCircle2 className="size-5 text-chart-3" />
+                  Auto Score Review (40% weight)
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Label className="text-sm">Problem Understanding</Label>
-                      <span className="text-sm font-medium">{scorecard.understanding}/10</span>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+                  <div>
+                    <div className="text-sm text-muted-foreground mb-1">Test Results</div>
+                    <div className="text-2xl font-bold">
+                      {evaluation.testsPassed || 0} / {evaluation.testsTotal || 0} tests passed
                     </div>
-                    <Slider
-                      value={[scorecard.understanding]}
-                      onValueChange={([value]) => setScorecard({ ...scorecard, understanding: value })}
-                      max={10}
-                      step={1}
-                    />
                   </div>
-
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Label className="text-sm">Problem Solving</Label>
-                      <span className="text-sm font-medium">{scorecard.problemSolving}/10</span>
+                  <div className="text-right">
+                    <div className="text-sm text-muted-foreground mb-1">Auto Score</div>
+                    <div className="text-3xl font-bold text-chart-3">
+                      {evaluation.autoScoreOriginal || 0}
+                      <span className="text-lg text-muted-foreground">/100</span>
                     </div>
-                    <Slider
-                      value={[scorecard.problemSolving]}
-                      onValueChange={([value]) => setScorecard({ ...scorecard, problemSolving: value })}
-                      max={10}
-                      step={1}
-                    />
                   </div>
-
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Label className="text-sm">AI Collaboration</Label>
-                      <span className="text-sm font-medium">{scorecard.aiCollaboration}/10</span>
-                    </div>
-                    <Slider
-                      value={[scorecard.aiCollaboration]}
-                      onValueChange={([value]) => setScorecard({ ...scorecard, aiCollaboration: value })}
-                      max={10}
-                      step={1}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Label className="text-sm">Communication</Label>
-                      <span className="text-sm font-medium">{scorecard.communication}/10</span>
-                    </div>
-                    <Slider
-                      value={[scorecard.communication]}
-                      onValueChange={([value]) => setScorecard({ ...scorecard, communication: value })}
-                      max={10}
-                      step={1}
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Strengths</Label>
-                  <Textarea
-                    placeholder="What did the candidate do well?"
-                    value={scorecard.strengths}
-                    onChange={(e) => setScorecard({ ...scorecard, strengths: e.target.value })}
-                    rows={3}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Areas for Improvement</Label>
-                  <Textarea
-                    placeholder="What could be improved?"
-                    value={scorecard.weaknesses}
-                    onChange={(e) => setScorecard({ ...scorecard, weaknesses: e.target.value })}
-                    rows={3}
-                  />
                 </div>
 
                 <div className="space-y-3">
-                  <Label>Recommendation</Label>
-                  <div className="grid grid-cols-3 gap-2">
-                    <Button
-                      variant={recommendation === "hire" ? "default" : "outline"}
-                      onClick={() => setRecommendation("hire")}
-                      className={recommendation === "hire" ? "bg-chart-3 hover:bg-chart-3/90" : ""}
-                    >
-                      <TrendingUp className="size-4 mr-1" />
-                      Hire
-                    </Button>
-                    <Button
-                      variant={recommendation === "maybe" ? "default" : "outline"}
-                      onClick={() => setRecommendation("maybe")}
-                      className={recommendation === "maybe" ? "bg-chart-4 hover:bg-chart-4/90" : ""}
-                    >
-                      <Minus className="size-4 mr-1" />
-                      Maybe
-                    </Button>
-                    <Button
-                      variant={recommendation === "no" ? "destructive" : "outline"}
-                      onClick={() => setRecommendation("no")}
-                    >
-                      <TrendingDown className="size-4 mr-1" />
-                      No
-                    </Button>
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      id="adjust-score"
+                      checked={adjustAutoScore}
+                      onCheckedChange={(checked) => {
+                        setAdjustAutoScore(checked as boolean)
+                        if (!checked) {
+                          setAutoScoreAdjusted(evaluation.autoScoreOriginal || 0)
+                          setAutoScoreReason("")
+                        }
+                      }}
+                    />
+                    <Label htmlFor="adjust-score" className="cursor-pointer">
+                      Manually adjust auto score
+                    </Label>
                   </div>
-                </div>
 
-                <Button className="w-full">Save Scorecard</Button>
+                  {adjustAutoScore && (
+                    <div className="space-y-3 pl-6 border-l-2 border-primary/20">
+                      <div className="flex items-center gap-3">
+                        <Input
+                          type="number"
+                          min={0}
+                          max={100}
+                          value={autoScoreAdjusted}
+                          onChange={(e) => setAutoScoreAdjusted(Number(e.target.value))}
+                          className="w-24"
+                        />
+                        <span className="text-muted-foreground">/ 100</span>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Why adjust? (required)</Label>
+                        <Textarea
+                          placeholder="Explain why you're adjusting the score..."
+                          value={autoScoreReason}
+                          onChange={(e) => setAutoScoreReason(e.target.value)}
+                          rows={2}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="size-5 text-primary" />
+                  Manual Assessment (60% weight)
+                </CardTitle>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Score each parameter from 1-10 - all parameters have equal weight (25% each)
+                </p>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {scoringSections.map((section, index) => {
+                  const isExpanded = expandedSections[section.id]
+                  const currentScore = manualScores[section.id as keyof typeof manualScores]
+
+                  return (
+                    <div key={section.id} className="border rounded-lg">
+                      {/* Section Header */}
+                      <div className="p-4 bg-muted/30">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-lg font-semibold">
+                                {index + 1}. {section.title}
+                              </span>
+                              <Badge variant="outline" className="text-xs">
+                                25% weight
+                              </Badge>
+                            </div>
+                            <p className="text-sm text-muted-foreground">{section.description}</p>
+                          </div>
+                          <Button variant="ghost" size="sm" onClick={() => toggleSection(section.id)} className="ml-2">
+                            {isExpanded ? <ChevronUp className="size-4" /> : <ChevronDown className="size-4" />}
+                          </Button>
+                        </div>
+
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <Label className="text-sm font-medium">Score (1-10)</Label>
+                            <span className="text-xl font-bold">{currentScore}/10</span>
+                          </div>
+                          <Slider
+                            value={[currentScore]}
+                            onValueChange={([value]) => setManualScores({ ...manualScores, [section.id]: value })}
+                            min={0}
+                            max={10}
+                            step={1}
+                            className="w-full"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Expanded Guidance */}
+                      {isExpanded && (
+                        <div className="p-4 space-y-4 border-t">
+                          <div>
+                            <div className="flex items-center gap-2 mb-2">
+                              <Lightbulb className="size-4 text-chart-4" />
+                              <span className="font-medium text-sm">What to Assess</span>
+                            </div>
+                            <ul className="space-y-1 ml-6">
+                              {section.whatToAssess.map((item, i) => (
+                                <li key={i} className="text-sm text-muted-foreground list-disc">
+                                  {item}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+
+                          <div>
+                            <div className="flex items-center gap-2 mb-2">
+                              <MessageSquare className="size-4 text-primary" />
+                              <span className="font-medium text-sm">Questions to Ask</span>
+                            </div>
+                            <ul className="space-y-1 ml-6">
+                              {section.questions.map((item, i) => (
+                                <li key={i} className="text-sm text-muted-foreground list-disc">
+                                  {item}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+
+                          <div className="grid md:grid-cols-2 gap-4">
+                            <div>
+                              <div className="flex items-center gap-2 mb-2">
+                                <AlertTriangle className="size-4 text-destructive" />
+                                <span className="font-medium text-sm">Red Flags</span>
+                              </div>
+                              <ul className="space-y-1 ml-6">
+                                {section.redFlags.map((item, i) => (
+                                  <li key={i} className="text-sm text-muted-foreground list-disc">
+                                    {item}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+
+                            <div>
+                              <div className="flex items-center gap-2 mb-2">
+                                <CheckCircle className="size-4 text-chart-3" />
+                                <span className="font-medium text-sm">Green Flags</span>
+                              </div>
+                              <ul className="space-y-1 ml-6">
+                                {section.greenFlags.map((item, i) => (
+                                  <li key={i} className="text-sm text-muted-foreground list-disc">
+                                    {item}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Notes */}
+                      <div className="p-4 border-t bg-muted/10">
+                        <Label className="text-sm mb-2 block">Notes (optional)</Label>
+                        <Textarea
+                          placeholder={`Your observations about ${section.title.toLowerCase()}...`}
+                          value={notes[section.id as keyof typeof notes]}
+                          onChange={(e) => setNotes({ ...notes, [section.id]: e.target.value })}
+                          rows={2}
+                          className="resize-none"
+                        />
+                      </div>
+                    </div>
+                  )
+                })}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Custom Observations</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Textarea
+                  placeholder="Growth signals, cultural fit, role-specific notes, overall impressions..."
+                  value={customObservations}
+                  onChange={(e) => setCustomObservations(e.target.value)}
+                  rows={4}
+                />
               </CardContent>
             </Card>
           </div>
+
+          {/* Sidebar - Summary & Review */}
+          <div className="space-y-6">
+            <Card className="sticky top-20">
+              <CardHeader>
+                <CardTitle>Final Score</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="text-center p-6 bg-muted rounded-lg">
+                  <div className="flex items-center justify-center gap-3 mb-2">
+                    <ScoreIcon className={`size-8 ${interpretation.color}`} />
+                    <div className="text-5xl font-bold">
+                      {finalScore}
+                      <span className="text-2xl text-muted-foreground">/100</span>
+                    </div>
+                  </div>
+                  <Badge className={interpretation.color} variant="outline">
+                    {interpretation.text} Candidate
+                  </Badge>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="text-sm font-medium mb-2">Score Breakdown</div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Auto Score (40%)</span>
+                      <span className="font-medium">
+                        {adjustAutoScore ? autoScoreAdjusted : (evaluation.autoScoreOriginal || 0)} × 0.4 ={" "}
+                        {Math.round((adjustAutoScore ? autoScoreAdjusted : (evaluation.autoScoreOriginal || 0)) * 0.4)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Manual Score (60%)</span>
+                      <span className="font-medium">
+                        {manualScore} × 0.6 = {Math.round(manualScore * 0.6)}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="pt-3 border-t">
+                    <div className="text-sm font-medium mb-2">
+                      Manual Score Calculation
+                      <div className="text-xs text-muted-foreground font-normal mt-0.5">
+                        Sum of all parameters normalized to 100
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      {scoringSections.map((section) => {
+                        const score = manualScores[section.id as keyof typeof manualScores]
+                        return (
+                          <div key={section.id} className="flex justify-between text-sm">
+                            <span className="text-muted-foreground">{section.title}</span>
+                            <span className="font-medium">
+                              {score}/10
+                              <span className="text-xs text-muted-foreground ml-1">(25%)</span>
+                            </span>
+                          </div>
+                        )
+                      })}
+                      <div className="pt-2 border-t flex justify-between text-sm font-medium">
+                        <span>Total</span>
+                        <span>
+                          {manualScores.communication +
+                            manualScores.algorithmic +
+                            manualScores.problemSolving +
+                            manualScores.aiCollaboration}
+                          /40 = {manualScore}/100
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {error && (
+                  <div className="text-sm text-destructive text-center mb-2">{error}</div>
+                )}
+                <div className="space-y-2">
+                  <Button
+                    className="w-full"
+                    size="lg"
+                    onClick={handleSubmit}
+                    disabled={submitting || savingDraft}
+                  >
+                    {submitting ? (
+                      <Loader2 className="size-4 mr-2 animate-spin" />
+                    ) : (
+                      <Save className="size-4 mr-2" />
+                    )}
+                    {submitting ? "Submitting..." : "Submit Evaluation"}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full bg-transparent"
+                    onClick={handleSaveDraft}
+                    disabled={submitting || savingDraft}
+                  >
+                    {savingDraft ? (
+                      <Loader2 className="size-4 mr-2 animate-spin" />
+                    ) : null}
+                    {savingDraft ? "Saving..." : "Save Draft"}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Interview Info */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm">Interview Details</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Duration</span>
+                  <span className="font-medium">{evaluation.duration || 0} min</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Tests Passed</span>
+                  <span className="font-medium">
+                    {evaluation.testsPassed || 0}/{evaluation.testsTotal || 0}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Language</span>
+                  <Badge variant="outline">{evaluation.language || "N/A"}</Badge>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        <div className="mt-6">
+          <Card>
+            <CardHeader
+              className="cursor-pointer hover:bg-muted/50 transition-colors"
+              onClick={() => setReviewSectionExpanded(!reviewSectionExpanded)}
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <FileText className="size-5 text-primary" />
+                    Interview Review Materials
+                  </CardTitle>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    View submitted code, test results, and AI conversation history
+                  </p>
+                </div>
+                {reviewSectionExpanded ? <ChevronUp className="size-5" /> : <ChevronDown className="size-5" />}
+              </div>
+            </CardHeader>
+
+            {reviewSectionExpanded && (
+              <CardContent className="pt-0">
+                <Tabs defaultValue="code" className="space-y-4">
+                  <TabsList>
+                    <TabsTrigger value="code">
+                      <Code2 className="size-4 mr-2" />
+                      Code Solution
+                    </TabsTrigger>
+                    <TabsTrigger value="tests">
+                      <CheckCircle2 className="size-4 mr-2" />
+                      Test Results
+                    </TabsTrigger>
+                    <TabsTrigger value="chat">
+                      <MessageSquare className="size-4 mr-2" />
+                      AI Conversation
+                    </TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="code">
+                    <div className="border rounded-lg overflow-hidden">
+                      <div className="h-96">
+                        {code ? (
+                          <Editor
+                            height="100%"
+                            language={evaluation.language || "javascript"}
+                            value={code}
+                            theme="vs-dark"
+                            options={{
+                              readOnly: true,
+                              minimap: { enabled: false },
+                              fontSize: 14,
+                              scrollBeyondLastLine: false,
+                            }}
+                          />
+                        ) : (
+                          <div className="h-full flex items-center justify-center text-muted-foreground">
+                            No code submission found
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="tests">
+                    <div className="space-y-2">
+                      {testResults.length > 0 ? (
+                        testResults.map((test, idx) => (
+                          <div
+                            key={idx}
+                            className={`rounded-lg border p-4 flex items-center gap-3 ${
+                              test.passed ? "border-chart-3/30 bg-chart-3/5" : "border-destructive/30 bg-destructive/5"
+                            }`}
+                          >
+                            {test.passed ? (
+                              <CheckCircle2 className="size-5 text-chart-3 flex-shrink-0" />
+                            ) : (
+                              <XCircle className="size-5 text-destructive flex-shrink-0" />
+                            )}
+                            <span className="text-sm">{test.name}</span>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center py-8 text-muted-foreground">
+                          No test results available
+                        </div>
+                      )}
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="chat">
+                    <div className="space-y-4">
+                      {chatHistory.length > 0 ? (
+                        chatHistory.map((chat, idx) => (
+                          <div key={idx} className="flex gap-3">
+                            <div
+                              className={`size-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                                chat.role === "user" ? "bg-primary/10 text-primary" : "bg-accent/10 text-accent"
+                              }`}
+                            >
+                              {chat.role === "user" ? (
+                                <FileText className="size-4" />
+                              ) : (
+                                <MessageSquare className="size-4" />
+                              )}
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="font-medium text-sm">
+                                  {chat.role === "user" ? "Candidate" : "AI Assistant"}
+                                </span>
+                              </div>
+                              <p className="text-sm text-muted-foreground leading-relaxed">{chat.content}</p>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center py-8 text-muted-foreground">
+                          No AI conversation history available
+                        </div>
+                      )}
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              </CardContent>
+            )}
+          </Card>
         </div>
       </div>
     </div>

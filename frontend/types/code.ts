@@ -9,6 +9,7 @@ export interface CodeSubmissionResponse {
   language: string;
   code: string;
   timestamp: string;
+  testResults?: string;
 }
 
 export interface CodeState {

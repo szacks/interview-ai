@@ -36,6 +36,7 @@ import { codeService } from "@/services/codeService"
 import { webSocketService } from "@/services/webSocketService"
 import apiClient from "@/services/apiClient"
 import { interviewService } from "@/services/interviewService"
+import { useRouter } from "next/navigation"
 
 
 export default function InterviewSessionPage({
@@ -43,12 +44,15 @@ export default function InterviewSessionPage({
 }: {
   params: Promise<{ id: string }>
 }) {
+  const router = useRouter()
+
   // Interview state
   const [notes, setNotes] = useState("")
   const [activeTab, setActiveTab] = useState("chat")
   const [isPending, setIsPending] = useState(true) // Default to true, will be updated after fetch
   const [isLoadingInterview, setIsLoadingInterview] = useState(true)
   const [isStarting, setIsStarting] = useState(false)
+  const [isEndingInterview, setIsEndingInterview] = useState(false)
   const [interviewId, setInterviewId] = useState<string>("")
   const [interview, setInterview] = useState<any>(null)
 
@@ -316,6 +320,36 @@ export default function InterviewSessionPage({
     }
   }
 
+  const handleEndInterview = async () => {
+    if (!interviewId) {
+      console.error("[Interviewer] Interview ID not available")
+      alert("Interview ID not found.")
+      return
+    }
+
+    try {
+      setIsEndingInterview(true)
+      console.log("[Interviewer] Ending interview with ID:", interviewId)
+
+      const interviewIdAsNumber = parseInt(interviewId, 10)
+      if (isNaN(interviewIdAsNumber)) {
+        throw new Error("Invalid interview ID: must be a number")
+      }
+
+      // Call backend API to complete the interview
+      await interviewService.completeInterview(interviewIdAsNumber)
+      console.log("[Interviewer] Interview ended successfully")
+
+      // Redirect to scoring page
+      router.push(`/results/${interviewIdAsNumber}`)
+    } catch (error: any) {
+      console.error("[Interviewer] Error ending interview:", error?.message)
+      alert(`Failed to end interview: ${error?.message || "Unknown error"}`)
+    } finally {
+      setIsEndingInterview(false)
+    }
+  }
+
   // Show loading while fetching interview data
   if (isLoadingInterview) {
     return (
@@ -381,9 +415,17 @@ export default function InterviewSessionPage({
                   </Button>
                 </>
               ) : (
-                <Button variant="destructive">
-                  <XCircle className="size-4 mr-2" />
-                  End Interview
+                <Button
+                  variant="destructive"
+                  onClick={handleEndInterview}
+                  disabled={isEndingInterview}
+                >
+                  {isEndingInterview ? (
+                    <Loader2 className="size-4 mr-2 animate-spin" />
+                  ) : (
+                    <XCircle className="size-4 mr-2" />
+                  )}
+                  {isEndingInterview ? "Ending..." : "End Interview"}
                 </Button>
               )}
             </div>

@@ -13,26 +13,41 @@ import jakarta.validation.constraints.NotNull;
 @AllArgsConstructor
 public class EvaluationRequest {
 
-    @NotNull(message = "Interview session ID is required")
-    private Long interviewSessionId;
+    @NotNull(message = "Interview ID is required")
+    private Long interviewId;
 
-    @Min(value = 0, message = "Understanding score must be between 0 and 100")
-    @Max(value = 100, message = "Understanding score must be between 0 and 100")
-    private Integer understandingScore;
+    // Auto Score adjustment (optional)
+    @Min(value = 0, message = "Auto score must be between 0 and 100")
+    @Max(value = 100, message = "Auto score must be between 0 and 100")
+    private Integer autoScoreAdjusted;
+    private String autoScoreAdjustedReason;
 
-    @Min(value = 0, message = "Problem solving score must be between 0 and 100")
-    @Max(value = 100, message = "Problem solving score must be between 0 and 100")
-    private Integer problemSolvingScore;
+    // Manual Scores (4 parameters)
+    @Min(value = 0, message = "Communication score must be between 0 and 10")
+    @Max(value = 10, message = "Communication score must be between 0 and 10")
+    private Integer manualScoreCommunication;
 
-    @Min(value = 0, message = "AI collaboration score must be between 0 and 100")
-    @Max(value = 100, message = "AI collaboration score must be between 0 and 100")
-    private Integer aiCollaborationScore;
+    @Min(value = 0, message = "Algorithmic score must be between 0 and 10")
+    @Max(value = 10, message = "Algorithmic score must be between 0 and 10")
+    private Integer manualScoreAlgorithmic;
 
-    @Min(value = 0, message = "Communication score must be between 0 and 100")
-    @Max(value = 100, message = "Communication score must be between 0 and 100")
-    private Integer communicationScore;
+    @Min(value = 0, message = "Problem solving score must be between 0 and 10")
+    @Max(value = 10, message = "Problem solving score must be between 0 and 10")
+    private Integer manualScoreProblemSolving;
 
-    private String strengths;
+    @Min(value = 0, message = "AI collaboration score must be between 0 and 10")
+    @Max(value = 10, message = "AI collaboration score must be between 0 and 10")
+    private Integer manualScoreAiCollaboration;
 
-    private String weaknesses;
+    // Notes for each parameter
+    private String notesCommunication;
+    private String notesAlgorithmic;
+    private String notesProblemSolving;
+    private String notesAiCollaboration;
+
+    // Custom observations
+    private String customObservations;
+
+    // Draft mode
+    private Boolean isDraft;
 }
