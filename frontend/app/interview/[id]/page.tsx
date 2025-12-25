@@ -67,6 +67,8 @@ export default function InterviewSessionPage({
   const [expandedQuestions, setExpandedQuestions] = useState<number[]>([])
   const [isRunningTests, setIsRunningTests] = useState(false)
   const [testsRun, setTestsRun] = useState(false)
+  const [testResults, setTestResults] = useState<Array<{ testName: string; passed: boolean }>>([])
+  const [executionError, setExecutionError] = useState<string | null>(null)
 
   // Chat state and hooks
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -263,18 +265,48 @@ export default function InterviewSessionPage({
     setExpandedQuestions((prev) => (prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]))
   }
 
-  const handleRunTests = () => {
+  const handleRunTests = async () => {
+    if (!interviewId || !candidateCode) return
+
     setIsRunningTests(true)
-    setTimeout(() => {
-      setIsRunningTests(false)
+    setExecutionError(null)
+
+    try {
+      const result = await codeService.executeCode({
+        interviewId: parseInt(interviewId),
+        language: codeLanguage,
+        code: candidateCode,
+      })
+
+      // Map test results to the expected format
+      const mappedResults = result.testDetails.map((t) => ({
+        testName: t.testName,
+        passed: t.passed,
+      }))
+
+      setTestResults(mappedResults)
       setTestsRun(true)
       setActiveTab("tests")
-    }, 2000)
+
+      // Show error message if execution failed
+      if (result.status !== "success" && result.errorMessage) {
+        setExecutionError(result.errorMessage)
+      }
+    } catch (error) {
+      console.error("Error running tests:", error)
+      setExecutionError("Failed to execute code")
+      setTestResults([{ testName: "Execution failed", passed: false }])
+      setTestsRun(true)
+      setActiveTab("tests")
+    } finally {
+      setIsRunningTests(false)
+    }
   }
 
-  const testCases = interview?.question?.testCases || []
-  const testsPassed = testCases.filter((t) => t.passed).length
-  const allTestsPassed = testsPassed === testCases.length
+  // Use testResults state if available, otherwise fall back to interview data
+  const displayTestCases = testResults.length > 0 ? testResults : (interview?.question?.testCases || [])
+  const testsPassed = displayTestCases.filter((t: any) => t.passed).length
+  const allTestsPassed = testsPassed === displayTestCases.length && displayTestCases.length > 0
 
   const followUpQuestions = interview?.question?.followUpQuestions || []
 
@@ -543,7 +575,7 @@ export default function InterviewSessionPage({
                       Tests
                       {testsRun && (
                         <Badge variant={allTestsPassed ? "default" : "destructive"} className="ml-2 text-xs">
-                          {testsPassed}/{testCases.length}
+                          {testsPassed}/{displayTestCases.length}
                         </Badge>
                       )}
                     </TabsTrigger>
@@ -651,7 +683,7 @@ export default function InterviewSessionPage({
                         <div className="flex items-center justify-between mb-1">
                           <span className="text-sm font-semibold">Test Summary</span>
                           <Badge variant={allTestsPassed ? "default" : "destructive"} className="text-xs">
-                            {testsPassed} / {testCases.length}
+                            {testsPassed} / {displayTestCases.length}
                           </Badge>
                         </div>
                         <p className="text-xs text-muted-foreground">
@@ -662,7 +694,7 @@ export default function InterviewSessionPage({
                       </div>
 
                       <div className="space-y-2">
-                        {testCases.map((test, idx) => (
+                        {displayTestCases.map((test: any, idx: number) => (
                           <div
                             key={idx}
                             className={`rounded-lg border p-3 flex items-start gap-2 ${

@@ -4,12 +4,14 @@ import com.example.interviewAI.entity.Candidate;
 import com.example.interviewAI.entity.Company;
 import com.example.interviewAI.entity.Interview;
 import com.example.interviewAI.entity.Question;
+import com.example.interviewAI.entity.TestCase;
 import com.example.interviewAI.entity.User;
 import com.example.interviewAI.enums.RoleEnum;
 import com.example.interviewAI.repository.CandidateRepository;
 import com.example.interviewAI.repository.CompanyRepository;
 import com.example.interviewAI.repository.InterviewRepository;
 import com.example.interviewAI.repository.QuestionRepository;
+import com.example.interviewAI.repository.TestCaseRepository;
 import com.example.interviewAI.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +42,9 @@ public class TestDataSeeder implements CommandLineRunner {
     private QuestionRepository questionRepository;
 
     @Autowired
+    private TestCaseRepository testCaseRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Override
@@ -55,6 +60,9 @@ public class TestDataSeeder implements CommandLineRunner {
             // Check if Rate Limiter interview exists
             ensureRateLimiterInterview();
         }
+
+        // Always ensure Docker test interview exists for testing
+        createDockerTestInterview();
     }
 
     private void logExistingTestData() {
@@ -372,5 +380,173 @@ public class TestDataSeeder implements CommandLineRunner {
         candidate = candidateRepository.save(candidate);
         log.info("Created test candidate: {} (ID: {})", candidate.getName(), candidate.getId());
         return candidate;
+    }
+
+    private void createDockerTestInterview() {
+        try {
+            // Check if "Reverse String" question already exists
+            java.util.List<Question> questions = questionRepository.findByTitle("Reverse String");
+            if (!questions.isEmpty()) {
+                log.info("Reverse String question already exists, skipping Docker test interview creation");
+                return;
+            }
+
+            // Create "Reverse String" Question for Docker testing
+            Question reverseStringQuestion = new Question();
+            reverseStringQuestion.setTitle("Reverse String");
+            reverseStringQuestion.setDescription("Write a function that reverses a string.\n\n" +
+                    "FUNCTION TO IMPLEMENT:\n\n" +
+                    "reverseString(str)\n" +
+                    "   - Takes a string as input\n" +
+                    "   - Returns the reversed string\n\n" +
+                    "EXAMPLES:\n" +
+                    "   reverseString('hello') → 'olleh'\n" +
+                    "   reverseString('') → ''\n" +
+                    "   reverseString('a') → 'a'");
+            reverseStringQuestion.setDifficulty("easy");
+            reverseStringQuestion.setTimeLimitMinutes(15);
+            reverseStringQuestion.setSupportedLanguages("javascript,python,java");
+            reverseStringQuestion.setTestsJson("[]");
+
+            // Set initial code templates
+            reverseStringQuestion.setInitialCodeJavascript(
+                    "// Reverse a string\n\n" +
+                    "function reverseString(str) {\n" +
+                    "  // TODO: Implement string reversal\n" +
+                    "  return str;\n" +
+                    "}\n");
+
+            reverseStringQuestion.setInitialCodePython(
+                    "# Reverse a string\n\n" +
+                    "def reverse_string(s):\n" +
+                    "    # TODO: Implement string reversal\n" +
+                    "    return s\n");
+
+            reverseStringQuestion.setInitialCodeJava(
+                    "// Reverse a string\n\n" +
+                    "public class Solution {\n" +
+                    "    public static String reverseString(String str) {\n" +
+                    "        // TODO: Implement string reversal\n" +
+                    "        return str;\n" +
+                    "    }\n" +
+                    "}\n");
+
+            reverseStringQuestion.setRequirementsJson("{}");
+            reverseStringQuestion.setRubricJson("{}");
+
+            reverseStringQuestion = questionRepository.save(reverseStringQuestion);
+            log.info("Created Reverse String question for Docker testing (ID: {})", reverseStringQuestion.getId());
+
+            // Create test cases
+            TestCase tc1 = new TestCase();
+            tc1.setQuestion(reverseStringQuestion);
+            tc1.setTestName("Reverse 'hello'");
+            tc1.setTestCase("TC1");
+            tc1.setDescription("Basic string reversal");
+            tc1.setOrderIndex(0);
+            tc1.setOperationsJson("[{\"method\": \"reverseString\", \"args\": [\"hello\"], \"store\": \"result\"}]");
+            tc1.setAssertionsJson("{\"result\": \"olleh\"}");
+            testCaseRepository.save(tc1);
+            log.info("Created test case: Reverse 'hello'");
+
+            TestCase tc2 = new TestCase();
+            tc2.setQuestion(reverseStringQuestion);
+            tc2.setTestName("Reverse 'world'");
+            tc2.setTestCase("TC2");
+            tc2.setDescription("Reverse another string");
+            tc2.setOrderIndex(1);
+            tc2.setOperationsJson("[{\"method\": \"reverseString\", \"args\": [\"world\"], \"store\": \"result\"}]");
+            tc2.setAssertionsJson("{\"result\": \"dlrow\"}");
+            testCaseRepository.save(tc2);
+            log.info("Created test case: Reverse 'world'");
+
+            TestCase tc3 = new TestCase();
+            tc3.setQuestion(reverseStringQuestion);
+            tc3.setTestName("Reverse empty string");
+            tc3.setTestCase("TC3");
+            tc3.setDescription("Edge case: empty string");
+            tc3.setOrderIndex(2);
+            tc3.setOperationsJson("[{\"method\": \"reverseString\", \"args\": [\"\"], \"store\": \"result\"}]");
+            tc3.setAssertionsJson("{\"result\": \"\"}");
+            testCaseRepository.save(tc3);
+            log.info("Created test case: Reverse empty string");
+
+            // Create test users
+            Company testCompany = createOrGetCompany("Docker Test Company");
+            User testInterviewer = createOrGetUser("docker.interviewer@test.com", "Docker Interviewer", RoleEnum.INTERVIEWER, testCompany);
+            Candidate testCandidate = createCandidate("Docker Test Candidate", "docker.candidate@test.com");
+
+            // Create in_progress interview for testing
+            Interview dockerTestInterview = new Interview();
+            dockerTestInterview.setCompany(testCompany);
+            dockerTestInterview.setCandidate(testCandidate);
+            dockerTestInterview.setQuestion(reverseStringQuestion);
+            dockerTestInterview.setInterviewer(testInterviewer);
+            dockerTestInterview.setLanguage("javascript");
+            dockerTestInterview.setStatus("in_progress");
+            dockerTestInterview.setInterviewLinkToken(UUID.randomUUID().toString());
+            dockerTestInterview.setScheduledAt(LocalDateTime.now());
+            dockerTestInterview.setStartedAt(LocalDateTime.now());
+            dockerTestInterview = interviewRepository.save(dockerTestInterview);
+
+            log.info("✅ Created Docker test interview for 'Reverse String' question");
+            log.info("   Interview ID: {}", dockerTestInterview.getId());
+            log.info("   Test Candidate Page: http://localhost:3000/i/{}", dockerTestInterview.getInterviewLinkToken());
+            log.info("   Interviewer Page: http://localhost:3000/interview/{}", dockerTestInterview.getId());
+            log.info("   Test the Run Tests button to execute code in Docker!");
+
+        } catch (Exception e) {
+            log.error("Error creating Docker test interview", e);
+        }
+    }
+
+    private Company createOrGetCompany(String name) {
+        String email = name.toLowerCase().replace(" ", ".") + "@company.com";
+        try {
+            // Try to find existing company by email
+            java.util.List<Company> companies = (java.util.List<Company>) companyRepository.findAll();
+            for (Company c : companies) {
+                if (email.equals(c.getEmail())) {
+                    return c;
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Error searching for existing company", e);
+        }
+
+        // Create new company if not found
+        Company company = new Company();
+        company.setName(name);
+        company.setEmail(email);
+        company.setSubscriptionTier("starter");
+        return companyRepository.save(company);
+    }
+
+    private User createOrGetUser(String email, String name, RoleEnum role) {
+        return createOrGetUser(email, name, role, null);
+    }
+
+    private User createOrGetUser(String email, String name, RoleEnum role, Company company) {
+        try {
+            User user = userRepository.findByEmail(email).orElse(null);
+            if (user != null) {
+                // If user exists and company is provided, update the company if not set
+                if (company != null && user.getCompany() == null) {
+                    user.setCompany(company);
+                    user = userRepository.save(user);
+                }
+                return user;
+            }
+            user = new User();
+            user.setEmail(email);
+            user.setName(name);
+            user.setPasswordHash(passwordEncoder.encode("password123"));
+            user.setRole(role);
+            user.setCompany(company);
+            return userRepository.save(user);
+        } catch (Exception e) {
+            log.error("Error creating or getting user: {}", email, e);
+            return null;
+        }
     }
 }

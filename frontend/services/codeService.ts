@@ -1,6 +1,37 @@
 import apiClient from './apiClient';
 import type { CodeSubmissionRequest, CodeSubmissionResponse } from '@/types/code';
 
+// Code execution types
+export interface CodeExecutionRequest {
+  interviewId: number;
+  language: string;
+  code: string;
+}
+
+export interface TestCaseResult {
+  testCaseId: number;
+  testName: string;
+  passed: boolean;
+  expected?: string;
+  actual?: string;
+  errorMessage?: string;
+  executionTimeMs?: number;
+}
+
+export interface CodeExecutionResponse {
+  interviewId: number;
+  status: 'success' | 'error' | 'timeout' | 'compilation_error';
+  testsPassed: number;
+  testsTotal: number;
+  autoScore: number;
+  executionTimeMs: number;
+  testDetails: TestCaseResult[];
+  errorMessage?: string;
+  stdout?: string;
+  stderr?: string;
+  executedAt: string;
+}
+
 export const codeService = {
   /**
    * Submit candidate code to backend
@@ -28,6 +59,19 @@ export const codeService = {
       return data as CodeSubmissionResponse;
     } catch (error) {
       console.error('Error fetching latest code:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Execute code in Docker sandbox and run tests
+   */
+  executeCode: async (request: CodeExecutionRequest): Promise<CodeExecutionResponse> => {
+    try {
+      const data = await apiClient.post('/code/execute', request);
+      return data as CodeExecutionResponse;
+    } catch (error) {
+      console.error('Error executing code:', error);
       throw error;
     }
   },

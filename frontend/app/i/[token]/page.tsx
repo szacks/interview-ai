@@ -74,13 +74,13 @@ export default function CandidateInterviewPage({
     resolveToken()
   }, [params])
 
-  // Fetch interview details when interviewId is available
+  // Fetch interview details when interviewToken is available
   useEffect(() => {
-    if (!interviewId) return
+    if (!interviewToken) return
 
     const fetchInterviewDetails = async () => {
       try {
-        const interviewData = await apiClient.get(`/interviews/${interviewId}`)
+        const interviewData = await apiClient.get(`/interviews/link/${interviewToken}`)
         console.log("[Candidate] Interview details fetched:", interviewData)
         setInterview(interviewData)
 
@@ -103,7 +103,7 @@ export default function CandidateInterviewPage({
     }
 
     fetchInterviewDetails()
-  }, [interviewId])
+  }, [interviewToken])
 
   // Poll interview status to detect when interviewer starts the session
   useEffect(() => {
@@ -268,18 +268,37 @@ export default function CandidateInterviewPage({
     }
   }
 
-  const handleRunTests = () => {
+  const handleRunTests = async () => {
+    if (!interviewId || !code) return
+
     setIsRunning(true)
-    // Simulate test execution
-    setTimeout(() => {
-      setTestResults([
-        { name: "Should shorten a valid URL", passed: true },
-        { name: "Should retrieve original URL", passed: true },
-        { name: "Should handle multiple URLs", passed: false },
-        { name: "Should generate unique codes", passed: true },
-      ])
+    setTestResults([])
+
+    try {
+      const result = await codeService.executeCode({
+        interviewId: interviewId,
+        language: language,
+        code: code,
+      })
+
+      // Map test results to the expected format
+      const mappedResults = result.testDetails.map((t) => ({
+        name: t.testName,
+        passed: t.passed,
+      }))
+
+      setTestResults(mappedResults)
+
+      // Show error message if execution failed
+      if (result.status !== "success" && result.errorMessage) {
+        console.error("Execution error:", result.errorMessage)
+      }
+    } catch (error) {
+      console.error("Error running tests:", error)
+      setTestResults([{ name: "Execution failed", passed: false }])
+    } finally {
       setIsRunning(false)
-    }, 2000)
+    }
   }
 
   const handleSendMessage = async () => {

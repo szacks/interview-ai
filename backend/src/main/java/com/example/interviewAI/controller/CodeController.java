@@ -1,7 +1,10 @@
 package com.example.interviewAI.controller;
 
+import com.example.interviewAI.dto.CodeExecutionRequest;
+import com.example.interviewAI.dto.CodeExecutionResponse;
 import com.example.interviewAI.dto.CodeSubmissionRequest;
 import com.example.interviewAI.dto.CodeSubmissionResponse;
+import com.example.interviewAI.service.CodeExecutionService;
 import com.example.interviewAI.service.CodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,9 @@ public class CodeController {
 
     @Autowired
     private CodeService codeService;
+
+    @Autowired
+    private CodeExecutionService codeExecutionService;
 
     /**
      * POST /api/code/submit
@@ -64,6 +70,44 @@ public class CodeController {
         } catch (RuntimeException e) {
             log.error("Error fetching code: {}", e.getMessage());
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
+     * POST /api/code/execute
+     * Execute code in Docker sandbox and run tests
+     *
+     * @param request The code execution request containing interviewId, language, and code
+     * @return The execution results with test outcomes and auto score
+     */
+    @PostMapping("/execute")
+    public ResponseEntity<CodeExecutionResponse> executeCode(
+            @Valid @RequestBody CodeExecutionRequest request) {
+
+        log.info("Code execution requested for interview {}", request.getInterviewId());
+
+        try {
+            CodeExecutionResponse response = codeExecutionService.executeCode(request);
+            return ResponseEntity.ok(response);
+
+        } catch (IllegalArgumentException e) {
+            log.warn("Invalid execution request: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(
+                    CodeExecutionResponse.builder()
+                            .interviewId(request.getInterviewId())
+                            .status("error")
+                            .errorMessage(e.getMessage())
+                            .build()
+            );
+        } catch (Exception e) {
+            log.error("Error executing code", e);
+            return ResponseEntity.internalServerError().body(
+                    CodeExecutionResponse.builder()
+                            .interviewId(request.getInterviewId())
+                            .status("error")
+                            .errorMessage("Internal server error")
+                            .build()
+            );
         }
     }
 }
