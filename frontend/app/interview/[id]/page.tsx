@@ -65,9 +65,12 @@ export default function InterviewSessionPage({
 
   // Test and questions state
   const [expandedQuestions, setExpandedQuestions] = useState<number[]>([])
+  const [expandedTests, setExpandedTests] = useState<number[]>([])
+  const [expandedTestOperations, setExpandedTestOperations] = useState<number[]>([])
   const [isRunningTests, setIsRunningTests] = useState(false)
   const [testsRun, setTestsRun] = useState(false)
-  const [testResults, setTestResults] = useState<Array<{ testName: string; passed: boolean }>>([])
+  const [testResults, setTestResults] = useState<Array<any>>([])
+  const [testCasesCache, setTestCasesCache] = useState<Map<number, any>>(new Map())
   const [executionError, setExecutionError] = useState<string | null>(null)
 
   // Chat state and hooks
@@ -261,8 +264,33 @@ export default function InterviewSessionPage({
     }
   }, [conversation.messages])
 
+  // Load test case details when a test is expanded
+  useEffect(() => {
+    const loadTestCases = async () => {
+      for (const testIdx of expandedTests) {
+        const test = testResults[testIdx]
+        if (test && test.testCaseId && !testCasesCache.has(test.testCaseId)) {
+          try {
+            const testCase = await interviewService.getTestCaseById(test.testCaseId)
+            setTestCasesCache((prev) => new Map(prev).set(test.testCaseId, testCase))
+          } catch (error) {
+            console.error(`Error loading test case ${test.testCaseId}:`, error)
+          }
+        }
+      }
+    }
+
+    if (expandedTests.length > 0 && testResults.length > 0) {
+      loadTestCases()
+    }
+  }, [expandedTests, testResults])
+
   const toggleQuestion = (index: number) => {
     setExpandedQuestions((prev) => (prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]))
+  }
+
+  const toggleTest = (index: number) => {
+    setExpandedTests((prev) => (prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]))
   }
 
   const handleRunTests = async () => {
@@ -278,15 +306,25 @@ export default function InterviewSessionPage({
         code: candidateCode,
       })
 
-      // Map test results to the expected format
-      const mappedResults = result.testDetails.map((t) => ({
-        testName: t.testName,
-        passed: t.passed,
-      }))
-
-      setTestResults(mappedResults)
+      // Store full test details including error messages
+      const testDetails = result.testDetails || []
+      setTestResults(testDetails)
       setTestsRun(true)
       setActiveTab("tests")
+
+      // Preload all test case details
+      const newCache = new Map(testCasesCache)
+      for (const test of testDetails) {
+        if (test.testCaseId && !newCache.has(test.testCaseId)) {
+          try {
+            const testCase = await interviewService.getTestCaseById(test.testCaseId)
+            newCache.set(test.testCaseId, testCase)
+          } catch (error) {
+            console.error(`Error loading test case ${test.testCaseId}:`, error)
+          }
+        }
+      }
+      setTestCasesCache(newCache)
 
       // Show error message if execution failed
       if (result.status !== "success" && result.errorMessage) {
@@ -694,21 +732,111 @@ export default function InterviewSessionPage({
                       </div>
 
                       <div className="space-y-2">
-                        {displayTestCases.map((test: any, idx: number) => (
-                          <div
-                            key={idx}
-                            className={`rounded-lg border p-3 flex items-start gap-2 ${
-                              test.passed ? "border-chart-3/30 bg-chart-3/5" : "border-destructive/30 bg-destructive/5"
-                            }`}
-                          >
-                            {test.passed ? (
-                              <CheckCircle2 className="size-4 text-chart-3 flex-shrink-0 mt-0.5" />
-                            ) : (
-                              <XCircle className="size-4 text-destructive flex-shrink-0 mt-0.5" />
-                            )}
-                            <span className="text-xs font-medium leading-relaxed">{test.testName}</span>
-                          </div>
-                        ))}
+                        {displayTestCases.map((test: any, idx: number) => {
+                          const isExpanded = expandedTests.includes(idx)
+                          const testCaseDef = test.testCaseId ? testCasesCache.get(test.testCaseId) : null
+
+                          return (
+                            <div
+                              key={idx}
+                              className={`rounded-lg border overflow-hidden ${
+                                test.passed ? "border-chart-3/30 bg-chart-3/5" : "border-destructive/30 bg-destructive/5"
+                              }`}
+                            >
+                              <button
+                                onClick={() => toggleTest(idx)}
+                                className="w-full p-3 flex items-start gap-2 hover:bg-accent/5 transition-colors text-left"
+                              >
+                                {test.passed ? (
+                                  <CheckCircle2 className="size-4 text-chart-3 flex-shrink-0 mt-0.5" />
+                                ) : (
+                                  <XCircle className="size-4 text-destructive flex-shrink-0 mt-0.5" />
+                                )}
+                                <div className="flex-1 min-w-0">
+                                  <span className="text-xs font-medium block">{testCaseDef?.description || test.testName}</span>
+                                  {test.errorMessage && !test.passed && (
+                                    <span className="text-xs text-destructive/70 block mt-0.5">{test.errorMessage}</span>
+                                  )}
+                                </div>
+                                {isExpanded ? (
+                                  <ChevronUp className="size-4 flex-shrink-0 mt-0.5" />
+                                ) : (
+                                  <ChevronDown className="size-4 flex-shrink-0 mt-0.5" />
+                                )}
+                              </button>
+
+                              {isExpanded && (
+                                <div className="border-t border-current/10 p-3 bg-background/30 space-y-3">
+                                  {test.errorMessage && (
+                                    <div className="mb-3">
+                                      <p className="text-xs font-semibold mb-1 text-destructive">Error:</p>
+                                      <pre className="text-xs bg-background rounded p-2 overflow-x-auto whitespace-pre-wrap break-words border border-border">
+                                        {test.errorMessage}
+                                      </pre>
+                                    </div>
+                                  )}
+
+                                  {test.expected && (
+                                    <div className="mb-3">
+                                      <p className="text-xs font-semibold mb-1">Expected:</p>
+                                      <pre className="text-xs bg-background rounded p-2 overflow-x-auto border border-border">
+                                        {test.expected}
+                                      </pre>
+                                    </div>
+                                  )}
+
+                                  {test.actual && (
+                                    <div className="mb-3">
+                                      <p className="text-xs font-semibold mb-1">Actual:</p>
+                                      <pre className="text-xs bg-background rounded p-2 overflow-x-auto border border-border">
+                                        {test.actual}
+                                      </pre>
+                                    </div>
+                                  )}
+
+                                  {test.executionTimeMs > 0 && (
+                                    <div className="text-xs text-muted-foreground">
+                                      <Clock className="size-3 inline mr-1" />
+                                      Execution time: {test.executionTimeMs}ms
+                                    </div>
+                                  )}
+
+                                  {/* Test Case Definition Section */}
+                                  {testCaseDef && testCaseDef.operationsJson && (
+                                        <div>
+                                          <button
+                                            onClick={() => setExpandedTestOperations((prev) =>
+                                              prev.includes(idx) ? prev.filter((i) => i !== idx) : [...prev, idx]
+                                            )}
+                                            className="text-xs font-semibold text-muted-foreground hover:text-foreground flex items-center gap-1 mb-2"
+                                          >
+                                            {expandedTestOperations.includes(idx) ? (
+                                              <ChevronUp className="size-3" />
+                                            ) : (
+                                              <ChevronDown className="size-3" />
+                                            )}
+                                            Show test
+                                          </button>
+
+                                          {expandedTestOperations.includes(idx) && (
+                                            <pre className="text-xs bg-background rounded p-2 overflow-x-auto whitespace-pre-wrap break-words max-h-40 border border-border text-muted-foreground">
+                                              {(() => {
+                                                try {
+                                                  const ops = JSON.parse(testCaseDef.operationsJson)
+                                                  return JSON.stringify(ops, null, 2)
+                                                } catch (e) {
+                                                  return testCaseDef.operationsJson
+                                                }
+                                              })()}
+                                            </pre>
+                                          )}
+                                        </div>
+                                      )}
+                                </div>
+                              )}
+                            </div>
+                          )
+                        })}
                       </div>
                     </div>
                   )}

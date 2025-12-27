@@ -152,4 +152,17 @@ export const interviewService = {
       throw error
     }
   },
+
+  /**
+   * Get a specific test case by ID
+   */
+  getTestCaseById: async (testCaseId: number): Promise<any> => {
+    try {
+      const data = await apiClient.get(`/test-cases/${testCaseId}`)
+      return data
+    } catch (error) {
+      console.error('Error fetching test case:', error)
+      throw error
+    }
+  },
 }

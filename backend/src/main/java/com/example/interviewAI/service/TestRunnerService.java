@@ -501,18 +501,29 @@ public class TestRunnerService {
                 // Compare each assertion
                 if (assertions.isObject()) {
                     sb.append("            boolean testPassed = true;\n");
+                    sb.append("            StringBuilder expectedResults = new StringBuilder();\n");
+                    sb.append("            StringBuilder actualResults = new StringBuilder();\n");
+
                     assertions.fields().forEachRemaining(entry -> {
                         String key = entry.getKey();
                         JsonNode expectedVal = entry.getValue();
                         String expectedStr = expectedVal.isBoolean() ? String.valueOf(expectedVal.asBoolean()) : expectedVal.asText();
+                        sb.append(String.format("            expectedResults.append(\"%s: %s\\n\");\n", key, expectedStr));
+                        sb.append(String.format("            actualResults.append(\"%s: \").append(String.valueOf(%s)).append(\"\\n\");\n", key, key));
                         sb.append(String.format("            if (!String.valueOf(%s).equals(\"%s\")) testPassed = false;\n", key, expectedStr));
                     });
-                    sb.append("            result.passed = testPassed;\n");
-                }
-            }
 
-            sb.append("            result.expected = \"passed\";\n");
-            sb.append("            result.actual = \"passed\";\n");
+                    sb.append("            result.passed = testPassed;\n");
+                    sb.append("            result.expected = expectedResults.toString();\n");
+                    sb.append("            result.actual = actualResults.toString();\n");
+                } else {
+                    sb.append("            result.expected = \"(no assertions)\";\n");
+                    sb.append("            result.actual = \"(no assertions)\";\n");
+                }
+            } else {
+                sb.append("            result.expected = \"(no assertions)\";\n");
+                sb.append("            result.actual = \"(no assertions)\";\n");
+            }
         } catch (Exception e) {
             log.warn("Failed to parse test case JSON for test {}: {}", tc.getId(), e.getMessage());
             sb.append("            throw new RuntimeException(\"Failed to parse test case\");\n");
