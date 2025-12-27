@@ -753,7 +753,24 @@ export default function InterviewSessionPage({
                                   <XCircle className="size-4 text-destructive flex-shrink-0 mt-0.5" />
                                 )}
                                 <div className="flex-1 min-w-0">
-                                  <span className="text-xs font-medium block">{testCaseDef?.description || test.testName}</span>
+                                  {(() => {
+                                    try {
+                                      const ops = JSON.parse(testCaseDef?.operationsJson || '[]')
+                                      const callCount = ops.filter((op: any) => op.type === 'call').length
+                                      const createOp = ops.find((op: any) => op.type === 'create')
+                                      const limit = createOp?.args?.[0]
+                                      const description = testCaseDef?.description || test.testName
+
+                                      let title = description
+                                      if (limit !== undefined && callCount > 0) {
+                                        title = `${description} - Limit: ${limit} requests, Requests made: ${callCount}`
+                                      }
+
+                                      return <span className="text-xs font-medium block">{title}</span>
+                                    } catch (e) {
+                                      return <span className="text-xs font-medium block">{testCaseDef?.description || test.testName}</span>
+                                    }
+                                  })()}
                                   {test.errorMessage && !test.passed && (
                                     <span className="text-xs text-destructive/70 block mt-0.5">{test.errorMessage}</span>
                                   )}
@@ -804,24 +821,6 @@ export default function InterviewSessionPage({
                                   {/* Test Case Definition Section */}
                                   {testCaseDef && testCaseDef.operationsJson && (
                                         <div>
-                                          {(() => {
-                                            try {
-                                              const ops = JSON.parse(testCaseDef.operationsJson)
-                                              const callCount = ops.filter((op: any) => op.type === 'call').length
-                                              const createOp = ops.find((op: any) => op.type === 'create')
-                                              const limit = createOp?.args?.[0]
-
-                                              return (
-                                                <div className="text-xs text-muted-foreground mb-2 space-y-1">
-                                                  {limit && <p>Limit: {limit} requests</p>}
-                                                  {callCount > 0 && <p>Requests made: {callCount}</p>}
-                                                </div>
-                                              )
-                                            } catch (e) {
-                                              return null
-                                            }
-                                          })()}
-
                                           <button
                                             onClick={() => setExpandedTestOperations((prev) =>
                                               prev.includes(idx) ? prev.filter((i) => i !== idx) : [...prev, idx]
