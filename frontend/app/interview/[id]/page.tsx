@@ -804,6 +804,24 @@ export default function InterviewSessionPage({
                                   {/* Test Case Definition Section */}
                                   {testCaseDef && testCaseDef.operationsJson && (
                                         <div>
+                                          {(() => {
+                                            try {
+                                              const ops = JSON.parse(testCaseDef.operationsJson)
+                                              const callCount = ops.filter((op: any) => op.type === 'call').length
+                                              const createOp = ops.find((op: any) => op.type === 'create')
+                                              const limit = createOp?.args?.[0]
+
+                                              return (
+                                                <div className="text-xs text-muted-foreground mb-2 space-y-1">
+                                                  {limit && <p>Limit: {limit} requests</p>}
+                                                  {callCount > 0 && <p>Requests made: {callCount}</p>}
+                                                </div>
+                                              )
+                                            } catch (e) {
+                                              return null
+                                            }
+                                          })()}
+
                                           <button
                                             onClick={() => setExpandedTestOperations((prev) =>
                                               prev.includes(idx) ? prev.filter((i) => i !== idx) : [...prev, idx]
