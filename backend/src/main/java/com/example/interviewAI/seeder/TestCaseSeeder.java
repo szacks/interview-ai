@@ -72,29 +72,56 @@ public class TestCaseSeeder implements CommandLineRunner {
             if (!existingTestCases.isEmpty()) {
                 log.info("Updating Rate Limiter test cases with proper test definitions");
 
-                // Define test cases for Rate Limiter
+                // Define comprehensive test cases for Rate Limiter
                 String[][] testDefinitions = {
-                    {"25", "allows requests under limit", "TC1", "3 requests with limit 3 should all be true",
-                     "[{\"type\":\"create\",\"class\":\"RateLimiter\",\"var\":\"limiter\",\"args\":[3,1000]},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"result1\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"result2\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"result3\"},{\"type\":\"assign\",\"var\":\"result\",\"value\":{\"result1\":true,\"result2\":true,\"result3\":true}}]",
-                     "{\"result1\":true,\"result2\":true,\"result3\":true}"},
-                    {"26", "blocks request when limit reached", "TC2", "3rd request with limit 2 should be false",
-                     "[{\"type\":\"create\",\"class\":\"RateLimiter\",\"var\":\"limiter\",\"args\":[2,1000]},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"result1\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"result2\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"result3\"},{\"type\":\"assign\",\"var\":\"result\",\"value\":{\"result1\":true,\"result2\":true,\"result3\":false}}]",
-                     "{\"result1\":true,\"result2\":true,\"result3\":false}"},
-                    {"27", "allows request after window expires", "TC3", "After window expires, new requests should be allowed",
-                     "[{\"type\":\"create\",\"class\":\"RateLimiter\",\"var\":\"limiter\",\"args\":[1,100]},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"result1\"},{\"type\":\"sleep\",\"ms\":150},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"result2\"},{\"type\":\"assign\",\"var\":\"result\",\"value\":{\"result1\":true,\"result2\":true}}]",
-                     "{\"result1\":true,\"result2\":true}"},
-                    {"28", "each limiter is independent", "TC4", "Two limiters should track separately",
-                     "[{\"type\":\"create\",\"class\":\"RateLimiter\",\"var\":\"limiter1\",\"args\":[1,1000]},{\"type\":\"create\",\"class\":\"RateLimiter\",\"var\":\"limiter2\",\"args\":[2,1000]},{\"type\":\"call\",\"var\":\"limiter1\",\"method\":\"allowRequest\",\"store\":\"r1_1\"},{\"type\":\"call\",\"var\":\"limiter1\",\"method\":\"allowRequest\",\"store\":\"r1_2\"},{\"type\":\"call\",\"var\":\"limiter2\",\"method\":\"allowRequest\",\"store\":\"r2_1\"},{\"type\":\"call\",\"var\":\"limiter2\",\"method\":\"allowRequest\",\"store\":\"r2_2\"},{\"type\":\"call\",\"var\":\"limiter2\",\"method\":\"allowRequest\",\"store\":\"r2_3\"},{\"type\":\"assign\",\"var\":\"result\",\"value\":{\"r1_1\":true,\"r1_2\":false,\"r2_1\":true,\"r2_2\":true,\"r2_3\":false}}]",
-                     "{\"r1_1\":true,\"r1_2\":false,\"r2_1\":true,\"r2_2\":true,\"r2_3\":false}"},
-                    {"29", "handles limit of 1", "TC5", "Single request limit should work correctly",
-                     "[{\"type\":\"create\",\"class\":\"RateLimiter\",\"var\":\"limiter\",\"args\":[1,1000]},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"result1\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"result2\"},{\"type\":\"assign\",\"var\":\"result\",\"value\":{\"result1\":true,\"result2\":false}}]",
-                     "{\"result1\":true,\"result2\":false}"},
-                    {"30", "sliding window - partial expiry", "TC6", "Sliding window should handle partial expiry correctly",
-                     "[{\"type\":\"create\",\"class\":\"RateLimiter\",\"var\":\"limiter\",\"args\":[3,100]},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r1\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r2\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r3\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r4\"},{\"type\":\"sleep\",\"ms\":50},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r5\"},{\"type\":\"assign\",\"var\":\"result\",\"value\":{\"r1\":true,\"r2\":true,\"r3\":true,\"r4\":false,\"r5\":true}}]",
-                     "{\"r1\":true,\"r2\":true,\"r3\":true,\"r4\":false,\"r5\":true}"},
-                    {"31", "high volume - 10 requests with limit 10", "TC7", "Should handle high volume requests",
-                     "[{\"type\":\"create\",\"class\":\"RateLimiter\",\"var\":\"limiter\",\"args\":[10,1000]},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r1\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r2\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r3\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r4\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r5\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r6\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r7\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r8\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r9\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r10\"},{\"type\":\"assign\",\"var\":\"result\",\"value\":{\"r1\":true,\"r2\":true,\"r3\":true,\"r4\":true,\"r5\":true,\"r6\":true,\"r7\":true,\"r8\":true,\"r9\":true,\"r10\":true}}]",
-                     "{\"r1\":true,\"r2\":true,\"r3\":true,\"r4\":true,\"r5\":true,\"r6\":true,\"r7\":true,\"r8\":true,\"r9\":true,\"r10\":true}"}
+                    // Basic functionality tests
+                    {"25", "allows requests under limit", "TC1", "3 requests with limit 3 should all succeed",
+                     "[{\"type\":\"create\",\"class\":\"RateLimiter\",\"var\":\"limiter\",\"args\":[3,1000]},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r1\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r2\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r3\"}]",
+                     "{\"r1\":true,\"r2\":true,\"r3\":true}"},
+
+                    {"26", "blocks request when limit exceeded", "TC2", "4th request with limit 3 should be blocked",
+                     "[{\"type\":\"create\",\"class\":\"RateLimiter\",\"var\":\"limiter\",\"args\":[3,1000]},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r1\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r2\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r3\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r4\"}]",
+                     "{\"r1\":true,\"r2\":true,\"r3\":true,\"r4\":false}"},
+
+                    // Edge case: limit of 1
+                    {"27", "handles limit of 1", "TC3", "Only first request allowed with limit 1",
+                     "[{\"type\":\"create\",\"class\":\"RateLimiter\",\"var\":\"limiter\",\"args\":[1,1000]},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r1\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r2\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r3\"}]",
+                     "{\"r1\":true,\"r2\":false,\"r3\":false}"},
+
+                    // Window expiry test
+                    {"28", "allows requests after window expires", "TC4", "Request allowed after 150ms with 100ms window",
+                     "[{\"type\":\"create\",\"class\":\"RateLimiter\",\"var\":\"limiter\",\"args\":[1,100]},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r1\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r2\"},{\"type\":\"sleep\",\"ms\":150},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r3\"}]",
+                     "{\"r1\":true,\"r2\":false,\"r3\":true}"},
+
+                    // Multiple blocked requests then recovery
+                    {"29", "multiple blocks then window reset", "TC5", "Multiple blocked requests, then allowed after window",
+                     "[{\"type\":\"create\",\"class\":\"RateLimiter\",\"var\":\"limiter\",\"args\":[2,100]},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r1\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r2\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r3\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r4\"},{\"type\":\"sleep\",\"ms\":150},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r5\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r6\"}]",
+                     "{\"r1\":true,\"r2\":true,\"r3\":false,\"r4\":false,\"r5\":true,\"r6\":true}"},
+
+                    // High volume test - exactly at limit
+                    {"30", "high volume at exact limit", "TC6", "10 requests with limit 10 should all succeed",
+                     "[{\"type\":\"create\",\"class\":\"RateLimiter\",\"var\":\"limiter\",\"args\":[10,1000]},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r1\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r2\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r3\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r4\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r5\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r6\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r7\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r8\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r9\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r10\"}]",
+                     "{\"r1\":true,\"r2\":true,\"r3\":true,\"r4\":true,\"r5\":true,\"r6\":true,\"r7\":true,\"r8\":true,\"r9\":true,\"r10\":true}"},
+
+                    // High volume test - exceeding limit
+                    {"31", "high volume exceeds limit", "TC7", "11th request with limit 10 should be blocked",
+                     "[{\"type\":\"create\",\"class\":\"RateLimiter\",\"var\":\"limiter\",\"args\":[10,1000]},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r1\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r2\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r3\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r4\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r5\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r6\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r7\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r8\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r9\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r10\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r11\"}]",
+                     "{\"r1\":true,\"r2\":true,\"r3\":true,\"r4\":true,\"r5\":true,\"r6\":true,\"r7\":true,\"r8\":true,\"r9\":true,\"r10\":true,\"r11\":false}"},
+
+                    // Independent limiters test
+                    {"32", "multiple independent limiters", "TC8", "Two limiters with different limits work independently",
+                     "[{\"type\":\"create\",\"class\":\"RateLimiter\",\"var\":\"limiter1\",\"args\":[1,1000]},{\"type\":\"create\",\"class\":\"RateLimiter\",\"var\":\"limiter2\",\"args\":[3,1000]},{\"type\":\"call\",\"var\":\"limiter1\",\"method\":\"allowRequest\",\"store\":\"a1\"},{\"type\":\"call\",\"var\":\"limiter2\",\"method\":\"allowRequest\",\"store\":\"b1\"},{\"type\":\"call\",\"var\":\"limiter1\",\"method\":\"allowRequest\",\"store\":\"a2\"},{\"type\":\"call\",\"var\":\"limiter2\",\"method\":\"allowRequest\",\"store\":\"b2\"},{\"type\":\"call\",\"var\":\"limiter2\",\"method\":\"allowRequest\",\"store\":\"b3\"},{\"type\":\"call\",\"var\":\"limiter2\",\"method\":\"allowRequest\",\"store\":\"b4\"}]",
+                     "{\"a1\":true,\"b1\":true,\"a2\":false,\"b2\":true,\"b3\":true,\"b4\":false}"},
+
+                    // Burst then wait pattern
+                    {"33", "burst then wait pattern", "TC9", "Burst of requests, wait, then more requests",
+                     "[{\"type\":\"create\",\"class\":\"RateLimiter\",\"var\":\"limiter\",\"args\":[3,100]},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r1\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r2\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r3\"},{\"type\":\"sleep\",\"ms\":150},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r4\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r5\"},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r6\"}]",
+                     "{\"r1\":true,\"r2\":true,\"r3\":true,\"r4\":true,\"r5\":true,\"r6\":true}"},
+
+                    // First request always allowed
+                    {"34", "first request always allowed", "TC10", "Very first request to any limiter should succeed",
+                     "[{\"type\":\"create\",\"class\":\"RateLimiter\",\"var\":\"limiter\",\"args\":[5,1000]},{\"type\":\"call\",\"var\":\"limiter\",\"method\":\"allowRequest\",\"store\":\"r1\"}]",
+                     "{\"r1\":true}"}
                 };
 
                 for (int i = 0; i < testDefinitions.length && i < existingTestCases.size(); i++) {
