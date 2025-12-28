@@ -108,6 +108,8 @@ export default function InterviewSessionPage({
         const interviewData = await apiClient.get(`/interviews/${interviewId}`)
         console.log("[Interviewer] Interview found:", interviewData)
         console.log("[Interviewer] Interview status:", interviewData?.status)
+        console.log("[Interviewer] Question data:", interviewData?.question)
+        console.log("[Interviewer] Follow-up questions:", interviewData?.question?.followUpQuestions)
 
         // Store the interview data for use in UI
         setInterview(interviewData)
@@ -200,6 +202,7 @@ export default function InterviewSessionPage({
           setIsPending(false)
         }
       } catch (error) {
+        // Silently ignore errors during polling
         console.debug("[Interviewer Poll] Error polling status:", error)
       }
     }, 1000) // Poll every 1 second
@@ -222,13 +225,34 @@ export default function InterviewSessionPage({
           console.log('Latest code loaded:', codeResponse)
         }
       } catch (error) {
-        // It's OK if no previous code exists - start with empty editor
-        console.debug("No previous code found or error loading:", error instanceof Error ? error.message : 'Unknown error')
+        // Log unexpected errors only
+        console.debug("Error loading latest code:", error instanceof Error ? error.message : 'Unknown error')
       }
     }
 
     loadLatestCode()
   }, [interviewId, isPending])
+
+  // Initialize code from question template if no previous code exists
+  useEffect(() => {
+    if (!interview?.question || !codeLanguage || candidateCode) return
+
+    const question = interview.question
+    let initialCode = ""
+
+    if (codeLanguage === "javascript" && question.initialCodeJavascript) {
+      initialCode = question.initialCodeJavascript
+    } else if (codeLanguage === "python" && question.initialCodePython) {
+      initialCode = question.initialCodePython
+    } else if (codeLanguage === "java" && question.initialCodeJava) {
+      initialCode = question.initialCodeJava
+    }
+
+    if (initialCode) {
+      setCandidateCode(initialCode)
+      console.log(`[Interviewer] Initialized ${codeLanguage} code from question template`)
+    }
+  }, [interview, codeLanguage, candidateCode])
 
   // Connect to WebSocket when interviewId is available
   useEffect(() => {
@@ -878,6 +902,7 @@ export default function InterviewSessionPage({
                       </p>
                     </div>
 
+                    {followUpQuestions && followUpQuestions.length > 0 ? (
                     <div className="space-y-2">
                       {followUpQuestions.map((q, idx) => {
                         const isExpanded = expandedQuestions.includes(idx)
@@ -915,6 +940,14 @@ export default function InterviewSessionPage({
                         )
                       })}
                     </div>
+                    ) : (
+                      <div className="flex items-center justify-center p-8">
+                        <div className="text-center">
+                          <HelpCircle className="size-12 text-muted-foreground mx-auto mb-3 opacity-50" />
+                          <p className="text-sm text-muted-foreground">No follow-up questions available</p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </TabsContent>
               </Tabs>

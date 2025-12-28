@@ -63,14 +63,9 @@ public class CodeController {
 
         log.info("Fetching latest code for interview {}", interviewId);
 
-        try {
-            CodeSubmissionResponse response = codeService.getLatestCode(interviewId);
-            return ResponseEntity.ok(response);
-
-        } catch (RuntimeException e) {
-            log.error("Error fetching code: {}", e.getMessage());
-            return ResponseEntity.notFound().build();
-        }
+        CodeSubmissionResponse response = codeService.getLatestCode(interviewId);
+        // Returns 200 OK even if no previous code exists - frontend will use template code
+        return ResponseEntity.ok(response);
     }
 
     /**

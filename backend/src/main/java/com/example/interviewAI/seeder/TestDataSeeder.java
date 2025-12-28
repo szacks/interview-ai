@@ -117,31 +117,53 @@ public class TestDataSeeder implements CommandLineRunner {
                     .collect(java.util.stream.Collectors.toList());
 
             if (!rateLimiterInterviews.isEmpty()) {
-                log.info("Rate Limiter interview already exists, updating question code templates");
+                log.info("Rate Limiter interview already exists, updating question code templates and interviewer");
                 // Update the Rate Limiter question with new code templates
                 updateRateLimiterQuestion();
+                // Update interviewer and company for all Rate Limiter interviews to use shaniravia@gmail.com
+                updateRateLimiterInterviewers();
                 return;
             }
 
-            // Get first company
-            java.util.List<Company> companies = (java.util.List<Company>) companyRepository.findAll();
-            if (companies.isEmpty()) {
-                log.warn("No companies found, cannot create Rate Limiter interview");
-                return;
-            }
-            Company company = companies.get(0);
-
-            // Get first interviewer
-            java.util.List<User> interviewers = (java.util.List<User>) userRepository.findAll();
-            User interviewer = null;
-            for (User user : interviewers) {
-                if (user.getRole() == RoleEnum.INTERVIEWER) {
-                    interviewer = user;
+            // Get shaniravia@gmail.com user to ensure we use her company
+            User shaniraviaUser = null;
+            java.util.List<User> allUsers = (java.util.List<User>) userRepository.findAll();
+            for (User user : allUsers) {
+                if ("shaniravia@gmail.com".equals(user.getEmail())) {
+                    shaniraviaUser = user;
+                    log.info("Found shaniravia@gmail.com (ID: {}, Company: {})", user.getId(),
+                            user.getCompany() != null ? user.getCompany().getId() : "null");
                     break;
                 }
             }
-            if (interviewer == null && !interviewers.isEmpty()) {
-                interviewer = interviewers.get(0);
+
+            // Get company from shaniravia if found, otherwise use first company
+            Company company = null;
+            if (shaniraviaUser != null && shaniraviaUser.getCompany() != null) {
+                company = shaniraviaUser.getCompany();
+                log.info("Using shaniravia's company: {} (ID: {})", company.getName(), company.getId());
+            } else {
+                java.util.List<Company> companies = (java.util.List<Company>) companyRepository.findAll();
+                if (companies.isEmpty()) {
+                    log.warn("No companies found, cannot create Rate Limiter interview");
+                    return;
+                }
+                company = companies.get(0);
+                log.info("Using first company: {} (ID: {})", company.getName(), company.getId());
+            }
+
+            // Use shaniravia as interviewer if found, otherwise get first interviewer
+            User interviewer = shaniraviaUser;
+            if (interviewer == null) {
+                for (User user : allUsers) {
+                    if (user.getRole() == RoleEnum.INTERVIEWER) {
+                        interviewer = user;
+                        break;
+                    }
+                }
+            }
+            if (interviewer == null && !allUsers.isEmpty()) {
+                interviewer = allUsers.get(0);
             }
             if (interviewer == null) {
                 log.warn("No interviewers found, cannot create Rate Limiter interview");
@@ -181,6 +203,45 @@ public class TestDataSeeder implements CommandLineRunner {
             log.info("Rate Limiter Interviewer Page: http://localhost:3000/interview/{}", rateLimiterInterview.getId());
         } catch (Exception e) {
             log.error("Error ensuring Rate Limiter interview", e);
+        }
+    }
+
+    private void updateRateLimiterInterviewers() {
+        try {
+            // Find shaniravia@gmail.com user
+            User targetInterviewer = null;
+            java.util.List<User> allUsers = (java.util.List<User>) userRepository.findAll();
+            for (User user : allUsers) {
+                if ("shaniravia@gmail.com".equals(user.getEmail())) {
+                    targetInterviewer = user;
+                    break;
+                }
+            }
+
+            if (targetInterviewer == null) {
+                log.warn("shaniravia@gmail.com user not found, cannot update Rate Limiter interview interviewer");
+                return;
+            }
+
+            if (targetInterviewer.getCompany() == null) {
+                log.warn("shaniravia@gmail.com user has no company assigned, cannot update Rate Limiter interviews");
+                return;
+            }
+
+            // Update all Rate Limiter interviews to have shaniravia@gmail.com as interviewer and her company
+            java.util.List<Interview> rateLimiterInterviews = interviewRepository.findAll().stream()
+                    .filter(i -> i.getQuestion() != null && "Rate Limiter".equals(i.getQuestion().getTitle()))
+                    .collect(java.util.stream.Collectors.toList());
+
+            for (Interview interview : rateLimiterInterviews) {
+                interview.setInterviewer(targetInterviewer);
+                interview.setCompany(targetInterviewer.getCompany());
+                interviewRepository.save(interview);
+                log.info("Updated Rate Limiter interview {} - Interviewer: shaniravia@gmail.com (ID: {}), Company: {} (ID: {})",
+                        interview.getId(), targetInterviewer.getId(), targetInterviewer.getCompany().getName(), targetInterviewer.getCompany().getId());
+            }
+        } catch (Exception e) {
+            log.error("Error updating Rate Limiter interview interviewers", e);
         }
     }
 

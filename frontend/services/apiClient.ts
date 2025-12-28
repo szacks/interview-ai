@@ -24,6 +24,10 @@ const apiClient: AxiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  validateStatus: function (status) {
+    // Don't throw on any status code; let interceptor handle it
+    return true;
+  }
 });
 
 // Request Interceptor
@@ -48,65 +52,77 @@ apiClient.interceptors.request.use(
 // Response Interceptor
 apiClient.interceptors.response.use(
   (response: AxiosResponse) => {
-    // Handle successful responses
-    console.log('[API Client] Successful response:', response.config.url, response.status);
-    return response.data;
-  },
-  (error: AxiosError<ApiResponse>) => {
-    // Handle error responses
+    // With validateStatus: () => true, all responses come here, including error statuses
+    const status = response.status;
+
+    if (status >= 200 && status < 300) {
+      // Success response
+      console.log('[API Client] Successful response:', response.config.url, status);
+      return response.data;
+    }
+
+    // Error response
     const apiError: ApiError = {
       message: 'An error occurred',
-      status: error.response?.status,
+      status: status,
+      code: response.statusText,
+    };
+
+    apiError.message = response.data?.error || response.data?.message || 'Server error';
+
+    // Handle specific status codes
+    switch (status) {
+      case 401:
+        // Unauthorized - only redirect if not on login/signup page
+        if (typeof window !== 'undefined') {
+          const currentPath = window.location.pathname;
+          if (!currentPath.includes('/login') && !currentPath.includes('/signup')) {
+            localStorage.removeItem('authToken');
+            window.location.href = '/login';
+          }
+        }
+        console.error('[API Client] Unauthorized:', { url: response.config.url });
+        break;
+      case 403:
+        apiError.message = 'Access denied';
+        console.error('[API Client] Forbidden:', { url: response.config.url });
+        break;
+      case 404:
+        apiError.message = 'Resource not found';
+        console.error('[API Client] Not found:', { url: response.config.url });
+        break;
+      case 500:
+        apiError.message = 'Internal server error';
+        console.error('[API Client] Server error:', { url: response.config.url, data: response.data });
+        break;
+      default:
+        console.error('[API Client] Error response:', {
+          url: response.config.url,
+          status: status,
+          message: apiError.message,
+        });
+    }
+
+    return Promise.reject(apiError);
+  },
+  (error: AxiosError<ApiResponse>) => {
+    // This handles network errors, not HTTP errors
+    const apiError: ApiError = {
+      message: error.message || 'Request failed',
       code: error.code,
     };
 
     if (error.response) {
-      // Server responded with error status
-      apiError.message = error.response.data?.error || error.response.data?.message || 'Server error';
       apiError.status = error.response.status;
-
-      console.log('[API Client] Error response:', {
-        url: error.config?.url,
-        status: error.response.status,
-        message: apiError.message,
-        data: error.response.data,
-      });
-
-      // Handle specific status codes
-      switch (error.response.status) {
-        case 401:
-          // Unauthorized - only redirect if not on login/signup page
-          if (typeof window !== 'undefined') {
-            const currentPath = window.location.pathname;
-            if (!currentPath.includes('/login') && !currentPath.includes('/signup')) {
-              localStorage.removeItem('authToken');
-              window.location.href = '/login';
-            }
-          }
-          break;
-        case 403:
-          apiError.message = 'Access denied';
-          break;
-        case 404:
-          apiError.message = 'Resource not found';
-          break;
-        case 500:
-          apiError.message = 'Internal server error';
-          break;
-        default:
-          break;
-      }
+      apiError.message = error.response.data?.error || error.response.data?.message || error.message;
+      console.error('[API Client] Response error:', { url: error.config?.url, status: error.response.status });
     } else if (error.request) {
-      // Request made but no response
       apiError.message = 'No response from server';
-      console.log('[API Client] No response from server:', error.request);
+      console.error('[API Client] No response:', error.config?.url);
     } else {
-      // Error setting up request
-      apiError.message = error.message || 'Request setup failed';
-      console.log('[API Client] Error setting up request:', error.message);
+      console.error('[API Client] Request setup error:', error.message);
     }
 
-    console.error('[API Client] Final API Error:', apiError);
     return Promise.reject(apiError);
   }
 );

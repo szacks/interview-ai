@@ -56,6 +56,33 @@ export interface Question {
   timeLimitMinutes: number
   supportedLanguages: string[]
   createdAt?: string
+  initialCodeJava?: string
+  initialCodePython?: string
+  initialCodeJavascript?: string
+  testCases?: TestCase[]
+  followUpQuestions?: FollowUpQuestion[]
+  requirementsJson?: string
+  testsJson?: string
+  rubricJson?: string
+  intentionalBugsJson?: string
+}
+
+export interface FollowUpQuestion {
+  id: number
+  question: string
+  answer?: string
+  orderIndex: number
+}
+
+export interface TestCase {
+  id: number
+  testName: string
+  passed?: boolean
+  expected?: any
+  actual?: any
+  executionTimeMs?: number
+  operationsJson?: string
+  assertionsJson?: string
 }
 
 export interface Candidate {

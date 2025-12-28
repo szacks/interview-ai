@@ -31,7 +31,11 @@ export const chatService = {
       // apiClient interceptor already extracts response.data
       const data = (await apiClient.get(`/chat/history/${interviewId}`)) as unknown;
       return Array.isArray(data) ? data : [];
-    } catch (error) {
+    } catch (error: any) {
+      // 404 is expected when no chat history exists - return empty array
+      if (error?.status === 404 || error?.message === 'Resource not found') {
+        return [];
+      }
       console.error('Error fetching chat history:', error);
       throw error;
     }

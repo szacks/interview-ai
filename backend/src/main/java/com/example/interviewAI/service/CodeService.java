@@ -55,11 +55,12 @@ public class CodeService {
 
     /**
      * Get latest code for an interview
+     * Returns empty response if no code submission exists (instead of throwing 404)
      */
     public CodeSubmissionResponse getLatestCode(Long interviewId) {
         return codeSubmissionRepository.findLatestByInterviewId(interviewId)
             .map(this::mapToResponse)
-            .orElseThrow(() -> new RuntimeException("No code submission found for interview"));
+            .orElse(CodeSubmissionResponse.builder().build()); // Return empty response instead of 404
     }
 
     /**

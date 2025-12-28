@@ -92,11 +92,14 @@ public class QuestionService {
 
         // Map follow-up questions
         if (question.getFollowUpQuestions() != null && !question.getFollowUpQuestions().isEmpty()) {
+            log.info("[Question {}] Converting {} follow-up questions", question.getId(), question.getFollowUpQuestions().size());
             response.setFollowUpQuestions(
                     question.getFollowUpQuestions().stream()
                             .map(this::convertFollowUpQuestionToResponse)
                             .collect(Collectors.toList())
             );
+        } else {
+            log.info("[Question {}] No follow-up questions found (followUpQuestions = {})", question.getId(), question.getFollowUpQuestions());
         }
 
         // Map test cases

@@ -72,13 +72,22 @@ public class InterviewController {
             @RequestHeader("Authorization") String bearerToken) {
         log.debug("Fetching interview with ID: {}", interviewId);
         User user = extractUserFromToken(bearerToken);
+        log.info("[Get Interview {}] User: {} (ID: {}, Role: {}, Company: {})",
+                interviewId, user.getEmail(), user.getId(), user.getRole(),
+                user.getCompany() != null ? user.getCompany().getId() : "null");
+
         InterviewResponse interview = interviewService.getInterviewById(interviewId);
+        log.info("[Get Interview {}] Interview found - Company ID: {}, Interviewer ID: {}",
+                interviewId, interview.getCompanyId(), interview.getInterviewerId());
 
         // Authorization: Admin can see all, Interviewer can only see their own
         if (!isUserAuthorizedForInterview(user, interview)) {
+            log.warn("[Get Interview {}] Authorization FAILED for user {} (role: {})",
+                    interviewId, user.getId(), user.getRole());
             throw new ForbiddenException("You are not authorized to view this interview");
         }
 
+        log.info("[Get Interview {}] Authorization PASSED", interviewId);
         return ResponseEntity.ok(interview);
     }
 

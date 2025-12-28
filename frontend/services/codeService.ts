@@ -49,10 +49,12 @@ export const codeService = {
 
   /**
    * Get latest code submission for an interview
+   * Returns empty response if no previous code exists
    */
   getLatestCode: async (interviewId: string | number): Promise<CodeSubmissionResponse> => {
     try {
       // apiClient interceptor already extracts response.data
+      // Backend now returns 200 OK with empty response if no code submission exists
       const data = await apiClient.get(
         `/code/latest/${interviewId}`
       );
