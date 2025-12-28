@@ -47,14 +47,11 @@ public class QuestionSeeder implements CommandLineRunner {
             // Update all Rate Limiter questions to have the correct description
             // (handles duplicates gracefully by updating all)
             log.info("Updating Rate Limiter question(s) with new description");
-            String newDescription = "Build a rate limiter that controls how many requests are allowed in a time window.\n\n" +
-                    "EXAMPLE:\n" +
-                    "  const limiter = new RateLimiter(3, 1000);  // 3 requests per second\n" +
-                    "  limiter.allowRequest();  // true\n" +
-                    "  limiter.allowRequest();  // true\n" +
-                    "  limiter.allowRequest();  // true\n" +
-                    "  limiter.allowRequest();  // false (limit reached)\n" +
-                    "  // After 1 second passes, requests are allowed again";
+            String newDescription = "Build a rate limiter that controls how many requests are allowed in a time window. EXAMPLE: \n" +
+                    "const limiter = new RateLimiter(3, 1000); // 3 requests per second limiter.allowRequest(); // true\n" +
+                    " limiter.allowRequest(); // true l\n" +
+                    "imiter.allowRequest(); // true l\n" +
+                    "imiter.allowRequest(); // false (limit reached) // After 1 second passes, requests are allowed again";
             for (Question question : existingRateLimiter) {
                 question.setDescription(newDescription);
             }
@@ -117,14 +114,11 @@ public class QuestionSeeder implements CommandLineRunner {
         // Question 5: Rate Limiter (Medium)
         Question rateLimiter = new Question();
         rateLimiter.setTitle("Rate Limiter");
-        rateLimiter.setDescription("Build a rate limiter that controls how many requests are allowed in a time window.\n\n" +
-                "EXAMPLE:\n" +
-                "  const limiter = new RateLimiter(3, 1000);  // 3 requests per second\n" +
-                "  limiter.allowRequest();  // true\n" +
-                "  limiter.allowRequest();  // true\n" +
-                "  limiter.allowRequest();  // true\n" +
-                "  limiter.allowRequest();  // false (limit reached)\n" +
-                "  // After 1 second passes, requests are allowed again");
+        rateLimiter.setDescription("Build a rate limiter that controls how many requests are allowed in a time window. EXAMPLE: \n" +
+                "const limiter = new RateLimiter(3, 1000); // 3 requests per second limiter.allowRequest(); // true\n" +
+                " limiter.allowRequest(); // true l\n" +
+                "imiter.allowRequest(); // true l\n" +
+                "imiter.allowRequest(); // false (limit reached) // After 1 second passes, requests are allowed again");
         rateLimiter.setDifficulty("medium");
         rateLimiter.setTimeLimitMinutes(30);
         rateLimiter.setSupportedLanguages("java,python,javascript");
