@@ -105,27 +105,13 @@ public class QuestionSeeder implements CommandLineRunner {
         Question rateLimiter = new Question();
         rateLimiter.setTitle("Rate Limiter");
         rateLimiter.setDescription("Build a rate limiter that controls how many requests are allowed in a time window.\n\n" +
-                "FUNCTIONS TO IMPLEMENT:\n\n" +
-                "1. RateLimiter(maxRequests, windowMs)\n" +
-                "   - Constructor that creates a rate limiter\n" +
-                "   - maxRequests: maximum allowed requests in the window\n" +
-                "   - windowMs: time window in milliseconds\n\n" +
-                "2. allowRequest()\n" +
-                "   - Instance method: call this for each incoming request\n" +
-                "   - Returns true if request is allowed\n" +
-                "   - Returns false if limit exceeded\n\n" +
                 "EXAMPLE:\n" +
-                "  const limiter = new RateLimiter(5, 1000);  // 5 requests per second\n" +
-                "  limiter.allowRequest();  // true\n" +
-                "  limiter.allowRequest();  // true\n" +
+                "  const limiter = new RateLimiter(3, 1000);  // 3 requests per second\n" +
                 "  limiter.allowRequest();  // true\n" +
                 "  limiter.allowRequest();  // true\n" +
                 "  limiter.allowRequest();  // true\n" +
                 "  limiter.allowRequest();  // false (limit reached)\n" +
-                "  // After 1 second passes, requests are allowed again\n\n" +
-                "USE CASE:\n" +
-                "Imagine this protects an API endpoint. You want to allow each user maximum 100 requests per minute to prevent abuse.\n\n" +
-                "HINT: Use Date.now() to get the current timestamp in milliseconds.");
+                "  // After 1 second passes, requests are allowed again");
         rateLimiter.setDifficulty("medium");
         rateLimiter.setTimeLimitMinutes(30);
         rateLimiter.setSupportedLanguages("java,python,javascript");
