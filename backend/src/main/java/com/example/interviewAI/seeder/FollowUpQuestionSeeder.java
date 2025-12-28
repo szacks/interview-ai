@@ -55,28 +55,33 @@ public class FollowUpQuestionSeeder implements CommandLineRunner {
                 log.info("Cleared {} existing Rate Limiter follow-up questions", existingCount);
             }
 
-            // Create new follow-up questions with updated content
+            // Create follow-up questions with updated content
             List<FollowUpQuestion> followUps = new ArrayList<>();
 
             followUps.add(createFollowUpQuestion(rateLimiter,
                     "What happens if this API gets 10,000 requests per second?",
-                    "The timestamps array would grow to 10,000 entries, using a lot of memory. We could use a sliding window counter with fixed buckets, or a token bucket algorithm. These use O(1) memory regardless of traffic.",
+                    "The timestamps array would grow to 10,000 entries, using a lot of memory. We should consider a more memory-efficient approach. We could use a sliding window counter with fixed buckets, or a token bucket algorithm. These use O(1) memory regardless of traffic.",
                     0));
+
+            followUps.add(createFollowUpQuestion(rateLimiter,
+                    "Can you think of a solution that uses fixed memory regardless of traffic?",
+                    "You could divide time into buckets and store counts instead of timestamps. Sliding Window Counter - divide window into smaller buckets, store count per bucket, sum recent buckets. This achieves O(k) space where k = number of buckets, independent of traffic.",
+                    1));
 
             followUps.add(createFollowUpQuestion(rateLimiter,
                     "What's the tradeoff between your current solution and a fixed-memory solution?",
                     "Current solution is precise but uses O(n) memory. Fixed-memory solutions are approximate but use O(1) memory. Current solution trades precision and simplicity for memory usage. Fixed-memory solutions like sliding window counter offer better scalability but sacrifice precision at bucket boundaries.",
-                    1));
+                    2));
 
             followUps.add(createFollowUpQuestion(rateLimiter,
                     "What if this needs to work across multiple servers?",
                     "You would need to store the rate limiter state in a shared location like Redis. Use Redis or a distributed cache to store the rate limiter state. Handle race conditions with atomic operations or Lua scripts. Consider eventual consistency trade-offs.",
-                    2));
+                    3));
 
             followUps.add(createFollowUpQuestion(rateLimiter,
                     "How would you properly test a time-based function like this?",
                     "Inject the time function so tests don't depend on real time. Mock Date.now() to control the clock. Dependency injection for the time source enables deterministic testing. Mock Date.now() to test boundary conditions and edge cases without waiting for real time to pass.",
-                    3));
+                    4));
 
             // Add new follow-up questions to the Question
             // This will be saved when we save the Question due to cascade
