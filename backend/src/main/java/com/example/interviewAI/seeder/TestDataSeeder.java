@@ -194,7 +194,8 @@ public class TestDataSeeder implements CommandLineRunner {
             Question rateLimiter = rateLimiterQuestions.get(0);
 
             // Update description with new function signatures
-            rateLimiter.setDescription("Build a rate limiter that controls how many requests are allowed in a time window.\n\n" +
+            rateLimiter.setDescription("Build a rate limiter that controls how many requests are allowed in a time window.\n" +
+                    "\n" +
                     "EXAMPLE:\n" +
                     "const limiter = new RateLimiter(3, 1000); // 3 requests per second\n" +
                     "limiter.allowRequest(); // true\n" +

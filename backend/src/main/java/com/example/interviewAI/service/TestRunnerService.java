@@ -121,8 +121,8 @@ public class TestRunnerService {
                       testId,
                       name,
                       passed: result.passed,
-                      expected: String(result.expected),
-                      actual: String(result.actual),
+                      expected: typeof result.expected === 'string' ? result.expected : JSON.stringify(result.expected),
+                      actual: typeof result.actual === 'string' ? result.actual : JSON.stringify(result.actual),
                       executionTimeMs: Date.now() - startTime
                     });
                   } catch (error) {
@@ -159,11 +159,16 @@ public class TestRunnerService {
         sb.append(String.format("runTest(%d, '%s', () => {\n", tc.getId(), escapeString(tc.getTestName())));
 
         try {
-            // Parse operations from JSON
+            // Parse operations from JSON and collect stored variables (maintaining order)
+            Set<String> storedVars = new java.util.LinkedHashSet<>();
             if (tc.getOperationsJson() != null && !tc.getOperationsJson().isEmpty()) {
                 JsonNode operations = objectMapper.readTree(tc.getOperationsJson());
                 if (operations.isArray()) {
                     for (JsonNode op : operations) {
+                        // Track variables that are stored for assertions
+                        if (op.has("store")) {
+                            storedVars.add(op.get("store").asText());
+                        }
                         sb.append("  ").append(generateJavaScriptOperation(op)).append("\n");
                     }
                 }
@@ -173,6 +178,13 @@ public class TestRunnerService {
             if (tc.getAssertionsJson() != null && !tc.getAssertionsJson().isEmpty()) {
                 JsonNode assertions = objectMapper.readTree(tc.getAssertionsJson());
                 sb.append("  const expected = ").append(assertions.toString()).append(";\n");
+
+                // Build result object from stored variables
+                sb.append("  const result = {};\n");
+                for (String varName : storedVars) {
+                    sb.append(String.format("  result['%s'] = %s;\n", varName, varName));
+                }
+
                 sb.append("  return assertEquals(expected, result);\n");
             } else {
                 sb.append("  return { passed: true, expected: 'N/A', actual: 'N/A' };\n");
