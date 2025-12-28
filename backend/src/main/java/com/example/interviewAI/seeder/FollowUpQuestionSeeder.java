@@ -60,7 +60,7 @@ public class FollowUpQuestionSeeder implements CommandLineRunner {
 
             followUps.add(createFollowUpQuestion(rateLimiter,
                     "What happens if this API gets 10,000 requests per second?",
-                    "The timestamps array would grow to 10,000 entries, using a lot of memory. We should consider a more memory-efficient approach. We could use a sliding window counter with fixed buckets, or a token bucket algorithm. These use O(1) memory regardless of traffic.",
+                    "The timestamps array would grow to 10,000 entries, using a lot of memory. We should consider a more memory-efficient approach.",
                     0));
 
             followUps.add(createFollowUpQuestion(rateLimiter,
