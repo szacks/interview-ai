@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -31,22 +32,34 @@ public class QuestionSeeder implements CommandLineRunner {
     private CodeSubmissionRepository codeSubmissionRepository;
 
     @Override
+    @Transactional
     public void run(String... args) throws Exception {
         // Delete old questions and keep only Rate Limiter
         cleanupOldQuestions();
 
         // Check if Rate Limiter exists
-        Question rateLimiterQuestion = questionRepository.findAll().stream()
-                .filter(q -> q.getTitle().equals("Rate Limiter"))
-                .findFirst()
-                .orElse(null);
-
-        if (rateLimiterQuestion == null) {
+        List<Question> existingRateLimiter = questionRepository.findByTitle("Rate Limiter");
+        if (existingRateLimiter.isEmpty()) {
             log.info("Starting question database seeding...");
             seedQuestions();
             log.info("Question seeding completed successfully");
         } else {
-            log.info("Rate Limiter question already exists in database");
+            // Update all Rate Limiter questions to have the correct description
+            // (handles duplicates gracefully by updating all)
+            log.info("Updating Rate Limiter question(s) with new description");
+            String newDescription = "Build a rate limiter that controls how many requests are allowed in a time window.\n\n" +
+                    "EXAMPLE:\n" +
+                    "  const limiter = new RateLimiter(3, 1000);  // 3 requests per second\n" +
+                    "  limiter.allowRequest();  // true\n" +
+                    "  limiter.allowRequest();  // true\n" +
+                    "  limiter.allowRequest();  // true\n" +
+                    "  limiter.allowRequest();  // false (limit reached)\n" +
+                    "  // After 1 second passes, requests are allowed again";
+            for (Question question : existingRateLimiter) {
+                question.setDescription(newDescription);
+            }
+            questionRepository.saveAll(existingRateLimiter);
+            log.info("Rate Limiter description updated successfully for {} question(s)", existingRateLimiter.size());
         }
     }
 
