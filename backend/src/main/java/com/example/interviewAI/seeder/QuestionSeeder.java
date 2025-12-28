@@ -55,11 +55,19 @@ public class QuestionSeeder implements CommandLineRunner {
                     "limiter.allowRequest(); // true\n" +
                     "limiter.allowRequest(); // false (limit reached)\n" +
                     "// After 1 second passes, requests are allowed again";
+            int updateCount = 0;
             for (Question question : existingRateLimiter) {
-                question.setDescription(newDescription);
+                try {
+                    log.info("Updating Rate Limiter question ID: {}", question.getId());
+                    question.setDescription(newDescription);
+                    Question saved = questionRepository.save(question);
+                    log.info("Successfully saved Rate Limiter ID: {} with description length: {}", saved.getId(), saved.getDescription().length());
+                    updateCount++;
+                } catch (Exception e) {
+                    log.error("Failed to update Rate Limiter ID: {}: {}", question.getId(), e.getMessage());
+                }
             }
-            questionRepository.saveAll(existingRateLimiter);
-            log.info("Rate Limiter description updated successfully for {} question(s)", existingRateLimiter.size());
+            log.info("Rate Limiter description updated successfully for {} question(s) out of {}", updateCount, existingRateLimiter.size());
         }
     }
 
