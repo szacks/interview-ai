@@ -253,12 +253,14 @@ public class TestRunnerService {
                     start_time = time.time()
                     try:
                         result = test_fn()
+                        expected_str = result['expected'] if isinstance(result['expected'], str) else json.dumps(result['expected'])
+                        actual_str = result['actual'] if isinstance(result['actual'], str) else json.dumps(result['actual'])
                         results.append({
                             'testId': test_id,
                             'name': name,
                             'passed': result['passed'],
-                            'expected': str(result['expected']),
-                            'actual': str(result['actual']),
+                            'expected': expected_str,
+                            'actual': actual_str,
                             'executionTimeMs': int((time.time() - start_time) * 1000)
                         })
                     except Exception as e:
@@ -294,10 +296,16 @@ public class TestRunnerService {
         sb.append(String.format("def %s():\n", funcName));
 
         try {
+            // Parse operations from JSON and collect stored variables (maintaining order)
+            Set<String> storedVars = new java.util.LinkedHashSet<>();
             if (tc.getOperationsJson() != null && !tc.getOperationsJson().isEmpty()) {
                 JsonNode operations = objectMapper.readTree(tc.getOperationsJson());
                 if (operations.isArray()) {
                     for (JsonNode op : operations) {
+                        // Track variables that are stored for assertions
+                        if (op.has("store")) {
+                            storedVars.add(op.get("store").asText());
+                        }
                         sb.append("    ").append(generatePythonOperation(op)).append("\n");
                     }
                 }
@@ -305,7 +313,16 @@ public class TestRunnerService {
 
             if (tc.getAssertionsJson() != null && !tc.getAssertionsJson().isEmpty()) {
                 JsonNode assertions = objectMapper.readTree(tc.getAssertionsJson());
-                sb.append("    expected = ").append(assertions.toString()).append("\n");
+                // Convert JSON to Python dict format (true -> True, false -> False)
+                String pythonDict = jsonToPythonDict(assertions);
+                sb.append("    expected = ").append(pythonDict).append("\n");
+
+                // Build result dict from stored variables
+                sb.append("    result = {}\n");
+                for (String varName : storedVars) {
+                    sb.append(String.format("    result['%s'] = %s\n", varName, varName));
+                }
+
                 sb.append("    return assert_equals(expected, result)\n");
             } else {
                 sb.append("    return {'passed': True, 'expected': 'N/A', 'actual': 'N/A'}\n");
@@ -334,12 +351,14 @@ public class TestRunnerService {
             case "call" -> {
                 String varName = op.has("var") ? op.get("var").asText() : "instance";
                 String method = op.get("method").asText();
+                // Convert camelCase to snake_case for Python
+                String pythonMethod = camelToSnakeCase(method);
                 String args = op.has("args") ? formatArgs(op.get("args")) : "";
                 String store = op.has("store") ? op.get("store").asText() : null;
                 if (store != null) {
-                    yield String.format("%s = %s.%s(%s)", store, varName, method, args);
+                    yield String.format("%s = %s.%s(%s)", store, varName, pythonMethod, args);
                 } else {
-                    yield String.format("%s.%s(%s)", varName, method, args);
+                    yield String.format("%s.%s(%s)", varName, pythonMethod, args);
                 }
             }
             case "assign" -> {
@@ -353,6 +372,42 @@ public class TestRunnerService {
             }
             default -> "# Unknown operation: " + type;
         };
+    }
+
+    private String camelToSnakeCase(String camelCase) {
+        return camelCase.replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
+    }
+
+    private String jsonToPythonDict(JsonNode node) {
+        if (node.isBoolean()) {
+            return node.asBoolean() ? "True" : "False";
+        } else if (node.isNumber()) {
+            return node.toString();
+        } else if (node.isTextual()) {
+            return "\"" + node.asText().replace("\"", "\\\"") + "\"";
+        } else if (node.isArray()) {
+            StringBuilder sb = new StringBuilder("[");
+            for (int i = 0; i < node.size(); i++) {
+                if (i > 0) sb.append(", ");
+                sb.append(jsonToPythonDict(node.get(i)));
+            }
+            sb.append("]");
+            return sb.toString();
+        } else if (node.isObject()) {
+            StringBuilder sb = new StringBuilder("{");
+            boolean first = true;
+            var fields = node.fields();
+            while (fields.hasNext()) {
+                var entry = fields.next();
+                if (!first) sb.append(", ");
+                sb.append("\"").append(entry.getKey()).append("\": ");
+                sb.append(jsonToPythonDict(entry.getValue()));
+                first = false;
+            }
+            sb.append("}");
+            return sb.toString();
+        }
+        return "None";
     }
 
     // ========== Java Harness ==========
