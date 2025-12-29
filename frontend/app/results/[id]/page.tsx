@@ -730,7 +730,7 @@ export default function ScoringPage() {
 
           {/* Sidebar - Summary & Review */}
           <div className="space-y-6">
-            <Card className="sticky top-20">
+            <Card className="">
               <CardHeader>
                 <CardTitle>Final Score</CardTitle>
               </CardHeader>
