@@ -39,7 +39,7 @@ export default function CandidateInterviewPage({
   const [interviewToken, setInterviewToken] = useState<string | null>(null)
   const [isResolvingToken, setIsResolvingToken] = useState(true)
   const [interview, setInterview] = useState<any>(null)
-  const [language, setLanguage] = useState("javascript")
+  const [language, setLanguage] = useState("python")
   const [code, setCode] = useState("")
   const [isRunning, setIsRunning] = useState(false)
   const [testResults, setTestResults] = useState<Array<{ name: string; passed: boolean }>>([])
@@ -48,7 +48,7 @@ export default function CandidateInterviewPage({
 
   // Candidate setup state
   const [candidateFullName, setCandidateFullName] = useState("")
-  const [selectedLanguage, setSelectedLanguage] = useState("javascript")
+  const [selectedLanguage, setSelectedLanguage] = useState("python")
   const [isSubmittingSetup, setIsSubmittingSetup] = useState(false)
 
   // Local chat state
@@ -112,6 +112,7 @@ export default function CandidateInterviewPage({
     const pollInterval = setInterval(async () => {
       try {
         const interview = (await apiClient.get(`/interviews/link/${interviewToken}`)) as any
+        console.log("[Poll] Full response:", interview)
         console.log("[Poll] Interview status:", interview?.status, "Current frontend status:", status)
 
         // Map backend status to frontend status
@@ -119,9 +120,14 @@ export default function CandidateInterviewPage({
           console.log("✓ Interview started by interviewer, transitioning to live")
           setStatus("live")
         }
-      } catch (error) {
-        // Silently ignore errors during polling - normal if interview not found yet
-        console.debug("[Poll] Error:", error)
+      } catch (error: any) {
+        // Log actual errors for debugging
+        console.error("[Poll] Error details:", {
+          message: error?.message,
+          status: error?.status,
+          code: error?.code,
+          fullError: error
+        })
       }
     }, 1000) // Poll every 1 second
 
@@ -275,6 +281,20 @@ export default function CandidateInterviewPage({
     setTestResults([])
 
     try {
+      // First, submit the code so it's saved in the database
+      try {
+        await codeService.submitCode({
+          interviewId: interviewId,
+          language: language,
+          code: code,
+        })
+        console.log("[Candidate] Code submitted successfully")
+      } catch (submitError) {
+        console.error("[Candidate] Failed to submit code:", submitError)
+        // Continue with test execution even if submission fails
+      }
+
+      // Then execute the code and run tests
       const result = await codeService.executeCode({
         interviewId: interviewId,
         language: language,

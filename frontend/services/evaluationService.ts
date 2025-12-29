@@ -68,6 +68,13 @@ export const evaluationService = {
   },
 
   /**
+   * Get latest code execution results for an interview
+   */
+  async getCodeExecutionResults(interviewId: number): Promise<any> {
+    return apiClient.get(`/code/execution/${interviewId}`);
+  },
+
+  /**
    * Submit or update an evaluation
    */
   async submitEvaluation(request: EvaluationRequest): Promise<EvaluationResponse> {

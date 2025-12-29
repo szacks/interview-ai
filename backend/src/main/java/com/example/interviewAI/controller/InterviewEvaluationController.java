@@ -9,9 +9,11 @@ import com.example.interviewAI.enums.RoleEnum;
 import com.example.interviewAI.exception.ForbiddenException;
 import com.example.interviewAI.exception.ResourceNotFoundException;
 import com.example.interviewAI.exception.UnauthorizedException;
+import com.example.interviewAI.repository.CodeExecutionRepository;
 import com.example.interviewAI.repository.InterviewEvaluationRepository;
 import com.example.interviewAI.repository.InterviewRepository;
 import com.example.interviewAI.repository.UserRepository;
+import com.example.interviewAI.entity.CodeExecution;
 import com.example.interviewAI.security.JwtTokenProvider;
 import com.example.interviewAI.service.ScoringService;
 import jakarta.validation.Valid;
@@ -21,9 +23,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.interviewAI.service.PdfExportService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * REST controller for interview evaluation/scoring operations.
@@ -37,9 +44,13 @@ public class InterviewEvaluationController {
 
     private final InterviewEvaluationRepository evaluationRepository;
     private final InterviewRepository interviewRepository;
+    private final CodeExecutionRepository codeExecutionRepository;
     private final ScoringService scoringService;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
+
+    @Autowired
+    private PdfExportService pdfExportService;
 
     /**
      * Submit or update an evaluation for an interview.
@@ -75,10 +86,19 @@ public class InterviewEvaluationController {
         if (evaluation.getId() == null) {
             evaluation.setInterview(interview);
             evaluation.setCreatedAt(LocalDateTime.now());
-            // Calculate auto score from tests (placeholder - in reality this would come from test execution)
-            evaluation.setTestsPassed(7);
-            evaluation.setTestsTotal(7);
-            evaluation.setAutoScoreOriginal(scoringService.calculateAutoScoreFromTests(7, 7));
+            // Fetch real test results from code execution
+            Optional<CodeExecution> latestExecution = codeExecutionRepository.findLatestByInterviewId(interview.getId());
+            if (latestExecution.isPresent()) {
+                CodeExecution execution = latestExecution.get();
+                evaluation.setTestsPassed(execution.getTestsPassed() != null ? execution.getTestsPassed() : 0);
+                evaluation.setTestsTotal(execution.getTestsTotal() != null ? execution.getTestsTotal() : 0);
+                evaluation.setAutoScoreOriginal(execution.getAutoScore() != null ? execution.getAutoScore() : 0);
+            } else {
+                // No test execution found - use placeholder
+                evaluation.setTestsPassed(0);
+                evaluation.setTestsTotal(0);
+                evaluation.setAutoScoreOriginal(0);
+            }
         }
 
         // Update fields
@@ -189,6 +209,59 @@ public class InterviewEvaluationController {
     }
 
     /**
+     * Export evaluation as PDF.
+     */
+    @GetMapping("/export/pdf/{interviewId}")
+    public ResponseEntity<byte[]> exportEvaluationAsPdf(
+            @PathVariable Long interviewId,
+            @RequestHeader(value = "Authorization", required = false) String bearerToken) {
+        log.info("Exporting evaluation as PDF for interview: {}", interviewId);
+
+        // Authorization is optional for now (for testing)
+        if (bearerToken != null && !bearerToken.isEmpty()) {
+            try {
+                User user = extractUserFromToken(bearerToken);
+                // Authorization: Admin or Interviewer
+                if (!user.getRole().equals(RoleEnum.ADMIN) && !user.getRole().equals(RoleEnum.INTERVIEWER)) {
+                    throw new ForbiddenException("You are not authorized to export evaluations");
+                }
+            } catch (Exception e) {
+                log.debug("Could not extract user from token, allowing anonymous access for testing");
+            }
+        }
+
+        // Get interview
+        Interview interview = interviewRepository.findById(interviewId)
+                .orElseThrow(() -> new ResourceNotFoundException("Interview", "id", interviewId));
+
+        // Get evaluation if exists
+        InterviewEvaluation evaluation = evaluationRepository.findByInterviewId(interviewId)
+                .orElse(null);
+
+        // Create response with evaluation data
+        EvaluationResponse response;
+        if (evaluation == null) {
+            response = createSkeletonResponse(interview);
+        } else {
+            response = toResponse(evaluation, interview);
+        }
+
+        // Generate PDF
+        byte[] pdfContent = pdfExportService.generateEvaluationPdf(response);
+
+        // Return PDF with appropriate headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("attachment",
+            "interview_evaluation_" + interviewId + ".pdf");
+        headers.setContentLength(pdfContent.length);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(pdfContent);
+    }
+
+    /**
      * Convert entity to response DTO.
      */
     private EvaluationResponse toResponse(InterviewEvaluation evaluation, Interview interview) {
@@ -261,10 +334,19 @@ public class InterviewEvaluationController {
         EvaluationResponse response = new EvaluationResponse();
         response.setInterviewId(interview.getId());
 
-        // Placeholder auto score (in reality, this would come from test execution results)
-        response.setTestsPassed(7);
-        response.setTestsTotal(7);
-        response.setAutoScoreOriginal(100); // Tests all passed
+        // Fetch real test results from code execution
+        Optional<CodeExecution> latestExecution = codeExecutionRepository.findLatestByInterviewId(interview.getId());
+        if (latestExecution.isPresent()) {
+            CodeExecution execution = latestExecution.get();
+            response.setTestsPassed(execution.getTestsPassed() != null ? execution.getTestsPassed() : 0);
+            response.setTestsTotal(execution.getTestsTotal() != null ? execution.getTestsTotal() : 0);
+            response.setAutoScoreOriginal(execution.getAutoScore() != null ? execution.getAutoScore() : 0);
+        } else {
+            // No test execution found - use placeholder
+            response.setTestsPassed(0);
+            response.setTestsTotal(0);
+            response.setAutoScoreOriginal(0);
+        }
 
         // Interview details
         response.setCandidateName(interview.getCandidate() != null ? interview.getCandidate().getName() : null);
