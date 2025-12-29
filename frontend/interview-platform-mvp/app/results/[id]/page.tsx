@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Textarea } from "@/components/ui/textarea"
@@ -22,6 +23,8 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import Editor from "@monaco-editor/react"
+import { useToast } from "@/hooks/use-toast"
+import { evaluationService } from "@/services/evaluationService"
 
 // Mock data
 const mockResult = {
@@ -101,8 +104,46 @@ function getLongUrl(shortCode) {
 }
 
 export default function ResultsPage() {
+  const params = useParams()
+  const interviewId = Number(params.id)
+  const { toast } = useToast()
   const [scorecard, setScorecard] = useState(mockResult.scorecard)
   const [recommendation, setRecommendation] = useState<"hire" | "maybe" | "no" | null>(null)
+  const [isSaving, setIsSaving] = useState(false)
+
+  const handleSaveDraft = async () => {
+    try {
+      setIsSaving(true)
+
+      const draftData = {
+        interviewId,
+        manualScoreProblemSolving: scorecard.understanding,
+        manualScoreAlgorithmic: scorecard.problemSolving,
+        manualScoreAiCollaboration: scorecard.aiCollaboration,
+        manualScoreCommunication: scorecard.communication,
+        customObservations: `Strengths: ${scorecard.strengths}\n\nAreas for Improvement: ${scorecard.weaknesses}`,
+        isDraft: true,
+      }
+
+      await evaluationService.saveDraft(draftData)
+
+      toast({
+        title: "Draft Saved",
+        description: "Your evaluation has been saved as a draft.",
+        duration: 3000,
+      })
+    } catch (error) {
+      console.error("Failed to save draft:", error)
+      toast({
+        title: "Error",
+        description: "Failed to save draft. Please try again.",
+        variant: "destructive",
+        duration: 3000,
+      })
+    } finally {
+      setIsSaving(false)
+    }
+  }
 
   const calculateFinalScore = () => {
     const manualScore =
@@ -444,7 +485,9 @@ export default function ResultsPage() {
                   </div>
                 </div>
 
-                <Button className="w-full">Save Scorecard</Button>
+                <Button className="w-full" onClick={handleSaveDraft} disabled={isSaving}>
+                  {isSaving ? "Saving..." : "Save Scorecard"}
+                </Button>
               </CardContent>
             </Card>
           </div>
