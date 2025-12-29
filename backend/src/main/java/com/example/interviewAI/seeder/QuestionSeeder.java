@@ -44,9 +44,24 @@ public class QuestionSeeder implements CommandLineRunner {
             seedQuestions();
             log.info("Question seeding completed successfully");
         } else {
-            // Update all Rate Limiter questions to have the correct description
-            // (handles duplicates gracefully by updating all)
-            log.info("Updating Rate Limiter question(s) with new description");
+            // If there are duplicate Rate Limiter questions, keep only the first one and delete the rest
+            if (existingRateLimiter.size() > 1) {
+                log.warn("Found {} duplicate Rate Limiter questions! Keeping the first one and deleting duplicates.", existingRateLimiter.size());
+                Question primaryQuestion = existingRateLimiter.get(0);
+
+                for (int i = 1; i < existingRateLimiter.size(); i++) {
+                    Question duplicate = existingRateLimiter.get(i);
+                    try {
+                        log.info("Deleting duplicate Rate Limiter question ID: {}", duplicate.getId());
+                        questionRepository.delete(duplicate);
+                    } catch (Exception e) {
+                        log.error("Failed to delete duplicate Rate Limiter ID: {}: {}", duplicate.getId(), e.getMessage());
+                    }
+                }
+            }
+
+            // Update the (now single) Rate Limiter question with the correct description
+            log.info("Updating Rate Limiter question with new description");
             String newDescription = "Build a rate limiter that controls how many requests are allowed in a time window.\n" +
                     "\n" +
                     "EXAMPLE:\n" +
@@ -56,19 +71,15 @@ public class QuestionSeeder implements CommandLineRunner {
                     "limiter.allowRequest(); // true\n" +
                     "limiter.allowRequest(); // false (limit reached)\n" +
                     "// After 1 second passes, requests are allowed again";
-            int updateCount = 0;
-            for (Question question : existingRateLimiter) {
-                try {
-                    log.info("Updating Rate Limiter question ID: {}", question.getId());
-                    question.setDescription(newDescription);
-                    Question saved = questionRepository.save(question);
-                    log.info("Successfully saved Rate Limiter ID: {} with description length: {}", saved.getId(), saved.getDescription().length());
-                    updateCount++;
-                } catch (Exception e) {
-                    log.error("Failed to update Rate Limiter ID: {}: {}", question.getId(), e.getMessage());
-                }
+            try {
+                Question primaryQuestion = existingRateLimiter.get(0);
+                log.info("Updating Rate Limiter question ID: {}", primaryQuestion.getId());
+                primaryQuestion.setDescription(newDescription);
+                Question saved = questionRepository.save(primaryQuestion);
+                log.info("Successfully saved Rate Limiter ID: {} with description length: {}", saved.getId(), saved.getDescription().length());
+            } catch (Exception e) {
+                log.error("Failed to update Rate Limiter: {}", e.getMessage());
             }
-            log.info("Rate Limiter description updated successfully for {} question(s) out of {}", updateCount, existingRateLimiter.size());
         }
     }
 
