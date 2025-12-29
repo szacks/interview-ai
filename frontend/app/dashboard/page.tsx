@@ -435,8 +435,8 @@ export default function DashboardPage() {
                     <h3 className="font-semibold text-lg truncate">{interview.candidateName || interview.candidate?.name || "Unnamed Candidate"}</h3>
                     {getStatusBadge(interview.status)}
                     {(interview.status === "completed" || interview.status === "ended") && evaluationStatuses[interview.id] && (
-                      <Badge variant={evaluationStatuses[interview.id].isDraft ? "destructive" : "default"} className={evaluationStatuses[interview.id].isDraft ? "animate-pulse" : ""}>
-                        {evaluationStatuses[interview.id].isDraft ? "⚠️ Draft" : "✓ Submitted"}
+                      <Badge className={evaluationStatuses[interview.id].isDraft ? "bg-yellow-500 hover:bg-yellow-600 text-black" : ""}>
+                        {evaluationStatuses[interview.id].isDraft ? "Draft" : "Submitted"}
                       </Badge>
                     )}
                   </div>

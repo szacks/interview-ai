@@ -856,12 +856,12 @@ export default function ScoringPage() {
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Status</span>
                   {evaluation.isDraft ? (
-                    <Badge variant="destructive" className="animate-pulse">
-                      ⚠️ Draft - Not Submitted
+                    <Badge className="bg-yellow-500 hover:bg-yellow-600 text-black">
+                      Draft
                     </Badge>
                   ) : (
                     <Badge variant="default">
-                      ✓ Submitted
+                      Submitted
                     </Badge>
                   )}
                 </div>
