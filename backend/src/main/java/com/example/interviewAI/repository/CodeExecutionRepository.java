@@ -20,6 +20,14 @@ public interface CodeExecutionRepository extends JpaRepository<CodeExecution, Lo
     /**
      * Find the latest code execution for an interview
      */
-    @Query("SELECT ce FROM CodeExecution ce WHERE ce.interview.id = :interviewId ORDER BY ce.executedAt DESC LIMIT 1")
-    Optional<CodeExecution> findLatestByInterviewId(@Param("interviewId") Long interviewId);
+    @Query("SELECT ce FROM CodeExecution ce WHERE ce.interview.id = :interviewId ORDER BY ce.executedAt DESC")
+    List<CodeExecution> findByInterviewIdOrderByExecutedAtDescAll(@Param("interviewId") Long interviewId);
+
+    /**
+     * Get the latest code execution - uses default method to handle LIMIT
+     */
+    default Optional<CodeExecution> findLatestByInterviewId(Long interviewId) {
+        List<CodeExecution> executions = findByInterviewIdOrderByExecutedAtDescAll(interviewId);
+        return executions.isEmpty() ? Optional.empty() : Optional.of(executions.get(0));
+    }
 }

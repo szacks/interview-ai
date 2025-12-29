@@ -253,6 +253,11 @@ export default function ScoringPage() {
           // Update evaluation with real test counts
           evalData.testsPassed = actualTestsPassed
           evalData.testsTotal = actualTestsTotal
+
+          // Also update auto score if available from execution
+          if (executionData.autoScore !== undefined) {
+            evalData.autoScoreOriginal = executionData.autoScore
+          }
         }
 
         setEvaluation(evalData)
