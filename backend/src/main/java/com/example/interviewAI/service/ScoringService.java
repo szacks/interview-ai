@@ -9,8 +9,8 @@ public class ScoringService {
 
     /**
      * Calculate the manual score from the 4 parameters.
-     * Each parameter is 0-10, total is 0-40, normalized to 0-100.
-     * Formula: (sum of all params / 40) * 100
+     * Each parameter is 0-5, total is 0-20, normalized to 0-100.
+     * Formula: (sum of all params / 20) * 100
      */
     public int calculateManualScore(
             Integer communication,
@@ -23,11 +23,11 @@ public class ScoringService {
         int prob = problemSolving != null ? problemSolving : 0;
         int ai = aiCollaboration != null ? aiCollaboration : 0;
 
-        int total = comm + algo + prob + ai; // 0-40
-        int normalized = (int) Math.round((total / 40.0) * 100);
+        int total = comm + algo + prob + ai; // 0-20
+        int normalized = (int) Math.round((total / 20.0) * 100);
 
-        log.debug("Manual score calculation: {}/{} + {}/{} + {}/{} + {}/{} = {}/40 = {}/100",
-                comm, 10, algo, 10, prob, 10, ai, 10, total, normalized);
+        log.debug("Manual score calculation: {}/{} + {}/{} + {}/{} + {}/{} = {}/20 = {}/100",
+                comm, 5, algo, 5, prob, 5, ai, 5, total, normalized);
 
         return Math.min(100, Math.max(0, normalized));
     }
@@ -75,7 +75,7 @@ public class ScoringService {
     }
 
     /**
-     * Calculate the sum of manual scores (0-40).
+     * Calculate the sum of manual scores (0-20).
      */
     public int calculateManualScoreTotal(
             Integer communication,

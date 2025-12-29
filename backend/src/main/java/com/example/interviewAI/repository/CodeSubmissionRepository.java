@@ -14,6 +14,11 @@ public interface CodeSubmissionRepository extends JpaRepository<CodeSubmission, 
      * Get the latest code submission for an interview
      */
     @Query("SELECT cs FROM CodeSubmission cs WHERE cs.interview.id = :interviewId " +
-           "ORDER BY cs.timestamp DESC LIMIT 1")
-    Optional<CodeSubmission> findLatestByInterviewId(@Param("interviewId") Long interviewId);
+           "ORDER BY cs.timestamp DESC")
+    java.util.List<CodeSubmission> findByInterviewIdOrderByTimestampDesc(@Param("interviewId") Long interviewId);
+
+    default Optional<CodeSubmission> findLatestByInterviewId(Long interviewId) {
+        java.util.List<CodeSubmission> submissions = findByInterviewIdOrderByTimestampDesc(interviewId);
+        return submissions.isEmpty() ? Optional.empty() : Optional.of(submissions.get(0));
+    }
 }

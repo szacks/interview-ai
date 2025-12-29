@@ -4,10 +4,13 @@ import com.example.interviewAI.dto.CodeExecutionRequest;
 import com.example.interviewAI.dto.CodeExecutionResponse;
 import com.example.interviewAI.dto.DockerExecutionResult;
 import com.example.interviewAI.dto.TestCaseResult;
+import com.example.interviewAI.entity.CodeExecution;
 import com.example.interviewAI.entity.Interview;
 import com.example.interviewAI.entity.TestCase;
+import com.example.interviewAI.repository.CodeExecutionRepository;
 import com.example.interviewAI.repository.InterviewRepository;
 import com.example.interviewAI.repository.TestCaseRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -20,19 +23,23 @@ public class CodeExecutionService {
 
     private final InterviewRepository interviewRepository;
     private final TestCaseRepository testCaseRepository;
+    private final CodeExecutionRepository codeExecutionRepository;
     private final DockerSandboxService dockerSandboxService;
     private final TestRunnerService testRunnerService;
     private final ScoringService scoringService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public CodeExecutionService(
             InterviewRepository interviewRepository,
             TestCaseRepository testCaseRepository,
+            CodeExecutionRepository codeExecutionRepository,
             DockerSandboxService dockerSandboxService,
             TestRunnerService testRunnerService,
             ScoringService scoringService
     ) {
         this.interviewRepository = interviewRepository;
         this.testCaseRepository = testCaseRepository;
+        this.codeExecutionRepository = codeExecutionRepository;
         this.dockerSandboxService = dockerSandboxService;
         this.testRunnerService = testRunnerService;
         this.scoringService = scoringService;
@@ -134,7 +141,30 @@ public class CodeExecutionService {
         log.info("Execution complete for interview {}: {}/{} tests passed, autoScore={}",
                 request.getInterviewId(), testsPassed, testsTotal, autoScore);
 
-        // 7. Build response
+        // 7. Save execution result to database
+        try {
+            String testDetailsJson = objectMapper.writeValueAsString(testResults);
+            CodeExecution codeExecution = CodeExecution.builder()
+                    .interview(interview)
+                    .status(dockerResult.getStatus())
+                    .testsPassed(testsPassed)
+                    .testsTotal(testsTotal)
+                    .autoScore(autoScore)
+                    .executionTimeMs(dockerResult.getExecutionTimeMs())
+                    .testDetails(testDetailsJson)
+                    .errorMessage(dockerResult.getErrorMessage())
+                    .stdout(dockerResult.getStdout())
+                    .stderr(dockerResult.getStderr())
+                    .executedAt(LocalDateTime.now())
+                    .build();
+            codeExecutionRepository.save(codeExecution);
+            log.debug("Saved code execution result for interview {}", request.getInterviewId());
+        } catch (Exception e) {
+            log.error("Failed to save code execution result", e);
+            // Don't fail the execution if we can't save the result
+        }
+
+        // 8. Build response
         return CodeExecutionResponse.builder()
                 .interviewId(request.getInterviewId())
                 .status(dockerResult.getStatus())

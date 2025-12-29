@@ -32,6 +32,7 @@ import Editor from "@monaco-editor/react"
 import { evaluationService, EvaluationResponse } from "@/services/evaluationService"
 import { chatService } from "@/services/chatService"
 import { codeService } from "@/services/codeService"
+import apiClient from "@/services/apiClient"
 import type { ChatMessageResponse } from "@/types/chat"
 
 interface TestResult {
@@ -206,6 +207,7 @@ export default function ScoringPage() {
   const [customObservations, setCustomObservations] = useState("")
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({})
   const [reviewSectionExpanded, setReviewSectionExpanded] = useState(false)
+  const [isExporting, setIsExporting] = useState(false)
 
   // Fetch evaluation data on mount
   useEffect(() => {
@@ -220,11 +222,12 @@ export default function ScoringPage() {
         setLoading(true)
         setError(null)
 
-        // Fetch evaluation, chat history, and code in parallel
-        const [evalData, chatData, codeData] = await Promise.all([
+        // Fetch evaluation, chat history, code, and code execution results in parallel
+        const [evalData, chatData, codeData, executionData] = await Promise.all([
           evaluationService.getEvaluation(interviewId),
           chatService.getChatHistory(interviewId).catch(() => []),
           codeService.getLatestCode(interviewId).catch(() => null),
+          evaluationService.getCodeExecutionResults(interviewId).catch(() => null),
         ])
 
         setEvaluation(evalData)
@@ -232,27 +235,33 @@ export default function ScoringPage() {
 
         if (codeData) {
           setCode(codeData.code || "")
-          // Parse test results if available
-          if (codeData.testResults) {
-            try {
-              const parsed = JSON.parse(codeData.testResults)
-              if (Array.isArray(parsed)) {
-                setTestResults(parsed)
-              }
-            } catch {
-              // Test results not in expected format
-            }
-          }
+        }
+
+        // Use real test results from code execution
+        if (executionData && executionData.testDetails && Array.isArray(executionData.testDetails)) {
+          // Map backend TestCaseResult (testName, passed) to frontend TestResult (name, passed)
+          const mappedResults = executionData.testDetails.map((test: any) => ({
+            name: test.testName || test.name || "Test",
+            passed: test.passed === true,
+          }))
+          setTestResults(mappedResults)
         }
 
         // Populate form with existing evaluation data
         if (evalData) {
+          let autoScore = evalData.autoScoreOriginal || 0
+
+          // Override with real auto score from test execution if available
+          if (executionData && executionData.autoScore !== undefined) {
+            autoScore = executionData.autoScore
+          }
+
           if (evalData.autoScoreAdjusted !== undefined && evalData.autoScoreAdjusted !== null) {
             setAdjustAutoScore(true)
             setAutoScoreAdjusted(evalData.autoScoreAdjusted)
             setAutoScoreReason(evalData.autoScoreAdjustedReason || "")
           } else {
-            setAutoScoreAdjusted(evalData.autoScoreOriginal || 0)
+            setAutoScoreAdjusted(autoScore)
           }
 
           setManualScores({
@@ -341,11 +350,36 @@ export default function ScoringPage() {
     }
   }
 
+  // Handle export as PDF
+  const handleExport = async () => {
+    try {
+      setIsExporting(true)
+      const response = await apiClient.get(`/interview-evaluations/export/pdf/${interviewId}`, {
+        responseType: 'arraybuffer',
+      })
+
+      const blob = new Blob([response.data], { type: 'application/pdf' })
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = url
+      link.download = `interview_evaluation_${interviewId}.pdf`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(url)
+    } catch (err) {
+      console.error("Failed to export PDF:", err)
+      setError("Failed to export PDF")
+    } finally {
+      setIsExporting(false)
+    }
+  }
+
   const calculateManualScore = () => {
     const total =
       manualScores.communication + manualScores.algorithmic + manualScores.problemSolving + manualScores.aiCollaboration
-    // Each parameter is 1-10, so max total is 40. Normalize to 100: (total / 40) * 100
-    return Math.round((total / 40) * 100)
+    // Each parameter is 1-5, so max total is 20. Normalize to 100: (total / 20) * 100
+    return Math.round((total / 20) * 100)
   }
 
   const calculateFinalScore = () => {
@@ -440,9 +474,13 @@ export default function ScoringPage() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm">
-                <Download className="size-4 mr-2" />
-                Export
+              <Button variant="outline" size="sm" onClick={handleExport} disabled={isExporting}>
+                {isExporting ? (
+                  <Loader2 className="size-4 mr-2 animate-spin" />
+                ) : (
+                  <Download className="size-4 mr-2" />
+                )}
+                {isExporting ? "Exporting..." : "Export PDF"}
               </Button>
             </div>
           </div>
@@ -530,7 +568,7 @@ export default function ScoringPage() {
                   Manual Assessment (60% weight)
                 </CardTitle>
                 <p className="text-sm text-muted-foreground mt-2">
-                  Score each parameter from 1-10 - all parameters have equal weight (25% each)
+                  Score each parameter from 1-5 - all parameters have equal weight (25% each)
                 </p>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -561,14 +599,14 @@ export default function ScoringPage() {
 
                         <div className="space-y-3">
                           <div className="flex items-center justify-between">
-                            <Label className="text-sm font-medium">Score (1-10)</Label>
-                            <span className="text-xl font-bold">{currentScore}/10</span>
+                            <Label className="text-sm font-medium">Score (1-5)</Label>
+                            <span className="text-xl font-bold">{currentScore}/5</span>
                           </div>
                           <Slider
                             value={[currentScore]}
                             onValueChange={([value]) => setManualScores({ ...manualScores, [section.id]: value })}
                             min={0}
-                            max={10}
+                            max={5}
                             step={1}
                             className="w-full"
                           />
@@ -722,7 +760,7 @@ export default function ScoringPage() {
                           <div key={section.id} className="flex justify-between text-sm">
                             <span className="text-muted-foreground">{section.title}</span>
                             <span className="font-medium">
-                              {score}/10
+                              {score}/5
                               <span className="text-xs text-muted-foreground ml-1">(25%)</span>
                             </span>
                           </div>
@@ -735,7 +773,7 @@ export default function ScoringPage() {
                             manualScores.algorithmic +
                             manualScores.problemSolving +
                             manualScores.aiCollaboration}
-                          /40 = {manualScore}/100
+                          /20 = {manualScore}/100
                         </span>
                       </div>
                     </div>

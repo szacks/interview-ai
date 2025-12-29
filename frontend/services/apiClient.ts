@@ -58,6 +58,11 @@ apiClient.interceptors.response.use(
     if (status >= 200 && status < 300) {
       // Success response
       console.log('[API Client] Successful response:', response.config.url, status);
+      // For binary responses (arraybuffer, blob), return the full response
+      // For JSON responses, return just the data
+      if (response.config.responseType === 'arraybuffer' || response.config.responseType === 'blob') {
+        return response;
+      }
       return response.data;
     }
 
