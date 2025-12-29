@@ -3635,3 +3635,185 @@ content-length:0
 [02:10:02.321] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/7 200
 [02:10:02.321] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/16 200
 [02:11:34.781] Server  LOG      ✓ Compiled in 40ms
+[02:14:04.869] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:14:05.063] Browser LOG     [API Client] Adding auth token to request: /interviews
+[02:14:05.063] Browser LOG     [API Client] Adding auth token to request: /questions
+[02:14:05.063] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[02:14:05.063] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/dashboard","route":"/dashboard"}
+[02:14:05.063] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/dashboard color: rgb(120, 120, 120) color: inherit {"dp":"/dashboard","o":"http://localhost:3000/dashboard","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1766997955757}
+[02:14:05.063] Browser LOG     [API Client] Successful response: /questions 200
+[02:14:05.063] Browser LOG     [API Client] Successful response: /interviews 200
+[02:14:05.063] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/16
+[02:14:05.063] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/7
+[02:14:05.063] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/16 200
+[02:14:05.063] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/7 200
+[02:14:09.081] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/16
+[02:14:09.081] Browser LOG     [API Client] Adding auth token to request: /chat/history/16
+[02:14:09.081] Browser LOG     [API Client] Adding auth token to request: /code/latest/16
+[02:14:09.081] Browser LOG     [API Client] Adding auth token to request: /code/execution/16
+[02:14:09.081] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/16
+[02:14:09.081] Browser LOG     [API Client] Adding auth token to request: /chat/history/16
+[02:14:09.081] Browser LOG     [API Client] Adding auth token to request: /code/latest/16
+[02:14:09.081] Browser LOG     [API Client] Adding auth token to request: /code/execution/16
+[02:14:09.081] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/results/16 color: rgb(120, 120, 120) color: inherit {"dp":"/results/[id]","o":"http://localhost:3000/results/16","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1766997959761}
+[02:14:09.081] Browser LOG     [API Client] Successful response: /code/latest/16 200
+[02:14:09.081] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/16 200
+[02:14:09.081] Browser LOG     [API Client] Successful response: /chat/history/16 200
+[02:14:09.081] Browser ERROR   [API Client] Server error: {"data":{"details":"Please contact support if the problem persists","error":"Internal Server Error","message":"An unexpected error occurred","path":"/api/code/execution/16","status":500,"timestamp":"2025-12-29T10:45:59.77090977"},"url":"/code/execution/16"}
+[02:14:09.081] Browser ERROR   [API Client] Server error: {"data":{"details":"Please contact support if the problem persists","error":"Internal Server Error","message":"An unexpected error occurred","path":"/api/code/execution/16","status":500,"timestamp":"2025-12-29T10:45:59.777963647"},"url":"/code/execution/16"}
+[02:14:09.081] Browser LOG     [API Client] Successful response: /code/latest/16 200
+[02:14:09.081] Browser LOG     [API Client] Successful response: /chat/history/16 200
+[02:14:09.081] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/16 200
+[02:14:11.715] Browser LOG     [API Client] Adding auth token to request: /interviews
+[02:14:11.715] Browser LOG     [API Client] Adding auth token to request: /questions
+[02:14:11.715] Browser LOG     [API Client] Adding auth token to request: /interviews
+[02:14:11.715] Browser LOG     [API Client] Adding auth token to request: /questions
+[02:14:11.715] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/dashboard color: rgb(120, 120, 120) color: inherit {"dp":"/dashboard","o":"http://localhost:3000/dashboard","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1766997962365}
+[02:14:11.715] Browser LOG     [API Client] Successful response: /interviews 200
+[02:14:11.715] Browser LOG     [API Client] Successful response: /questions 200
+[02:14:11.715] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/16
+[02:14:11.715] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/7
+[02:14:11.715] Browser LOG     [API Client] Successful response: /interviews 200
+[02:14:11.715] Browser LOG     [API Client] Successful response: /questions 200
+[02:14:11.715] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/16
+[02:14:11.715] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/7
+[02:14:11.715] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/7 200
+[02:14:11.715] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/16 200
+[02:14:11.715] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/16 200
+[02:14:11.715] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/7 200
+[02:14:13.833] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/7
+[02:14:13.833] Browser LOG     [API Client] Adding auth token to request: /chat/history/7
+[02:14:13.833] Browser LOG     [API Client] Adding auth token to request: /code/latest/7
+[02:14:13.833] Browser LOG     [API Client] Adding auth token to request: /code/execution/7
+[02:14:13.833] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/7
+[02:14:13.833] Browser LOG     [API Client] Adding auth token to request: /chat/history/7
+[02:14:13.833] Browser LOG     [API Client] Adding auth token to request: /code/latest/7
+[02:14:13.833] Browser LOG     [API Client] Adding auth token to request: /code/execution/7
+[02:14:13.833] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/results/7 color: rgb(120, 120, 120) color: inherit {"dp":"/results/[id]","o":"http://localhost:3000/results/7","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1766997964528}
+[02:14:13.833] Browser LOG     [API Client] Successful response: /code/latest/7 200
+[02:14:13.833] Browser ERROR   [API Client] Server error: {"data":{"details":"Please contact support if the problem persists","error":"Internal Server Error","message":"An unexpected error occurred","path":"/api/code/execution/7","status":500,"timestamp":"2025-12-29T10:46:04.537838104"},"url":"/code/execution/7"}
+[02:14:13.833] Browser LOG     [API Client] Successful response: /chat/history/7 200
+[02:14:13.833] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/7 200
+[02:14:13.833] Browser LOG     [API Client] Successful response: /code/latest/7 200
+[02:14:13.833] Browser ERROR   [API Client] Server error: {"data":{"details":"Please contact support if the problem persists","error":"Internal Server Error","message":"An unexpected error occurred","path":"/api/code/execution/7","status":500,"timestamp":"2025-12-29T10:46:04.543865152"},"url":"/code/execution/7"}
+[02:14:13.833] Browser LOG     [API Client] Successful response: /chat/history/7 200
+[02:14:13.833] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/7 200
+[02:14:17.584] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations
+[02:14:17.584] Browser LOG     [API Client] Successful response: /interview-evaluations 201
+[02:14:17.584] Browser LOG     [API Client] Adding auth token to request: /interviews
+[02:14:17.584] Browser LOG     [API Client] Adding auth token to request: /questions
+[02:14:17.584] Browser LOG     [API Client] Adding auth token to request: /interviews
+[02:14:17.584] Browser LOG     [API Client] Adding auth token to request: /questions
+[02:14:17.584] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/dashboard color: rgb(120, 120, 120) color: inherit {"dp":"/dashboard","o":"http://localhost:3000/dashboard","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1766997968233}
+[02:14:17.584] Browser LOG     [API Client] Successful response: /interviews 200
+[02:14:17.584] Browser LOG     [API Client] Successful response: /questions 200
+[02:14:17.584] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/16
+[02:14:17.584] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/7
+[02:14:17.584] Browser LOG     [API Client] Successful response: /interviews 200
+[02:14:17.584] Browser LOG     [API Client] Successful response: /questions 200
+[02:14:17.584] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/16
+[02:14:17.584] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/7
+[02:14:17.584] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/16 200
+[02:14:17.584] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/7 200
+[02:14:17.584] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/16 200
+[02:14:17.584] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/7 200
+[02:14:20.579] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:14:20.777] Browser LOG     [API Client] Adding auth token to request: /interviews
+[02:14:20.777] Browser LOG     [API Client] Adding auth token to request: /questions
+[02:14:20.777] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[02:14:20.777] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/dashboard","route":"/dashboard"}
+[02:14:20.777] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/dashboard color: rgb(120, 120, 120) color: inherit {"dp":"/dashboard","o":"http://localhost:3000/dashboard","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1766997971465}
+[02:14:20.777] Browser LOG     [API Client] Successful response: /interviews 200
+[02:14:20.777] Browser LOG     [API Client] Successful response: /questions 200
+[02:14:20.777] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/16
+[02:14:20.777] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/7
+[02:14:20.777] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/7 200
+[02:14:20.777] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/16 200
+[02:14:24.359] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/16
+[02:14:24.359] Browser LOG     [API Client] Adding auth token to request: /chat/history/16
+[02:14:24.359] Browser LOG     [API Client] Adding auth token to request: /code/latest/16
+[02:14:24.359] Browser LOG     [API Client] Adding auth token to request: /code/execution/16
+[02:14:24.359] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/16
+[02:14:24.359] Browser LOG     [API Client] Adding auth token to request: /chat/history/16
+[02:14:24.359] Browser LOG     [API Client] Adding auth token to request: /code/latest/16
+[02:14:24.359] Browser LOG     [API Client] Adding auth token to request: /code/execution/16
+[02:14:24.359] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/results/16 color: rgb(120, 120, 120) color: inherit {"dp":"/results/[id]","o":"http://localhost:3000/results/16","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1766997975043}
+[02:14:24.359] Browser LOG     [API Client] Successful response: /code/latest/16 200
+[02:14:24.359] Browser LOG     [API Client] Successful response: /chat/history/16 200
+[02:14:24.359] Browser ERROR   [API Client] Server error: {"data":{"details":"Please contact support if the problem persists","error":"Internal Server Error","message":"An unexpected error occurred","path":"/api/code/execution/16","status":500,"timestamp":"2025-12-29T10:46:15.052005078"},"url":"/code/execution/16"}
+[02:14:24.359] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/16 200
+[02:14:24.359] Browser LOG     [API Client] Successful response: /chat/history/16 200
+[02:14:24.359] Browser LOG     [API Client] Successful response: /code/latest/16 200
+[02:14:24.359] Browser ERROR   [API Client] Server error: {"data":{"details":"Please contact support if the problem persists","error":"Internal Server Error","message":"An unexpected error occurred","path":"/api/code/execution/16","status":500,"timestamp":"2025-12-29T10:46:15.060224073"},"url":"/code/execution/16"}
+[02:14:24.359] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/16 200
+[02:14:27.273] Browser LOG     [API Client] Adding auth token to request: /interviews
+[02:14:27.273] Browser LOG     [API Client] Adding auth token to request: /questions
+[02:14:27.273] Browser LOG     [API Client] Adding auth token to request: /interviews
+[02:14:27.273] Browser LOG     [API Client] Adding auth token to request: /questions
+[02:14:27.273] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/dashboard color: rgb(120, 120, 120) color: inherit {"dp":"/dashboard","o":"http://localhost:3000/dashboard","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1766997977914}
+[02:14:27.273] Browser LOG     [API Client] Successful response: /interviews 200
+[02:14:27.273] Browser LOG     [API Client] Successful response: /questions 200
+[02:14:27.273] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/16
+[02:14:27.273] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/7
+[02:14:27.273] Browser LOG     [API Client] Successful response: /questions 200
+[02:14:27.273] Browser LOG     [API Client] Successful response: /interviews 200
+[02:14:27.273] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/16
+[02:14:27.273] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/7
+[02:14:27.273] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/7 200
+[02:14:27.273] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/16 200
+[02:14:27.273] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/7 200
+[02:14:27.273] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/16 200
+[02:14:31.432] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/16
+[02:14:31.432] Browser LOG     [API Client] Adding auth token to request: /chat/history/16
+[02:14:31.432] Browser LOG     [API Client] Adding auth token to request: /code/latest/16
+[02:14:31.432] Browser LOG     [API Client] Adding auth token to request: /code/execution/16
+[02:14:31.432] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/16
+[02:14:31.432] Browser LOG     [API Client] Adding auth token to request: /chat/history/16
+[02:14:31.432] Browser LOG     [API Client] Adding auth token to request: /code/latest/16
+[02:14:31.432] Browser LOG     [API Client] Adding auth token to request: /code/execution/16
+[02:14:31.432] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/results/16 color: rgb(120, 120, 120) color: inherit {"dp":"/results/[id]","o":"http://localhost:3000/results/16","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1766997982117}
+[02:14:31.432] Browser ERROR   [API Client] Server error: {"data":{"details":"Please contact support if the problem persists","error":"Internal Server Error","message":"An unexpected error occurred","path":"/api/code/execution/16","status":500,"timestamp":"2025-12-29T10:46:22.123480262"},"url":"/code/execution/16"}
+[02:14:31.432] Browser LOG     [API Client] Successful response: /code/latest/16 200
+[02:14:31.432] Browser LOG     [API Client] Successful response: /chat/history/16 200
+[02:14:31.432] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/16 200
+[02:14:31.432] Browser ERROR   [API Client] Server error: {"data":{"details":"Please contact support if the problem persists","error":"Internal Server Error","message":"An unexpected error occurred","path":"/api/code/execution/16","status":500,"timestamp":"2025-12-29T10:46:22.130614378"},"url":"/code/execution/16"}
+[02:14:31.432] Browser LOG     [API Client] Successful response: /code/latest/16 200
+[02:14:31.432] Browser LOG     [API Client] Successful response: /chat/history/16 200
+[02:14:31.432] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/16 200
+[02:14:39.489] Browser LOG     [API Client] Adding auth token to request: /interviews
+[02:14:39.489] Browser LOG     [API Client] Adding auth token to request: /questions
+[02:14:39.489] Browser LOG     [API Client] Adding auth token to request: /interviews
+[02:14:39.489] Browser LOG     [API Client] Adding auth token to request: /questions
+[02:14:39.489] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/dashboard color: rgb(120, 120, 120) color: inherit {"dp":"/dashboard","o":"http://localhost:3000/dashboard","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1766997990139}
+[02:14:39.489] Browser LOG     [API Client] Successful response: /questions 200
+[02:14:39.489] Browser LOG     [API Client] Successful response: /interviews 200
+[02:14:39.489] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/16
+[02:14:39.489] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/7
+[02:14:39.489] Browser LOG     [API Client] Successful response: /interviews 200
+[02:14:39.489] Browser LOG     [API Client] Successful response: /questions 200
+[02:14:39.489] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/16
+[02:14:39.489] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/7
+[02:14:39.489] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/7 200
+[02:14:39.489] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/16 200
+[02:14:39.489] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/16 200
+[02:14:39.489] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/7 200
+[02:15:55.537] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/16
+[02:15:55.537] Browser LOG     [API Client] Adding auth token to request: /chat/history/16
+[02:15:55.537] Browser LOG     [API Client] Adding auth token to request: /code/latest/16
+[02:15:55.537] Browser LOG     [API Client] Adding auth token to request: /code/execution/16
+[02:15:55.537] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/16
+[02:15:55.537] Browser LOG     [API Client] Adding auth token to request: /chat/history/16
+[02:15:55.537] Browser LOG     [API Client] Adding auth token to request: /code/latest/16
+[02:15:55.537] Browser LOG     [API Client] Adding auth token to request: /code/execution/16
+[02:15:55.537] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/results/16 color: rgb(120, 120, 120) color: inherit {"dp":"/results/[id]","o":"http://localhost:3000/results/16","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1766998066232}
+[02:15:55.537] Browser LOG     [API Client] Successful response: /chat/history/16 200
+[02:15:55.537] Browser LOG     [API Client] Successful response: /code/latest/16 200
+[02:15:55.537] Browser ERROR   [API Client] Server error: {"data":{"details":"Please contact support if the problem persists","error":"Internal Server Error","message":"An unexpected error occurred","path":"/api/code/execution/16","status":500,"timestamp":"2025-12-29T10:47:46.24082556"},"url":"/code/execution/16"}
+[02:15:55.537] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/16 200
+[02:15:55.537] Browser LOG     [API Client] Successful response: /code/latest/16 200
+[02:15:55.537] Browser LOG     [API Client] Successful response: /chat/history/16 200
+[02:15:55.537] Browser ERROR   [API Client] Server error: {"data":{"details":"Please contact support if the problem persists","error":"Internal Server Error","message":"An unexpected error occurred","path":"/api/code/execution/16","status":500,"timestamp":"2025-12-29T10:47:46.250107814"},"url":"/code/execution/16"}
+[02:15:55.537] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/16 200
+[02:16:05.874] Server  LOG      ✓ Compiled in 51ms
+[02:16:18.467] Server  LOG      ✓ Compiled in 42ms
+[02:16:27.761] Server  LOG      ✓ Compiled in 35ms

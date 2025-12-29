@@ -231,14 +231,13 @@ export default function ScoringPage() {
           evaluationService.getCodeExecutionResults(interviewId).catch(() => null),
         ])
 
-        setEvaluation(evalData)
         setChatHistory(chatData)
 
         if (codeData) {
           setCode(codeData.code || "")
         }
 
-        // Use real test results from code execution
+        // Use real test results from code execution and update evaluation with correct test counts
         if (executionData && executionData.testDetails && Array.isArray(executionData.testDetails)) {
           // Map backend TestCaseResult (testName, passed) to frontend TestResult (name, passed)
           const mappedResults = executionData.testDetails.map((test: any) => ({
@@ -246,7 +245,17 @@ export default function ScoringPage() {
             passed: test.passed === true,
           }))
           setTestResults(mappedResults)
+
+          // Count actual passed tests from execution data
+          const actualTestsPassed = mappedResults.filter((t: any) => t.passed).length
+          const actualTestsTotal = mappedResults.length
+
+          // Update evaluation with real test counts
+          evalData.testsPassed = actualTestsPassed
+          evalData.testsTotal = actualTestsTotal
         }
+
+        setEvaluation(evalData)
 
         // Populate form with existing evaluation data
         if (evalData) {
@@ -846,9 +855,15 @@ export default function ScoringPage() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Status</span>
-                  <Badge variant={evaluation.isDraft ? "secondary" : "default"}>
-                    {evaluation.isDraft ? "Draft" : "Submitted"}
-                  </Badge>
+                  {evaluation.isDraft ? (
+                    <Badge variant="destructive" className="animate-pulse">
+                      ⚠️ Draft - Not Submitted
+                    </Badge>
+                  ) : (
+                    <Badge variant="default">
+                      ✓ Submitted
+                    </Badge>
+                  )}
                 </div>
                 {evaluation.updatedAt && (
                   <div className="flex justify-between pt-2 border-t">
