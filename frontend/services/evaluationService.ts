@@ -97,7 +97,7 @@ export const evaluationService = {
 
   /**
    * Calculate manual score from 4 parameters (client-side preview)
-   * Each param is 0-10, sum is 0-40, normalized to 0-100
+   * Each param is 1-5, sum is 4-20, normalized to 0-100
    */
   calculateManualScore(
     communication: number,
@@ -106,7 +106,7 @@ export const evaluationService = {
     aiCollaboration: number
   ): number {
     const total = (communication || 0) + (algorithmic || 0) + (problemSolving || 0) + (aiCollaboration || 0);
-    return Math.round((total / 40) * 100);
+    return Math.round((total / 20) * 100);
   },
 
   /**

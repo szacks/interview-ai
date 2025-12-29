@@ -32,6 +32,7 @@ import {
 import Link from "next/link"
 import { useToast } from "@/hooks/use-toast"
 import { interviewService } from "@/services/interviewService"
+import { evaluationService } from "@/services/evaluationService"
 import type { Question, Interview } from "@/types/interview"
 
 export default function DashboardPage() {
@@ -45,6 +46,8 @@ export default function DashboardPage() {
   const [questions, setQuestions] = useState<Question[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [evaluationStatuses, setEvaluationStatuses] = useState<Record<number, { isDraft: boolean; updatedAt?: string }>>({})
+  const [loadingEvaluations, setLoadingEvaluations] = useState(false)
 
   // Form states
   const [selectedQuestionId, setSelectedQuestionId] = useState<number | null>(null)
@@ -73,6 +76,47 @@ export default function DashboardPage() {
     }
     fetchData()
   }, [])
+
+  // Fetch evaluation statuses for completed interviews
+  useEffect(() => {
+    const fetchEvaluationStatuses = async () => {
+      const completedInterviews = interviews.filter(i => i.status === 'completed' || i.status === 'ended')
+
+      if (completedInterviews.length === 0) {
+        return
+      }
+
+      try {
+        setLoadingEvaluations(true)
+        const statuses: Record<number, { isDraft: boolean; updatedAt?: string }> = {}
+
+        await Promise.all(
+          completedInterviews.map(async (interview) => {
+            try {
+              const evaluation = await evaluationService.getEvaluation(interview.id)
+              statuses[interview.id] = {
+                isDraft: evaluation.isDraft ?? true,
+                updatedAt: evaluation.updatedAt,
+              }
+            } catch (err) {
+              // If evaluation doesn't exist, mark as draft
+              statuses[interview.id] = { isDraft: true }
+            }
+          })
+        )
+
+        setEvaluationStatuses(statuses)
+      } catch (err) {
+        console.error("Failed to fetch evaluation statuses:", err)
+      } finally {
+        setLoadingEvaluations(false)
+      }
+    }
+
+    if (interviews.length > 0) {
+      fetchEvaluationStatuses()
+    }
+  }, [interviews])
 
   const handleCreateInterview = async () => {
     if (!selectedQuestionId) {
@@ -390,6 +434,11 @@ export default function DashboardPage() {
                   <div className="flex items-center gap-3 mb-2">
                     <h3 className="font-semibold text-lg truncate">{interview.candidateName || interview.candidate?.name || "Unnamed Candidate"}</h3>
                     {getStatusBadge(interview.status)}
+                    {(interview.status === "completed" || interview.status === "ended") && evaluationStatuses[interview.id] && (
+                      <Badge variant={evaluationStatuses[interview.id].isDraft ? "secondary" : "default"}>
+                        {evaluationStatuses[interview.id].isDraft ? "Draft" : "Submitted"}
+                      </Badge>
+                    )}
                   </div>
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
                     {interview.role && <span>{interview.role}</span>}
@@ -426,7 +475,7 @@ export default function DashboardPage() {
                     <Link href={`/results/${interview.id}`}>
                       <Button size="sm" variant="outline">
                         <Eye className="size-4 mr-2" />
-                        View Results
+                        {evaluationStatuses[interview.id]?.isDraft ? "Complete Evaluation" : "View Results"}
                       </Button>
                     </Link>
                   )}
