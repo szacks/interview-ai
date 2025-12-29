@@ -178,6 +178,7 @@ export default function ScoringPage() {
   const [submitting, setSubmitting] = useState(false)
   const [savingDraft, setSavingDraft] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
   // Data from API
   const [evaluation, setEvaluation] = useState<EvaluationResponse | null>(null)
@@ -230,14 +231,13 @@ export default function ScoringPage() {
           evaluationService.getCodeExecutionResults(interviewId).catch(() => null),
         ])
 
-        setEvaluation(evalData)
         setChatHistory(chatData)
 
         if (codeData) {
           setCode(codeData.code || "")
         }
 
-        // Use real test results from code execution
+        // Use real test results from code execution and update evaluation with correct test counts
         if (executionData && executionData.testDetails && Array.isArray(executionData.testDetails)) {
           // Map backend TestCaseResult (testName, passed) to frontend TestResult (name, passed)
           const mappedResults = executionData.testDetails.map((test: any) => ({
@@ -245,7 +245,22 @@ export default function ScoringPage() {
             passed: test.passed === true,
           }))
           setTestResults(mappedResults)
+
+          // Count actual passed tests from execution data
+          const actualTestsPassed = mappedResults.filter((t: any) => t.passed).length
+          const actualTestsTotal = mappedResults.length
+
+          // Update evaluation with real test counts
+          evalData.testsPassed = actualTestsPassed
+          evalData.testsTotal = actualTestsTotal
+
+          // Also update auto score if available from execution
+          if (executionData.autoScore !== undefined) {
+            evalData.autoScoreOriginal = executionData.autoScore
+          }
         }
+
+        setEvaluation(evalData)
 
         // Populate form with existing evaluation data
         if (evalData) {
@@ -327,6 +342,8 @@ export default function ScoringPage() {
 
     try {
       setSavingDraft(true)
+      setError(null)
+      setSuccessMessage(null)
       const updated = await evaluationService.saveDraft({
         interviewId,
         autoScoreAdjusted: adjustAutoScore ? autoScoreAdjusted : undefined,
@@ -342,6 +359,9 @@ export default function ScoringPage() {
         customObservations,
       })
       setEvaluation(updated)
+      setSuccessMessage("Draft saved successfully!")
+      // Clear success message after 3 seconds
+      setTimeout(() => setSuccessMessage(null), 3000)
     } catch (err) {
       console.error("Failed to save draft:", err)
       setError("Failed to save draft")
@@ -783,6 +803,12 @@ export default function ScoringPage() {
                 {error && (
                   <div className="text-sm text-destructive text-center mb-2">{error}</div>
                 )}
+                {successMessage && (
+                  <div className="text-sm text-green-600 text-center mb-2 flex items-center justify-center gap-2">
+                    <CheckCircle className="size-4" />
+                    {successMessage}
+                  </div>
+                )}
                 <div className="space-y-2">
                   <Button
                     className="w-full"
@@ -832,6 +858,26 @@ export default function ScoringPage() {
                   <span className="text-muted-foreground">Language</span>
                   <Badge variant="outline">{evaluation.language || "N/A"}</Badge>
                 </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Status</span>
+                  {evaluation.isDraft ? (
+                    <Badge className="bg-yellow-500 hover:bg-yellow-600 text-black">
+                      Draft
+                    </Badge>
+                  ) : (
+                    <Badge variant="default">
+                      Submitted
+                    </Badge>
+                  )}
+                </div>
+                {evaluation.updatedAt && (
+                  <div className="flex justify-between pt-2 border-t">
+                    <span className="text-muted-foreground text-xs">Last Updated</span>
+                    <span className="text-xs font-medium">
+                      {new Date(evaluation.updatedAt).toLocaleString()}
+                    </span>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
