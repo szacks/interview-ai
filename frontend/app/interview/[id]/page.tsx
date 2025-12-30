@@ -56,7 +56,6 @@ export default function InterviewSessionPage({
   const [isEndingInterview, setIsEndingInterview] = useState(false)
   const [interviewId, setInterviewId] = useState<string>("")
   const [interview, setInterview] = useState<any>(null)
-  const [testMode, setTestMode] = useState(false) // Test mode: don't save completion
 
   // Code state
   const [candidateCode, setCandidateCode] = useState("")
@@ -519,14 +518,9 @@ export default function InterviewSessionPage({
         throw new Error("Invalid interview ID: must be a number")
       }
 
-      // If NOT in test mode, save the completion to the backend
-      if (!testMode) {
-        // Call backend API to complete the interview
-        await interviewService.completeInterview(interviewIdAsNumber)
-        console.log("[Interviewer] Interview ended successfully")
-      } else {
-        console.log("[Interviewer] TEST MODE: Skipping backend completion, going directly to results")
-      }
+      // Save the completion to the backend
+      await interviewService.completeInterview(interviewIdAsNumber)
+      console.log("[Interviewer] Interview ended successfully")
 
       // Redirect to scoring page
       router.push(`/results/${interviewIdAsNumber}`)
@@ -604,20 +598,6 @@ export default function InterviewSessionPage({
                 </>
               ) : (
                 <div className="flex items-center gap-3">
-                  {process.env.NODE_ENV === 'development' && (
-                    <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-muted border border-dashed border-muted-foreground/30">
-                      <input
-                        type="checkbox"
-                        id="test-mode"
-                        checked={testMode}
-                        onChange={(e) => setTestMode(e.target.checked)}
-                        className="cursor-pointer"
-                      />
-                      <label htmlFor="test-mode" className="text-sm cursor-pointer text-muted-foreground">
-                        Test mode (no save)
-                      </label>
-                    </div>
-                  )}
                   <Button
                     variant="destructive"
                     onClick={handleEndInterview}
