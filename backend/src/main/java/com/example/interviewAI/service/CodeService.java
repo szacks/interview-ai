@@ -34,8 +34,11 @@ public class CodeService {
         Interview interview = interviewRepository.findById(request.getInterviewId())
             .orElseThrow(() -> new RuntimeException("Interview not found"));
 
-        if (!"in_progress".equals(interview.getStatus())) {
-            throw new RuntimeException("Interview is not active");
+        // Allow code submission when interview is scheduled or in_progress
+        // This allows candidates to submit code both before and after the interview starts
+        String status = interview.getStatus();
+        if (!"scheduled".equals(status) && !"in_progress".equals(status)) {
+            throw new RuntimeException("Interview is not active. Current status: " + status);
         }
 
         // Save code submission
@@ -45,7 +48,9 @@ public class CodeService {
         submission.setCode(request.getCode());
         submission = codeSubmissionRepository.save(submission);
 
-        log.info("Code submission saved for interview {} in {}", request.getInterviewId(), request.getLanguage());
+        log.info("Code submission saved - ID: {}, Interview: {}, Language: {}, Code length: {}, Status: {}",
+            submission.getId(), request.getInterviewId(), request.getLanguage(),
+            request.getCode().length(), status);
 
         // Broadcast code update via WebSocket
         broadcastCodeUpdate(request.getInterviewId(), submission);
@@ -58,9 +63,17 @@ public class CodeService {
      * Returns empty response if no code submission exists (instead of throwing 404)
      */
     public CodeSubmissionResponse getLatestCode(Long interviewId) {
-        return codeSubmissionRepository.findLatestByInterviewId(interviewId)
-            .map(this::mapToResponse)
-            .orElse(CodeSubmissionResponse.builder().build()); // Return empty response instead of 404
+        var result = codeSubmissionRepository.findLatestByInterviewId(interviewId);
+
+        if (result.isPresent()) {
+            CodeSubmission submission = result.get();
+            log.info("Retrieved latest code for interview {} - Submission ID: {}, Language: {}, Code length: {}, Timestamp: {}",
+                interviewId, submission.getId(), submission.getLanguage(), submission.getCode().length(), submission.getTimestamp());
+            return mapToResponse(submission);
+        } else {
+            log.info("No code submission found for interview {}", interviewId);
+            return CodeSubmissionResponse.builder().build(); // Return empty response instead of 404
+        }
     }
 
     /**

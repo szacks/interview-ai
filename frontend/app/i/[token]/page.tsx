@@ -128,6 +128,22 @@ export default function CandidateInterviewPage({
         // Map backend status to frontend status
         if (interview?.status === "in_progress" && status === "waiting") {
           console.log("✓ Interview started by interviewer, transitioning to live")
+
+          // Submit current code before transitioning to live view
+          if (interviewId && code) {
+            try {
+              await codeService.submitCode({
+                interviewId: interviewId,
+                language: language,
+                code: code,
+              })
+              console.log("[Candidate] Initial code submitted on interview start")
+            } catch (error) {
+              console.error("[Candidate] Failed to submit initial code:", error)
+              // Continue anyway - code can still be submitted when running tests
+            }
+          }
+
           setStatus("live")
         }
       } catch (error: any) {

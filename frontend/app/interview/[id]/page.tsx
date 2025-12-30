@@ -340,6 +340,19 @@ export default function InterviewSessionPage({
     setExecutionError(null)
 
     try {
+      // First, submit the candidate's current code to the database
+      try {
+        await codeService.submitCode({
+          interviewId: parseInt(interviewId),
+          language: codeLanguage,
+          code: candidateCode,
+        })
+        console.log("[Interviewer] Candidate code submitted before test execution")
+      } catch (submitError) {
+        console.error("[Interviewer] Failed to submit candidate code:", submitError)
+        // Continue anyway - test execution is still important
+      }
+
       const result = await codeService.executeCode({
         interviewId: parseInt(interviewId),
         language: codeLanguage,

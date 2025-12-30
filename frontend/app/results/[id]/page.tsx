@@ -233,8 +233,15 @@ export default function ScoringPage() {
 
         setChatHistory(chatData)
 
-        if (codeData) {
-          setCode(codeData.code || "")
+        console.log("[Results] Interview ID:", interviewId)
+        console.log("[Results] Code data received:", codeData)
+        if (codeData && codeData.code) {
+          console.log("[Results] Code submission ID:", codeData.id, "Language:", codeData.language, "Timestamp:", codeData.timestamp, "Length:", codeData.code.length)
+          console.log("[Results] First 100 chars:", codeData.code.substring(0, 100))
+          setCode(codeData.code)
+        } else {
+          console.log("[Results] No code data or empty code received:", codeData)
+          setCode("")
         }
 
         // Use real test results from code execution and update evaluation with correct test counts
