@@ -16,8 +16,8 @@ public class Interview {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String language; // 'java', 'python', 'javascript', etc.
+    @Column(nullable = true)
+    private String language; // 'java', 'python', 'javascript', etc. - Set when candidate submits setup
 
     @Column
     private LocalDateTime scheduledAt;

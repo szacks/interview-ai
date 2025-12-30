@@ -252,6 +252,98 @@ public class InterviewController {
     }
 
     /**
+     * Candidate indicates they are ready (setup completed).
+     *
+     * @param token interview link token
+     * @param body request body containing candidateName and language
+     * @return updated interview
+     */
+    @PostMapping("/link/{token}/ready")
+    public ResponseEntity<InterviewResponse> candidateReady(
+            @PathVariable String token,
+            @RequestBody Map<String, String> body) {
+        log.info("Candidate ready for interview with token: {}", token);
+        String candidateName = body.get("candidateName");
+        String language = body.get("language");
+
+        if (candidateName == null || candidateName.isEmpty()) {
+            throw new BadRequestException("Candidate name is required");
+        }
+        if (language == null || language.isEmpty()) {
+            throw new BadRequestException("Language is required");
+        }
+
+        InterviewResponse interview = interviewService.updateCandidateInfo(token, candidateName, language);
+        return ResponseEntity.ok(interview);
+    }
+
+    /**
+     * Interviewer accepts the candidate and starts the interview.
+     *
+     * @param interviewId interview identifier
+     * @param bearerToken JWT token from Authorization header
+     * @return accepted interview with status in_progress
+     */
+    @PostMapping("/{interviewId}/accept")
+    public ResponseEntity<InterviewResponse> acceptCandidate(
+            @PathVariable Long interviewId,
+            @RequestHeader(value = "Authorization", required = false) String bearerToken) {
+        log.info("Interviewer accepting candidate for interview: {}", interviewId);
+
+        User user = null;
+        try {
+            if (bearerToken != null && !bearerToken.isEmpty()) {
+                user = extractUserFromToken(bearerToken);
+            }
+        } catch (Exception e) {
+            log.debug("No valid user token provided, allowing for testing");
+        }
+
+        InterviewResponse interview = interviewService.getInterviewById(interviewId);
+
+        if (user != null && !isUserAuthorizedForInterview(user, interview)) {
+            throw new ForbiddenException("You are not authorized to accept this interview");
+        }
+
+        InterviewResponse accepted = interviewService.startInterview(interviewId);
+        log.info("Interview {} accepted and started", interviewId);
+        return ResponseEntity.ok(accepted);
+    }
+
+    /**
+     * Interviewer rejects the candidate.
+     *
+     * @param interviewId interview identifier
+     * @param bearerToken JWT token from Authorization header
+     * @return rejected interview with status scheduled (reset for retry)
+     */
+    @PostMapping("/{interviewId}/reject")
+    public ResponseEntity<InterviewResponse> rejectCandidate(
+            @PathVariable Long interviewId,
+            @RequestHeader(value = "Authorization", required = false) String bearerToken) {
+        log.info("Interviewer rejecting candidate for interview: {}", interviewId);
+
+        User user = null;
+        try {
+            if (bearerToken != null && !bearerToken.isEmpty()) {
+                user = extractUserFromToken(bearerToken);
+            }
+        } catch (Exception e) {
+            log.debug("No valid user token provided, allowing for testing");
+        }
+
+        InterviewResponse interview = interviewService.getInterviewById(interviewId);
+
+        if (user != null && !isUserAuthorizedForInterview(user, interview)) {
+            throw new ForbiddenException("You are not authorized to reject this interview");
+        }
+
+        InterviewResponse rejected = interviewService.rejectCandidate(interviewId);
+        log.info("Interview {} rejected - candidate can retry", interviewId);
+        return ResponseEntity.ok(rejected);
+    }
+
+    /**
      * Extract user from JWT token.
      *
      * @param bearerToken JWT token with Bearer prefix

@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -19,7 +18,8 @@ public class CreateInterviewRequest {
     @NotNull(message = "Candidate ID is required")
     private Long candidateId;
 
-    @NotBlank(message = "Language is required")
+    // Language is accepted but not used during interview creation
+    // It will be set when the candidate submits setup via /ready endpoint
     private String language;
 
     private LocalDateTime scheduledAt;

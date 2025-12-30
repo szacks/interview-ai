@@ -47,7 +47,6 @@ public class QuestionSeeder implements CommandLineRunner {
             // If there are duplicate Rate Limiter questions, keep only the first one and delete the rest
             if (existingRateLimiter.size() > 1) {
                 log.warn("Found {} duplicate Rate Limiter questions! Keeping the first one and deleting duplicates.", existingRateLimiter.size());
-                Question primaryQuestion = existingRateLimiter.get(0);
 
                 for (int i = 1; i < existingRateLimiter.size(); i++) {
                     Question duplicate = existingRateLimiter.get(i);

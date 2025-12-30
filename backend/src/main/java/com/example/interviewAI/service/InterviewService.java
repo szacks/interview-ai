@@ -121,7 +121,7 @@ public class InterviewService {
         interview.setQuestion(question);
         interview.setCandidate(candidate);
         interview.setInterviewer(interviewer);
-        interview.setLanguage(request.getLanguage());
+        // Language is NOT set here - it will be set when candidate submits setup via /ready endpoint
         interview.setStatus("scheduled");
         interview.setScheduledAt(request.getScheduledAt());
         interview.setCreatedAt(LocalDateTime.now());
@@ -186,6 +186,42 @@ public class InterviewService {
     @Transactional
     public InterviewResponse completeInterview(Long interviewId) {
         return updateInterviewStatus(interviewId, "completed");
+    }
+
+    /**
+     * Update candidate language selection when they indicate they're ready to start
+     * This signals to the interviewer that the candidate is ready
+     */
+    @Transactional
+    public InterviewResponse updateCandidateInfo(String token, String candidateName, String language) {
+        Interview interview = interviewRepository.findByInterviewLinkToken(token)
+                .orElseThrow(() -> new RuntimeException("Interview not found with token: " + token));
+
+        // Update language - this signals candidate is ready
+        interview.setLanguage(language);
+        Interview updated = interviewRepository.save(interview);
+
+        log.info("Updated candidate language selection for interview {} - Language: {}",
+                interview.getId(), language);
+        return convertToResponse(updated);
+    }
+
+    /**
+     * Reject candidate and reset interview for retry
+     * Clears the language field to signal candidate is no longer ready
+     */
+    @Transactional
+    public InterviewResponse rejectCandidate(Long interviewId) {
+        Interview interview = interviewRepository.findById(interviewId)
+                .orElseThrow(() -> new RuntimeException("Interview not found with ID: " + interviewId));
+
+        // Reset language to null to indicate candidate should retry setup
+        // Keep status as 'scheduled' so interviewer can try again
+        interview.setLanguage(null);
+        Interview updated = interviewRepository.save(interview);
+
+        log.info("Rejected candidate for interview {} - Reset for retry", interviewId);
+        return convertToResponse(updated);
     }
 
     /**

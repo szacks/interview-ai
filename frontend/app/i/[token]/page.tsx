@@ -105,7 +105,7 @@ export default function CandidateInterviewPage({
     fetchInterviewDetails()
   }, [interviewToken])
 
-  // Poll interview status to detect when interviewer starts the session
+  // Poll interview status to detect when interviewer starts the session or rejects
   useEffect(() => {
     if (!interviewToken || status === "live" || status === "setup") return
 
@@ -113,7 +113,17 @@ export default function CandidateInterviewPage({
       try {
         const interview = (await apiClient.get(`/interviews/link/${interviewToken}`)) as any
         console.log("[Poll] Full response:", interview)
-        console.log("[Poll] Interview status:", interview?.status, "Current frontend status:", status)
+        console.log("[Poll] Interview status:", interview?.status, "Language:", interview?.language, "Current frontend status:", status)
+
+        // Check if candidate was rejected (language is null but status is still scheduled)
+        if (interview?.status === "scheduled" && !interview?.language && status === "waiting") {
+          console.log("✗ Interview request was declined by interviewer - returning to setup")
+          setStatus("setup")
+          setCandidateFullName("") // Clear form
+          setSelectedLanguage("python") // Reset to default
+          // Show rejection message would be handled by UI based on status change
+          return
+        }
 
         // Map backend status to frontend status
         if (interview?.status === "in_progress" && status === "waiting") {
@@ -264,6 +274,21 @@ export default function CandidateInterviewPage({
           setCode(interview.question.initialCodeJavascript)
         }
       }
+
+      // Call the new endpoint to signal candidate is ready
+      if (interviewToken && interviewId) {
+        try {
+          const readyResponse = await apiClient.post(`/interviews/link/${interviewToken}/ready`, {
+            candidateName: candidateFullName,
+            language: selectedLanguage,
+          })
+          console.log("[Candidate] Ready signal sent to interviewer:", readyResponse)
+        } catch (error) {
+          console.error("[Candidate] Failed to send ready signal:", error)
+          // Continue anyway - the status update happened locally
+        }
+      }
+
       // Move to waiting state
       setStatus("waiting")
     } catch (error) {

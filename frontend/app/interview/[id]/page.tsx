@@ -37,6 +37,7 @@ import { webSocketService } from "@/services/webSocketService"
 import apiClient from "@/services/apiClient"
 import { interviewService } from "@/services/interviewService"
 import { useRouter } from "next/navigation"
+import { CandidateAcceptModal } from "@/components/CandidateAcceptModal"
 
 
 export default function InterviewSessionPage({
@@ -73,6 +74,10 @@ export default function InterviewSessionPage({
   const [testResults, setTestResults] = useState<Array<any>>([])
   const [testCasesCache, setTestCasesCache] = useState<Map<number, any>>(new Map())
   const [executionError, setExecutionError] = useState<string | null>(null)
+
+  // Modal state for candidate acceptance
+  const [showAcceptModal, setShowAcceptModal] = useState(false)
+  const [isAcceptingCandidate, setIsAcceptingCandidate] = useState(false)
 
   // Chat state and hooks
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -188,18 +193,28 @@ export default function InterviewSessionPage({
     return () => clearInterval(timer)
   }, [interview?.startedAt])
 
-  // Poll interview status to detect when interview is started (transitions from pending to live)
+  // Poll interview status to detect when candidate is ready or interview is started
   useEffect(() => {
-    if (!interviewId || isPending === false) return
+    if (!interviewId) return
 
     const pollInterval = setInterval(async () => {
       try {
-        const interview = await apiClient.get(`/interviews/${interviewId}`)
-        console.log("[Interviewer Poll] Current status:", interview?.status, "isPending:", isPending)
+        const polledInterview = await apiClient.get(`/interviews/${interviewId}`)
+        console.log("[Interviewer Poll] Current status:", polledInterview?.status, "Language:", polledInterview?.language, "isPending:", isPending)
+
+        // Update the interview state with fresh data
+        setInterview(polledInterview)
+
+        // Check if candidate is ready (language is set but status is still scheduled)
+        if (polledInterview?.status === "scheduled" && polledInterview?.language && !showAcceptModal && isPending === true) {
+          console.log("[Interviewer Poll] Candidate is ready! Showing accept modal")
+          setShowAcceptModal(true)
+        }
 
         // If status changed from "scheduled" to "in_progress", transition to live
-        if (interview?.status === "in_progress" && isPending === true) {
+        if (polledInterview?.status === "in_progress" && isPending === true) {
           console.log("[Interviewer Poll] Interview started, transitioning to live view")
+          setShowAcceptModal(false)
           setIsPending(false)
         }
       } catch (error) {
@@ -209,7 +224,7 @@ export default function InterviewSessionPage({
     }, 1000) // Poll every 1 second
 
     return () => clearInterval(pollInterval)
-  }, [interviewId, isPending])
+  }, [interviewId, isPending, showAcceptModal])
 
   // Load latest candidate code when interviewId is available
   useEffect(() => {
@@ -415,6 +430,66 @@ export default function InterviewSessionPage({
     }
   }
 
+  const handleAcceptCandidate = async () => {
+    if (!interviewId) {
+      console.error("[Interviewer] Interview ID not available")
+      alert("Interview ID not found.")
+      return
+    }
+
+    try {
+      setIsAcceptingCandidate(true)
+      console.log("[Interviewer] Accepting candidate for interview ID:", interviewId)
+
+      const interviewIdAsNumber = parseInt(interviewId, 10)
+      if (isNaN(interviewIdAsNumber)) {
+        throw new Error("Invalid interview ID: must be a number")
+      }
+
+      // Call the new accept endpoint
+      const response = await apiClient.post(`/interviews/${interviewIdAsNumber}/accept`, {})
+      console.log("[Interviewer] Candidate accepted, interview started:", response)
+
+      // Close modal - polling will detect status change and transition to live view
+      setShowAcceptModal(false)
+    } catch (error: any) {
+      console.error("[Interviewer] Error accepting candidate:", error?.message)
+      alert(`Failed to accept candidate: ${error?.message || "Unknown error"}`)
+    } finally {
+      setIsAcceptingCandidate(false)
+    }
+  }
+
+  const handleRejectCandidate = async () => {
+    if (!interviewId) {
+      console.error("[Interviewer] Interview ID not available")
+      alert("Interview ID not found.")
+      return
+    }
+
+    try {
+      setIsAcceptingCandidate(true)
+      console.log("[Interviewer] Rejecting candidate for interview ID:", interviewId)
+
+      const interviewIdAsNumber = parseInt(interviewId, 10)
+      if (isNaN(interviewIdAsNumber)) {
+        throw new Error("Invalid interview ID: must be a number")
+      }
+
+      // Call the new reject endpoint
+      const response = await apiClient.post(`/interviews/${interviewIdAsNumber}/reject`, {})
+      console.log("[Interviewer] Candidate rejected:", response)
+
+      // Close modal - candidate will return to setup
+      setShowAcceptModal(false)
+    } catch (error: any) {
+      console.error("[Interviewer] Error rejecting candidate:", error?.message)
+      alert(`Failed to reject candidate: ${error?.message || "Unknown error"}`)
+    } finally {
+      setIsAcceptingCandidate(false)
+    }
+  }
+
   const handleEndInterview = async () => {
     if (!interviewId) {
       console.error("[Interviewer] Interview ID not available")
@@ -549,51 +624,8 @@ export default function InterviewSessionPage({
         </div>
       </header>
 
-      {isPending ? (
-        /* Pending State */
-        <div className="flex-1 flex items-center justify-center p-8">
-          <div className="max-w-2xl w-full text-center">
-            <div className="size-16 rounded-full bg-muted mx-auto mb-6 flex items-center justify-center">
-              <Users className="size-8 text-muted-foreground" />
-            </div>
-            <h2 className="text-2xl font-bold mb-3">Waiting for candidate</h2>
-            <p className="text-muted-foreground mb-8">
-              Share the interview link with the candidate. Once they join, you can start the interview.
-            </p>
-
-            <div className="rounded-lg border border-border bg-card p-6 mb-6">
-              <h3 className="font-semibold mb-4 text-left">Interview Details</h3>
-              <div className="space-y-3 text-left">
-                <div className="flex items-start gap-3">
-                  <span className="text-muted-foreground min-w-24">Candidate:</span>
-                  <span className="font-medium">{interview?.candidate?.name || "Loading..."}</span>
-                </div>
-                <div className="flex items-start gap-3">
-                  <span className="text-muted-foreground min-w-24">Question:</span>
-                  <span>{interview?.question?.title || "Loading..."}</span>
-                </div>
-                <div className="flex items-start gap-3">
-                  <span className="text-muted-foreground min-w-24">Difficulty:</span>
-                  <Badge variant="outline" className="text-xs">
-                    {interview?.question?.difficulty || "medium"}
-                  </Badge>
-                </div>
-                <div className="flex items-start gap-3">
-                  <span className="text-muted-foreground min-w-24">Language:</span>
-                  <span className="capitalize">{interview?.language || "javascript"}</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded-lg border border-border bg-card p-6 text-left">
-              <h3 className="font-semibold mb-2">Question Description</h3>
-              <p className="text-muted-foreground leading-relaxed">{interview?.question?.description || "Loading question description..."}</p>
-            </div>
-          </div>
-        </div>
-      ) : (
-        /* Live State */
-        <div className="flex-1 flex flex-col overflow-hidden">
+      {/* Live Interview Interface */}
+      <div className="flex-1 flex flex-col overflow-hidden">
           {/* Main Content Area with Code on Left and Tabs on Right */}
           <div className="flex-1 flex overflow-hidden">
             {/* Code Area */}
@@ -998,7 +1030,15 @@ export default function InterviewSessionPage({
             </div>
           </div>
         </div>
-      )}
+
+      {/* Candidate Accept Modal */}
+      <CandidateAcceptModal
+        isOpen={showAcceptModal}
+        interview={interview}
+        onAccept={handleAcceptCandidate}
+        onReject={handleRejectCandidate}
+        isLoading={isAcceptingCandidate}
+      />
     </div>
   )
 }
