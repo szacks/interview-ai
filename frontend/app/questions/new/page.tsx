@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import dynamic from "next/dynamic"
 import { Button } from "@/components/ui/button"
@@ -27,7 +27,7 @@ const Editor = dynamic(() => import("@monaco-editor/react"), { ssr: false })
 // Import step components (we'll create these)
 // For now, we'll create simplified inline versions to get the flow working
 
-export default function CreateQuestionPage() {
+function CreateQuestionPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { toast } = useToast()
@@ -1093,5 +1093,17 @@ function StepPublish({ data }: { data: QuestionData }) {
         </p>
       </div>
     </div>
+  )
+}
+
+export default function CreateQuestionPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    }>
+      <CreateQuestionPageContent />
+    </Suspense>
   )
 }
