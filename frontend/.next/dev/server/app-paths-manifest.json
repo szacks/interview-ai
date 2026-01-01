@@ -1,8 +1,4 @@
 {
-  "/dashboard/page": "app/dashboard/page.js",
-  "/i/[token]/page": "app/i/[token]/page.js",
-  "/interview/[id]/page": "app/interview/[id]/page.js",
-  "/login/page": "app/login/page.js",
   "/page": "app/page.js",
   "/questions/new/page": "app/questions/new/page.js"
 }

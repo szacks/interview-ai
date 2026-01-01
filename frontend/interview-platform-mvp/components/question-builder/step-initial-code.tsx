@@ -143,10 +143,33 @@ export function StepInitialCode({ data, onUpdate, onNext, onBack }: StepInitialC
 
           {/* Generate Button */}
           {!hasGeneratedCode && isValid && (
-            <Button onClick={handleGenerateOtherLanguages} disabled={isGenerating} size="lg" className="w-full">
-              <Sparkles className="size-4 mr-2" />
-              {isGenerating ? "Generating..." : "Generate Java & JavaScript"}
-            </Button>
+            <div className="space-y-2">
+              <Button onClick={handleGenerateOtherLanguages} disabled={isGenerating} size="lg" className="w-full bg-blue-600 hover:bg-blue-700">
+                <Sparkles className="size-4 mr-2" />
+                {isGenerating ? "Generating..." : "Generate Java & JavaScript"}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  // Mark all templates as reviewed (without generating) to skip generation
+                  const newTemplates = { ...data.codeTemplates }
+                  ;(['java', 'python', 'javascript'] as ProgrammingLanguage[]).forEach((lang) => {
+                    if (lang !== data.primaryLanguage && !newTemplates[lang]) {
+                      newTemplates[lang] = {
+                        code: '',
+                        generated: false,
+                        reviewed: true,
+                      }
+                    }
+                  })
+                  onUpdate({ codeTemplates: newTemplates })
+                }}
+                size="lg"
+                className="w-full border-2 border-orange-400 text-orange-600 hover:bg-orange-50"
+              >
+                ⏭️ Skip Generation (QA Testing)
+              </Button>
+            </div>
           )}
         </div>
       </Card>
@@ -222,7 +245,7 @@ export function StepInitialCode({ data, onUpdate, onNext, onBack }: StepInitialC
         </Button>
         <Button
           onClick={onNext}
-          disabled={!isValid || (hasGeneratedCode && Object.values(data.codeTemplates).some((t) => t && !t.reviewed))}
+          disabled={!isValid || (hasGeneratedCode && Object.values(data.codeTemplates).filter((t) => t?.code).some((t) => t && !t.reviewed))}
           size="lg"
         >
           Next: Test Cases

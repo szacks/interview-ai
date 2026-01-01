@@ -18,4 +18,9 @@ public class ValidationResponse {
     private String message;
     private Long questionId;
     private Boolean codeTemplatesPresent;
+
+    // For syntax/compilation validation
+    private String language;
+    private String errors;
+    private String warnings;
 }

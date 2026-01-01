@@ -4,6 +4,10 @@ import com.example.interviewAI.dto.CodeExecutionRequest;
 import com.example.interviewAI.dto.CodeExecutionResponse;
 import com.example.interviewAI.dto.CodeSubmissionRequest;
 import com.example.interviewAI.dto.CodeSubmissionResponse;
+import com.example.interviewAI.dto.ValidationRequest;
+import com.example.interviewAI.dto.ValidationResponse;
+import com.example.interviewAI.dto.ValidateTestsWithAIRequest;
+import com.example.interviewAI.dto.ValidateTestsWithAIResponse;
 import com.example.interviewAI.entity.CodeExecution;
 import com.example.interviewAI.repository.CodeExecutionRepository;
 import com.example.interviewAI.service.CodeExecutionService;
@@ -31,6 +35,7 @@ public class CodeController {
     private final CodeService codeService;
     private final CodeExecutionService codeExecutionService;
     private final CodeExecutionRepository codeExecutionRepository;
+    private final com.example.interviewAI.service.DockerSandboxService dockerSandboxService;
     private final ObjectMapper objectMapper;
 
     /**
@@ -190,5 +195,133 @@ public class CodeController {
             log.error("Error deleting executions for interview {}", interviewId, e);
             return ResponseEntity.internalServerError().body("Error deleting executions: " + e.getMessage());
         }
+    }
+
+    /**
+     * Validate template code syntax (compilation check only, no execution).
+     * Used by question builders to verify templates compile before saving.
+     *
+     * @param request the validation request containing language and code
+     * @return validation result with compilation errors if any
+     */
+    @PostMapping("/validate-syntax")
+    public ResponseEntity<ValidationResponse> validateSyntax(
+            @Valid @RequestBody ValidationRequest request) {
+
+        log.info("Validating template syntax for language: {}", request.getLanguage());
+
+        try {
+            // Generate minimal validation harness
+            String validationCode = generateValidationHarness(request.getLanguage(), request.getCode());
+
+            // Execute in Docker sandbox (will compile but minimal execution)
+            com.example.interviewAI.dto.DockerExecutionResult result = dockerSandboxService.execute(
+                    request.getLanguage(),
+                    validationCode
+            );
+
+            boolean success = "success".equals(result.getStatus());
+            String errors = result.getStderr();
+
+            // Extract compilation errors if any
+            if (!success && "compilation_error".equals(result.getStatus())) {
+                log.warn("Compilation failed for {}: {}", request.getLanguage(), errors);
+            }
+
+            return ResponseEntity.ok(ValidationResponse.builder()
+                    .success(success)
+                    .language(request.getLanguage())
+                    .errors(errors)
+                    .warnings(success && errors != null && !errors.isEmpty() ? errors : null)
+                    .build());
+
+        } catch (Exception e) {
+            log.error("Error validating syntax for {}", request.getLanguage(), e);
+            return ResponseEntity.internalServerError().body(
+                    ValidationResponse.builder()
+                            .success(false)
+                            .language(request.getLanguage())
+                            .errors("Internal server error: " + e.getMessage())
+                            .build()
+            );
+        }
+    }
+
+    /**
+     * Validate test cases by generating AI implementation and running tests against it.
+     * Used by question builders to verify tests pass before saving.
+     *
+     * @param request the validation request with test cases and code template
+     * @return validation result with test execution results and AI explanation
+     */
+    @PostMapping("/validate-tests-with-ai")
+    public ResponseEntity<ValidateTestsWithAIResponse> validateTestsWithAI(
+            @Valid @RequestBody ValidateTestsWithAIRequest request) {
+
+        log.info("Validating tests with AI for question: {}", request.getTitle());
+
+        try {
+            // For now, return a mock response indicating this endpoint needs implementation
+            // In a full implementation, this would:
+            // 1. Call Claude API to generate implementation
+            // 2. Execute the implementation with test cases
+            // 3. Compare results with expected outputs
+            // 4. Return detailed results and explanation
+
+            ValidateTestsWithAIResponse response = ValidateTestsWithAIResponse.builder()
+                    .passed(0)
+                    .failed(request.getTests().size())
+                    .results(List.of())
+                    .aiImplementation("// AI implementation placeholder\n// This endpoint needs backend implementation")
+                    .explanation("Backend implementation pending. This endpoint requires integration with Claude API for code generation and Docker sandbox for test execution.")
+                    .build();
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            log.error("Error validating tests with AI for question: {}", request.getTitle(), e);
+            return ResponseEntity.internalServerError().body(
+                    ValidateTestsWithAIResponse.builder()
+                            .passed(0)
+                            .failed(request.getTests().size())
+                            .aiImplementation("")
+                            .explanation("Error: " + e.getMessage())
+                            .build()
+            );
+        }
+    }
+
+    /**
+     * Generate minimal validation harness for template code.
+     * This wraps the template in executable code that just validates compilation.
+     */
+    private String generateValidationHarness(String language, String templateCode) {
+        return switch (language.toLowerCase()) {
+            case "java" -> {
+                // Extract class name from template
+                String className = "Solution";
+                java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("class\\s+(\\w+)");
+                java.util.regex.Matcher matcher = pattern.matcher(templateCode);
+                if (matcher.find()) {
+                    className = matcher.group(1);
+                }
+
+                yield templateCode + "\n\n" +
+                        "// Validation harness\n" +
+                        "class Validator {\n" +
+                        "    public static void main(String[] args) {\n" +
+                        "        System.out.println(\"Template compiles successfully\");\n" +
+                        "    }\n" +
+                        "}";
+            }
+            case "python" -> templateCode + "\n\n" +
+                    "# Validation harness\n" +
+                    "if __name__ == \"__main__\":\n" +
+                    "    print(\"Template syntax is valid\")\n";
+            case "javascript", "node" -> templateCode + "\n\n" +
+                    "// Validation harness\n" +
+                    "console.log(\"Template syntax is valid\");\n";
+            default -> throw new IllegalArgumentException("Unsupported language: " + language);
+        };
     }
 }

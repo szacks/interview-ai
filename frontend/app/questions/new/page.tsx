@@ -816,8 +816,7 @@ function StepTestCases({
               onChange={(e) => updateTest(index, { setup: e.target.value })}
               placeholder="const limiter = new RateLimiter(2, 1000);"
               rows={4}
-              className="!bg-gray-950 !text-gray-50 !border-gray-800 font-mono text-sm"
-              style={{ backgroundColor: '#030712', color: '#f8fafc', borderColor: '#1f2937' }}
+              className="bg-gray-950 text-gray-50 border-gray-800 font-mono text-sm"
             />
 
             <Textarea
@@ -825,8 +824,7 @@ function StepTestCases({
               onChange={(e) => updateTest(index, { input: e.target.value })}
               placeholder="limiter.allowRequest('user1', 0)"
               rows={5}
-              className="!bg-gray-950 !text-gray-50 !border-gray-800 font-mono text-sm"
-              style={{ backgroundColor: '#030712', color: '#f8fafc', borderColor: '#1f2937' }}
+              className="bg-gray-950 text-gray-50 border-gray-800 font-mono text-sm"
             />
 
             <Textarea
@@ -834,8 +832,7 @@ function StepTestCases({
               onChange={(e) => updateTest(index, { expectedOutput: e.target.value })}
               placeholder="true"
               rows={5}
-              className="!bg-gray-950 !text-gray-50 !border-gray-800 font-mono text-sm"
-              style={{ backgroundColor: '#030712', color: '#f8fafc', borderColor: '#1f2937' }}
+              className="bg-gray-950 text-gray-50 border-gray-800 font-mono text-sm"
             />
 
             <div className="flex items-center gap-2">
