@@ -138,16 +138,19 @@ export default function CreateQuestionPage() {
         })
         return
       }
-      // Check if code has been generated for other languages
+      // Check if code has been generated for other languages OR if skip generation was clicked
       const hasGeneratedCode = Object.values(questionData.codeTemplates).some((t) => t.generated)
-      if (!hasGeneratedCode) {
+      const hasSkippedGeneration = getNonPrimaryLanguages(questionData.primaryLanguage).every((lang) => !questionData.codeTemplates[lang].code && questionData.codeTemplates[lang].reviewed)
+
+      if (!hasGeneratedCode && !hasSkippedGeneration) {
         toast({
           title: "Validation Error",
-          description: "Please click 'Generate Other Languages' to convert code before proceeding",
+          description: "Please click 'Generate Other Languages' or 'Skip Generation' to proceed",
           variant: "destructive",
         })
         return
       }
+
       // Check if all generated languages have been reviewed
       const nonPrimaryLanguages = getNonPrimaryLanguages(questionData.primaryLanguage)
       const allReviewed = nonPrimaryLanguages.every((lang) => !questionData.codeTemplates[lang].generated || questionData.codeTemplates[lang].reviewed)
@@ -812,24 +815,27 @@ function StepTestCases({
               value={test.setup || ""}
               onChange={(e) => updateTest(index, { setup: e.target.value })}
               placeholder="const limiter = new RateLimiter(2, 1000);"
-              rows={2}
-              className="font-mono text-xs"
+              rows={4}
+              className="!bg-gray-950 !text-gray-50 !border-gray-800 font-mono text-sm"
+              style={{ backgroundColor: '#030712', color: '#f8fafc', borderColor: '#1f2937' }}
             />
 
             <Textarea
               value={test.input}
               onChange={(e) => updateTest(index, { input: e.target.value })}
               placeholder="limiter.allowRequest('user1', 0)"
-              rows={2}
-              className="font-mono text-xs"
+              rows={5}
+              className="!bg-gray-950 !text-gray-50 !border-gray-800 font-mono text-sm"
+              style={{ backgroundColor: '#030712', color: '#f8fafc', borderColor: '#1f2937' }}
             />
 
             <Textarea
               value={test.expectedOutput}
               onChange={(e) => updateTest(index, { expectedOutput: e.target.value })}
               placeholder="true"
-              rows={2}
-              className="font-mono text-xs"
+              rows={5}
+              className="!bg-gray-950 !text-gray-50 !border-gray-800 font-mono text-sm"
+              style={{ backgroundColor: '#030712', color: '#f8fafc', borderColor: '#1f2937' }}
             />
 
             <div className="flex items-center gap-2">
