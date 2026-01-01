@@ -1,6 +1,6 @@
 package com.example.interviewAI.config;
 
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -11,13 +11,14 @@ import org.springframework.web.socket.server.support.HttpSessionHandshakeInterce
 /**
  * WebSocket Configuration with STOMP support for real-time interview communication.
  * Enables bidirectional communication between interviewer and candidate.
+ * Uses CorsProperties for consistent CORS handling.
  */
 @Configuration
 @EnableWebSocketMessageBroker
+@RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    @Value("${spring.security.cors.allowed-origins}")
-    private String allowedOrigins;
+    private final CorsProperties corsProperties;
 
     /**
      * Configure message broker for WebSocket communication.
@@ -38,25 +39,21 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     /**
      * Register STOMP endpoints.
      * Clients will connect to /ws/interview endpoint.
+     * Uses allowed origins from CorsProperties for consistency.
      */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        // Parse allowed origins from comma-separated string
-        String[] origins = allowedOrigins.split(",");
-        String[] trimmedOrigins = new String[origins.length];
-        for (int i = 0; i < origins.length; i++) {
-            trimmedOrigins[i] = origins[i].trim();
-        }
+        String[] allowedOrigins = corsProperties.getAllowedOrigins().toArray(new String[0]);
 
-        // Register WebSocket endpoint
+        // Register WebSocket endpoint with SockJS fallback
         registry.addEndpoint("/ws/interview")
-                .setAllowedOrigins(trimmedOrigins)
+                .setAllowedOrigins(allowedOrigins)
                 .addInterceptors(new HttpSessionHandshakeInterceptor())
                 .withSockJS();
 
         // Alternative endpoint without SockJS fallback (for direct WebSocket)
         registry.addEndpoint("/ws/interview")
-                .setAllowedOrigins(trimmedOrigins)
+                .setAllowedOrigins(allowedOrigins)
                 .addInterceptors(new HttpSessionHandshakeInterceptor());
     }
 }

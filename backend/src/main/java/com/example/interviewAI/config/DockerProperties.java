@@ -4,11 +4,18 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+/**
+ * Docker configuration properties.
+ * Externalized Docker settings for flexible deployment.
+ */
 @Component
 @ConfigurationProperties(prefix = "docker")
 @Data
 public class DockerProperties {
     private String host;
+    private Integer maxConnections = 100;
+    private Integer connectionTimeoutSeconds = 30;
+    private Integer responseTimeoutSeconds = 45;
     private Sandbox sandbox;
 
     @Data

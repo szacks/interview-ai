@@ -4,19 +4,23 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
 import com.github.dockerjava.zerodep.ZerodepDockerHttpClient;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.Duration;
+
+/**
+ * Docker client configuration with externalized settings.
+ * All timeout and connection settings are now configurable.
+ */
 @Configuration
 @Slf4j
+@RequiredArgsConstructor
 public class DockerConfig {
 
     private final DockerProperties dockerProperties;
-
-    public DockerConfig(DockerProperties dockerProperties) {
-        this.dockerProperties = dockerProperties;
-    }
 
     @Bean
     public DockerClient dockerClient() {
@@ -26,19 +30,23 @@ public class DockerConfig {
         }
 
         log.info("Initializing Docker client with host: {}", dockerHost);
+        log.debug("Docker settings - maxConnections: {}, connectionTimeout: {}s, responseTimeout: {}s",
+                dockerProperties.getMaxConnections(),
+                dockerProperties.getConnectionTimeoutSeconds(),
+                dockerProperties.getResponseTimeoutSeconds());
 
         try {
             DefaultDockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder()
                     .withDockerHost(dockerHost)
                     .build();
 
-            // Explicitly create Docker client with zerodep HTTP client
+            // Explicitly create Docker client with zerodep HTTP client using configured timeouts
             try {
                 com.github.dockerjava.transport.DockerHttpClient httpClient = new ZerodepDockerHttpClient.Builder()
                         .dockerHost(config.getDockerHost())
-                        .maxConnections(100)
-                        .connectionTimeout(java.time.Duration.ofSeconds(30))
-                        .responseTimeout(java.time.Duration.ofSeconds(45))
+                        .maxConnections(dockerProperties.getMaxConnections())
+                        .connectionTimeout(Duration.ofSeconds(dockerProperties.getConnectionTimeoutSeconds()))
+                        .responseTimeout(Duration.ofSeconds(dockerProperties.getResponseTimeoutSeconds()))
                         .build();
 
                 DockerClient client = DockerClientImpl.getInstance(config, httpClient);
@@ -59,7 +67,7 @@ public class DockerConfig {
 
                 try {
                     client.pingCmd().exec();
-                    log.info("Docker client connected successfully");
+                    log.info("Docker client connected successfully (fallback)");
                 } catch (Exception ex) {
                     log.warn("Docker client ping failed: {}", ex.getMessage());
                 }
