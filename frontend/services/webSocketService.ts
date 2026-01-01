@@ -1,5 +1,6 @@
 import { Client, IMessage, StompConfig } from '@stomp/stompjs';
 import type { ChatMessage } from '@/types/chat';
+import { apiConfig, wsConfig } from '@/config/app.config';
 
 /**
  * Get WebSocket URL for STOMP connection
@@ -11,8 +12,8 @@ function getWebSocketURL(): string {
     return process.env.NEXT_PUBLIC_WS_URL;
   }
 
-  // Get the backend API base URL
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080/api';
+  // Get the backend API base URL from config
+  const apiBaseUrl = apiConfig.baseUrl;
 
   // Convert http/https to ws/wss and replace /api with /api/ws/interview
   const wsUrl = apiBaseUrl
@@ -24,7 +25,8 @@ function getWebSocketURL(): string {
 }
 
 /**
- * Service for managing STOMP WebSocket connections to chat system
+ * Service for managing STOMP WebSocket connections to chat system.
+ * Uses centralized configuration for all WebSocket settings.
  */
 export class WebSocketService {
   private client: Client | null = null;
@@ -60,9 +62,9 @@ export class WebSocketService {
         debug: (str) => {
           console.log('[STOMP]', str);
         },
-        reconnectDelay: 5000,
-        heartbeatIncoming: 10000,
-        heartbeatOutgoing: 10000,
+        reconnectDelay: wsConfig.reconnectDelay,
+        heartbeatIncoming: wsConfig.heartbeatIncoming,
+        heartbeatOutgoing: wsConfig.heartbeatOutgoing,
         onConnect: () => {
           console.log('[WebSocket] ✓ Connected to interview', interviewId);
           this.subscribeToChat(interviewId);

@@ -1,10 +1,6 @@
 package com.example.interviewAI.controller;
 
-import com.example.interviewAI.dto.QuestionResponse;
-import com.example.interviewAI.dto.CreateQuestionRequest;
-import com.example.interviewAI.dto.UpdateQuestionRequest;
-import com.example.interviewAI.dto.CodeConversionRequest;
-import com.example.interviewAI.dto.CodeConversionResponse;
+import com.example.interviewAI.dto.*;
 import com.example.interviewAI.service.QuestionService;
 import com.example.interviewAI.service.CodeConversionService;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
@@ -97,7 +94,6 @@ public class QuestionController {
         return ResponseEntity.ok(questions);
     }
 
-    // ========== POST: Create Question ==========
     /**
      * Create a new question through the question builder.
      *
@@ -111,14 +107,11 @@ public class QuestionController {
             Authentication authentication) {
         log.info("Creating new question: {}", request.getTitle());
 
-        // Get user ID from authentication
-        Long userId = getUserIdFromAuthentication(authentication);
-
+        Long userId = extractUserIdFromAuthentication(authentication);
         QuestionResponse response = questionService.createQuestion(request, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // ========== PUT: Update Question ==========
     /**
      * Update an existing question.
      *
@@ -134,14 +127,11 @@ public class QuestionController {
             Authentication authentication) {
         log.info("Updating question with id: {}", id);
 
-        // Get user ID from authentication
-        Long userId = getUserIdFromAuthentication(authentication);
-
+        Long userId = extractUserIdFromAuthentication(authentication);
         QuestionResponse response = questionService.updateQuestion(id, request, userId);
         return ResponseEntity.ok(response);
     }
 
-    // ========== DELETE: Archive Question ==========
     /**
      * Archive (soft delete) a question.
      *
@@ -155,7 +145,6 @@ public class QuestionController {
         return ResponseEntity.noContent().build();
     }
 
-    // ========== POST: Convert Code Between Languages ==========
     /**
      * Convert code from one language to another using Claude AI.
      * Used in Step 3 of the question builder when "Generate Other Languages" is clicked.
@@ -180,7 +169,6 @@ public class QuestionController {
         }
     }
 
-    // ========== POST: Validate Question ==========
     /**
      * Validate a question's code templates and test cases.
      * Used in Step 6 of the question builder (Preview & Validate).
@@ -189,35 +177,31 @@ public class QuestionController {
      * @return validation result
      */
     @PostMapping("/{id}/validate")
-    public ResponseEntity<java.util.Map<String, Object>> validateQuestion(@PathVariable Long id) {
+    public ResponseEntity<ValidationResponse> validateQuestion(@PathVariable Long id) {
         log.info("Validating question with id: {}", id);
 
         try {
-            // For MVP, return a simple validation response
-            // Full validation would compile code and run tests
             QuestionResponse question = questionService.getQuestionById(id);
 
-            java.util.Map<String, Object> validation = new java.util.HashMap<>();
-            validation.put("success", true);
-            validation.put("hasErrors", false);
-            validation.put("message", "Question validation passed");
-            validation.put("questionId", id);
-            validation.put("codeTemplatesPresent", true);
-
-            return ResponseEntity.ok(validation);
+            return ResponseEntity.ok(ValidationResponse.builder()
+                    .success(true)
+                    .hasErrors(false)
+                    .message("Question validation passed")
+                    .questionId(id)
+                    .codeTemplatesPresent(true)
+                    .build());
         } catch (Exception e) {
             log.error("Error validating question", e);
 
-            java.util.Map<String, Object> errorResponse = new java.util.HashMap<>();
-            errorResponse.put("success", false);
-            errorResponse.put("hasErrors", true);
-            errorResponse.put("message", "Validation failed: " + e.getMessage());
-
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ValidationResponse.builder()
+                            .success(false)
+                            .hasErrors(true)
+                            .message("Validation failed: " + e.getMessage())
+                            .build());
         }
     }
 
-    // ========== POST: Test AI Chat ==========
     /**
      * Test the AI assistant configuration for a question.
      * Used in Step 5 of the question builder (AI Configuration).
@@ -227,7 +211,7 @@ public class QuestionController {
      * @return the AI response
      */
     @PostMapping("/{id}/test-ai")
-    public ResponseEntity<java.util.Map<String, String>> testAIChat(
+    public ResponseEntity<AITestResponse> testAIChat(
             @PathVariable Long id,
             @RequestBody java.util.Map<String, String> request) {
         log.info("Testing AI chat for question with id: {}", id);
@@ -238,47 +222,69 @@ public class QuestionController {
 
             // For MVP, return a mock response
             // Full implementation would call Claude API with the prompt
-            java.util.Map<String, String> response = new java.util.HashMap<>();
-            response.put("message", "AI response placeholder. In full implementation, this would call Claude API.");
-            response.put("success", "true");
-
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(AITestResponse.builder()
+                    .message("AI response placeholder. In full implementation, this would call Claude API.")
+                    .success(true)
+                    .build());
         } catch (Exception e) {
             log.error("Error testing AI chat", e);
 
-            java.util.Map<String, String> errorResponse = new java.util.HashMap<>();
-            errorResponse.put("error", "Failed to test AI: " + e.getMessage());
-
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(AITestResponse.builder()
+                            .error("Failed to test AI: " + e.getMessage())
+                            .success(false)
+                            .build());
         }
     }
 
-    // ========== Helper Methods ==========
     /**
      * Extract user ID from Authentication object.
-     * In a real implementation, this would get the user ID from JWT or session.
+     * Handles various authentication principal types.
+     *
+     * @param authentication the Spring Security authentication object
+     * @return the user ID, or 1L as fallback for anonymous/system users
      */
-    private Long getUserIdFromAuthentication(Authentication authentication) {
+    private Long extractUserIdFromAuthentication(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
-            // For now, return a default user ID (1 for system user)
-            // In production, extract from JWT token or principal
-            return 1L;
+            log.warn("No authentication found, using system user ID");
+            return 1L; // System user fallback
         }
 
-        // Try to extract user ID from principal
-        // This depends on how your authentication is set up
         try {
-            // Example: if using JWT with custom claims
             Object principal = authentication.getPrincipal();
-            if (principal instanceof org.springframework.security.core.userdetails.UserDetails) {
-                // This is a basic user details - you'd need a custom implementation
-                // For now, return a default
-                return 1L;
+
+            // If principal is a UserDetails implementation with user ID
+            if (principal instanceof UserDetails) {
+                // Try to extract ID from username if it's numeric
+                String username = ((UserDetails) principal).getUsername();
+                try {
+                    return Long.parseLong(username);
+                } catch (NumberFormatException e) {
+                    log.debug("Username is not numeric, using system user");
+                }
             }
-            return 1L;
+
+            // If principal is already a user ID
+            if (principal instanceof Long) {
+                return (Long) principal;
+            }
+
+            // If principal is a string representation of user ID
+            if (principal instanceof String) {
+                try {
+                    return Long.parseLong((String) principal);
+                } catch (NumberFormatException e) {
+                    log.debug("Principal string is not numeric");
+                }
+            }
+
+            log.warn("Could not extract user ID from authentication principal of type: {}",
+                    principal.getClass().getName());
+            return 1L; // Fallback to system user
+
         } catch (Exception e) {
-            log.warn("Could not extract user ID from authentication", e);
-            return 1L;
+            log.warn("Error extracting user ID from authentication", e);
+            return 1L; // Fallback to system user
         }
     }
 }

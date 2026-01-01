@@ -3,8 +3,8 @@ package com.example.interviewAI.controller;
 import com.example.interviewAI.dto.ChatMessageRequest;
 import com.example.interviewAI.dto.ChatMessageResponse;
 import com.example.interviewAI.service.ChatService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,23 +12,22 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 /**
- * REST Controller for chat operations during interviews
- * CORS configuration is managed globally in CorsConfig.java
+ * REST Controller for chat operations during interviews.
+ * Uses constructor injection for better testability and immutability.
  */
 @Slf4j
 @RestController
 @RequestMapping("/chat")
+@RequiredArgsConstructor
 public class ChatController {
 
-    @Autowired
-    private ChatService chatService;
+    private final ChatService chatService;
 
     /**
-     * POST /api/chat/message
-     * Send a message from candidate and get AI response
+     * Send a message from candidate and get AI response.
      *
-     * @param request The chat message request
-     * @return The AI response message
+     * @param request the chat message request
+     * @return the AI response message
      */
     @PostMapping("/message")
     public ResponseEntity<ChatMessageResponse> sendMessage(
@@ -47,11 +46,10 @@ public class ChatController {
     }
 
     /**
-     * GET /api/chat/history/{interviewId}
-     * Get complete chat history for an interview
+     * Get complete chat history for an interview.
      *
-     * @param interviewId The interview ID
-     * @return List of all chat messages for the interview
+     * @param interviewId the interview ID
+     * @return list of all chat messages for the interview
      */
     @GetMapping("/history/{interviewId}")
     public ResponseEntity<List<ChatMessageResponse>> getChatHistory(
@@ -70,15 +68,13 @@ public class ChatController {
     }
 
     /**
-     * GET /api/chat/resolve-token/{token}
-     * Resolve an interview link token to an interview ID
+     * Resolve an interview link token to an interview ID.
      *
-     * @param token The interview link token
-     * @return The interview ID
+     * @param token the interview link token
+     * @return the interview ID
      */
     @GetMapping("/resolve-token/{token}")
-    public ResponseEntity<Long> resolveToken(
-            @PathVariable String token) {
+    public ResponseEntity<Long> resolveToken(@PathVariable String token) {
 
         log.info("Resolving interview token: {}", token);
 
@@ -93,7 +89,7 @@ public class ChatController {
     }
 
     /**
-     * Health check endpoint for chat service
+     * Health check endpoint for chat service.
      */
     @GetMapping("/health")
     public ResponseEntity<String> health() {

@@ -9,39 +9,35 @@ import com.example.interviewAI.repository.CodeExecutionRepository;
 import com.example.interviewAI.service.CodeExecutionService;
 import com.example.interviewAI.service.CodeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 /**
- * REST Controller for code submission operations
+ * REST Controller for code submission operations.
+ * Uses constructor injection for better testability.
  */
 @Slf4j
 @RestController
 @RequestMapping("/code")
+@RequiredArgsConstructor
 public class CodeController {
 
-    @Autowired
-    private CodeService codeService;
-
-    @Autowired
-    private CodeExecutionService codeExecutionService;
-
-    @Autowired
-    private CodeExecutionRepository codeExecutionRepository;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final CodeService codeService;
+    private final CodeExecutionService codeExecutionService;
+    private final CodeExecutionRepository codeExecutionRepository;
+    private final ObjectMapper objectMapper;
 
     /**
-     * POST /api/code/submit
-     * Submit candidate code and broadcast to interviewer
+     * Submit candidate code and broadcast to interviewer.
      *
-     * @param request The code submission request
-     * @return The saved code submission
+     * @param request the code submission request
+     * @return the saved code submission
      */
     @PostMapping("/submit")
     public ResponseEntity<CodeSubmissionResponse> submitCode(
@@ -60,11 +56,10 @@ public class CodeController {
     }
 
     /**
-     * GET /api/code/latest/{interviewId}
-     * Get the latest code submission for an interview
+     * Get the latest code submission for an interview.
      *
-     * @param interviewId The interview ID
-     * @return The latest code submission
+     * @param interviewId the interview ID
+     * @return the latest code submission
      */
     @GetMapping("/latest/{interviewId}")
     public ResponseEntity<CodeSubmissionResponse> getLatestCode(
@@ -78,11 +73,10 @@ public class CodeController {
     }
 
     /**
-     * POST /api/code/execute
-     * Execute code in Docker sandbox and run tests
+     * Execute code in Docker sandbox and run tests.
      *
-     * @param request The code execution request containing interviewId, language, and code
-     * @return The execution results with test outcomes and auto score
+     * @param request the code execution request containing interviewId, language, and code
+     * @return the execution results with test outcomes and auto score
      */
     @PostMapping("/execute")
     public ResponseEntity<CodeExecutionResponse> executeCode(
@@ -116,11 +110,10 @@ public class CodeController {
     }
 
     /**
-     * GET /api/code/execution/{interviewId}
-     * Get the latest code execution result for an interview
+     * Get the latest code execution result for an interview.
      *
-     * @param interviewId The interview ID
-     * @return The latest code execution result
+     * @param interviewId the interview ID
+     * @return the latest code execution result
      */
     @GetMapping("/execution/{interviewId}")
     public ResponseEntity<CodeExecutionResponse> getLatestExecution(
@@ -156,10 +149,10 @@ public class CodeController {
         if (codeExecution.getTestDetails() != null) {
             try {
                 @SuppressWarnings("unchecked")
-                java.util.List<com.example.interviewAI.dto.TestCaseResult> testDetails =
-                    (java.util.List<com.example.interviewAI.dto.TestCaseResult>) objectMapper.readValue(
+                List<com.example.interviewAI.dto.TestCaseResult> testDetails =
+                    (List<com.example.interviewAI.dto.TestCaseResult>) objectMapper.readValue(
                         codeExecution.getTestDetails(),
-                        objectMapper.getTypeFactory().constructCollectionType(java.util.List.class, com.example.interviewAI.dto.TestCaseResult.class)
+                        objectMapper.getTypeFactory().constructCollectionType(List.class, com.example.interviewAI.dto.TestCaseResult.class)
                     );
                 response.setTestDetails(testDetails);
             } catch (Exception e) {
@@ -171,20 +164,18 @@ public class CodeController {
     }
 
     /**
-     * DELETE /api/code/execution/{interviewId}
-     * Delete all code executions for an interview (for testing/simulation purposes)
+     * Delete all code executions for an interview (for testing/simulation purposes).
      *
-     * @param interviewId The interview ID
-     * @return Success message
+     * @param interviewId the interview ID
+     * @return success message
      */
     @DeleteMapping("/execution/{interviewId}")
-    public ResponseEntity<String> deleteExecutions(
-            @PathVariable Long interviewId) {
+    public ResponseEntity<String> deleteExecutions(@PathVariable Long interviewId) {
 
         log.info("Deleting code executions for interview {}", interviewId);
 
         try {
-            java.util.List<CodeExecution> executions =
+            List<CodeExecution> executions =
                     codeExecutionRepository.findByInterviewIdOrderByExecutedAtDesc(interviewId);
 
             if (executions.isEmpty()) {

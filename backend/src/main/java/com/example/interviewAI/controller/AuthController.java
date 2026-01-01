@@ -1,5 +1,6 @@
 package com.example.interviewAI.controller;
 
+import com.example.interviewAI.config.JwtProperties;
 import com.example.interviewAI.dto.AcceptInvitationRequest;
 import com.example.interviewAI.dto.AuthResponse;
 import com.example.interviewAI.dto.LoginRequest;
@@ -31,6 +32,7 @@ public class AuthController {
     private final AuthService authService;
     private final InvitationService invitationService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final JwtProperties jwtProperties;
 
     /**
      * Register a new company and admin user.
@@ -120,7 +122,7 @@ public class AuthController {
         response.setRole(user.getRole().getValue());
         response.setCompanyId(user.getCompany() != null ? user.getCompany().getId() : null);
         response.setToken(token);
-        response.setExpiresIn(86400000L); // 24 hours in milliseconds
+        response.setExpiresIn(jwtProperties.getExpiration()); // Use configured expiration
         response.setMessage("Invitation accepted successfully");
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);

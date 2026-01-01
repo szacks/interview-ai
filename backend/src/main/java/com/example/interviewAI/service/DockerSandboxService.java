@@ -1,6 +1,7 @@
 package com.example.interviewAI.service;
 
 import com.example.interviewAI.config.DockerProperties;
+import com.example.interviewAI.config.SandboxExecutionProperties;
 import com.example.interviewAI.dto.DockerExecutionResult;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.async.ResultCallback;
@@ -10,6 +11,7 @@ import com.github.dockerjava.api.model.Bind;
 import com.github.dockerjava.api.model.Frame;
 import com.github.dockerjava.api.model.HostConfig;
 import com.github.dockerjava.api.model.Volume;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -22,23 +24,18 @@ import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Service for executing code in isolated Docker containers.
+ * All security and resource limits are externalized via SandboxExecutionProperties.
+ */
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class DockerSandboxService {
 
-    private static final long TIMEOUT_MS = 10_000; // 10 seconds
-    private static final long MEMORY_LIMIT_BYTES = 128 * 1024 * 1024; // 128MB
-    private static final long CPU_PERIOD = 100_000; // 100ms
-    private static final long CPU_QUOTA = 50_000; // 50% of one CPU
-    private static final int MAX_OUTPUT_BYTES = 50_000;
-
     private final DockerProperties dockerProperties;
+    private final SandboxExecutionProperties executionProperties;
     private final DockerClient dockerClient;
-
-    public DockerSandboxService(DockerProperties dockerProperties, DockerClient dockerClient) {
-        this.dockerProperties = dockerProperties;
-        this.dockerClient = dockerClient;
-    }
 
     public DockerExecutionResult execute(String language, String code) {
         String imageName = getImageForLanguage(language);
@@ -68,17 +65,16 @@ public class DockerSandboxService {
             log.info("Created temp code file: {} exists: {}", codeFile, Files.exists(codeFile));
             log.info("Host path for Docker bind: {}", hostPath);
 
-            // Create Bind mount - use the two-parameter constructor properly
-            // Bind(host_path, volume)
+            // Create Bind mount
             Bind bind = new Bind(hostPath, new Volume("/app"));
             log.info("Bind string representation: {}", bind.toString());
 
             CreateContainerResponse container = dockerClient.createContainerCmd(imageName)
                     .withHostConfig(HostConfig.newHostConfig()
-                            .withMemory(MEMORY_LIMIT_BYTES)
-                            .withMemorySwap(MEMORY_LIMIT_BYTES) // No swap
-                            .withCpuPeriod(CPU_PERIOD)
-                            .withCpuQuota(CPU_QUOTA)
+                            .withMemory(executionProperties.getMemoryLimitBytes())
+                            .withMemorySwap(executionProperties.getMemoryLimitBytes()) // No swap
+                            .withCpuPeriod(executionProperties.getCpuPeriod())
+                            .withCpuQuota(executionProperties.getCpuQuota())
                             .withNetworkMode("none") // No network access
                             .withSecurityOpts(java.util.List.of("no-new-privileges"))
                             .withPidsLimit(100L) // Limit processes
@@ -102,7 +98,10 @@ public class DockerSandboxService {
             WaitContainerResultCallback waitCallback = new WaitContainerResultCallback();
             dockerClient.waitContainerCmd(containerId).exec(waitCallback);
 
-            boolean completed = waitCallback.awaitCompletion(TIMEOUT_MS, TimeUnit.MILLISECONDS);
+            boolean completed = waitCallback.awaitCompletion(
+                    executionProperties.getTimeoutMs(),
+                    TimeUnit.MILLISECONDS
+            );
 
             // Capture output
             String stdout = captureOutput(containerId, true);
@@ -124,10 +123,10 @@ public class DockerSandboxService {
                 return DockerExecutionResult.builder()
                         .success(false)
                         .status("timeout")
-                        .errorMessage("Execution timed out after " + TIMEOUT_MS + "ms")
+                        .errorMessage("Execution timed out after " + executionProperties.getTimeoutMs() + "ms")
                         .executionTimeMs(executionTime)
-                        .stdout(truncate(stdout, MAX_OUTPUT_BYTES))
-                        .stderr(truncate(stderr, MAX_OUTPUT_BYTES))
+                        .stdout(truncate(stdout, executionProperties.getMaxOutputBytes()))
+                        .stderr(truncate(stderr, executionProperties.getMaxOutputBytes()))
                         .build();
             }
 
@@ -146,8 +145,8 @@ public class DockerSandboxService {
                     .status(status)
                     .exitCode(exitCode)
                     .executionTimeMs(executionTime)
-                    .stdout(truncate(stdout, MAX_OUTPUT_BYTES))
-                    .stderr(truncate(stderr, MAX_OUTPUT_BYTES))
+                    .stdout(truncate(stdout, executionProperties.getMaxOutputBytes()))
+                    .stderr(truncate(stderr, executionProperties.getMaxOutputBytes()))
                     .build();
 
         } catch (Exception e) {

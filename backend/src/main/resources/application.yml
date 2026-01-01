@@ -68,6 +68,7 @@ server:
 
 # Application Configuration
 app:
+  version: ${APP_VERSION:1.0.0}
   mail:
     from: ${MAIL_FROM:noreply@interviewai.com}
   frontend:
@@ -116,6 +117,15 @@ app:
       - /code/**
       - /ws/**
       - /interview-evaluations/**
+
+  # Docker Sandbox Execution Configuration
+  sandbox:
+    execution:
+      timeout-ms: ${SANDBOX_TIMEOUT_MS:10000}
+      memory-limit-bytes: ${SANDBOX_MEMORY_LIMIT:134217728}
+      cpu-period: ${SANDBOX_CPU_PERIOD:100000}
+      cpu-quota: ${SANDBOX_CPU_QUOTA:50000}
+      max-output-bytes: ${SANDBOX_MAX_OUTPUT:50000}
 
 # JWT Configuration
 jwt:

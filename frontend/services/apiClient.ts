@@ -1,5 +1,6 @@
 import axios from 'axios';
 import type { AxiosInstance, AxiosError, AxiosResponse } from 'axios';
+import { apiConfig } from '@/config/app.config';
 
 // Define API response types
 export interface ApiResponse<T = unknown> {
@@ -15,12 +16,10 @@ export interface ApiError {
   code?: string;
 }
 
-// Create axios instance with default configuration
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080/api';
-
+// Create axios instance with configuration from centralized config
 const apiClient: AxiosInstance = axios.create({
-  baseURL: API_BASE_URL,
-  timeout: 30000,
+  baseURL: apiConfig.baseUrl,
+  timeout: apiConfig.timeout,
   headers: {
     'Content-Type': 'application/json',
   },
