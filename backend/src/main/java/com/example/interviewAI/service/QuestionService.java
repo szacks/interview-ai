@@ -3,6 +3,8 @@ package com.example.interviewAI.service;
 import com.example.interviewAI.dto.QuestionResponse;
 import com.example.interviewAI.dto.FollowUpQuestionResponse;
 import com.example.interviewAI.dto.TestCaseResponse;
+import com.example.interviewAI.dto.CreateQuestionRequest;
+import com.example.interviewAI.dto.UpdateQuestionRequest;
 import com.example.interviewAI.entity.Question;
 import com.example.interviewAI.entity.FollowUpQuestion;
 import com.example.interviewAI.entity.TestCase;
@@ -11,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -140,5 +143,173 @@ public class QuestionService {
         response.setOrderIndex(testCase.getOrderIndex());
         response.setPassed(testCase.getPassed());
         return response;
+    }
+
+    // ========== Create Question ==========
+    /**
+     * Create a new question from the question builder
+     */
+    public QuestionResponse createQuestion(CreateQuestionRequest request, Long userId) {
+        log.info("Creating new question: {}", request.getTitle());
+
+        Question question = new Question();
+        question.setTitle(request.getTitle());
+        question.setCategory(request.getCategory());
+        question.setDifficulty(request.getDifficulty());
+        question.setShortDescription(request.getShortDescription());
+        question.setDescription(request.getDescription());
+        question.setPrimaryLanguage(request.getPrimaryLanguage());
+        question.setInitialCodeJava(request.getInitialCodeJava());
+        question.setInitialCodePython(request.getInitialCodePython());
+        question.setInitialCodeJavascript(request.getInitialCodeJavascript());
+        question.setTestsJson(request.getTestsJson());
+        question.setAiPromptTemplate(request.getAiPromptTemplate() != null ? request.getAiPromptTemplate() : "helpful");
+        question.setAiCustomPrompt(request.getAiCustomPrompt());
+        question.setFollowupQuestionsJson(request.getFollowupQuestionsJson());
+        question.setStatus(request.getStatus());
+        question.setCreatedBy(userId);
+        question.setCompanyId(request.getCompanyId());
+        question.setCreatedAt(LocalDateTime.now());
+        question.setUpdatedAt(LocalDateTime.now());
+
+        // Set generated languages tracking
+        if (request.getGeneratedLanguages() != null) {
+            question.setGeneratedLanguagesJson(convertMapToJson(request.getGeneratedLanguages()));
+        }
+
+        // Set published timestamp if publishing
+        if ("PUBLISHED".equals(request.getStatus())) {
+            question.setPublishedAt(LocalDateTime.now());
+        }
+
+        Question saved = questionRepository.save(question);
+        log.info("Question created successfully with id: {}", saved.getId());
+
+        return convertToResponse(saved);
+    }
+
+    // ========== Update Question ==========
+    /**
+     * Update an existing question
+     */
+    public QuestionResponse updateQuestion(Long id, UpdateQuestionRequest request, Long userId) {
+        log.info("Updating question with id: {}", id);
+
+        Question question = questionRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Question not found with id: " + id));
+
+        // Update all provided fields
+        if (request.getTitle() != null) {
+            question.setTitle(request.getTitle());
+        }
+        if (request.getCategory() != null) {
+            question.setCategory(request.getCategory());
+        }
+        if (request.getDifficulty() != null) {
+            question.setDifficulty(request.getDifficulty());
+        }
+        if (request.getShortDescription() != null) {
+            question.setShortDescription(request.getShortDescription());
+        }
+        if (request.getDescription() != null) {
+            question.setDescription(request.getDescription());
+        }
+        if (request.getPrimaryLanguage() != null) {
+            question.setPrimaryLanguage(request.getPrimaryLanguage());
+        }
+        if (request.getInitialCodeJava() != null) {
+            question.setInitialCodeJava(request.getInitialCodeJava());
+        }
+        if (request.getInitialCodePython() != null) {
+            question.setInitialCodePython(request.getInitialCodePython());
+        }
+        if (request.getInitialCodeJavascript() != null) {
+            question.setInitialCodeJavascript(request.getInitialCodeJavascript());
+        }
+        if (request.getTestsJson() != null) {
+            question.setTestsJson(request.getTestsJson());
+        }
+        if (request.getAiPromptTemplate() != null) {
+            question.setAiPromptTemplate(request.getAiPromptTemplate());
+        }
+        if (request.getAiCustomPrompt() != null) {
+            question.setAiCustomPrompt(request.getAiCustomPrompt());
+        }
+        if (request.getFollowupQuestionsJson() != null) {
+            question.setFollowupQuestionsJson(request.getFollowupQuestionsJson());
+        }
+        if (request.getStatus() != null) {
+            question.setStatus(request.getStatus());
+            // Set published timestamp when publishing
+            if ("PUBLISHED".equals(request.getStatus()) && question.getPublishedAt() == null) {
+                question.setPublishedAt(LocalDateTime.now());
+            }
+        }
+        if (request.getCompanyId() != null) {
+            question.setCompanyId(request.getCompanyId());
+        }
+        if (request.getGeneratedLanguages() != null) {
+            question.setGeneratedLanguagesJson(convertMapToJson(request.getGeneratedLanguages()));
+        }
+
+        // Increment version on update
+        if (question.getVersion() == null) {
+            question.setVersion(1);
+        } else {
+            question.setVersion(question.getVersion() + 1);
+        }
+
+        question.setUpdatedAt(LocalDateTime.now());
+
+        Question updated = questionRepository.save(question);
+        log.info("Question updated successfully with id: {}", updated.getId());
+
+        return convertToResponse(updated);
+    }
+
+    // ========== Delete Question ==========
+    /**
+     * Soft delete a question by marking it as archived
+     */
+    public void deleteQuestion(Long id) {
+        log.info("Archiving question with id: {}", id);
+
+        Question question = questionRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Question not found with id: " + id));
+
+        question.setStatus("ARCHIVED");
+        question.setArchivedAt(LocalDateTime.now());
+        question.setUpdatedAt(LocalDateTime.now());
+
+        questionRepository.save(question);
+        log.info("Question archived successfully with id: {}", id);
+    }
+
+    // ========== Helper Methods ==========
+    /**
+     * Convert Map to JSON string representation
+     */
+    private String convertMapToJson(java.util.Map<String, java.util.Map<String, Boolean>> map) {
+        if (map == null) {
+            return null;
+        }
+        try {
+            // Simple JSON conversion - in production, use Jackson ObjectMapper
+            StringBuilder json = new StringBuilder("{");
+            map.forEach((key, value) -> {
+                json.append("\"").append(key).append("\":{");
+                value.forEach((k, v) -> {
+                    json.append("\"").append(k).append("\":").append(v).append(",");
+                });
+                json.deleteCharAt(json.length() - 1); // Remove last comma
+                json.append("},");
+            });
+            json.deleteCharAt(json.length() - 1); // Remove last comma
+            json.append("}");
+            return json.toString();
+        } catch (Exception e) {
+            log.error("Error converting map to JSON", e);
+            return null;
+        }
     }
 }

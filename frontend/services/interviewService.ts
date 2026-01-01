@@ -165,4 +165,88 @@ export const interviewService = {
       throw error
     }
   },
+
+  /**
+   * Create a new custom question
+   */
+  createQuestion: async (request: any): Promise<Question> => {
+    try {
+      const data = await apiClient.post('/questions', request)
+      return data as Question
+    } catch (error) {
+      console.error('Error creating question:', error)
+      throw error
+    }
+  },
+
+  /**
+   * Update an existing question
+   */
+  updateQuestion: async (questionId: number, request: any): Promise<Question> => {
+    try {
+      const data = await apiClient.put(`/questions/${questionId}`, request)
+      return data as Question
+    } catch (error) {
+      console.error('Error updating question:', error)
+      throw error
+    }
+  },
+
+  /**
+   * Delete (archive) a question
+   */
+  deleteQuestion: async (questionId: number): Promise<void> => {
+    try {
+      await apiClient.delete(`/questions/${questionId}`)
+    } catch (error) {
+      console.error('Error deleting question:', error)
+      throw error
+    }
+  },
+
+  /**
+   * Convert code from one language to another using AI
+   */
+  convertCode: async (request: {
+    sourceLanguage: string
+    targetLanguage: string
+    sourceCode: string
+  }): Promise<{ targetLanguage: string; convertedCode: string; success: boolean; error?: string }> => {
+    try {
+      const data = await apiClient.post('/questions/convert-code', request)
+      return data as { targetLanguage: string; convertedCode: string; success: boolean; error?: string }
+    } catch (error) {
+      console.error('Error converting code:', error)
+      throw error
+    }
+  },
+
+  /**
+   * Validate a question (check code compilation and test execution)
+   */
+  validateQuestion: async (questionId: number): Promise<any> => {
+    try {
+      const data = await apiClient.post(`/questions/${questionId}/validate`, {})
+      return data
+    } catch (error) {
+      console.error('Error validating question:', error)
+      throw error
+    }
+  },
+
+  /**
+   * Test AI chat for a specific question
+   */
+  testAIChat: async (questionId: number, request: {
+    message: string
+    conversationHistory?: any[]
+  }): Promise<{ message: string }> => {
+    try {
+      const data = await apiClient.post(`/questions/${questionId}/test-ai`, request)
+      return data as { message: string }
+    } catch (error) {
+      console.error('Error testing AI chat:', error)
+      throw error
+    }
+  },
 }

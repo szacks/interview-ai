@@ -30,6 +30,7 @@ import {
   XCircle,
 } from "lucide-react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { useToast } from "@/hooks/use-toast"
 import { interviewService } from "@/services/interviewService"
 import { evaluationService } from "@/services/evaluationService"
@@ -303,7 +304,14 @@ export default function DashboardPage() {
             <h2 className="text-2xl font-bold mb-1">Interviews</h2>
             <p className="text-muted-foreground text-sm">Manage and conduct technical interviews</p>
           </div>
-          <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
+          <div className="flex gap-2">
+            <Link href="/questions/new">
+              <Button variant="outline">
+                <Plus className="size-4 mr-2" />
+                New Question
+              </Button>
+            </Link>
+            <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
             <DialogTrigger asChild>
               <Button>
                 <Plus className="size-4 mr-2" />
@@ -395,7 +403,8 @@ export default function DashboardPage() {
                 </Button>
               </div>
             </DialogContent>
-          </Dialog>
+            </Dialog>
+          </div>
         </div>
 
         {/* Filters */}

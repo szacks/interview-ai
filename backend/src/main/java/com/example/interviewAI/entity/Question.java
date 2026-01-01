@@ -18,15 +18,30 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    // ========== Ownership & Company Isolation ==========
+    @Column
+    private Long companyId; // NULL = platform question, set = company-specific
+
+    @Column
+    private Long createdBy; // User who created this question
+
+    // ========== Basic Information ==========
+    @Column(nullable = false)
     private String title;
 
     @Column(columnDefinition = "TEXT", nullable = false)
-    private String description;
+    private String description; // Full markdown with examples and constraints
+
+    @Column
+    private String category; // 'algorithm', 'data_structures', 'backend', 'frontend', etc.
+
+    @Column(columnDefinition = "TEXT")
+    private String shortDescription; // Elevator pitch for the question
 
     @Column(nullable = false)
     private String difficulty; // 'easy', 'medium', 'hard'
 
+    // ========== Metadata Fields (from original schema) ==========
     @Column
     private Integer timeLimitMinutes;
 
@@ -45,6 +60,7 @@ public class Question {
     @Column(columnDefinition = "TEXT")
     private String intentionalBugsJson;
 
+    // ========== Code Templates ==========
     @Column(columnDefinition = "TEXT")
     private String initialCodeJava;
 
@@ -54,9 +70,57 @@ public class Question {
     @Column(columnDefinition = "TEXT")
     private String initialCodeJavascript;
 
+    // ========== AI Configuration ==========
+    @Column
+    private String aiPromptTemplate; // 'helpful', 'minimal', 'socratic', 'strict'
+
+    @Column(columnDefinition = "TEXT")
+    private String aiCustomPrompt; // Custom prompt that overrides template
+
+    // ========== Follow-up Questions (JSONB) ==========
+    // Format: [{"id": "fq_1", "question": "...", "expectedAnswer": "..."}]
+    @Column(columnDefinition = "TEXT")
+    private String followupQuestionsJson;
+
+    // ========== Code Generation Tracking ==========
+    @Column
+    private String primaryLanguage; // 'java', 'python', 'javascript'
+
+    // Format: {"java": {"generated": false, "reviewed": true}, "python": {"generated": true, "reviewed": true}}
+    @Column(columnDefinition = "TEXT")
+    private String generatedLanguagesJson;
+
+    // ========== Versioning & Status ==========
+    @Column
+    private String status = "DRAFT"; // 'DRAFT', 'PUBLISHED', 'ARCHIVED'
+
+    @Column
+    private Integer version = 1; // Version number for tracking changes
+
+    @Column
+    private Long parentQuestionId; // ID of parent question if this is a version/fork
+
+    // ========== Analytics & Metadata ==========
+    @Column
+    private Integer usageCount = 0; // How many times used in interviews
+
+    @Column
+    private java.math.BigDecimal averageScore; // Average candidate score (0-100)
+
+    // ========== Timestamps ==========
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    @Column
+    private LocalDateTime publishedAt; // When question was published
+
+    @Column
+    private LocalDateTime archivedAt; // When question was archived
+
+    @Column
+    private LocalDateTime updatedAt; // Last updated time
+
+    // ========== Relationships ==========
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @OrderBy("orderIndex ASC")
     private List<FollowUpQuestion> followUpQuestions = new ArrayList<>();
