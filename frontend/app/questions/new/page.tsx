@@ -798,52 +798,34 @@ function StepTestCases({
               </button>
             </div>
 
-            <Input
-              value={test.name}
-              onChange={(e) => updateTest(index, { name: e.target.value })}
-              placeholder="Basic Usage"
-            />
-
-            <Textarea
-              value={test.description || ""}
-              onChange={(e) => updateTest(index, { description: e.target.value })}
-              placeholder="First request should be allowed"
-              rows={2}
-            />
-
-            <Textarea
-              value={test.setup || ""}
-              onChange={(e) => updateTest(index, { setup: e.target.value })}
-              placeholder="const limiter = new RateLimiter(2, 1000);"
-              rows={4}
-              className="bg-gray-950 text-gray-50 border-gray-800 font-mono text-sm"
-            />
-
-            <Textarea
-              value={test.input}
-              onChange={(e) => updateTest(index, { input: e.target.value })}
-              placeholder="limiter.allowRequest('user1', 0)"
-              rows={5}
-              className="bg-gray-950 text-gray-50 border-gray-800 font-mono text-sm"
-            />
-
-            <Textarea
-              value={test.expectedOutput}
-              onChange={(e) => updateTest(index, { expectedOutput: e.target.value })}
-              placeholder="true"
-              rows={5}
-              className="bg-gray-950 text-gray-50 border-gray-800 font-mono text-sm"
-            />
-
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id={`visible-${index}`}
-                checked={test.visibleToCandidate}
-                onCheckedChange={(checked) => updateTest(index, { visibleToCandidate: checked })}
+            <div className="space-y-2">
+              <Label htmlFor={`test-title-${index}`}>Test Title</Label>
+              <Input
+                id={`test-title-${index}`}
+                value={test.name}
+                onChange={(e) => updateTest(index, { name: e.target.value })}
+                placeholder="e.g., First request should be allowed"
               />
-              <Label htmlFor={`visible-${index}`} className="text-sm cursor-pointer">
-                Show to candidate (sample test)
-              </Label>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Test Code</Label>
+              <div className="border rounded-lg overflow-hidden" style={{ height: "300px" }}>
+                <Editor
+                  height="100%"
+                  language={data.primaryLanguage}
+                  value={test.input || ""}
+                  onChange={(value) => updateTest(index, { input: value || "" })}
+                  theme="vs-dark"
+                  options={{
+                    minimap: { enabled: false },
+                    fontSize: 13,
+                    lineNumbers: "on",
+                    scrollBeyondLastLine: false,
+                    automaticLayout: true,
+                  }}
+                />
+              </div>
             </div>
 
             <div className="space-y-2">
@@ -859,7 +841,7 @@ function StepTestCases({
         </Card>
       ))}
 
-      <Button onClick={addTest} variant="outline" className="w-full">
+      <Button onClick={addTest}>
         + Add Test Case
       </Button>
 

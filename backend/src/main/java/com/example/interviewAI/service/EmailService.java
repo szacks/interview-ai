@@ -124,4 +124,44 @@ public class EmailService {
                 The InterviewAI Team
                 """, inviterName, companyName, invitationLink);
     }
+
+    /**
+     * Send interview scheduled email to candidate.
+     */
+    public void sendInterviewScheduledEmail(String toEmail, String candidateName, String companyName, String questionTitle, String interviewLink, String scheduledTime) {
+        try {
+            String subject = "Your Interview is Scheduled - " + companyName;
+            String body = buildInterviewScheduledEmailBody(candidateName, companyName, questionTitle, interviewLink, scheduledTime);
+
+            try {
+                sendEmail(toEmail, subject, body);
+                log.info("Interview scheduled email sent successfully to: {}", toEmail);
+            } catch (Exception e) {
+                log.error("Error sending interview scheduled email to: {}", toEmail, e);
+                log.info("Dev Mode: Interview link for {}: {}", toEmail, interviewLink);
+            }
+        } catch (Exception e) {
+            log.error("Unexpected error in sendInterviewScheduledEmail for: {}", toEmail, e);
+        }
+    }
+
+    /**
+     * Build email body for interview scheduled notification.
+     */
+    private String buildInterviewScheduledEmailBody(String candidateName, String companyName, String questionTitle, String interviewLink, String scheduledTime) {
+        return String.format("""
+                Hello %s,
+
+                Your interview with %s has been scheduled!
+
+                Question: %s
+                Scheduled Time: %s
+
+                Click the link below to access your interview:
+                %s
+
+                Best regards,
+                The InterviewAI Team
+                """, candidateName, companyName, questionTitle, scheduledTime, interviewLink);
+    }
 }
