@@ -290,7 +290,7 @@ public class ClaudeService {
                     .build();
 
             // Call Claude API
-            ClaudeEvaluationResponse response = callClaudeAPIWithCustomRequest(request);
+            ClaudeEvaluationResponse response = callClaudeAPIWithRequest(request);
 
             if (response == null || response.getContent() == null || response.getContent().isEmpty()) {
                 log.warn("Empty response from Claude API for interview {}", interviewId);
@@ -416,9 +416,9 @@ public class ClaudeService {
     }
 
     /**
-     * Call Claude API with custom request (for chat responses)
+     * Call Claude API with custom request (for chat responses and code generation)
      */
-    private ClaudeEvaluationResponse callClaudeAPIWithCustomRequest(ClaudeEvaluationRequest request) {
+    public ClaudeEvaluationResponse callClaudeAPIWithRequest(ClaudeEvaluationRequest request) {
         try {
             // Validate API key is configured
             if (claudeProperties.getApiKey() == null || claudeProperties.getApiKey().isEmpty()) {

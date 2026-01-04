@@ -39,6 +39,7 @@ public class UpdateQuestionRequest {
     // ========== Step 5: AI Configuration + Follow-up Questions ==========
     private String aiPromptTemplate;
     private String aiCustomPrompt;
+    private String aiHelperName;
     private String followupQuestionsJson;
 
     // ========== Step 7: Publish ==========

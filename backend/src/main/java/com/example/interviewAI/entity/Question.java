@@ -72,10 +72,13 @@ public class Question {
 
     // ========== AI Configuration ==========
     @Column
-    private String aiPromptTemplate; // 'helpful', 'minimal', 'socratic', 'strict'
+    private String aiPromptTemplate; // 'helpful', 'minimal'
 
     @Column(columnDefinition = "TEXT")
     private String aiCustomPrompt; // Custom prompt that overrides template
+
+    @Column
+    private String aiHelperName; // Name of custom AI helper (e.g., "Expert Mentor")
 
     // ========== Follow-up Questions (JSONB) ==========
     // Format: [{"id": "fq_1", "question": "...", "expectedAnswer": "..."}]

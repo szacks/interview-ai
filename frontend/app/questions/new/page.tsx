@@ -37,6 +37,7 @@ export default function CreateQuestionPage() {
   const [questionData, setQuestionData] = useState<QuestionData>(createEmptyQuestionData())
   const [loading, setLoading] = useState(false)
   const [savingDraft, setSavingDraft] = useState(false)
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
 
   // Load existing question if editing
   useEffect(() => {
@@ -97,86 +98,109 @@ export default function CreateQuestionPage() {
     setQuestionData((prev) => ({ ...prev, ...updates }))
   }
 
-  const handleNext = () => {
-    // Basic validation for current step
-    if (currentStep === 1) {
+  const validateStep = (step: number): boolean => {
+    const newFieldErrors: Record<string, string> = { ...fieldErrors }
+    let hasErrors = false
+
+    if (step === 1) {
       if (!questionData.title.trim()) {
-        toast({
-          title: "Validation Error",
-          description: "Please enter a question title",
-          variant: "destructive",
-        })
-        return
+        newFieldErrors["title"] = "Question Title is required"
+        hasErrors = true
+      } else {
+        delete newFieldErrors["title"]
       }
       if (!questionData.shortDescription.trim()) {
-        toast({
-          title: "Validation Error",
-          description: "Please enter a short description",
-          variant: "destructive",
-        })
-        return
+        newFieldErrors["shortDescription"] = "Short Description is required"
+        hasErrors = true
+      } else {
+        delete newFieldErrors["shortDescription"]
       }
     }
 
-    if (currentStep === 2) {
+    if (step === 2) {
       if (!questionData.description.trim()) {
-        toast({
-          title: "Validation Error",
-          description: "Please enter a problem description",
-          variant: "destructive",
-        })
-        return
+        newFieldErrors["description"] = "Problem Description is required"
+        hasErrors = true
+      } else {
+        delete newFieldErrors["description"]
       }
     }
 
-    if (currentStep === 3) {
+    if (step === 3) {
       if (!questionData.codeTemplates[questionData.primaryLanguage].code.trim()) {
-        toast({
-          title: "Validation Error",
-          description: "Please enter code for the primary language",
-          variant: "destructive",
-        })
-        return
+        newFieldErrors["primaryCode"] = "Code for primary language is required"
+        hasErrors = true
+      } else {
+        delete newFieldErrors["primaryCode"]
       }
-      // Check if code has been generated for other languages OR if skip generation was clicked
       const hasGeneratedCode = Object.values(questionData.codeTemplates).some((t) => t.generated)
       const hasSkippedGeneration = getNonPrimaryLanguages(questionData.primaryLanguage).every((lang) => !questionData.codeTemplates[lang].code && questionData.codeTemplates[lang].reviewed)
 
       if (!hasGeneratedCode && !hasSkippedGeneration) {
-        toast({
-          title: "Validation Error",
-          description: "Please click 'Generate Other Languages' or 'Skip Generation' to proceed",
-          variant: "destructive",
-        })
-        return
+        newFieldErrors["codeGeneration"] = "Please click 'Generate Other Languages' or 'Skip Generation' to proceed"
+        hasErrors = true
+      } else {
+        delete newFieldErrors["codeGeneration"]
       }
 
-      // Check if all generated languages have been reviewed
       const nonPrimaryLanguages = getNonPrimaryLanguages(questionData.primaryLanguage)
       const allReviewed = nonPrimaryLanguages.every((lang) => !questionData.codeTemplates[lang].generated || questionData.codeTemplates[lang].reviewed)
       if (!allReviewed) {
-        toast({
-          title: "Validation Error",
-          description: "Please review all generated code before proceeding",
-          variant: "destructive",
-        })
-        return
+        newFieldErrors["codeReview"] = "Please review all generated code before proceeding"
+        hasErrors = true
+      } else {
+        delete newFieldErrors["codeReview"]
       }
     }
 
-    if (currentStep === 4) {
+    if (step === 4) {
       if (questionData.tests.length === 0) {
-        toast({
-          title: "Validation Error",
-          description: "Please add at least one test case",
-          variant: "destructive",
-        })
-        return
+        newFieldErrors["tests"] = "Add at least one test case"
+        hasErrors = true
+      } else {
+        delete newFieldErrors["tests"]
+      }
+      const testsWithoutTitles = questionData.tests.filter((test) => !test.name || !test.name.trim())
+      if (testsWithoutTitles.length > 0) {
+        newFieldErrors["testTitles"] = "All tests must have a title"
+        hasErrors = true
+      } else {
+        delete newFieldErrors["testTitles"]
+      }
+      if (questionData.validationResults && questionData.validationResults.failed > 0) {
+        newFieldErrors["testValidation"] = "All tests must pass validation before proceeding"
+        hasErrors = true
+      } else {
+        delete newFieldErrors["testValidation"]
       }
     }
 
-    if (currentStep < 7) {
-      setCurrentStep(currentStep + 1)
+    if (step === 5) {
+      if (questionData.useCustomPrompt) {
+        if (!questionData.aiHelperName?.trim()) {
+          newFieldErrors["aiHelperName"] = "AI Helper Name is required when using custom prompt"
+          hasErrors = true
+        } else {
+          delete newFieldErrors["aiHelperName"]
+        }
+        if (!questionData.aiCustomPrompt?.trim()) {
+          newFieldErrors["aiCustomPrompt"] = "Custom AI Prompt is required when using custom prompt"
+          hasErrors = true
+        } else {
+          delete newFieldErrors["aiCustomPrompt"]
+        }
+      }
+    }
+
+    setFieldErrors(newFieldErrors)
+    return !hasErrors
+  }
+
+  const handleNext = () => {
+    if (validateStep(currentStep)) {
+      if (currentStep < 7) {
+        setCurrentStep(currentStep + 1)
+      }
     }
   }
 
@@ -202,7 +226,10 @@ export default function CreateQuestionPage() {
         testsJson: JSON.stringify({ tests: questionData.tests }),
         aiPromptTemplate: questionData.aiPromptTemplate,
         aiCustomPrompt: questionData.useCustomPrompt ? questionData.aiCustomPrompt : undefined,
+        aiHelperName: questionData.useCustomPrompt ? questionData.aiHelperName : undefined,
         followupQuestions: questionData.followUpQuestions,
+        validationResultsJson: questionData.validationResults ? JSON.stringify(questionData.validationResults) : undefined,
+        aiImplementation: questionData.aiImplementation || undefined,
         status: "draft",
       }
 
@@ -248,7 +275,10 @@ export default function CreateQuestionPage() {
         testsJson: JSON.stringify({ tests: questionData.tests }),
         aiPromptTemplate: questionData.aiPromptTemplate,
         aiCustomPrompt: questionData.useCustomPrompt ? questionData.aiCustomPrompt : undefined,
+        aiHelperName: questionData.useCustomPrompt ? questionData.aiHelperName : undefined,
         followupQuestions: questionData.followUpQuestions,
+        validationResultsJson: questionData.validationResults ? JSON.stringify(questionData.validationResults) : undefined,
+        aiImplementation: questionData.aiImplementation || undefined,
         status: "published",
       }
 
@@ -360,27 +390,27 @@ export default function CreateQuestionPage() {
           <CardContent>
             {/* Step 1: Basic Info */}
             {currentStep === 1 && (
-              <StepBasicInfo data={questionData} onUpdate={updateQuestionData} />
+              <StepBasicInfo data={questionData} onUpdate={updateQuestionData} fieldErrors={fieldErrors} />
             )}
 
             {/* Step 2: Problem Description */}
             {currentStep === 2 && (
-              <StepProblemDescription data={questionData} onUpdate={updateQuestionData} />
+              <StepProblemDescription data={questionData} onUpdate={updateQuestionData} fieldErrors={fieldErrors} />
             )}
 
             {/* Step 3: Initial Code */}
             {currentStep === 3 && (
-              <StepInitialCode data={questionData} onUpdate={updateQuestionData} />
+              <StepInitialCode data={questionData} onUpdate={updateQuestionData} fieldErrors={fieldErrors} />
             )}
 
             {/* Step 4: Test Cases */}
             {currentStep === 4 && (
-              <StepTestCases data={questionData} onUpdate={updateQuestionData} />
+              <StepTestCases data={questionData} onUpdate={updateQuestionData} fieldErrors={fieldErrors} />
             )}
 
             {/* Step 5: AI Configuration & Follow-Up */}
             {currentStep === 5 && (
-              <StepAIConfiguration data={questionData} onUpdate={updateQuestionData} />
+              <StepAIConfiguration data={questionData} onUpdate={updateQuestionData} fieldErrors={fieldErrors} />
             )}
 
             {/* Step 6: Follow-Up Questions */}
@@ -438,9 +468,11 @@ export default function CreateQuestionPage() {
 function StepBasicInfo({
   data,
   onUpdate,
+  fieldErrors,
 }: {
   data: QuestionData
   onUpdate: (updates: Partial<QuestionData>) => void
+  fieldErrors: Record<string, string>
 }) {
   return (
     <div className="space-y-6">
@@ -452,7 +484,11 @@ function StepBasicInfo({
           value={data.title}
           onChange={(e) => onUpdate({ title: e.target.value })}
           placeholder="Build a Rate Limiter"
+          className={fieldErrors["title"] ? "border-red-500 bg-red-50" : ""}
         />
+        {fieldErrors["title"] && (
+          <p className="text-sm text-red-600 font-medium">{fieldErrors["title"]}</p>
+        )}
         <p className="text-xs text-muted-foreground">10-255 characters</p>
       </div>
 
@@ -478,7 +514,11 @@ function StepBasicInfo({
           onChange={(e) => onUpdate({ shortDescription: e.target.value })}
           placeholder="Build a thread-safe rate limiter that supports limiting requests per user within a time window"
           rows={3}
+          className={fieldErrors["shortDescription"] ? "border-red-500 bg-red-50" : ""}
         />
+        {fieldErrors["shortDescription"] && (
+          <p className="text-sm text-red-600 font-medium">{fieldErrors["shortDescription"]}</p>
+        )}
         <p className="text-xs text-muted-foreground">1-2 sentences (50-500 characters)</p>
       </div>
     </div>
@@ -488,9 +528,11 @@ function StepBasicInfo({
 function StepProblemDescription({
   data,
   onUpdate,
+  fieldErrors,
 }: {
   data: QuestionData
   onUpdate: (updates: Partial<QuestionData>) => void
+  fieldErrors: Record<string, string>
 }) {
   return (
     <div className="space-y-4">
@@ -528,8 +570,11 @@ limiter.allowRequest("user1", 200);   // false (rate limit exceeded)
 limiter.allowRequest("user1", 1100);  // true (window reset)
 \`\`\``}
           rows={12}
-          className="font-mono text-xs"
+          className={`font-mono text-xs ${fieldErrors["description"] ? "border-red-500 bg-red-50" : ""}`}
         />
+        {fieldErrors["description"] && (
+          <p className="text-sm text-red-600 font-medium">{fieldErrors["description"]}</p>
+        )}
       </div>
     </div>
   )
@@ -538,9 +583,11 @@ limiter.allowRequest("user1", 1100);  // true (window reset)
 function StepInitialCode({
   data,
   onUpdate,
+  fieldErrors,
 }: {
   data: QuestionData
   onUpdate: (updates: Partial<QuestionData>) => void
+  fieldErrors: Record<string, string>
 }) {
   const [converting, setConverting] = useState(false)
 
@@ -755,17 +802,52 @@ function StepInitialCode({
 function StepTestCases({
   data,
   onUpdate,
+  fieldErrors,
 }: {
   data: QuestionData
   onUpdate: (updates: Partial<QuestionData>) => void
+  fieldErrors: Record<string, string>
 }) {
+  const [validationResults, setValidationResults] = useState<any>(null)
+  const [validatingTests, setValidatingTests] = useState(false)
+  const [aiImplementation, setAiImplementation] = useState("")
+  const [editingImplementation, setEditingImplementation] = useState(false)
+  const [showAiImplementation, setShowAiImplementation] = useState(false)
+
+  const getExampleTestCode = (language: string): string => {
+    switch (language) {
+      case "python":
+        return `# ex: limiter = RateLimiter(2, 1000)
+# ex: assert limiter.allow_request("user1", 0) == True
+# ex:
+# ex: assert limiter.allow_request("user1", 100) == True
+# ex:
+# ex: assert limiter.allow_request("user1", 200) == False`
+      case "javascript":
+        return `// ex: const limiter = new RateLimiter(2, 1000);
+// ex: assert(limiter.allowRequest("user1", 0) === true);
+// ex:
+// ex: assert(limiter.allowRequest("user1", 100) === true);
+// ex:
+// ex: assert(limiter.allowRequest("user1", 200) === false);`
+      case "java":
+      default:
+        return `// ex: RateLimiter limiter = new RateLimiter(2, 1000);
+// ex: assert(limiter.allowRequest("user1", 0) == true);
+// ex:
+// ex: assert(limiter.allowRequest("user1", 100) == true);
+// ex:
+// ex: assert(limiter.allowRequest("user1", 200) == false);`
+    }
+  }
+
   const addTest = () => {
     const newTest = {
       id: generateId("test"),
       name: "",
       description: "",
       setup: "",
-      input: "",
+      input: getExampleTestCode(data.primaryLanguage),
       expectedOutput: "",
       visibleToCandidate: true,
       timeout: 5000,
@@ -781,6 +863,71 @@ function StepTestCases({
 
   const removeTest = (index: number) => {
     onUpdate({ tests: data.tests.filter((_, i) => i !== index) })
+  }
+
+  const validateTestsWithAI = async () => {
+    if (data.tests.length === 0) {
+      alert("Please add at least one test case")
+      return
+    }
+
+    // Check all tests have titles
+    const testsWithoutTitles = data.tests.filter((test) => !test.name || !test.name.trim())
+    if (testsWithoutTitles.length > 0) {
+      alert("All tests must have a title. Please fill in the test title for all test cases.")
+      return
+    }
+
+    if (!data.codeTemplates[data.primaryLanguage]?.code.trim()) {
+      alert("Please add code in Step 3 first")
+      return
+    }
+
+    setValidatingTests(true)
+    try {
+      const response = await fetch("/api/code/validate-tests-with-ai", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: data.title,
+          description: data.description,
+          primaryLanguage: data.primaryLanguage,
+          codeTemplate: data.codeTemplates[data.primaryLanguage].code,
+          tests: data.tests.map((test) => ({
+            id: test.id,
+            name: test.name,
+            description: test.description || "",
+            setup: test.setup || "",
+            input: test.input,
+            expectedOutput: test.expectedOutput || "",
+            visibleToCandidate: test.visibleToCandidate,
+            timeout: test.timeout,
+          })),
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to validate tests")
+      }
+
+      const result = await response.json()
+      setValidationResults(result)
+      setAiImplementation(result.aiImplementation || "")
+      setEditingImplementation(false)
+
+      // Save validation results and AI implementation to question data
+      onUpdate({
+        validationResults: result,
+        aiImplementation: result.aiImplementation || "",
+      })
+    } catch (error) {
+      console.error("Error validating tests:", error)
+      alert("Failed to validate tests with AI")
+    } finally {
+      setValidatingTests(false)
+    }
   }
 
   return (
@@ -799,7 +946,7 @@ function StepTestCases({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor={`test-title-${index}`}>Test Title</Label>
+              <Label htmlFor={`test-title-${index}`}>Test Title *</Label>
               <Input
                 id={`test-title-${index}`}
                 value={test.name}
@@ -817,6 +964,7 @@ function StepTestCases({
                   value={test.input || ""}
                   onChange={(value) => updateTest(index, { input: value || "" })}
                   theme="vs-dark"
+                  defaultValue={getExampleTestCode(data.primaryLanguage)}
                   options={{
                     minimap: { enabled: false },
                     fontSize: 13,
@@ -841,21 +989,170 @@ function StepTestCases({
         </Card>
       ))}
 
-      <Button onClick={addTest}>
-        + Add Test Case
-      </Button>
+      <div className="flex gap-2">
+        <Button onClick={addTest} className={fieldErrors["tests"] ? "border-red-500 bg-red-50" : ""}>
+          + Add Test Case
+        </Button>
+        <Button
+          onClick={validateTestsWithAI}
+          disabled={validatingTests}
+        >
+          {validatingTests ? "⏳ Validating..." : "🤖 Validate"}
+        </Button>
+      </div>
+      {fieldErrors["tests"] && (
+        <p className="text-sm text-red-600 font-medium">{fieldErrors["tests"]}</p>
+      )}
+
+      {validationResults && (
+        <Card className={`p-4 border-l-4 ${
+          validationResults.failed === 0
+            ? "border-l-green-500 bg-green-50"
+            : "border-l-red-500 bg-red-50"
+        }`}>
+          <div className="space-y-4">
+            {/* Header with summary */}
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold text-lg">Validation Results</h3>
+                <p className="text-sm text-muted-foreground mt-1">{validationResults.explanation}</p>
+              </div>
+              <Button size="sm" onClick={() => validateTestsWithAI()} disabled={validatingTests} variant="outline">
+                🔄 Re-run
+              </Button>
+            </div>
+
+            {/* Summary cards */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className={`p-4 rounded-lg border-2 ${validationResults.passed > 0 ? 'bg-green-50 border-green-300' : 'bg-gray-50 border-gray-200'}`}>
+                <p className="text-3xl font-bold text-green-600">{validationResults.passed || 0}</p>
+                <p className="text-sm text-green-700 font-medium">Passed</p>
+              </div>
+              <div className={`p-4 rounded-lg border-2 ${validationResults.failed > 0 ? 'bg-red-50 border-red-300' : 'bg-gray-50 border-gray-200'}`}>
+                <p className="text-3xl font-bold text-red-600">{validationResults.failed || 0}</p>
+                <p className="text-sm text-red-700 font-medium">Failed</p>
+              </div>
+            </div>
+
+            {/* Detailed test results */}
+            {validationResults.results && validationResults.results.length > 0 && (
+              <div className="space-y-3">
+                <p className="text-sm font-semibold text-gray-700">Individual Test Results:</p>
+                <div className="space-y-2">
+                  {validationResults.results.map((result: any, idx: number) => (
+                    <div
+                      key={idx}
+                      className={`p-4 rounded-lg border-l-4 ${
+                        result.passed
+                          ? "bg-green-50 border-l-green-500"
+                          : "bg-red-50 border-l-red-500"
+                      }`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="text-xl mt-1">
+                          {result.passed ? "✓" : "✗"}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <p className={`font-semibold text-base ${result.passed ? "text-green-900" : "text-red-900"}`}>
+                              {result.testName}
+                            </p>
+                            <span className={`text-xs font-bold px-2 py-1 rounded ${result.passed ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'}`}>
+                              {result.passed ? 'PASSED' : 'FAILED'}
+                            </span>
+                          </div>
+                          {!result.passed && result.error && (
+                            <div className="mt-3 p-3 bg-red-100 rounded border border-red-300">
+                              <p className="text-xs font-semibold text-red-800 mb-1">Error Message:</p>
+                              <p className={`text-sm font-mono break-words text-red-900`}>
+                                {result.error}
+                              </p>
+                            </div>
+                          )}
+                          {result.expected && (
+                            <p className={`text-xs mt-2 ${result.passed ? "text-green-600" : "text-red-600"}`}>
+                              Expected: <span className="font-mono">{result.expected}</span>
+                            </p>
+                          )}
+                          {result.actual && (
+                            <p className={`text-xs ${result.passed ? "text-green-600" : "text-red-600"}`}>
+                              Actual: <span className="font-mono">{result.actual}</span>
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* AI Code Implementation (Collapsible) */}
+            <div className="space-y-2 border-t pt-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-semibold text-gray-700">AI Code Implementation</p>
+                  <span className={`text-xs px-2 py-1 rounded-full ${aiImplementation ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}`}>
+                    {aiImplementation ? 'Generated' : 'No code'}
+                  </span>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setShowAiImplementation(!showAiImplementation)}
+                  >
+                    {showAiImplementation ? "Hide" : "Show"}
+                  </Button>
+                  {showAiImplementation && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setEditingImplementation(!editingImplementation)}
+                    >
+                      {editingImplementation ? "Done Editing" : "Edit"}
+                    </Button>
+                  )}
+                </div>
+              </div>
+
+              {/* Show implementation when expanded */}
+              {showAiImplementation && (
+                <div className="mt-3">
+                  {editingImplementation ? (
+                    <div className="border rounded-lg overflow-hidden" style={{ height: "400px" }}>
+                      <Editor
+                        height="100%"
+                        language={data.primaryLanguage}
+                        value={aiImplementation}
+                        onChange={(value) => {
+                          setAiImplementation(value || "")
+                          onUpdate({ aiImplementation: value || "" })
+                        }}
+                        theme="vs-dark"
+                        options={{
+                          minimap: { enabled: false },
+                          fontSize: 13,
+                          lineNumbers: "on",
+                          scrollBeyondLastLine: false,
+                          automaticLayout: true,
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <div className="bg-gray-950 p-4 rounded-lg border border-gray-700 font-mono text-sm text-gray-50 max-h-96 overflow-auto">
+                      <pre className="whitespace-pre-wrap break-words">{aiImplementation || "No implementation generated"}</pre>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </Card>
+      )}
 
       <div className="p-3 bg-muted rounded text-sm">
-        <p className="font-medium mb-1">Test Summary</p>
-        <p className="text-muted-foreground">
-          • {data.tests.length} total tests
-        </p>
-        <p className="text-muted-foreground">
-          • {data.tests.filter((t) => t.visibleToCandidate).length} visible to candidate
-        </p>
-        <p className="text-muted-foreground">
-          • {data.tests.filter((t) => !t.visibleToCandidate).length} hidden
-        </p>
+        <p className="font-medium">Total Tests: {data.tests.length}</p>
       </div>
     </div>
   )
@@ -864,9 +1161,11 @@ function StepTestCases({
 function StepAIConfiguration({
   data,
   onUpdate,
+  fieldErrors,
 }: {
   data: QuestionData
   onUpdate: (updates: Partial<QuestionData>) => void
+  fieldErrors: Record<string, string>
 }) {
   return (
     <div className="space-y-6">
@@ -884,8 +1183,6 @@ function StepAIConfiguration({
               label: "Minimal Helper",
               desc: "Answers only when asked, no volunteering",
             },
-            { value: "socratic", label: "Socratic Method", desc: "Asks questions, guides with inquiry" },
-            { value: "strict", label: "Strict Evaluator", desc: "Points out issues, challenges assumptions" },
           ].map((option) => (
             <div key={option.value} className="flex items-center gap-3 p-3 border rounded cursor-pointer hover:bg-muted transition">
               <input
@@ -893,8 +1190,11 @@ function StepAIConfiguration({
                 id={`ai-${option.value}`}
                 name="aiTemplate"
                 value={option.value}
-                checked={data.aiPromptTemplate === option.value}
-                onChange={(e) => onUpdate({ aiPromptTemplate: e.target.value as any })}
+                checked={data.aiPromptTemplate === option.value && !data.useCustomPrompt}
+                onChange={(e) => onUpdate({
+                  aiPromptTemplate: e.target.value as any,
+                  useCustomPrompt: false,
+                })}
               />
               <label htmlFor={`ai-${option.value}`} className="flex-1 cursor-pointer">
                 <p className="font-medium text-sm">{option.label}</p>
@@ -909,7 +1209,22 @@ function StepAIConfiguration({
         <Checkbox
           id="custom-prompt"
           checked={data.useCustomPrompt}
-          onCheckedChange={(checked) => onUpdate({ useCustomPrompt: checked as boolean })}
+          onCheckedChange={(checked) => {
+            const isChecked = checked as boolean
+            if (isChecked) {
+              // When enabling custom prompt, deselect all presets
+              onUpdate({
+                useCustomPrompt: true,
+                aiPromptTemplate: undefined as any,
+              })
+            } else {
+              // When disabling custom prompt, default to helpful
+              onUpdate({
+                useCustomPrompt: false,
+                aiPromptTemplate: "helpful",
+              })
+            }
+          }}
         />
         <Label htmlFor="custom-prompt" className="cursor-pointer">
           Use custom prompt instead
@@ -918,7 +1233,17 @@ function StepAIConfiguration({
 
       {data.useCustomPrompt && (
         <div className="space-y-2">
-          <Label htmlFor="custom-ai-prompt">Custom AI Prompt</Label>
+          <Label htmlFor="ai-helper-name">AI Helper Name *</Label>
+          <Input
+            id="ai-helper-name"
+            type="text"
+            value={data.aiHelperName || ""}
+            onChange={(e) => onUpdate({ aiHelperName: e.target.value })}
+            placeholder="Name for your custom AI helper"
+          />
+          <p className="text-xs text-muted-foreground">Give your custom AI helper a name (will be saved to your profile)</p>
+
+          <Label htmlFor="custom-ai-prompt" className="mt-4 block">Custom AI Prompt *</Label>
           <Textarea
             id="custom-ai-prompt"
             value={data.aiCustomPrompt || ""}

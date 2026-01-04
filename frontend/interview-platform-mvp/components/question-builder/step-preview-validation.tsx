@@ -267,6 +267,4 @@ export function StepPreviewValidation({ data, onUpdate, onBack }: StepPreviewVal
 const aiTemplates = [
   { value: "helpful", label: "Helpful Guide" },
   { value: "minimal", label: "Minimal Helper" },
-  { value: "socratic", label: "Socratic Method" },
-  { value: "strict", label: "Strict Evaluator" },
 ]

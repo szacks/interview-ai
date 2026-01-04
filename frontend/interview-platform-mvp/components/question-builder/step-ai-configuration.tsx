@@ -27,16 +27,6 @@ const aiTemplates: { value: AIPromptTemplate; label: string; description: string
     label: "Minimal Helper",
     description: "Answers only when asked, brief responses. Best for senior candidates.",
   },
-  {
-    value: "socratic",
-    label: "Socratic Method",
-    description: "Guides with questions, encourages discovery. Best for problem-solving evaluation.",
-  },
-  {
-    value: "strict",
-    label: "Strict Evaluator",
-    description: "Challenges assumptions, points out issues. Best for senior roles.",
-  },
 ]
 
 export function StepAIConfiguration({ data, onUpdate, onNext, onBack }: StepAIConfigurationProps) {

@@ -38,6 +38,12 @@ public class QuestionResponse {
 
     private String initialCodeJavascript;
 
+    private String aiPromptTemplate;
+
+    private String aiCustomPrompt;
+
+    private String aiHelperName;
+
     private LocalDateTime createdAt;
 
     private List<FollowUpQuestionResponse> followUpQuestions;

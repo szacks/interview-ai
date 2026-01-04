@@ -91,6 +91,9 @@ public class QuestionService {
         response.setInitialCodeJava(question.getInitialCodeJava());
         response.setInitialCodePython(question.getInitialCodePython());
         response.setInitialCodeJavascript(question.getInitialCodeJavascript());
+        response.setAiPromptTemplate(question.getAiPromptTemplate());
+        response.setAiCustomPrompt(question.getAiCustomPrompt());
+        response.setAiHelperName(question.getAiHelperName());
         response.setCreatedAt(question.getCreatedAt());
 
         // Map follow-up questions
@@ -165,6 +168,7 @@ public class QuestionService {
         question.setTestsJson(request.getTestsJson());
         question.setAiPromptTemplate(request.getAiPromptTemplate() != null ? request.getAiPromptTemplate() : "helpful");
         question.setAiCustomPrompt(request.getAiCustomPrompt());
+        question.setAiHelperName(request.getAiHelperName());
         question.setFollowupQuestionsJson(request.getFollowupQuestionsJson());
         question.setStatus(request.getStatus());
         question.setCreatedBy(userId);
@@ -234,6 +238,9 @@ public class QuestionService {
         }
         if (request.getAiCustomPrompt() != null) {
             question.setAiCustomPrompt(request.getAiCustomPrompt());
+        }
+        if (request.getAiHelperName() != null) {
+            question.setAiHelperName(request.getAiHelperName());
         }
         if (request.getFollowupQuestionsJson() != null) {
             question.setFollowupQuestionsJson(request.getFollowupQuestionsJson());
