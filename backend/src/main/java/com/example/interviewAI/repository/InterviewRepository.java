@@ -30,4 +30,7 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
 
     @Query("SELECT COUNT(i) FROM Interview i WHERE i.company.id = ?1 AND i.status = ?2")
     long countByCompanyIdAndStatus(Long companyId, String status);
+
+    @Query("SELECT i FROM Interview i WHERE i.company.id = ?1 AND i.createdAt >= ?2 ORDER BY i.createdAt DESC")
+    List<Interview> findByCompanyIdAndCreatedAtAfter(Long companyId, java.time.LocalDateTime startDate);
 }

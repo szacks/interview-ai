@@ -39,11 +39,11 @@ import type { Question, Interview } from "@/types/interview"
 export default function DashboardPage() {
   const { toast } = useToast()
   const [searchQuery, setSearchQuery] = useState("")
-  const [statusFilter, setStatusFilter] = useState<string>("all")
   const [createDialogOpen, setCreateDialogOpen] = useState(false)
 
   // Backend data states
-  const [interviews, setInterviews] = useState<Interview[]>([])
+  const [allInterviews, setAllInterviews] = useState<Interview[]>([])
+  const [weekInterviews, setWeekInterviews] = useState<Interview[]>([])
   const [questions, setQuestions] = useState<Question[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -61,11 +61,13 @@ export default function DashboardPage() {
     const fetchData = async () => {
       try {
         setLoading(true)
-        const [interviewsData, questionsData] = await Promise.all([
+        const [allInterviewsData, weekInterviewsData, questionsData] = await Promise.all([
           interviewService.getInterviews(),
+          interviewService.getInterviewsFromLastSevenDays(),
           interviewService.getQuestions(),
         ])
-        setInterviews(interviewsData as Interview[])
+        setAllInterviews(allInterviewsData as Interview[])
+        setWeekInterviews(weekInterviewsData as Interview[])
         setQuestions(questionsData)
         setError(null)
       } catch (err) {
@@ -81,7 +83,7 @@ export default function DashboardPage() {
   // Fetch evaluation statuses for completed interviews
   useEffect(() => {
     const fetchEvaluationStatuses = async () => {
-      const completedInterviews = interviews.filter(i => i.status === 'completed' || i.status === 'ended')
+      const completedInterviews = allInterviews.filter(i => i.status === 'completed' || i.status === 'ended')
 
       if (completedInterviews.length === 0) {
         return
@@ -114,10 +116,10 @@ export default function DashboardPage() {
       }
     }
 
-    if (interviews.length > 0) {
+    if (allInterviews.length > 0) {
       fetchEvaluationStatuses()
     }
-  }, [interviews])
+  }, [allInterviews])
 
   const handleCreateInterview = async () => {
     if (!selectedQuestionId) {
@@ -155,8 +157,12 @@ export default function DashboardPage() {
       setCreateDialogOpen(false)
 
       // Refresh interviews list
-      const updatedInterviews = await interviewService.getInterviews()
-      setInterviews(updatedInterviews as Interview[])
+      const [updatedAllInterviews, updatedWeekInterviews] = await Promise.all([
+        interviewService.getInterviews(),
+        interviewService.getInterviewsFromLastSevenDays(),
+      ])
+      setAllInterviews(updatedAllInterviews as Interview[])
+      setWeekInterviews(updatedWeekInterviews as Interview[])
     } catch (err) {
       setError("Failed to create interview")
       console.error(err)
@@ -165,16 +171,17 @@ export default function DashboardPage() {
     }
   }
 
-  const filteredInterviews = interviews.filter((interview: Interview) => {
-    // Extract candidate name from nested candidate object or direct field
+  // Determine which interviews to show
+  const interviewsToDisplay = searchQuery ? allInterviews : weekInterviews
+
+  // Filter interviews based on search query
+  const filteredInterviews = interviewsToDisplay.filter((interview: Interview) => {
     const candidateName = interview.candidateName || interview.candidate?.name || ""
-    // Extract question title from nested question object or direct field
     const questionTitle = interview.questionTitle || interview.question?.title || ""
     const matchesSearch =
       candidateName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       questionTitle.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesStatus = statusFilter === "all" || interview.status === statusFilter
-    return matchesSearch && matchesStatus
+    return matchesSearch
   })
 
   const getStatusBadge = (status: string) => {
@@ -235,10 +242,8 @@ export default function DashboardPage() {
     }
 
     try {
-      // Delete interview via service
-      // Note: deleteInterview method needs to be added to interviewService if it doesn't exist
-      // For now, we'll just remove it from the local state
-      setInterviews(interviews.filter(i => i.id !== interviewId))
+      setAllInterviews(allInterviews.filter(i => i.id !== interviewId))
+      setWeekInterviews(weekInterviews.filter(i => i.id !== interviewId))
     } catch (err) {
       console.error("Failed to delete interview:", err)
       alert("Failed to delete interview")
@@ -255,8 +260,12 @@ export default function DashboardPage() {
       await interviewService.updateInterviewStatus(interviewId, "completed")
 
       // Refresh interviews list
-      const updatedInterviews = await interviewService.getInterviews()
-      setInterviews(updatedInterviews as Interview[])
+      const [updatedAllInterviews, updatedWeekInterviews] = await Promise.all([
+        interviewService.getInterviews(),
+        interviewService.getInterviewsFromLastSevenDays(),
+      ])
+      setAllInterviews(updatedAllInterviews as Interview[])
+      setWeekInterviews(updatedWeekInterviews as Interview[])
     } catch (err) {
       console.error("Failed to end interview:", err)
       alert("Failed to end interview")
@@ -302,7 +311,9 @@ export default function DashboardPage() {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
           <div>
             <h2 className="text-2xl font-bold mb-1">Interviews</h2>
-            <p className="text-muted-foreground text-sm">Manage and conduct technical interviews</p>
+            <p className="text-muted-foreground text-sm">
+              {searchQuery ? "Search results across all interviews" : "Last 7 days - live, draft, and submitted"}
+            </p>
           </div>
           <div className="flex gap-2">
             <Link href="/questions/new">
@@ -418,17 +429,6 @@ export default function DashboardPage() {
               className="pl-9"
             />
           </div>
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-full sm:w-40">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="live">Live</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="ended">Ended</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
 
         {/* Interviews List */}
@@ -443,10 +443,22 @@ export default function DashboardPage() {
                   <div className="flex items-center gap-3 mb-2">
                     <h3 className="font-semibold text-lg truncate">{interview.candidateName || interview.candidate?.name || "Unnamed Candidate"}</h3>
                     {getStatusBadge(interview.status)}
-                    {(interview.status === "completed" || interview.status === "ended") && evaluationStatuses[interview.id] && (
-                      <Badge className={evaluationStatuses[interview.id].isDraft ? "bg-yellow-500 hover:bg-yellow-600 text-black" : ""}>
-                        {evaluationStatuses[interview.id].isDraft ? "Draft" : "Submitted"}
-                      </Badge>
+                    {(interview.status === "completed" || interview.status === "ended") && evaluationStatuses[interview.id]?.isDraft && (
+                      <span style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        borderRadius: '0.375rem',
+                        paddingLeft: '0.5rem',
+                        paddingRight: '0.5rem',
+                        paddingTop: '0.25rem',
+                        paddingBottom: '0.25rem',
+                        fontSize: '0.75rem',
+                        fontWeight: '500',
+                        backgroundColor: '#FBBF24',
+                        color: '#78350F'
+                      }}>
+                        Draft
+                      </span>
                     )}
                   </div>
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
@@ -484,7 +496,7 @@ export default function DashboardPage() {
                     <Link href={`/results/${interview.id}`}>
                       <Button size="sm" variant="outline">
                         <Eye className="size-4 mr-2" />
-                        {evaluationStatuses[interview.id]?.isDraft ? "Complete Evaluation" : "View Results"}
+                        View Results
                       </Button>
                     </Link>
                   )}
@@ -522,11 +534,11 @@ export default function DashboardPage() {
             </div>
             <h3 className="text-lg font-semibold mb-2">No interviews found</h3>
             <p className="text-muted-foreground mb-4">
-              {searchQuery || statusFilter !== "all"
-                ? "Try adjusting your filters"
-                : "Create your first interview to get started"}
+              {searchQuery
+                ? "Try adjusting your search"
+                : "No interviews in the last 7 days"}
             </p>
-            {!searchQuery && statusFilter === "all" && (
+            {!searchQuery && (
               <Button onClick={() => setCreateDialogOpen(true)}>
                 <Plus className="size-4 mr-2" />
                 Create Interview

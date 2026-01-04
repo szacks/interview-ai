@@ -48,13 +48,13 @@ public class Question {
     @Column
     private String supportedLanguages; // e.g., 'java,python,javascript'
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(columnDefinition = "TEXT")
     private String requirementsJson;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(columnDefinition = "TEXT")
     private String testsJson;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(columnDefinition = "TEXT")
     private String rubricJson;
 
     @Column(columnDefinition = "TEXT")
@@ -102,6 +102,9 @@ public class Question {
 
     @Column
     private Long parentQuestionId; // ID of parent question if this is a version/fork
+
+    @Column
+    private Integer currentStep = 1; // Current step in the question builder wizard (1-7)
 
     // ========== Analytics & Metadata ==========
     @Column

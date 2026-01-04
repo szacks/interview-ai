@@ -80,6 +80,7 @@ public class QuestionService {
         QuestionResponse response = new QuestionResponse();
         response.setId(question.getId());
         response.setTitle(question.getTitle());
+        response.setShortDescription(question.getShortDescription());
         response.setDescription(question.getDescription());
         response.setDifficulty(question.getDifficulty());
         response.setTimeLimitMinutes(question.getTimeLimitMinutes());
@@ -94,6 +95,12 @@ public class QuestionService {
         response.setAiPromptTemplate(question.getAiPromptTemplate());
         response.setAiCustomPrompt(question.getAiCustomPrompt());
         response.setAiHelperName(question.getAiHelperName());
+        response.setPrimaryLanguage(question.getPrimaryLanguage());
+        response.setGeneratedLanguagesJson(question.getGeneratedLanguagesJson());
+        response.setFollowupQuestionsJson(question.getFollowupQuestionsJson());
+        response.setStatus(question.getStatus());
+        response.setCurrentStep(question.getCurrentStep());
+        response.setCategory(question.getCategory());
         response.setCreatedAt(question.getCreatedAt());
 
         // Map follow-up questions
@@ -176,6 +183,11 @@ public class QuestionService {
         question.setCreatedAt(LocalDateTime.now());
         question.setUpdatedAt(LocalDateTime.now());
 
+        // Set current step for draft progress tracking
+        if (request.getCurrentStep() != null) {
+            question.setCurrentStep(request.getCurrentStep());
+        }
+
         // Set generated languages tracking
         if (request.getGeneratedLanguages() != null) {
             question.setGeneratedLanguagesJson(convertMapToJson(request.getGeneratedLanguages()));
@@ -257,6 +269,9 @@ public class QuestionService {
         }
         if (request.getGeneratedLanguages() != null) {
             question.setGeneratedLanguagesJson(convertMapToJson(request.getGeneratedLanguages()));
+        }
+        if (request.getCurrentStep() != null) {
+            question.setCurrentStep(request.getCurrentStep());
         }
 
         // Increment version on update

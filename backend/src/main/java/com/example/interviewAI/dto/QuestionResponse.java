@@ -16,6 +16,8 @@ public class QuestionResponse {
 
     private String title;
 
+    private String shortDescription;
+
     private String description;
 
     private String difficulty;
@@ -43,6 +45,18 @@ public class QuestionResponse {
     private String aiCustomPrompt;
 
     private String aiHelperName;
+
+    private String primaryLanguage;
+
+    private String generatedLanguagesJson;
+
+    private String followupQuestionsJson;
+
+    private String status;
+
+    private Integer currentStep;
+
+    private String category;
 
     private LocalDateTime createdAt;
 

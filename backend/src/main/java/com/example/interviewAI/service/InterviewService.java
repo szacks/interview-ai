@@ -81,6 +81,17 @@ public class InterviewService {
     }
 
     /**
+     * Get interviews for a company from the last 7 days
+     */
+    public List<InterviewResponse> getInterviewsByCompanyLastSevenDays(Long companyId) {
+        LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
+        List<Interview> interviews = interviewRepository.findByCompanyIdAndCreatedAtAfter(companyId, sevenDaysAgo);
+        return interviews.stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
+    }
+
+    /**
      * Get a single interview by ID
      */
     public InterviewResponse getInterviewById(Long interviewId) {

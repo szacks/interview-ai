@@ -139,15 +139,22 @@ export default function QuestionsPage() {
             <Badge variant="outline" className="text-xs flex-shrink-0">
               {question.difficulty}
             </Badge>
-            {(question as any).status && (
-              <Badge
-                variant={
-                  (question as any).status === "published" ? "default" : "secondary"
-                }
-                className="text-xs flex-shrink-0"
+            {((question as any).status === "DRAFT" || (question as any).status === "draft") && (
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  borderRadius: '0.375rem',
+                  paddingLeft: '0.375rem',
+                  paddingRight: '0.375rem',
+                  fontSize: '0.75rem',
+                  fontWeight: '500',
+                  backgroundColor: '#FBBF24',
+                  color: '#78350F'
+                }}
               >
-                {(question as any).status}
-              </Badge>
+                Draft
+              </span>
             )}
           </div>
           <p className="text-sm text-muted-foreground line-clamp-2">{question.description}</p>

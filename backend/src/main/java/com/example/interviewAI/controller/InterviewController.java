@@ -60,6 +60,22 @@ public class InterviewController {
     }
 
     /**
+     * Get interviews from the last 7 days for the authenticated user's company.
+     *
+     * @param bearerToken JWT token from Authorization header
+     * @return list of interviews from last 7 days
+     */
+    @GetMapping("/week")
+    public ResponseEntity<List<InterviewResponse>> getInterviewsFromLastSevenDays(
+            @RequestHeader("Authorization") String bearerToken) {
+        log.debug("Fetching interviews from last 7 days");
+        User user = extractUserFromToken(bearerToken);
+
+        List<InterviewResponse> interviews = interviewService.getInterviewsByCompanyLastSevenDays(user.getCompany().getId());
+        return ResponseEntity.ok(interviews);
+    }
+
+    /**
      * Get a specific interview by ID.
      *
      * @param interviewId interview identifier

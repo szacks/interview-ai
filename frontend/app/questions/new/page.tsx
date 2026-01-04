@@ -52,33 +52,79 @@ export default function CreateQuestionPage() {
             title: question.title,
             category: (question as any).category || "algorithm",
             difficulty: question.difficulty as any,
-            shortDescription: (question as any).short_description || "",
+            shortDescription: question.shortDescription || "",
             description: question.description,
-            primaryLanguage: ((question as any).primary_language || "javascript") as ProgrammingLanguage,
+            primaryLanguage: (question.primaryLanguage || "javascript") as ProgrammingLanguage,
             codeTemplates: {
               java: {
                 code: question.initialCodeJava || "",
-                generated: (question as any).generated_languages?.java?.generated || false,
-                reviewed: (question as any).generated_languages?.java?.reviewed || true,
+                generated: (() => {
+                  try {
+                    const parsed = JSON.parse(question.generatedLanguagesJson || "{}")
+                    return parsed.java?.generated || false
+                  } catch {
+                    return false
+                  }
+                })(),
+                reviewed: (() => {
+                  try {
+                    const parsed = JSON.parse(question.generatedLanguagesJson || "{}")
+                    return parsed.java?.reviewed ?? true
+                  } catch {
+                    return true
+                  }
+                })(),
               },
               python: {
                 code: question.initialCodePython || "",
-                generated: (question as any).generated_languages?.python?.generated || false,
-                reviewed: (question as any).generated_languages?.python?.reviewed || true,
+                generated: (() => {
+                  try {
+                    const parsed = JSON.parse(question.generatedLanguagesJson || "{}")
+                    return parsed.python?.generated || false
+                  } catch {
+                    return false
+                  }
+                })(),
+                reviewed: (() => {
+                  try {
+                    const parsed = JSON.parse(question.generatedLanguagesJson || "{}")
+                    return parsed.python?.reviewed ?? true
+                  } catch {
+                    return true
+                  }
+                })(),
               },
               javascript: {
                 code: question.initialCodeJavascript || "",
-                generated: (question as any).generated_languages?.javascript?.generated || false,
-                reviewed: (question as any).generated_languages?.javascript?.reviewed || true,
+                generated: (() => {
+                  try {
+                    const parsed = JSON.parse(question.generatedLanguagesJson || "{}")
+                    return parsed.javascript?.generated || false
+                  } catch {
+                    return false
+                  }
+                })(),
+                reviewed: (() => {
+                  try {
+                    const parsed = JSON.parse(question.generatedLanguagesJson || "{}")
+                    return parsed.javascript?.reviewed ?? true
+                  } catch {
+                    return true
+                  }
+                })(),
               },
             },
-            tests: JSON.parse((question as any).tests_json || "[]").tests || [],
-            aiPromptTemplate: ((question as any).ai_prompt_template || "helpful") as any,
-            useCustomPrompt: !!((question as any).ai_custom_prompt),
-            aiCustomPrompt: (question as any).ai_custom_prompt || "",
-            followUpQuestions: (question as any).followup_questions || [],
-            status: ((question as any).status || "draft") as any,
+            tests: JSON.parse(question.testsJson || "[]").tests || [],
+            aiPromptTemplate: (question.aiPromptTemplate || "helpful") as any,
+            useCustomPrompt: !!question.aiCustomPrompt,
+            aiCustomPrompt: question.aiCustomPrompt || "",
+            followUpQuestions: JSON.parse(question.followupQuestionsJson || "[]") || [],
+            status: (question.status || "DRAFT") as any,
           })
+          // Load the current step from the saved question
+          if (question.currentStep) {
+            setCurrentStep(question.currentStep)
+          }
         } catch (err) {
           toast({
             title: "Error",
@@ -245,13 +291,28 @@ export default function CreateQuestionPage() {
         initialCodePython: questionData.codeTemplates.python.code,
         initialCodeJavascript: questionData.codeTemplates.javascript.code,
         testsJson: JSON.stringify({ tests: questionData.tests }),
+        generatedLanguages: {
+          java: {
+            generated: questionData.codeTemplates.java.generated,
+            reviewed: questionData.codeTemplates.java.reviewed,
+          },
+          python: {
+            generated: questionData.codeTemplates.python.generated,
+            reviewed: questionData.codeTemplates.python.reviewed,
+          },
+          javascript: {
+            generated: questionData.codeTemplates.javascript.generated,
+            reviewed: questionData.codeTemplates.javascript.reviewed,
+          },
+        },
         aiPromptTemplate: questionData.aiPromptTemplate,
         aiCustomPrompt: questionData.useCustomPrompt ? questionData.aiCustomPrompt : undefined,
         aiHelperName: questionData.useCustomPrompt ? questionData.aiHelperName : undefined,
-        followupQuestions: questionData.followUpQuestions,
+        followupQuestionsJson: JSON.stringify(questionData.followUpQuestions),
         validationResultsJson: questionData.validationResults ? JSON.stringify(questionData.validationResults) : undefined,
         aiImplementation: questionData.aiImplementation || undefined,
-        status: "draft",
+        currentStep: currentStep,
+        status: "DRAFT",
       }
 
       if (questionData.id) {
@@ -294,13 +355,27 @@ export default function CreateQuestionPage() {
         initialCodePython: questionData.codeTemplates.python.code,
         initialCodeJavascript: questionData.codeTemplates.javascript.code,
         testsJson: JSON.stringify({ tests: questionData.tests }),
+        generatedLanguages: {
+          java: {
+            generated: questionData.codeTemplates.java.generated,
+            reviewed: questionData.codeTemplates.java.reviewed,
+          },
+          python: {
+            generated: questionData.codeTemplates.python.generated,
+            reviewed: questionData.codeTemplates.python.reviewed,
+          },
+          javascript: {
+            generated: questionData.codeTemplates.javascript.generated,
+            reviewed: questionData.codeTemplates.javascript.reviewed,
+          },
+        },
         aiPromptTemplate: questionData.aiPromptTemplate,
         aiCustomPrompt: questionData.useCustomPrompt ? questionData.aiCustomPrompt : undefined,
         aiHelperName: questionData.useCustomPrompt ? questionData.aiHelperName : undefined,
-        followupQuestions: questionData.followUpQuestions,
+        followupQuestionsJson: JSON.stringify(questionData.followUpQuestions),
         validationResultsJson: questionData.validationResults ? JSON.stringify(questionData.validationResults) : undefined,
         aiImplementation: questionData.aiImplementation || undefined,
-        status: "published",
+        status: "PUBLISHED",
       }
 
       if (questionData.id) {

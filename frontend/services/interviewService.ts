@@ -37,6 +37,19 @@ export const interviewService = {
   },
 
   /**
+   * Get interviews from the last 7 days for the company
+   */
+  getInterviewsFromLastSevenDays: async (): Promise<InterviewListResponse[]> => {
+    try {
+      const data = await apiClient.get('/interviews/week')
+      return data as InterviewListResponse[]
+    } catch (error) {
+      console.error('Error fetching interviews from last 7 days:', error)
+      throw error
+    }
+  },
+
+  /**
    * Get a specific interview by ID
    */
   getInterviewById: async (interviewId: number): Promise<Interview> => {

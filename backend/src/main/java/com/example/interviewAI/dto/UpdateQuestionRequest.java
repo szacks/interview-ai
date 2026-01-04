@@ -45,6 +45,9 @@ public class UpdateQuestionRequest {
     // ========== Step 7: Publish ==========
     private String status; // 'DRAFT' or 'PUBLISHED'
 
+    // ========== Draft Progress Tracking ==========
+    private Integer currentStep; // Current step in the wizard (1-7)
+
     // ========== Optional: Company-specific question ==========
     private Long companyId;
 }
