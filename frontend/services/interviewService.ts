@@ -218,6 +218,32 @@ export const interviewService = {
   },
 
   /**
+   * Deactivate a question
+   */
+  deactivateQuestion: async (questionId: number): Promise<Question> => {
+    try {
+      const data = await apiClient.put(`/questions/${questionId}/deactivate`, {})
+      return data as Question
+    } catch (error) {
+      console.error('Error deactivating question:', error)
+      throw error
+    }
+  },
+
+  /**
+   * Activate a deactivated question
+   */
+  activateQuestion: async (questionId: number): Promise<Question> => {
+    try {
+      const data = await apiClient.put(`/questions/${questionId}/activate`, {})
+      return data as Question
+    } catch (error) {
+      console.error('Error activating question:', error)
+      throw error
+    }
+  },
+
+  /**
    * Convert code from one language to another using AI
    */
   convertCode: async (request: {

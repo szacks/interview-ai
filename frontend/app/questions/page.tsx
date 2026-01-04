@@ -13,7 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Code2, Plus, Search, MoreVertical, Edit2, Copy, Trash2, Archive } from "lucide-react"
+import { Code2, Plus, Search, MoreVertical, Edit2, Copy, Trash2, Archive, CheckCircle, XCircle } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { interviewService } from "@/services/interviewService"
 import type { Question } from "@/types/interview"
@@ -130,6 +130,40 @@ export default function QuestionsPage() {
     }
   }
 
+  const handleDeactivate = async (questionId: number) => {
+    try {
+      const updated = await interviewService.deactivateQuestion(questionId)
+      setQuestions(questions.map((q) => (q.id === questionId ? updated : q)))
+      toast({
+        title: "Success",
+        description: "Question deactivated successfully",
+      })
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: "Failed to deactivate question",
+        variant: "destructive",
+      })
+    }
+  }
+
+  const handleActivate = async (questionId: number) => {
+    try {
+      const updated = await interviewService.activateQuestion(questionId)
+      setQuestions(questions.map((q) => (q.id === questionId ? updated : q)))
+      toast({
+        title: "Success",
+        description: "Question activated successfully",
+      })
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: "Failed to activate question",
+        variant: "destructive",
+      })
+    }
+  }
+
   const QuestionCard = ({ question }: { question: Question }) => (
     <div className="rounded-lg border border-border bg-card p-4 hover:border-primary/50 transition-colors">
       <div className="flex items-start justify-between gap-4">
@@ -154,6 +188,23 @@ export default function QuestionsPage() {
                 }}
               >
                 Draft
+              </span>
+            )}
+            {(question as any).deactivated && (
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  borderRadius: '0.375rem',
+                  paddingLeft: '0.375rem',
+                  paddingRight: '0.375rem',
+                  fontSize: '0.75rem',
+                  fontWeight: '500',
+                  backgroundColor: '#EF4444',
+                  color: '#FFFFFF'
+                }}
+              >
+                Deactivated
               </span>
             )}
           </div>
@@ -197,6 +248,21 @@ export default function QuestionsPage() {
                 <Copy className="size-4 mr-2" />
                 Duplicate
               </DropdownMenuItem>
+              {(question as any).deactivated ? (
+                <DropdownMenuItem
+                  onClick={() => handleActivate(question.id)}
+                >
+                  <CheckCircle className="size-4 mr-2" />
+                  Activate
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem
+                  onClick={() => handleDeactivate(question.id)}
+                >
+                  <XCircle className="size-4 mr-2" />
+                  Deactivate
+                </DropdownMenuItem>
+              )}
               <DropdownMenuItem
                 className="text-destructive"
                 onClick={() => handleDelete(question.id)}

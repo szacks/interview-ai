@@ -124,6 +124,12 @@ public class Question {
     private LocalDateTime archivedAt; // When question was archived
 
     @Column
+    private Boolean deactivated = false; // Whether question is deactivated (soft disable)
+
+    @Column
+    private LocalDateTime deactivatedAt; // When question was deactivated
+
+    @Column
     private LocalDateTime updatedAt; // Last updated time
 
     // ========== Relationships ==========

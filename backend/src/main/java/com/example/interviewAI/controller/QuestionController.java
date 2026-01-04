@@ -146,6 +146,33 @@ public class QuestionController {
     }
 
     /**
+     * Deactivate a question (soft disable).
+     * The question will not be available for new interviews but data is preserved.
+     *
+     * @param id the question ID
+     * @return the deactivated question
+     */
+    @PutMapping("/{id}/deactivate")
+    public ResponseEntity<QuestionResponse> deactivateQuestion(@PathVariable Long id) {
+        log.info("Deactivating question with id: {}", id);
+        QuestionResponse response = questionService.deactivateQuestion(id);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Activate a deactivated question.
+     *
+     * @param id the question ID
+     * @return the activated question
+     */
+    @PutMapping("/{id}/activate")
+    public ResponseEntity<QuestionResponse> activateQuestion(@PathVariable Long id) {
+        log.info("Activating question with id: {}", id);
+        QuestionResponse response = questionService.activateQuestion(id);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
      * Convert code from one language to another using Claude AI.
      * Used in Step 3 of the question builder when "Generate Other Languages" is clicked.
      *

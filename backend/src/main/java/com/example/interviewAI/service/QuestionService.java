@@ -30,6 +30,7 @@ public class QuestionService {
     public List<QuestionResponse> getAllQuestions() {
         List<Question> questions = questionRepository.findAll();
         return questions.stream()
+                .filter(q -> q.getDeactivated() == null || !q.getDeactivated()) // Exclude deactivated questions
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
     }
@@ -49,6 +50,7 @@ public class QuestionService {
     public List<QuestionResponse> getQuestionsByDifficulty(String difficulty) {
         List<Question> questions = questionRepository.findByDifficulty(difficulty);
         return questions.stream()
+                .filter(q -> q.getDeactivated() == null || !q.getDeactivated()) // Exclude deactivated questions
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
     }
@@ -59,6 +61,7 @@ public class QuestionService {
     public List<QuestionResponse> getQuestionsByLanguage(String language) {
         List<Question> questions = questionRepository.findByLanguage(language);
         return questions.stream()
+                .filter(q -> q.getDeactivated() == null || !q.getDeactivated()) // Exclude deactivated questions
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
     }
@@ -69,6 +72,7 @@ public class QuestionService {
     public List<QuestionResponse> getQuestionsByDifficultyAndLanguage(String difficulty, String language) {
         List<Question> questions = questionRepository.findByDifficultyAndLanguage(difficulty, language);
         return questions.stream()
+                .filter(q -> q.getDeactivated() == null || !q.getDeactivated()) // Exclude deactivated questions
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
     }
@@ -102,6 +106,8 @@ public class QuestionService {
         response.setStatus(question.getStatus());
         response.setCurrentStep(question.getCurrentStep());
         response.setCategory(question.getCategory());
+        response.setDeactivated(question.getDeactivated());
+        response.setDeactivatedAt(question.getDeactivatedAt());
         response.setCreatedAt(question.getCreatedAt());
 
         // Map follow-up questions
@@ -317,6 +323,45 @@ public class QuestionService {
 
         questionRepository.save(question);
         log.info("Question archived successfully with id: {}", id);
+    }
+
+    // ========== Deactivate/Activate Question ==========
+    /**
+     * Deactivate a question (soft disable - marks as inactive but preserves data)
+     */
+    public QuestionResponse deactivateQuestion(Long id) {
+        log.info("Deactivating question with id: {}", id);
+
+        Question question = questionRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Question not found with id: " + id));
+
+        question.setDeactivated(true);
+        question.setDeactivatedAt(LocalDateTime.now());
+        question.setUpdatedAt(LocalDateTime.now());
+
+        Question updated = questionRepository.save(question);
+        log.info("Question deactivated successfully with id: {}", updated.getId());
+
+        return convertToResponse(updated);
+    }
+
+    /**
+     * Activate a deactivated question
+     */
+    public QuestionResponse activateQuestion(Long id) {
+        log.info("Activating question with id: {}", id);
+
+        Question question = questionRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Question not found with id: " + id));
+
+        question.setDeactivated(false);
+        question.setDeactivatedAt(null);
+        question.setUpdatedAt(LocalDateTime.now());
+
+        Question updated = questionRepository.save(question);
+        log.info("Question activated successfully with id: {}", updated.getId());
+
+        return convertToResponse(updated);
     }
 
     // ========== Helper Methods ==========

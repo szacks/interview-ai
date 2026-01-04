@@ -344,7 +344,7 @@ export default function DashboardPage() {
                   <Label>Select a Question</Label>
                   <p className="text-xs text-muted-foreground">Click to select a question. The candidate will choose their programming language when they start the interview.</p>
                   <div className="space-y-2 mt-3">
-                    {questions.map((q) => {
+                    {questions.filter((q) => !(q as any).deactivated).map((q) => {
                       const isSelected = selectedQuestionId === q.id
                       return (
                         <div

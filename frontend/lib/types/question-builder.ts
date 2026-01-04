@@ -143,6 +143,8 @@ export interface QuestionResponse {
   status: string
   currentStep: number
   generatedLanguagesJson: string
+  deactivated?: boolean
+  deactivatedAt?: string
   createdAt: string
 }
 

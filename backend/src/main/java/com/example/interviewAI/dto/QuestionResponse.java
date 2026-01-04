@@ -58,6 +58,10 @@ public class QuestionResponse {
 
     private String category;
 
+    private Boolean deactivated;
+
+    private LocalDateTime deactivatedAt;
+
     private LocalDateTime createdAt;
 
     private List<FollowUpQuestionResponse> followUpQuestions;
