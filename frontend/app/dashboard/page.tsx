@@ -368,7 +368,9 @@ export default function DashboardPage() {
                                 <Badge variant="outline" className="text-xs">
                                   {q.difficulty}
                                 </Badge>
-                                <span className="text-xs text-muted-foreground">{q.timeLimitMinutes} min</span>
+                                {q.timeLimitMinutes && (
+                                  <span className="text-xs text-muted-foreground">{q.timeLimitMinutes} min</span>
+                                )}
                               </div>
                               {isSelected && (
                                 <p className="text-xs text-muted-foreground leading-relaxed mt-2 max-h-24 overflow-y-auto">{q.description}</p>

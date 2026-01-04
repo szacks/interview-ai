@@ -28,6 +28,7 @@ export interface QuestionData {
   followUpQuestions: FollowUpQuestion[]
   validationResults?: any // Results from "Validate Tests with AI"
   aiImplementation?: string // AI-generated or edited implementation code
+  timeLimitMinutes?: number // Estimated time for question in minutes
   status: 'draft' | 'published'
 }
 
@@ -114,11 +115,35 @@ export interface CreateQuestionRequest {
   aiPromptTemplate?: AIPromptTemplate
   aiCustomPrompt?: string
   followupQuestions?: FollowUpQuestion[] // Will be stored as JSONB
+  timeLimitMinutes?: number // Estimated time for question in minutes
   status: 'draft' | 'published'
 }
 
 export interface UpdateQuestionRequest extends Partial<CreateQuestionRequest> {
   id: number
+}
+
+export interface QuestionResponse {
+  id: number
+  title: string
+  category: QuestionCategory
+  difficulty: QuestionDifficulty
+  shortDescription: string
+  description: string
+  primaryLanguage: ProgrammingLanguage
+  initialCodeJava: string
+  initialCodePython: string
+  initialCodeJavascript: string
+  testsJson: string
+  aiPromptTemplate: AIPromptTemplate
+  aiCustomPrompt?: string
+  aiHelperName?: string
+  followupQuestionsJson: string
+  timeLimitMinutes?: number
+  status: string
+  currentStep: number
+  generatedLanguagesJson: string
+  createdAt: string
 }
 
 export interface CodeConversionRequest {
@@ -317,6 +342,7 @@ export function createEmptyQuestionData(): QuestionData {
     aiPromptTemplate: 'helpful',
     useCustomPrompt: false,
     followUpQuestions: [],
+    timeLimitMinutes: undefined,
     status: 'draft',
   }
 }

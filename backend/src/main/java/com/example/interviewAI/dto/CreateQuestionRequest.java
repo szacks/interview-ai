@@ -25,6 +25,8 @@ public class CreateQuestionRequest {
 
     private String shortDescription; // Optional for drafts
 
+    private Integer timeLimitMinutes; // Estimated time for question in minutes - optional
+
     // ========== Step 2: Problem Description ==========
     private String description; // Full markdown with examples and constraints - optional for drafts
 

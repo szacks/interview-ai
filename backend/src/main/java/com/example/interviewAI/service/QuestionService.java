@@ -83,6 +83,7 @@ public class QuestionService {
         response.setShortDescription(question.getShortDescription());
         response.setDescription(question.getDescription());
         response.setDifficulty(question.getDifficulty());
+        log.info("[Question {}] Converting question - timeLimitMinutes from DB: {}", question.getId(), question.getTimeLimitMinutes());
         response.setTimeLimitMinutes(question.getTimeLimitMinutes());
         response.setSupportedLanguages(question.getSupportedLanguages());
         response.setRequirementsJson(question.getRequirementsJson());
@@ -177,6 +178,7 @@ public class QuestionService {
         question.setAiCustomPrompt(request.getAiCustomPrompt());
         question.setAiHelperName(request.getAiHelperName());
         question.setFollowupQuestionsJson(request.getFollowupQuestionsJson());
+        question.setTimeLimitMinutes(request.getTimeLimitMinutes());
         question.setStatus(request.getStatus());
         question.setCreatedBy(userId);
         question.setCompanyId(request.getCompanyId());
@@ -198,7 +200,9 @@ public class QuestionService {
             question.setPublishedAt(LocalDateTime.now());
         }
 
+        log.info("[Question CREATE] Before save - timeLimitMinutes: {}", question.getTimeLimitMinutes());
         Question saved = questionRepository.save(question);
+        log.info("[Question CREATE] After save - id: {}, timeLimitMinutes: {}", saved.getId(), saved.getTimeLimitMinutes());
         log.info("Question created successfully with id: {}", saved.getId());
 
         return convertToResponse(saved);
@@ -226,6 +230,12 @@ public class QuestionService {
         }
         if (request.getShortDescription() != null) {
             question.setShortDescription(request.getShortDescription());
+        }
+        if (request.getTimeLimitMinutes() != null) {
+            log.info("[Question {}] Setting timeLimitMinutes to {}", id, request.getTimeLimitMinutes());
+            question.setTimeLimitMinutes(request.getTimeLimitMinutes());
+        } else {
+            log.info("[Question {}] timeLimitMinutes is null in request", id);
         }
         if (request.getDescription() != null) {
             question.setDescription(request.getDescription());
@@ -283,7 +293,9 @@ public class QuestionService {
 
         question.setUpdatedAt(LocalDateTime.now());
 
+        log.info("[Question {}] Before save - timeLimitMinutes value: {}", id, question.getTimeLimitMinutes());
         Question updated = questionRepository.save(question);
+        log.info("[Question {}] After save - timeLimitMinutes value: {}", updated.getId(), updated.getTimeLimitMinutes());
         log.info("Question updated successfully with id: {}", updated.getId());
 
         return convertToResponse(updated);

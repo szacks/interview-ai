@@ -119,6 +119,7 @@ export default function CreateQuestionPage() {
             useCustomPrompt: !!question.aiCustomPrompt,
             aiCustomPrompt: question.aiCustomPrompt || "",
             followUpQuestions: JSON.parse(question.followupQuestionsJson || "[]") || [],
+            timeLimitMinutes: question.timeLimitMinutes,
             status: (question.status || "DRAFT") as any,
           })
           // Load the current step from the saved question
@@ -311,6 +312,7 @@ export default function CreateQuestionPage() {
         followupQuestionsJson: JSON.stringify(questionData.followUpQuestions),
         validationResultsJson: questionData.validationResults ? JSON.stringify(questionData.validationResults) : undefined,
         aiImplementation: questionData.aiImplementation || undefined,
+        timeLimitMinutes: questionData.timeLimitMinutes,
         currentStep: currentStep,
         status: "DRAFT",
       }
@@ -334,6 +336,70 @@ export default function CreateQuestionPage() {
       toast({
         title: "Error",
         description: "Failed to save draft",
+        variant: "destructive",
+      })
+    } finally {
+      setSavingDraft(false)
+    }
+  }
+
+  const handleSave = async () => {
+    try {
+      setSavingDraft(true)
+      console.log("handleSave - questionData.timeLimitMinutes:", questionData.timeLimitMinutes)
+      const payload = {
+        title: questionData.title,
+        category: questionData.category,
+        difficulty: questionData.difficulty,
+        shortDescription: questionData.shortDescription,
+        description: questionData.description,
+        primaryLanguage: questionData.primaryLanguage,
+        initialCodeJava: questionData.codeTemplates.java.code,
+        initialCodePython: questionData.codeTemplates.python.code,
+        initialCodeJavascript: questionData.codeTemplates.javascript.code,
+        testsJson: JSON.stringify({ tests: questionData.tests }),
+        generatedLanguages: {
+          java: {
+            generated: questionData.codeTemplates.java.generated,
+            reviewed: questionData.codeTemplates.java.reviewed,
+          },
+          python: {
+            generated: questionData.codeTemplates.python.generated,
+            reviewed: questionData.codeTemplates.python.reviewed,
+          },
+          javascript: {
+            generated: questionData.codeTemplates.javascript.generated,
+            reviewed: questionData.codeTemplates.javascript.reviewed,
+          },
+        },
+        aiPromptTemplate: questionData.aiPromptTemplate,
+        aiCustomPrompt: questionData.useCustomPrompt ? questionData.aiCustomPrompt : undefined,
+        aiHelperName: questionData.useCustomPrompt ? questionData.aiHelperName : undefined,
+        followupQuestionsJson: JSON.stringify(questionData.followUpQuestions),
+        validationResultsJson: questionData.validationResults ? JSON.stringify(questionData.validationResults) : undefined,
+        aiImplementation: questionData.aiImplementation || undefined,
+        timeLimitMinutes: questionData.timeLimitMinutes,
+        status: questionData.status,
+      }
+
+      console.log("handleSave payload:", payload)
+      if (questionData.id) {
+        const response = await interviewService.updateQuestion(questionData.id, payload)
+        console.log("Update response:", response)
+        toast({
+          title: "Success",
+          description: "Question saved successfully",
+        })
+
+        // Verify the save by reloading the data
+        setTimeout(() => {
+          router.push("/questions")
+        }, 1500)
+      }
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: "Failed to save question",
         variant: "destructive",
       })
     } finally {
@@ -375,6 +441,7 @@ export default function CreateQuestionPage() {
         followupQuestionsJson: JSON.stringify(questionData.followUpQuestions),
         validationResultsJson: questionData.validationResults ? JSON.stringify(questionData.validationResults) : undefined,
         aiImplementation: questionData.aiImplementation || undefined,
+        timeLimitMinutes: questionData.timeLimitMinutes,
         status: "PUBLISHED",
       }
 
@@ -382,7 +449,7 @@ export default function CreateQuestionPage() {
         await interviewService.updateQuestion(questionData.id, payload)
         toast({
           title: "Success",
-          description: "Question published successfully",
+          description: questionData.status === "published" ? "Question updated successfully" : "Question published successfully",
         })
       } else {
         await interviewService.createQuestion(payload)
@@ -396,7 +463,7 @@ export default function CreateQuestionPage() {
     } catch (err) {
       toast({
         title: "Error",
-        description: "Failed to publish question",
+        description: "Failed to save question",
         variant: "destructive",
       })
     } finally {
@@ -531,24 +598,37 @@ export default function CreateQuestionPage() {
             Back
           </Button>
           <div className="flex gap-2">
-            <Button
-              variant="outline"
-              onClick={handleSaveDraft}
-              disabled={savingDraft}
-            >
-              {savingDraft ? "Saving..." : "Save Draft"}
-            </Button>
-            {currentStep === 7 ? (
-              <Button
-                onClick={handlePublish}
-                disabled={savingDraft}
-              >
-                {savingDraft ? "Publishing..." : "Publish"}
-              </Button>
+            {questionData.status?.toLowerCase() === "published" ? (
+              <>
+                <Button
+                  onClick={handleSave}
+                  disabled={savingDraft}
+                >
+                  {savingDraft ? "Saving..." : "Save"}
+                </Button>
+              </>
             ) : (
-              <Button onClick={handleNext}>
-                Next
-              </Button>
+              <>
+                <Button
+                  variant="outline"
+                  onClick={handleSaveDraft}
+                  disabled={savingDraft}
+                >
+                  {savingDraft ? "Saving..." : "Save Draft"}
+                </Button>
+                {currentStep === 7 ? (
+                  <Button
+                    onClick={handlePublish}
+                    disabled={savingDraft}
+                  >
+                    {savingDraft ? "Publishing..." : "Publish"}
+                  </Button>
+                ) : (
+                  <Button onClick={handleNext}>
+                    Next
+                  </Button>
+                )}
+              </>
             )}
           </div>
         </div>
@@ -600,6 +680,24 @@ function StepBasicInfo({
             <SelectItem value="hard">Hard</SelectItem>
           </SelectContent>
         </Select>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="time-limit">Estimated Time (minutes)</Label>
+        <Input
+          id="time-limit"
+          type="number"
+          min="0"
+          value={data.timeLimitMinutes ?? ""}
+          onChange={(e) => {
+            console.log("Time limit input changed:", e.target.value)
+            const value = e.target.value ? parseInt(e.target.value) : undefined
+            console.log("Parsed value:", value)
+            onUpdate({ timeLimitMinutes: value })
+          }}
+          placeholder="e.g., 30"
+        />
+        <p className="text-xs text-muted-foreground">Leave empty for no time limit</p>
       </div>
 
       <div className="space-y-2">
@@ -909,6 +1007,7 @@ function StepTestCases({
   const [aiImplementation, setAiImplementation] = useState("")
   const [editingImplementation, setEditingImplementation] = useState(false)
   const [showAiImplementation, setShowAiImplementation] = useState(false)
+  const [testError, setTestError] = useState<string | null>(null)
 
   const getExampleTestCode = (language: string): string => {
     switch (language) {
@@ -962,6 +1061,8 @@ function StepTestCases({
   }
 
   const validateTestsWithAI = async () => {
+    setTestError(null)
+
     if (data.tests.length === 0) {
       alert("Please add at least one test case")
       return
@@ -970,7 +1071,7 @@ function StepTestCases({
     // Check all tests have titles
     const testsWithoutTitles = data.tests.filter((test) => !test.name || !test.name.trim())
     if (testsWithoutTitles.length > 0) {
-      alert("All tests must have a title. Please fill in the test title for all test cases.")
+      setTestError("All tests must have a title. Please fill in the test title for all test cases.")
       return
     }
 
@@ -1046,12 +1147,18 @@ function StepTestCases({
               <Input
                 id={`test-title-${index}`}
                 value={test.name}
-                onChange={(e) => updateTest(index, { name: e.target.value })}
+                onChange={(e) => {
+                  updateTest(index, { name: e.target.value })
+                  setTestError(null)
+                }}
                 placeholder="e.g., First request should be allowed"
-                className={fieldErrors[`testTitle-${index}`] ? "!border-red-500 !border-2 !text-foreground focus-visible:!border-red-500 focus-visible:!ring-red-500/50" : ""}
+                className={fieldErrors[`testTitle-${index}`] || (testError && !test.name?.trim()) ? "!border-red-500 !border-2 !text-foreground focus-visible:!border-red-500 focus-visible:!ring-red-500/50" : ""}
               />
               {fieldErrors[`testTitle-${index}`] && (
                 <p className="text-sm text-red-600 font-medium">{fieldErrors[`testTitle-${index}`]}</p>
+              )}
+              {testError && !test.name?.trim() && (
+                <p className="text-sm text-red-600 font-medium">{testError}</p>
               )}
             </div>
 

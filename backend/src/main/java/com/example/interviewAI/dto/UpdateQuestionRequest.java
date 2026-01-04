@@ -22,6 +22,7 @@ public class UpdateQuestionRequest {
     private String category;
     private String difficulty;
     private String shortDescription;
+    private Integer timeLimitMinutes;
 
     // ========== Step 2: Problem Description ==========
     private String description;
