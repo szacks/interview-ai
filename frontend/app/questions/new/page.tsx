@@ -160,13 +160,18 @@ export default function CreateQuestionPage() {
       } else {
         delete newFieldErrors["tests"]
       }
-      const testsWithoutTitles = questionData.tests.filter((test) => !test.name || !test.name.trim())
-      if (testsWithoutTitles.length > 0) {
-        newFieldErrors["testTitles"] = "All tests must have a title"
-        hasErrors = true
-      } else {
-        delete newFieldErrors["testTitles"]
-      }
+
+      // Check each test for missing title and set individual field errors
+      questionData.tests.forEach((test, index) => {
+        if (!test.name || !test.name.trim()) {
+          newFieldErrors[`testTitle-${index}`] = "Test Title is required"
+          hasErrors = true
+        } else {
+          delete newFieldErrors[`testTitle-${index}`]
+        }
+      })
+
+      // Check if all tests passed validation
       if (questionData.validationResults && questionData.validationResults.failed > 0) {
         newFieldErrors["testValidation"] = "All tests must pass validation before proceeding"
         hasErrors = true
@@ -197,10 +202,26 @@ export default function CreateQuestionPage() {
   }
 
   const handleNext = () => {
-    if (validateStep(currentStep)) {
+    const isValid = validateStep(currentStep)
+    console.log(`Step ${currentStep} validation:`, isValid, fieldErrors)
+    if (isValid) {
       if (currentStep < 7) {
         setCurrentStep(currentStep + 1)
       }
+    } else {
+      // Show error toast
+      if (currentStep === 4) {
+        const errorMessages = Object.values(fieldErrors).filter(err => err.length > 0)
+        if (errorMessages.length > 0) {
+          toast({
+            title: "Validation Error",
+            description: errorMessages[0],
+            variant: "destructive",
+          })
+        }
+      }
+      // Scroll to top to see error messages
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }
 
@@ -952,7 +973,11 @@ function StepTestCases({
                 value={test.name}
                 onChange={(e) => updateTest(index, { name: e.target.value })}
                 placeholder="e.g., First request should be allowed"
+                className={fieldErrors[`testTitle-${index}`] ? "!border-red-500 !border-2 !text-foreground focus-visible:!border-red-500 focus-visible:!ring-red-500/50" : ""}
               />
+              {fieldErrors[`testTitle-${index}`] && (
+                <p className="text-sm text-red-600 font-medium">{fieldErrors[`testTitle-${index}`]}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -990,7 +1015,7 @@ function StepTestCases({
       ))}
 
       <div className="space-y-2">
-        <div className="flex gap-2">
+        <div className="flex flex-col gap-2 w-fit">
           <Button onClick={addTest}>
             + Add Test Case
           </Button>
@@ -998,11 +1023,14 @@ function StepTestCases({
             onClick={validateTestsWithAI}
             disabled={validatingTests}
           >
-            {validatingTests ? "⏳ Validating..." : "🤖 Validate"}
+            {validatingTests ? "⏳ Validating All Tests..." : "🤖 Validate All Tests"}
           </Button>
         </div>
         {fieldErrors["tests"] && (
           <p className="text-sm text-red-600 font-medium">{fieldErrors["tests"]}</p>
+        )}
+        {fieldErrors["testValidation"] && (
+          <p className="text-sm text-red-600 font-medium">{fieldErrors["testValidation"]}</p>
         )}
       </div>
 
