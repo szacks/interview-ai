@@ -1396,22 +1396,12 @@ function StepPublish({ data }: { data: QuestionData }) {
             <dd className="text-muted-foreground">{data.title}</dd>
           </div>
           <div>
-            <dt className="font-medium">Category</dt>
-            <dd className="text-muted-foreground">{data.category}</dd>
-          </div>
-          <div>
             <dt className="font-medium">Difficulty</dt>
             <dd className="text-muted-foreground">{data.difficulty}</dd>
           </div>
           <div>
-            <dt className="font-medium">Languages</dt>
-            <dd className="text-muted-foreground">Java, Python, JavaScript</dd>
-          </div>
-          <div>
             <dt className="font-medium">Test Cases</dt>
-            <dd className="text-muted-foreground">
-              {data.tests.length} total ({data.tests.filter((t) => t.visibleToCandidate).length} visible)
-            </dd>
+            <dd className="text-muted-foreground">{data.tests.length}</dd>
           </div>
           <div>
             <dt className="font-medium">AI Assistant</dt>
