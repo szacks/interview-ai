@@ -484,7 +484,7 @@ function StepBasicInfo({
           value={data.title}
           onChange={(e) => onUpdate({ title: e.target.value })}
           placeholder="Build a Rate Limiter"
-          className={fieldErrors["title"] ? "border-red-500 bg-red-50" : ""}
+          className={fieldErrors["title"] ? "!border-red-500 !border-2 !text-foreground focus-visible:!border-red-500 focus-visible:!ring-red-500/50" : ""}
         />
         {fieldErrors["title"] && (
           <p className="text-sm text-red-600 font-medium">{fieldErrors["title"]}</p>
@@ -514,7 +514,7 @@ function StepBasicInfo({
           onChange={(e) => onUpdate({ shortDescription: e.target.value })}
           placeholder="Build a thread-safe rate limiter that supports limiting requests per user within a time window"
           rows={3}
-          className={fieldErrors["shortDescription"] ? "border-red-500 bg-red-50" : ""}
+          className={fieldErrors["shortDescription"] ? "!border-red-500 !border-2 !text-foreground focus-visible:!border-red-500 focus-visible:!ring-red-500/50" : ""}
         />
         {fieldErrors["shortDescription"] && (
           <p className="text-sm text-red-600 font-medium">{fieldErrors["shortDescription"]}</p>
@@ -570,7 +570,7 @@ limiter.allowRequest("user1", 200);   // false (rate limit exceeded)
 limiter.allowRequest("user1", 1100);  // true (window reset)
 \`\`\``}
           rows={12}
-          className={`font-mono text-xs ${fieldErrors["description"] ? "border-red-500 bg-red-50" : ""}`}
+          className={`font-mono text-xs ${fieldErrors["description"] ? "!border-red-500 !border-2 !text-foreground focus-visible:!border-red-500 focus-visible:!ring-red-500/50" : ""}`}
         />
         {fieldErrors["description"] && (
           <p className="text-sm text-red-600 font-medium">{fieldErrors["description"]}</p>
@@ -989,20 +989,22 @@ function StepTestCases({
         </Card>
       ))}
 
-      <div className="flex gap-2">
-        <Button onClick={addTest} className={fieldErrors["tests"] ? "border-red-500 bg-red-50" : ""}>
-          + Add Test Case
-        </Button>
-        <Button
-          onClick={validateTestsWithAI}
-          disabled={validatingTests}
-        >
-          {validatingTests ? "⏳ Validating..." : "🤖 Validate"}
-        </Button>
+      <div className="space-y-2">
+        <div className="flex gap-2">
+          <Button onClick={addTest}>
+            + Add Test Case
+          </Button>
+          <Button
+            onClick={validateTestsWithAI}
+            disabled={validatingTests}
+          >
+            {validatingTests ? "⏳ Validating..." : "🤖 Validate"}
+          </Button>
+        </div>
+        {fieldErrors["tests"] && (
+          <p className="text-sm text-red-600 font-medium">{fieldErrors["tests"]}</p>
+        )}
       </div>
-      {fieldErrors["tests"] && (
-        <p className="text-sm text-red-600 font-medium">{fieldErrors["tests"]}</p>
-      )}
 
       {validationResults && (
         <Card className={`p-4 border-l-4 ${
