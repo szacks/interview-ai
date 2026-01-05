@@ -502,27 +502,29 @@ export default function DashboardPage() {
                       </Button>
                     </Link>
                   )}
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button size="sm" variant="ghost">
-                        <MoreVertical className="size-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      {(interview.status === "scheduled" || interview.status === "pending") && (
-                        <DropdownMenuItem className="text-destructive" onClick={() => handleDeleteInterview(interview.id)}>
-                          <Trash2 className="size-4 mr-2" />
-                          Delete
-                        </DropdownMenuItem>
-                      )}
-                      {(interview.status === "in_progress" || interview.status === "live") && (
-                        <DropdownMenuItem className="text-destructive" onClick={() => handleEndInterview(interview.id)}>
-                          <XCircle className="size-4 mr-2" />
-                          End Interview
-                        </DropdownMenuItem>
-                      )}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  {(interview.status === "scheduled" || interview.status === "pending" || interview.status === "in_progress" || interview.status === "live") && (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button size="sm" variant="ghost">
+                          <MoreVertical className="size-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        {(interview.status === "scheduled" || interview.status === "pending") && (
+                          <DropdownMenuItem className="text-destructive" onClick={() => handleDeleteInterview(interview.id)}>
+                            <Trash2 className="size-4 mr-2" />
+                            Delete
+                          </DropdownMenuItem>
+                        )}
+                        {(interview.status === "in_progress" || interview.status === "live") && (
+                          <DropdownMenuItem className="text-destructive" onClick={() => handleEndInterview(interview.id)}>
+                            <XCircle className="size-4 mr-2" />
+                            End Interview
+                          </DropdownMenuItem>
+                        )}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )}
                 </div>
               </div>
             </div>

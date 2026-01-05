@@ -975,3 +975,4 @@
 [01:56:54.574] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/181 200
 [01:56:54.574] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/7 200
 [01:56:54.574] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/16 200
+[01:58:29.743] Server  LOG      ✓ Compiled in 38ms
