@@ -17,7 +17,7 @@ import { Code2, Plus, Search, MoreVertical, Edit2, Copy, Trash2, Archive, CheckC
 import { useToast } from "@/hooks/use-toast"
 import { interviewService } from "@/services/interviewService"
 import type { Question } from "@/types/interview"
-import QuestionsFilters from "@/frontend/interview-platform-mvp/components/questions/questions-filters"
+import { DashboardLayout } from "@/components/layout/DashboardLayout"
 
 export default function QuestionsPage() {
   const { toast } = useToast()
@@ -278,20 +278,8 @@ export default function QuestionsPage() {
   )
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-card">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="size-8 rounded-lg bg-primary flex items-center justify-center">
-                <Code2 className="size-5 text-primary-foreground" />
-              </div>
-              <h1 className="text-xl font-semibold">InterviewAI - Questions</h1>
-            </div>
-          </div>
-        </div>
-      </header>
+    <DashboardLayout>
+      <div className="min-h-screen bg-background">
 
       <div className="container mx-auto px-4 py-8">
         {/* Actions Bar */}
@@ -416,5 +404,6 @@ export default function QuestionsPage() {
         </DialogContent>
       </Dialog>
     </div>
+    </DashboardLayout>
   )
 }

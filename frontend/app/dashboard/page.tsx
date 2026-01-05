@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import {
-  Code2,
   Plus,
   Search,
   MoreVertical,
@@ -14,7 +13,6 @@ import {
   Play,
   Trash2,
   Eye,
-  LogOut,
   Clock,
   CheckCircle2,
   XCircle,
@@ -26,6 +24,7 @@ import { useToast } from "@/hooks/use-toast"
 import { interviewService } from "@/services/interviewService"
 import { evaluationService } from "@/services/evaluationService"
 import type { Question, Interview } from "@/types/interview"
+import { DashboardLayout } from "@/components/layout/DashboardLayout"
 
 export default function DashboardPage() {
   const { toast } = useToast()
@@ -258,38 +257,8 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-card">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="size-8 rounded-lg bg-primary flex items-center justify-center">
-                <Code2 className="size-5 text-primary-foreground" />
-              </div>
-              <div>
-                <h1 className="text-xl font-semibold">InterviewAI</h1>
-                <p className="text-xs text-muted-foreground">Acme Inc.</p>
-              </div>
-            </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full">
-                  <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center text-sm font-medium">
-                    JD
-                  </div>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem className="text-destructive">
-                  <LogOut className="size-4 mr-2" />
-                  Log Out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </div>
-      </header>
+    <DashboardLayout>
+      <div className="min-h-screen bg-background">
 
       <div className="container mx-auto px-4 py-8">
         {/* Actions Bar */}
@@ -505,5 +474,6 @@ export default function DashboardPage() {
         )}
       </div>
     </div>
+    </DashboardLayout>
   )
 }
