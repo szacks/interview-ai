@@ -360,6 +360,46 @@ public class InterviewController {
     }
 
     /**
+     * Change the question for an interview (only before interview goes live).
+     *
+     * @param interviewId interview identifier
+     * @param body request body containing questionId
+     * @param bearerToken JWT token from Authorization header
+     * @return updated interview
+     */
+    @PutMapping("/{interviewId}/question")
+    public ResponseEntity<InterviewResponse> changeQuestion(
+            @PathVariable Long interviewId,
+            @RequestBody Map<String, Long> body,
+            @RequestHeader("Authorization") String bearerToken) {
+        log.info("Changing question for interview ID: {}", interviewId);
+        User user = extractUserFromToken(bearerToken);
+        Long questionId = body.get("questionId");
+
+        if (questionId == null) {
+            throw new BadRequestException("Question ID is required");
+        }
+
+        InterviewResponse interview = interviewService.getInterviewById(interviewId);
+
+        // Authorization check
+        if (!isUserAuthorizedForInterview(user, interview)) {
+            throw new ForbiddenException("You are not authorized to update this interview");
+        }
+
+        // Check if interview status allows changing question (not live/in_progress/completed)
+        if (interview.getStatus().equals("in_progress") || interview.getStatus().equals("live") ||
+            interview.getStatus().equals("completed") || interview.getStatus().equals("ended") ||
+            interview.getStatus().equals("cancelled")) {
+            throw new BadRequestException("Cannot change question for " + interview.getStatus() + " interview");
+        }
+
+        InterviewResponse updated = interviewService.changeQuestion(interviewId, questionId);
+        log.info("Question changed successfully for interview {}", interviewId);
+        return ResponseEntity.ok(updated);
+    }
+
+    /**
      * Extract user from JWT token.
      *
      * @param bearerToken JWT token with Bearer prefix

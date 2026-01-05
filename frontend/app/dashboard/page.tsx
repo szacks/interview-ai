@@ -6,16 +6,6 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import {
   Code2,
   Plus,
   Search,
@@ -28,6 +18,7 @@ import {
   Clock,
   CheckCircle2,
   XCircle,
+  Edit,
 } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -39,7 +30,6 @@ import type { Question, Interview } from "@/types/interview"
 export default function DashboardPage() {
   const { toast } = useToast()
   const [searchQuery, setSearchQuery] = useState("")
-  const [createDialogOpen, setCreateDialogOpen] = useState(false)
 
   // Backend data states
   const [allInterviews, setAllInterviews] = useState<Interview[]>([])
@@ -50,11 +40,11 @@ export default function DashboardPage() {
   const [evaluationStatuses, setEvaluationStatuses] = useState<Record<number, { isDraft: boolean; updatedAt?: string }>>({})
   const [loadingEvaluations, setLoadingEvaluations] = useState(false)
 
-  // Form states
-  const [selectedQuestionId, setSelectedQuestionId] = useState<number | null>(null)
-  const [candidateName, setCandidateName] = useState("")
-  const [role, setRole] = useState("")
-  const [creating, setCreating] = useState(false)
+  // Change question dialog state
+  const [changeQuestionDialogOpen, setChangeQuestionDialogOpen] = useState(false)
+  const [selectedInterviewId, setSelectedInterviewId] = useState<number | null>(null)
+  const [selectedNewQuestionId, setSelectedNewQuestionId] = useState<number | null>(null)
+  const [changingQuestion, setChangingQuestion] = useState(false)
 
   // Fetch interviews and questions on mount
   useEffect(() => {
@@ -120,56 +110,6 @@ export default function DashboardPage() {
       fetchEvaluationStatuses()
     }
   }, [allInterviews])
-
-  const handleCreateInterview = async () => {
-    if (!selectedQuestionId) {
-      setError("Please select a question")
-      return
-    }
-
-    if (!candidateName.trim()) {
-      setError("Candidate name is required")
-      return
-    }
-
-    try {
-      setCreating(true)
-      setError(null)
-
-      // Create candidate with the provided name
-      const candidate = await interviewService.createCandidate(
-        candidateName.trim(),
-        `${candidateName.trim().toLowerCase().replace(/\s+/g, '.')}@candidate.local`
-      )
-
-      // Create interview with the newly created candidate
-      await interviewService.createInterview({
-        questionId: selectedQuestionId,
-        candidateId: candidate.id,
-        language: "javascript", // Language will be selected by candidate when they start
-        scheduledAt: new Date().toISOString(),
-      })
-
-      // Reset form
-      setSelectedQuestionId(null)
-      setCandidateName("")
-      setRole("")
-      setCreateDialogOpen(false)
-
-      // Refresh interviews list
-      const [updatedAllInterviews, updatedWeekInterviews] = await Promise.all([
-        interviewService.getInterviews(),
-        interviewService.getInterviewsFromLastSevenDays(),
-      ])
-      setAllInterviews(updatedAllInterviews as Interview[])
-      setWeekInterviews(updatedWeekInterviews as Interview[])
-    } catch (err) {
-      setError("Failed to create interview")
-      console.error(err)
-    } finally {
-      setCreating(false)
-    }
-  }
 
   // Determine which interviews to show
   const interviewsToDisplay = searchQuery ? allInterviews : weekInterviews
@@ -272,6 +212,51 @@ export default function DashboardPage() {
     }
   }
 
+  const handleOpenChangeQuestion = (interviewId: number) => {
+    setSelectedInterviewId(interviewId)
+    setSelectedNewQuestionId(null)
+    setChangeQuestionDialogOpen(true)
+  }
+
+  const handleChangeQuestion = async () => {
+    if (!selectedInterviewId || !selectedNewQuestionId) {
+      toast({
+        title: "Error",
+        description: "Please select a question",
+        variant: "destructive",
+      })
+      return
+    }
+
+    try {
+      setChangingQuestion(true)
+      await interviewService.changeQuestion(selectedInterviewId, selectedNewQuestionId)
+
+      // Refresh interviews list
+      const [updatedAllInterviews, updatedWeekInterviews] = await Promise.all([
+        interviewService.getInterviews(),
+        interviewService.getInterviewsFromLastSevenDays(),
+      ])
+      setAllInterviews(updatedAllInterviews as Interview[])
+      setWeekInterviews(updatedWeekInterviews as Interview[])
+
+      toast({
+        title: "Success",
+        description: "Question changed successfully",
+      })
+      setChangeQuestionDialogOpen(false)
+    } catch (err) {
+      console.error("Failed to change question:", err)
+      toast({
+        title: "Error",
+        description: "Failed to change question",
+        variant: "destructive",
+      })
+    } finally {
+      setChangingQuestion(false)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -322,101 +307,12 @@ export default function DashboardPage() {
                 New Question
               </Button>
             </Link>
-            <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
-            <DialogTrigger asChild>
+            <Link href="/interviews/new">
               <Button>
                 <Plus className="size-4 mr-2" />
                 New Interview
               </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>Create New Interview</DialogTitle>
-                <DialogDescription>Set up a new interview session for a candidate</DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4 pt-4">
-                {error && (
-                  <div className="bg-destructive/10 text-destructive p-3 rounded-md text-sm">
-                    {error}
-                  </div>
-                )}
-                <div className="space-y-2">
-                  <Label>Select a Question</Label>
-                  <p className="text-xs text-muted-foreground">Click to select a question. The candidate will choose their programming language when they start the interview.</p>
-                  <div className="space-y-2 mt-3">
-                    {questions.filter((q) => !(q as any).deactivated).map((q) => {
-                      const isSelected = selectedQuestionId === q.id
-                      return (
-                        <div
-                          key={q.id}
-                          className={`border rounded-lg p-3 cursor-pointer transition-all ${
-                            isSelected
-                              ? "border-primary bg-primary/10 ring-2 ring-primary"
-                              : "border-border hover:border-primary/50 hover:bg-muted/50"
-                          }`}
-                          onClick={() => setSelectedQuestionId(isSelected ? null : q.id)}
-                        >
-                          <div className="flex items-start gap-3">
-                            <div className={`mt-1 size-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                              isSelected ? "border-primary bg-primary" : "border-muted-foreground"
-                            }`}>
-                              {isSelected && <div className="size-2 bg-white rounded-full" />}
-                            </div>
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-1">
-                                <h4 className="font-semibold text-sm">{q.title}</h4>
-                                <Badge variant="outline" className="text-xs">
-                                  {q.difficulty}
-                                </Badge>
-                                {q.timeLimitMinutes && (
-                                  <span className="text-xs text-muted-foreground">{q.timeLimitMinutes} min</span>
-                                )}
-                              </div>
-                              {isSelected && (
-                                <p className="text-xs text-muted-foreground leading-relaxed mt-2 max-h-24 overflow-y-auto">{q.description}</p>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      )
-                    })}
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="candidate-name">
-                    Candidate Name <span className="text-destructive">*</span>
-                  </Label>
-                  <Input
-                    id="candidate-name"
-                    type="text"
-                    placeholder="Jane Doe"
-                    value={candidateName}
-                    onChange={(e) => setCandidateName(e.target.value)}
-                    className={candidateName.trim() === "" ? "border-destructive/50" : ""}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="role">
-                    Role <span className="text-muted-foreground text-xs">(optional)</span>
-                  </Label>
-                  <Input
-                    id="role"
-                    type="text"
-                    placeholder="e.g., Senior Frontend Developer"
-                    value={role}
-                    onChange={(e) => setRole(e.target.value)}
-                  />
-                </div>
-                <Button
-                  className="w-full"
-                  onClick={handleCreateInterview}
-                  disabled={creating || !selectedQuestionId || !candidateName.trim()}
-                >
-                  {creating ? "Creating Interview..." : "Create Interview"}
-                </Button>
-              </div>
-            </DialogContent>
-            </Dialog>
+            </Link>
           </div>
         </div>
 
@@ -511,10 +407,16 @@ export default function DashboardPage() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         {(interview.status === "scheduled" || interview.status === "pending") && (
-                          <DropdownMenuItem className="text-destructive" onClick={() => handleDeleteInterview(interview.id)}>
-                            <Trash2 className="size-4 mr-2" />
-                            Delete
-                          </DropdownMenuItem>
+                          <>
+                            <DropdownMenuItem onClick={() => handleOpenChangeQuestion(interview.id)}>
+                              <Edit className="size-4 mr-2" />
+                              Change Question
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="text-destructive" onClick={() => handleDeleteInterview(interview.id)}>
+                              <Trash2 className="size-4 mr-2" />
+                              Delete
+                            </DropdownMenuItem>
+                          </>
                         )}
                         {(interview.status === "in_progress" || interview.status === "live") && (
                           <DropdownMenuItem className="text-destructive" onClick={() => handleEndInterview(interview.id)}>
@@ -548,6 +450,57 @@ export default function DashboardPage() {
                 Create Interview
               </Button>
             )}
+          </div>
+        )}
+
+        {/* Change Question Dialog */}
+        {changeQuestionDialogOpen && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-background rounded-lg border border-border shadow-lg max-w-2xl w-full mx-4">
+              <div className="p-6 border-b border-border">
+                <h2 className="text-xl font-semibold">Change Question</h2>
+                <p className="text-sm text-muted-foreground mt-1">Select a new question for this interview</p>
+              </div>
+
+              <div className="p-6 max-h-96 overflow-y-auto">
+                <div className="space-y-2">
+                  {questions.map((q) => (
+                    <button
+                      key={q.id}
+                      onClick={() => setSelectedNewQuestionId(q.id)}
+                      className={`w-full text-left p-4 rounded-lg border transition-colors ${
+                        selectedNewQuestionId === q.id
+                          ? "border-primary bg-primary/5"
+                          : "border-border hover:border-primary/50"
+                      }`}
+                    >
+                      <div className="font-semibold text-sm mb-1">{q.title}</div>
+                      <div className="text-xs text-muted-foreground line-clamp-2">{q.description}</div>
+                      <div className="flex items-center gap-2 mt-2">
+                        <Badge variant="outline" className="text-xs">
+                          {q.difficulty}
+                        </Badge>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="p-6 border-t border-border flex justify-end gap-3">
+                <Button
+                  variant="outline"
+                  onClick={() => setChangeQuestionDialogOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleChangeQuestion}
+                  disabled={!selectedNewQuestionId || changingQuestion}
+                >
+                  {changingQuestion ? "Changing..." : "Change Question"}
+                </Button>
+              </div>
+            </div>
           </div>
         )}
       </div>

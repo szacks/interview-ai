@@ -115,6 +115,19 @@ export const interviewService = {
   },
 
   /**
+   * Change the question for an interview
+   */
+  changeQuestion: async (interviewId: number, questionId: number): Promise<Interview> => {
+    try {
+      const data = await apiClient.put(`/interviews/${interviewId}/question`, { questionId })
+      return data as Interview
+    } catch (error) {
+      console.error('Error changing question:', error)
+      throw error
+    }
+  },
+
+  /**
    * Get all available questions
    */
   getQuestions: async (): Promise<Question[]> => {

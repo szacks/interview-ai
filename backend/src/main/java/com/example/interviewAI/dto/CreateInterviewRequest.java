@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Data
@@ -12,11 +11,18 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class CreateInterviewRequest {
 
-    @NotNull(message = "Question ID is required")
+    // Question ID - required
     private Long questionId;
 
-    @NotNull(message = "Candidate ID is required")
+    // Either provide candidateId OR (candidateName + optional role)
+    // If candidateId is null, candidateName must be provided
     private Long candidateId;
+
+    // For creating new interviews with candidate info
+    private String candidateName;
+
+    // Note: role is accepted from frontend but not stored in Candidate entity
+    private String role;
 
     // Language is accepted but not used during interview creation
     // It will be set when the candidate submits setup via /ready endpoint

@@ -104,3 +104,311 @@
 [00:00:59.398] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/16 200
 [00:00:59.398] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/7 200
 [00:03:28.118] Server  LOG      ✓ Compiled in 62ms
+[00:06:07.419] Server  LOG      ✓ Compiled in 2ms
+[00:08:00.467] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/questions/new color: rgb(120, 120, 120) color: inherit {"dp":"/questions/new","o":"http://localhost:3000/questions/new","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767602935854}
+[00:08:17.836] Browser LOG     [API Client] Adding auth token to request: /questions
+[00:08:17.836] Browser LOG     [API Client] Adding auth token to request: /questions
+[00:08:17.836] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/questions color: rgb(120, 120, 120) color: inherit {"dp":"/questions","o":"http://localhost:3000/questions","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767602953206}
+[00:08:17.836] Browser LOG     [API Client] Successful response: /questions 200
+[00:08:17.836] Browser LOG     [API Client] Successful response: /questions 200
+[00:12:01.615] Server  LOG      ✓ Compiled in 99ms
+[00:13:15.292] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:13:15.292] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:13:15.292] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/","route":"/"}
+[00:13:15.292] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {"dp":"/","o":"http://localhost:3000/","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767603250599}
+[00:13:17.224] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/login color: rgb(120, 120, 120) color: inherit {"dp":"/login","o":"http://localhost:3000/login","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767603252601}
+[00:13:18.966] Browser LOG     [API Client] Adding auth token to request: /auth/login
+[00:13:18.966] Browser LOG     [API Client] Successful response: /auth/login 200
+[00:13:18.966] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/dashboard color: rgb(120, 120, 120) color: inherit {"dp":"/dashboard","o":"http://localhost:3000/dashboard","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767603254359}
+[00:13:19.422] Browser LOG     [API Client] Adding auth token to request: /interviews
+[00:13:19.423] Browser LOG     [API Client] Adding auth token to request: /interviews/week
+[00:13:19.423] Browser LOG     [API Client] Adding auth token to request: /questions
+[00:13:19.423] Browser LOG     [API Client] Adding auth token to request: /interviews
+[00:13:19.423] Browser LOG     [API Client] Adding auth token to request: /interviews/week
+[00:13:19.423] Browser LOG     [API Client] Adding auth token to request: /questions
+[00:13:19.423] Browser LOG     [API Client] Successful response: /questions 200
+[00:13:19.423] Browser LOG     [API Client] Successful response: /interviews/week 200
+[00:13:19.423] Browser LOG     [API Client] Successful response: /interviews 200
+[00:13:19.423] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/181
+[00:13:19.423] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/180
+[00:13:19.423] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/175
+[00:13:19.423] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/170
+[00:13:19.423] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/169
+[00:13:19.423] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/154
+[00:13:19.423] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/16
+[00:13:19.423] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/7
+[00:13:19.423] Browser LOG     [API Client] Successful response: /questions 200
+[00:13:19.423] Browser LOG     [API Client] Successful response: /interviews/week 200
+[00:13:19.423] Browser LOG     [API Client] Successful response: /interviews 200
+[00:13:19.423] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/154 200
+[00:13:19.423] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/170 200
+[00:13:19.423] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/175 200
+[00:13:19.423] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/180 200
+[00:13:19.423] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/181 200
+[00:13:19.423] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/169 200
+[00:13:19.423] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/7 200
+[00:13:19.423] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/16 200
+[00:13:19.423] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/181
+[00:13:19.423] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/180
+[00:13:19.423] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/175
+[00:13:19.423] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/170
+[00:13:19.423] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/169
+[00:13:19.423] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/154
+[00:13:19.423] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/16
+[00:13:19.423] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/7
+[00:13:19.423] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/175 200
+[00:13:19.423] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/170 200
+[00:13:19.423] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/154 200
+[00:13:19.423] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/181 200
+[00:13:19.423] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/180 200
+[00:13:19.423] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/169 200
+[00:13:19.423] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/7 200
+[00:13:19.423] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/16 200
+[00:51:52.124] Server  LOG      ✓ Compiled in 38ms
+[00:51:52.227] Browser ERROR   ./app/dashboard/page.tsx:332:27
+Parsing ecmascript source code failed
+  330 |             </Link>
+  331 |                     Role <span className="text-muted-foreground text-xs">(optional)</span>
+> 332 |                   </Label>
+      |                           ^
+> 333 |                   <Input
+      | ^^^^^^^^^^^^^^^^^^^
+  334 |                     id="role"
+  335 |                     type="text"
+  336 |                     placeholder="e.g., Senior Frontend Developer"
+
+Expected '</', got 'jsx text (
+                  )'
+
+Import traces:
+  Client Component Browser:
+    ./app/dashboard/page.tsx [Client Component Browser]
+    ./app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/dashboard/page.tsx [Client Component SSR]
+    ./app/dashboard/page.tsx [Server Component]
+[00:52:18.456] Server  LOG      ✓ Compiled in 35ms
+[00:52:28.541] Server  LOG      ✓ Compiled in 43ms
+[00:52:29.462] Browser LOG     [API Client] Adding auth token to request: /interviews
+[00:52:29.462] Browser LOG     [API Client] Adding auth token to request: /interviews/week
+[00:52:29.462] Browser LOG     [API Client] Adding auth token to request: /questions
+[00:52:29.462] Browser LOG     [API Client] Successful response: /questions 200
+[00:52:29.462] Browser LOG     [API Client] Successful response: /interviews 200
+[00:52:29.462] Browser LOG     [API Client] Successful response: /interviews/week 200
+[00:52:29.462] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/181
+[00:52:29.462] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/180
+[00:52:29.462] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/175
+[00:52:29.462] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/170
+[00:52:29.462] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/169
+[00:52:29.462] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/154
+[00:52:29.462] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/16
+[00:52:29.462] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/7
+[00:52:29.462] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/170 200
+[00:52:29.462] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/181 200
+[00:52:29.462] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/169 200
+[00:52:29.462] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/154 200
+[00:52:29.462] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/180 200
+[00:52:29.462] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/175 200
+[00:52:29.462] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/7 200
+[00:52:29.462] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/16 200
+[00:52:40.809] Server  LOG      ✓ Compiled in 39ms
+[00:54:33.368] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/interviews/new color: rgb(120, 120, 120) color: inherit {"dp":"/interviews/new","o":"http://localhost:3000/interviews/new","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767605728761}
+[00:54:46.445] Browser LOG     [API Client] Adding auth token to request: /questions
+[00:54:46.445] Browser LOG     [API Client] Successful response: /questions 200
+[00:55:12.058] Browser LOG     [API Client] Adding auth token to request: /interviews
+[00:55:12.058] Browser ERROR   [API Client] Error response: {"message":"Bad Request","status":400,"url":"/interviews"}
+[00:55:12.058] Browser ERROR   Error creating interview: {"code":"","message":"Bad Request","status":400}
+[00:56:06.725] Browser LOG     [API Client] Adding auth token to request: /interviews
+[00:56:06.725] Browser ERROR   [API Client] Error response: {"message":"Bad Request","status":400,"url":"/interviews"}
+[00:56:06.725] Browser ERROR   Error creating interview: {"code":"","message":"Bad Request","status":400}
+[00:59:57.186] Browser LOG     [API Client] Adding auth token to request: /interviews
+[00:59:57.186] Browser ERROR   [API Client] Error response: {"message":"Bad Request","status":400,"url":"/interviews"}
+[00:59:57.186] Browser ERROR   Error creating interview: {"code":"","message":"Bad Request","status":400}
+[01:00:13.312] Browser LOG     [API Client] Adding auth token to request: /interviews
+[01:00:13.312] Browser LOG     [API Client] Adding auth token to request: /interviews/week
+[01:00:13.312] Browser LOG     [API Client] Adding auth token to request: /questions
+[01:00:13.312] Browser LOG     [API Client] Adding auth token to request: /interviews
+[01:00:13.312] Browser LOG     [API Client] Adding auth token to request: /interviews/week
+[01:00:13.312] Browser LOG     [API Client] Adding auth token to request: /questions
+[01:00:13.312] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/dashboard color: rgb(120, 120, 120) color: inherit {"dp":"/dashboard","o":"http://localhost:3000/dashboard","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767606068389}
+[01:00:13.312] Browser LOG     [API Client] Successful response: /questions 200
+[01:00:13.312] Browser LOG     [API Client] Successful response: /interviews 200
+[01:00:13.312] Browser LOG     [API Client] Successful response: /interviews/week 200
+[01:00:13.312] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/181
+[01:00:13.312] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/180
+[01:00:13.312] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/175
+[01:00:13.312] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/170
+[01:00:13.312] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/169
+[01:00:13.312] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/154
+[01:00:13.312] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/16
+[01:00:13.312] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/7
+[01:00:13.312] Browser LOG     [API Client] Successful response: /questions 200
+[01:00:13.312] Browser LOG     [API Client] Successful response: /interviews 200
+[01:00:13.312] Browser LOG     [API Client] Successful response: /interviews/week 200
+[01:00:13.312] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/180 200
+[01:00:13.312] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/175 200
+[01:00:13.312] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/170 200
+[01:00:13.312] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/154 200
+[01:00:13.312] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/181 200
+[01:00:13.312] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/169 200
+[01:00:13.312] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/7 200
+[01:00:13.312] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/16 200
+[01:00:13.312] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/181
+[01:00:13.312] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/180
+[01:00:13.312] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/175
+[01:00:13.312] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/170
+[01:00:13.312] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/169
+[01:00:13.312] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/154
+[01:00:13.312] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/16
+[01:00:13.312] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/7
+[01:00:13.312] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/170 200
+[01:00:13.312] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/154 200
+[01:00:13.312] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/180 200
+[01:00:13.312] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/169 200
+[01:00:13.312] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/175 200
+[01:00:13.312] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/181 200
+[01:00:13.312] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/7 200
+[01:00:13.312] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/16 200
+[01:00:15.911] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:00:16.270] Browser LOG     [API Client] Adding auth token to request: /interviews
+[01:00:16.270] Browser LOG     [API Client] Adding auth token to request: /interviews/week
+[01:00:16.270] Browser LOG     [API Client] Adding auth token to request: /questions
+[01:00:16.270] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[01:00:16.270] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/dashboard","route":"/dashboard"}
+[01:00:16.270] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/dashboard color: rgb(120, 120, 120) color: inherit {"dp":"/dashboard","o":"http://localhost:3000/dashboard","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767606071514}
+[01:00:16.270] Browser LOG     [API Client] Successful response: /questions 200
+[01:00:16.270] Browser LOG     [API Client] Successful response: /interviews/week 200
+[01:00:16.270] Browser LOG     [API Client] Successful response: /interviews 200
+[01:00:16.270] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/181
+[01:00:16.270] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/180
+[01:00:16.270] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/175
+[01:00:16.270] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/170
+[01:00:16.270] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/169
+[01:00:16.270] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/154
+[01:00:16.270] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/16
+[01:00:16.270] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/7
+[01:00:16.270] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/170 200
+[01:00:16.270] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/169 200
+[01:00:16.270] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/175 200
+[01:00:16.270] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/154 200
+[01:00:16.270] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/181 200
+[01:00:16.270] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/180 200
+[01:00:16.270] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/16 200
+[01:00:16.270] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/7 200
+[01:00:20.300] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/interviews/new color: rgb(120, 120, 120) color: inherit {"dp":"/interviews/new","o":"http://localhost:3000/interviews/new","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767606075693}
+[01:00:26.657] Browser LOG     [API Client] Adding auth token to request: /questions
+[01:00:26.658] Browser LOG     [API Client] Successful response: /questions 200
+[01:00:29.542] Browser LOG     [API Client] Adding auth token to request: /interviews
+[01:00:34.158] Browser LOG     [API Client] Successful response: /interviews 201
+[01:00:34.158] Browser LOG     [API Client] Adding auth token to request: /interviews
+[01:00:34.158] Browser LOG     [API Client] Adding auth token to request: /interviews/week
+[01:00:34.158] Browser LOG     [API Client] Adding auth token to request: /questions
+[01:00:34.158] Browser LOG     [API Client] Adding auth token to request: /interviews
+[01:00:34.158] Browser LOG     [API Client] Adding auth token to request: /interviews/week
+[01:00:34.158] Browser LOG     [API Client] Adding auth token to request: /questions
+[01:00:34.159] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/dashboard color: rgb(120, 120, 120) color: inherit {"dp":"/dashboard","o":"http://localhost:3000/dashboard","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767606089353}
+[01:00:34.159] Browser LOG     [API Client] Successful response: /questions 200
+[01:00:34.159] Browser LOG     [API Client] Successful response: /questions 200
+[01:00:34.159] Browser LOG     [API Client] Successful response: /interviews/week 200
+[01:00:34.159] Browser LOG     [API Client] Successful response: /interviews 200
+[01:00:34.159] Browser LOG     [API Client] Successful response: /interviews/week 200
+[01:00:34.159] Browser LOG     [API Client] Successful response: /interviews 200
+[01:00:34.159] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/181
+[01:00:34.159] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/180
+[01:00:34.159] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/175
+[01:00:34.159] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/170
+[01:00:34.159] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/169
+[01:00:34.159] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/154
+[01:00:34.159] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/16
+[01:00:34.159] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/7
+[01:00:34.159] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/175 200
+[01:00:34.159] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/169 200
+[01:00:34.159] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/170 200
+[01:00:34.159] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/180 200
+[01:00:34.159] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/154 200
+[01:00:34.159] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/181 200
+[01:00:34.159] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/7 200
+[01:00:34.159] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/16 200
+[01:42:43.278] Server  LOG      ✓ Compiled in 43ms
+[01:42:48.935] Server  LOG      ✓ Compiled in 39ms
+[01:42:56.094] Server  LOG      ✓ Compiled in 33ms
+[01:43:58.990] Server  LOG      ✓ Compiled in 39ms
+[01:44:04.539] Server  LOG      ✓ Compiled in 41ms
+[01:44:12.916] Server  LOG      ✓ Compiled in 53ms
+[01:44:13.235] Browser LOG     [API Client] Adding auth token to request: /interviews
+[01:44:13.235] Browser LOG     [API Client] Adding auth token to request: /interviews/week
+[01:44:13.235] Browser LOG     [API Client] Adding auth token to request: /questions
+[01:44:13.235] Browser LOG     [API Client] Successful response: /questions 200
+[01:44:13.235] Browser LOG     [API Client] Successful response: /interviews/week 200
+[01:44:13.235] Browser LOG     [API Client] Successful response: /interviews 200
+[01:44:13.235] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/181
+[01:44:13.235] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/180
+[01:44:13.235] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/175
+[01:44:13.235] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/170
+[01:44:13.235] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/169
+[01:44:13.235] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/154
+[01:44:13.235] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/16
+[01:44:13.235] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/7
+[01:44:13.235] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/170 200
+[01:44:13.235] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/175 200
+[01:44:13.235] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/181 200
+[01:44:13.235] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/154 200
+[01:44:13.235] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/180 200
+[01:44:13.235] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/169 200
+[01:44:13.235] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/16 200
+[01:44:13.235] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/7 200
+[01:44:22.594] Server  LOG      ✓ Compiled in 53ms
+[01:44:31.682] Server  LOG      ✓ Compiled in 41ms
+[01:44:42.222] Server  LOG      ✓ Compiled in 105ms
+[01:44:46.604] Server  LOG      ✓ Compiled in 35ms
+[01:51:07.293] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/interviews/new color: rgb(120, 120, 120) color: inherit {"dp":"/interviews/new","o":"http://localhost:3000/interviews/new","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767609122686}
+[01:51:19.990] Browser LOG     [API Client] Adding auth token to request: /questions
+[01:51:19.990] Browser LOG     [API Client] Successful response: /questions 200
+[01:51:32.002] Browser LOG     [API Client] Adding auth token to request: /interviews
+[01:51:36.283] Browser LOG     [API Client] Successful response: /interviews 201
+[01:51:36.283] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/dashboard color: rgb(120, 120, 120) color: inherit {"dp":"/dashboard","o":"http://localhost:3000/dashboard","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767609151677}
+[01:51:36.748] Browser LOG     [API Client] Adding auth token to request: /interviews
+[01:51:36.748] Browser LOG     [API Client] Adding auth token to request: /interviews/week
+[01:51:36.748] Browser LOG     [API Client] Adding auth token to request: /questions
+[01:51:36.748] Browser LOG     [API Client] Adding auth token to request: /interviews
+[01:51:36.748] Browser LOG     [API Client] Adding auth token to request: /interviews/week
+[01:51:36.748] Browser LOG     [API Client] Adding auth token to request: /questions
+[01:51:36.748] Browser LOG     [API Client] Successful response: /questions 200
+[01:51:36.748] Browser LOG     [API Client] Successful response: /questions 200
+[01:51:36.748] Browser LOG     [API Client] Successful response: /interviews/week 200
+[01:51:36.748] Browser LOG     [API Client] Successful response: /interviews 200
+[01:51:36.748] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/181
+[01:51:36.748] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/180
+[01:51:36.748] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/175
+[01:51:36.748] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/170
+[01:51:36.748] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/169
+[01:51:36.748] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/154
+[01:51:36.748] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/16
+[01:51:36.748] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/7
+[01:51:36.748] Browser LOG     [API Client] Successful response: /interviews/week 200
+[01:51:36.748] Browser LOG     [API Client] Successful response: /interviews 200
+[01:51:36.748] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/181
+[01:51:36.748] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/180
+[01:51:36.748] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/175
+[01:51:36.748] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/170
+[01:51:36.748] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/169
+[01:51:36.748] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/154
+[01:51:36.748] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/16
+[01:51:36.748] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/7
+[01:51:36.748] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/154 200
+[01:51:36.748] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/169 200
+[01:51:36.748] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/181 200
+[01:51:36.748] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/180 200
+[01:51:36.748] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/170 200
+[01:51:36.748] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/175 200
+[01:51:36.748] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/181 200
+[01:51:36.748] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/7 200
+[01:51:36.748] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/154 200
+[01:51:36.748] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/169 200
+[01:51:36.748] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/180 200
+[01:51:36.748] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/16 200
+[01:51:36.748] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/7 200
+[01:51:36.748] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/170 200
+[01:51:36.748] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/175 200
+[01:51:36.748] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/16 200

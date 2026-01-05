@@ -114,13 +114,31 @@ public class InterviewService {
      */
     @Transactional
     public InterviewResponse createInterview(Long companyId, CreateInterviewRequest request, Long createdByUserId) {
-        // Validate question exists
+        // Question is required
         Question question = questionRepository.findById(request.getQuestionId())
                 .orElseThrow(() -> new IllegalArgumentException("Question not found"));
 
         // Get or create candidate
-        Candidate candidate = candidateRepository.findById(request.getCandidateId())
-                .orElseThrow(() -> new IllegalArgumentException("Candidate not found"));
+        Candidate candidate;
+        if (request.getCandidateId() != null) {
+            // Use existing candidate by ID
+            candidate = candidateRepository.findById(request.getCandidateId())
+                    .orElseThrow(() -> new IllegalArgumentException("Candidate not found"));
+        } else if (request.getCandidateName() != null && !request.getCandidateName().trim().isEmpty()) {
+            // Create new candidate with provided name
+            candidate = new Candidate();
+            candidate.setName(request.getCandidateName().trim());
+            // Generate email from name if not provided
+            String email = request.getCandidateName().trim()
+                    .toLowerCase()
+                    .replace(" ", ".")
+                    + "@candidate.local";
+            candidate.setEmail(email);
+            candidate = candidateRepository.save(candidate);
+            log.info("Created new candidate: {} with email: {}", candidate.getName(), candidate.getEmail());
+        } else {
+            throw new IllegalArgumentException("Either candidateId or candidateName must be provided");
+        }
 
         // Get interviewer (use provided or the creating user)
         Long interviewerId = request.getInterviewerId() != null ? request.getInterviewerId() : createdByUserId;
@@ -129,7 +147,9 @@ public class InterviewService {
 
         // Create interview
         Interview interview = new Interview();
-        interview.setQuestion(question);
+        if (question != null) {
+            interview.setQuestion(question);
+        }
         interview.setCandidate(candidate);
         interview.setInterviewer(interviewer);
         // Language is NOT set here - it will be set when candidate submits setup via /ready endpoint
@@ -142,6 +162,10 @@ public class InterviewService {
         interview.setCompany(interviewer.getCompany());
 
         interview = interviewRepository.save(interview);
+        log.info("Interview created with id: {} for candidate: {} with question: {}",
+                interview.getId(),
+                candidate.getName(),
+                question.getTitle());
 
         // Send interview scheduled email to candidate
         try {
@@ -232,6 +256,24 @@ public class InterviewService {
         Interview updated = interviewRepository.save(interview);
 
         log.info("Rejected candidate for interview {} - Reset for retry", interviewId);
+        return convertToResponse(updated);
+    }
+
+    /**
+     * Change the question for an interview (only before interview goes live)
+     */
+    @Transactional
+    public InterviewResponse changeQuestion(Long interviewId, Long questionId) {
+        Interview interview = interviewRepository.findById(interviewId)
+                .orElseThrow(() -> new RuntimeException("Interview not found with ID: " + interviewId));
+
+        Question question = questionRepository.findById(questionId)
+                .orElseThrow(() -> new IllegalArgumentException("Question not found"));
+
+        interview.setQuestion(question);
+        Interview updated = interviewRepository.save(interview);
+
+        log.info("Changed question for interview {} to question {}", interviewId, questionId);
         return convertToResponse(updated);
     }
 
