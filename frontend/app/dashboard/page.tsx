@@ -19,7 +19,6 @@ import {
   Edit,
 } from "lucide-react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { useToast } from "@/hooks/use-toast"
 import { interviewService } from "@/services/interviewService"
 import { evaluationService } from "@/services/evaluationService"
@@ -34,10 +33,7 @@ export default function DashboardPage() {
   const [allInterviews, setAllInterviews] = useState<Interview[]>([])
   const [weekInterviews, setWeekInterviews] = useState<Interview[]>([])
   const [questions, setQuestions] = useState<Question[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
   const [evaluationStatuses, setEvaluationStatuses] = useState<Record<number, { isDraft: boolean; updatedAt?: string }>>({})
-  const [loadingEvaluations, setLoadingEvaluations] = useState(false)
 
   // Change question dialog state
   const [changeQuestionDialogOpen, setChangeQuestionDialogOpen] = useState(false)
@@ -49,7 +45,6 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true)
         const [allInterviewsData, weekInterviewsData, questionsData] = await Promise.all([
           interviewService.getInterviews(),
           interviewService.getInterviewsFromLastSevenDays(),
@@ -58,12 +53,8 @@ export default function DashboardPage() {
         setAllInterviews(allInterviewsData as Interview[])
         setWeekInterviews(weekInterviewsData as Interview[])
         setQuestions(questionsData)
-        setError(null)
       } catch (err) {
-        setError("Failed to load data")
         console.error(err)
-      } finally {
-        setLoading(false)
       }
     }
     fetchData()
@@ -79,7 +70,6 @@ export default function DashboardPage() {
       }
 
       try {
-        setLoadingEvaluations(true)
         const statuses: Record<number, { isDraft: boolean; updatedAt?: string }> = {}
 
         await Promise.all(
@@ -100,8 +90,6 @@ export default function DashboardPage() {
         setEvaluationStatuses(statuses)
       } catch (err) {
         console.error("Failed to fetch evaluation statuses:", err)
-      } finally {
-        setLoadingEvaluations(false)
       }
     }
 
@@ -269,20 +257,12 @@ export default function DashboardPage() {
               <p className="text-muted-foreground text-sm">Search results across all interviews</p>
             )}
           </div>
-          <div className="flex gap-2">
-            <Link href="/questions/new">
-              <Button variant="outline">
-                <Plus className="size-4 mr-2" />
-                New Question
-              </Button>
-            </Link>
-            <Link href="/interviews/new">
-              <Button>
-                <Plus className="size-4 mr-2" />
-                New Interview
-              </Button>
-            </Link>
-          </div>
+          <Link href="/interviews/new">
+            <Button>
+              <Plus className="size-4 mr-2" />
+              New Interview
+            </Button>
+          </Link>
         </div>
 
         {/* Filters */}
@@ -414,10 +394,12 @@ export default function DashboardPage() {
                 : "No interviews in the last 7 days"}
             </p>
             {!searchQuery && (
-              <Button onClick={() => setCreateDialogOpen(true)}>
-                <Plus className="size-4 mr-2" />
-                Create Interview
-              </Button>
+              <Link href="/interviews/new">
+                <Button>
+                  <Plus className="size-4 mr-2" />
+                  Create Interview
+                </Button>
+              </Link>
             )}
           </div>
         )}
