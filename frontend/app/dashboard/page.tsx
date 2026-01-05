@@ -311,9 +311,9 @@ export default function DashboardPage() {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
           <div>
             <h2 className="text-2xl font-bold mb-1">Interviews</h2>
-            <p className="text-muted-foreground text-sm">
-              {searchQuery ? "Search results across all interviews" : "Last 7 days - live, draft, and submitted"}
-            </p>
+            {searchQuery && (
+              <p className="text-muted-foreground text-sm">Search results across all interviews</p>
+            )}
           </div>
           <div className="flex gap-2">
             <Link href="/questions/new">
