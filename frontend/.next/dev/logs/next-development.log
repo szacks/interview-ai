@@ -109,3 +109,29 @@
 [00:12:18.766] Server  LOG      ✓ Compiled in 48ms
 [00:14:09.575] Server  LOG      ✓ Compiled in 58ms
 [00:14:14.764] Server  LOG      ✓ Compiled in 46ms
+[00:16:28.804] Server  LOG      ✓ Compiled in 68ms
+[00:17:45.207] Server  LOG      ✓ Compiled in 58ms
+[00:17:49.334] Server  LOG      ✓ Compiled in 61ms
+[00:17:53.468] Server  LOG      ✓ Compiled in 59ms
+[00:17:54.273] Browser LOG     [API Client] Adding auth token to request: /agents
+[00:17:54.273] Browser LOG     [API Client] Successful response: /agents 200
+[00:17:57.611] Server  LOG      ✓ Compiled in 77ms
+[00:17:57.986] Browser LOG     [API Client] Adding auth token to request: /agents
+[00:17:57.986] Browser LOG     [API Client] Successful response: /agents 200
+[00:18:02.247] Server  LOG      ✓ Compiled in 64ms
+[00:18:34.543] Browser LOG     [API Client] Adding auth token to request: /agents
+[00:18:34.543] Browser LOG     [API Client] Successful response: /agents 200
+[00:19:08.920] Browser LOG     [API Client] Adding auth token to request: /agents
+[00:19:08.920] Browser LOG     [API Client] Successful response: /agents 200
+[00:21:20.141] Browser LOG     [API Client] Adding auth token to request: /agents
+[00:21:20.141] Browser LOG     [API Client] Successful response: /agents 200
+[00:21:56.758] Browser LOG     [API Client] Adding auth token to request: /agents
+[00:21:56.758] Browser ERROR   [API Client] Error response: {"message":"Bad Request","status":400,"url":"/agents"}
+[00:21:56.758] Browser ERROR   Error creating agent: {"code":"","message":"Bad Request","status":400}
+[00:21:56.758] Browser ERROR   Error creating agent: {"code":"","message":"Bad Request","status":400}
+[00:23:29.474] Browser LOG     [API Client] Adding auth token to request: /agents
+[00:23:29.474] Browser LOG     [API Client] Successful response: /agents 201
+[01:27:46.681] Browser LOG     [API Client] Adding auth token to request: /agents
+[01:27:46.819] Browser LOG     [API Client] Successful response: /agents 200
+[01:28:05.611] Browser LOG     [API Client] Adding auth token to request: /agents
+[01:28:05.611] Browser LOG     [API Client] Successful response: /agents 201

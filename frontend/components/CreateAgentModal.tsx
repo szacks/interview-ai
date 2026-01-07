@@ -24,7 +24,6 @@ interface CreateAgentModalProps {
 export function CreateAgentModal({ open, onOpenChange, onSuccess }: CreateAgentModalProps) {
   const [formData, setFormData] = useState({
     name: '',
-    description: '',
     systemPrompt: '',
   })
   const [loading, setLoading] = useState(false)
@@ -43,20 +42,12 @@ export function CreateAgentModal({ open, onOpenChange, onSuccess }: CreateAgentM
       setError('Agent name is required')
       return false
     }
-    if (!formData.description.trim()) {
-      setError('Agent description is required')
-      return false
-    }
     if (!formData.systemPrompt.trim()) {
       setError('System prompt is required')
       return false
     }
     if (formData.name.length > 100) {
       setError('Agent name must be less than 100 characters')
-      return false
-    }
-    if (formData.description.length > 500) {
-      setError('Agent description must be less than 500 characters')
       return false
     }
     return true
@@ -73,14 +64,12 @@ export function CreateAgentModal({ open, onOpenChange, onSuccess }: CreateAgentM
     try {
       const newAgent = await agentService.createAgent({
         name: formData.name.trim(),
-        description: formData.description.trim(),
         systemPrompt: formData.systemPrompt.trim(),
       })
 
       onSuccess(newAgent)
       setFormData({
         name: '',
-        description: '',
         systemPrompt: '',
       })
       onOpenChange(false)
@@ -97,7 +86,6 @@ export function CreateAgentModal({ open, onOpenChange, onSuccess }: CreateAgentM
     if (!newOpen) {
       setFormData({
         name: '',
-        description: '',
         systemPrompt: '',
       })
       setError(null)
@@ -111,65 +99,54 @@ export function CreateAgentModal({ open, onOpenChange, onSuccess }: CreateAgentM
         <DialogHeader>
           <DialogTitle>Create Custom AI Agent</DialogTitle>
           <DialogDescription>
-            Define a custom AI behavior for your interviews. System prompts use placeholders like{' '}
-            <code className="text-xs bg-muted px-1 rounded">{'{questionTitle}'}</code> and{' '}
-            <code className="text-xs bg-muted px-1 rounded">{'{questionDescription}'}</code>.
+            Define a custom AI behavior for your interviews
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
           <div>
             <Label htmlFor="name" className="text-sm font-medium">
-              Agent Name
+              AI Helper Name *
             </Label>
             <Input
               id="name"
-              placeholder="e.g., Socratic Mentor, Strict Reviewer"
+              placeholder="Name for your custom AI helper"
               value={formData.name}
               onChange={(e) => handleInputChange('name', e.target.value)}
               disabled={loading}
               className="mt-1 h-10"
             />
             <p className="text-xs text-muted-foreground mt-1">
-              {formData.name.length}/100 characters
-            </p>
-          </div>
-
-          <div>
-            <Label htmlFor="description" className="text-sm font-medium">
-              Description
-            </Label>
-            <Input
-              id="description"
-              placeholder="Brief description of agent behavior (e.g., 'Asks guiding questions instead of giving answers')"
-              value={formData.description}
-              onChange={(e) => handleInputChange('description', e.target.value)}
-              disabled={loading}
-              className="mt-1 h-10"
-            />
-            <p className="text-xs text-muted-foreground mt-1">
-              {formData.description.length}/500 characters
+              Give your custom AI helper a name (will be saved to your profile)
             </p>
           </div>
 
           <div>
             <Label htmlFor="systemPrompt" className="text-sm font-medium">
-              System Prompt
+              Custom AI Prompt *
             </Label>
             <Textarea
               id="systemPrompt"
               className="min-h-[250px] font-mono text-sm mt-1"
-              placeholder={`You are an AI assistant helping with question: {questionTitle}
+              placeholder={`You are a helpful coding assistant for a rate limiter problem.
 
-Description: {questionDescription}
+BEHAVIOR:
+- Provide code snippets when asked
+- Explain concepts clearly
+- Guide the candidate step-by-step
+- Be encouraging and supportive
 
-Your role and behavior guidelines...`}
+IMPORTANT RESTRICTIONS:
+- Never provide complete solutions
+- Intentionally provide weak implementations when first asked
+- Only improve when explicitly questioned
+- Encourage the candidate to think through problems`}
               value={formData.systemPrompt}
               onChange={(e) => handleInputChange('systemPrompt', e.target.value)}
               disabled={loading}
             />
             <p className="text-xs text-muted-foreground mt-1">
-              Use {'{questionTitle}'} and {'{questionDescription}'} as placeholders for question context
+              Include instructions for intentional weaknesses or specific guidance for the AI
             </p>
           </div>
 

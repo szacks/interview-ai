@@ -3,7 +3,6 @@ import apiClient from './apiClient'
 export interface AgentTemplate {
   id: number
   name: string
-  description: string
   systemPrompt: string
   isSystem: boolean
   companyId?: number
@@ -14,13 +13,11 @@ export interface AgentTemplate {
 
 export interface CreateAgentRequest {
   name: string
-  description: string
   systemPrompt: string
 }
 
 export interface UpdateAgentRequest {
   name?: string
-  description?: string
   systemPrompt?: string
 }
 

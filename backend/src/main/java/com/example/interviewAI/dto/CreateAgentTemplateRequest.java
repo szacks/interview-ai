@@ -12,9 +12,6 @@ public class CreateAgentTemplateRequest {
     @NotBlank(message = "Agent name is required")
     private String name;
 
-    @NotBlank(message = "Agent description is required")
-    private String description;
-
     @NotBlank(message = "System prompt is required")
     private String systemPrompt;
 }

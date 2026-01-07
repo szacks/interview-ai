@@ -45,7 +45,6 @@ public class AgentTemplateService {
     public AgentTemplateResponse createCustomAgent(CreateAgentTemplateRequest request, Long userId, Long companyId) {
         AgentTemplate agent = new AgentTemplate();
         agent.setName(request.getName());
-        agent.setDescription(request.getDescription());
         agent.setSystemPrompt(request.getSystemPrompt());
         agent.setIsSystem(false);
         agent.setCompanyId(companyId);
@@ -75,9 +74,6 @@ public class AgentTemplateService {
 
         if (request.getName() != null) {
             agent.setName(request.getName());
-        }
-        if (request.getDescription() != null) {
-            agent.setDescription(request.getDescription());
         }
         if (request.getSystemPrompt() != null) {
             agent.setSystemPrompt(request.getSystemPrompt());
@@ -124,7 +120,6 @@ public class AgentTemplateService {
         return AgentTemplateResponse.builder()
                 .id(agent.getId())
                 .name(agent.getName())
-                .description(agent.getDescription())
                 .systemPrompt(agent.getSystemPrompt())
                 .isSystem(agent.getIsSystem())
                 .companyId(agent.getCompanyId())

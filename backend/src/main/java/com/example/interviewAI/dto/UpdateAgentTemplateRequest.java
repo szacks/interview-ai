@@ -9,6 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UpdateAgentTemplateRequest {
     private String name;
-    private String description;
     private String systemPrompt;
 }
