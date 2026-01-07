@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.repository.query.Param;
 
 @Repository
 public interface InterviewRepository extends JpaRepository<Interview, Long> {
@@ -18,7 +19,8 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
 
     List<Interview> findByInterviewerId(Long interviewerId);
 
-    Optional<Interview> findByInterviewLinkToken(String token);
+    @Query("SELECT i FROM Interview i JOIN FETCH i.interviewer WHERE i.interviewLinkToken = :token")
+    Optional<Interview> findByInterviewLinkToken(@Param("token") String token);
 
     Optional<Interview> findByIdAndInterviewLinkToken(Long id, String token);
 

@@ -50,6 +50,9 @@ public class InterviewService {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private UserSettingsService userSettingsService;
+
     /**
      * Get all interviews for a company
      */
@@ -329,6 +332,27 @@ public class InterviewService {
             candidateResponse.setEmail(interview.getCandidate().getEmail());
             candidateResponse.setCreatedAt(interview.getCandidate().getCreatedAt());
             response.setCandidate(candidateResponse);
+        }
+
+        // Map interviewer
+        if (interview.getInterviewer() != null) {
+            UserResponse interviewerResponse = new UserResponse();
+            interviewerResponse.setId(interview.getInterviewer().getId());
+            interviewerResponse.setEmail(interview.getInterviewer().getEmail());
+            interviewerResponse.setRole(interview.getInterviewer().getRole().toString());
+            interviewerResponse.setCreatedAt(interview.getInterviewer().getCreatedAt());
+            response.setInterviewer(interviewerResponse);
+        }
+
+        // Fetch interviewer's showRunTests setting
+        if (interview.getInterviewer() != null) {
+            try {
+                com.example.interviewAI.entity.UserSettings settings = userSettingsService.getOrCreateSettings(interview.getInterviewer().getId());
+                response.setShowRunTests(settings.getShowRunTests());
+            } catch (Exception e) {
+                log.warn("Failed to fetch user settings for interviewer {}: {}", interview.getInterviewer().getId(), e.getMessage());
+                response.setShowRunTests(false); // Default to false if we can't fetch settings
+            }
         }
 
         return response;
