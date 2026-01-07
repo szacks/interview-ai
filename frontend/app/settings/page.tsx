@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Switch } from "@/components/ui/switch"
 import { CreateAgentModal } from "@/components/CreateAgentModal"
 import { agentService, type AgentTemplate } from "@/services/agentService"
+import { userSettingsService } from "@/services/userSettingsService"
 
 type SettingsSection = "profile" | "interview-defaults" | "scoring" | "team" | "security" | "billing"
 
@@ -165,28 +166,72 @@ function InterviewDefaultsSection() {
   const [loading, setLoading] = useState(true)
   const [createModalOpen, setCreateModalOpen] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [savingError, setSavingError] = useState<string | null>(null)
+  const [saveSuccess, setSaveSuccess] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
 
   useEffect(() => {
-    fetchAgents()
+    fetchAgentsAndSettings()
   }, [])
 
-  const fetchAgents = async () => {
+  const fetchAgentsAndSettings = async () => {
     try {
       setLoading(true)
       setError(null)
+
+      // Fetch agents
       const fetchedAgents = await agentService.getAllAgents()
       setAgents(fetchedAgents)
-      // Set the first system agent as default
-      const defaultAgent = fetchedAgents.find((a) => a.isSystem)
-      if (defaultAgent) {
-        setSelectedAgentId(defaultAgent.id)
+
+      // Fetch user settings
+      const settings = await userSettingsService.getSettings()
+      if (settings && settings.defaultAgentId) {
+        setSelectedAgentId(settings.defaultAgentId)
+      } else {
+        // Set the first system agent as default if no preference exists
+        const defaultAgent = fetchedAgents.find((a) => a.isSystem)
+        if (defaultAgent) {
+          setSelectedAgentId(defaultAgent.id)
+        }
+      }
+
+      if (settings) {
+        setShowRunTests(settings.showRunTests)
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to load agents"
+      const errorMessage = err instanceof Error ? err.message : "Failed to load settings"
       setError(errorMessage)
-      console.error("Error fetching agents:", err)
+      console.error("Error fetching settings:", err)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleSaveChanges = async () => {
+    if (!selectedAgentId) {
+      setSavingError("Please select an AI assistant")
+      return
+    }
+
+    try {
+      setIsSaving(true)
+      setSavingError(null)
+      setSaveSuccess(false)
+
+      await userSettingsService.updateSettings({
+        defaultAgentId: selectedAgentId,
+        showRunTests: showRunTests,
+      })
+
+      setSaveSuccess(true)
+      // Hide success message after 3 seconds
+      setTimeout(() => setSaveSuccess(false), 3000)
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to save settings"
+      setSavingError(errorMessage)
+      console.error("Error saving settings:", err)
+    } finally {
+      setIsSaving(false)
     }
   }
 
@@ -238,6 +283,18 @@ function InterviewDefaultsSection() {
             </div>
           )}
 
+          {savingError && (
+            <div className="bg-destructive/10 border border-destructive/20 rounded-md p-3 mb-6">
+              <p className="text-sm text-destructive">{savingError}</p>
+            </div>
+          )}
+
+          {saveSuccess && (
+            <div className="bg-green-50 border border-green-200 rounded-md p-3 mb-6">
+              <p className="text-sm text-green-700">Settings saved successfully</p>
+            </div>
+          )}
+
           {loading ? (
             <div className="text-center py-8">
               <p className="text-sm text-muted-foreground">Loading agents...</p>
@@ -275,8 +332,14 @@ function InterviewDefaultsSection() {
             </div>
           )}
         </div>
-        <div className="px-6 py-4 bg-muted/20 border-t border-border/50 flex justify-end">
-          <Button size="sm">Save Changes</Button>
+        <div className="px-6 py-4 bg-muted/20 border-t border-border/50 flex justify-end gap-3">
+          <Button
+            size="sm"
+            onClick={handleSaveChanges}
+            disabled={isSaving || loading}
+          >
+            {isSaving ? "Saving..." : "Save Changes"}
+          </Button>
         </div>
       </Card>
 
@@ -305,18 +368,15 @@ function AgentCard({
         selected ? "border-primary bg-primary/5" : "border-border/50 hover:border-border hover:bg-muted/30"
       }`}
     >
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-1.5">
-            <span className="font-medium text-sm">{agent.name}</span>
-            <Badge variant={agent.isSystem ? "outline" : "secondary"} className="text-xs font-normal">
-              {agent.isSystem ? "System" : "Custom"}
-            </Badge>
-          </div>
-          <p className="text-xs text-muted-foreground leading-relaxed">{agent.description}</p>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="font-medium text-sm">{agent.name}</span>
+          <Badge variant={agent.isSystem ? "outline" : "secondary"} className="text-xs font-normal">
+            {agent.isSystem ? "System" : "Custom"}
+          </Badge>
         </div>
         <div
-          className={`size-5 rounded-full border-2 flex-shrink-0 ml-3 mt-0.5 flex items-center justify-center ${
+          className={`size-5 rounded-full border-2 flex-shrink-0 ml-3 flex items-center justify-center ${
             selected ? "border-primary" : "border-border"
           }`}
         >

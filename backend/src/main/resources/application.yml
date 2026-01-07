@@ -41,6 +41,11 @@ spring:
       allow-credentials: true
       max-age: 3600
 
+  # Web Configuration - disable default resource handling to prevent /api routes from being treated as static resources
+  web:
+    resources:
+      add-mappings: false
+
   # Mail Configuration (Resend with test domain)
   mail:
     host: ${MAIL_HOST:smtp.resend.com}
@@ -123,6 +128,7 @@ app:
       - /code/**
       - /ws/**
       - /interview-evaluations/**
+      - /user-settings/**
 
   # Docker Sandbox Execution Configuration
   sandbox:
