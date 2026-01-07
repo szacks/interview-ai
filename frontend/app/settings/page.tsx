@@ -259,7 +259,14 @@ function InterviewDefaultsSection() {
                 </Label>
                 <p className="text-xs text-muted-foreground">Allow candidates to run test cases during the interview</p>
               </div>
-              <Switch id="runTests" checked={showRunTests} onCheckedChange={setShowRunTests} />
+              <div
+                className={`flex items-center justify-center w-6 h-6 rounded border-2 flex-shrink-0 cursor-pointer transition-colors ${
+                  showRunTests ? 'bg-primary border-primary' : 'border-primary/40 bg-transparent'
+                }`}
+                onClick={() => setShowRunTests(!showRunTests)}
+              >
+                {showRunTests && <span className="text-white text-sm font-bold">✓</span>}
+              </div>
             </div>
           </div>
         </div>
