@@ -283,18 +283,6 @@ function InterviewDefaultsSection() {
             </div>
           )}
 
-          {savingError && (
-            <div className="bg-destructive/10 border border-destructive/20 rounded-md p-3 mb-6">
-              <p className="text-sm text-destructive">{savingError}</p>
-            </div>
-          )}
-
-          {saveSuccess && (
-            <div className="bg-green-50 border border-green-200 rounded-md p-3 mb-6">
-              <p className="text-sm text-green-700">Settings saved successfully</p>
-            </div>
-          )}
-
           {loading ? (
             <div className="text-center py-8">
               <p className="text-sm text-muted-foreground">Loading agents...</p>
@@ -332,7 +320,19 @@ function InterviewDefaultsSection() {
             </div>
           )}
         </div>
-        <div className="px-6 py-4 bg-muted/20 border-t border-border/50 flex justify-end gap-3">
+        <div className="px-6 py-4 bg-muted/20 border-t border-border/50 flex items-center justify-between">
+          <div className="flex-1">
+            {savingError && (
+              <div className="bg-destructive/10 border border-destructive/20 rounded-md p-3 inline-block">
+                <p className="text-sm text-destructive">{savingError}</p>
+              </div>
+            )}
+            {saveSuccess && (
+              <div className="bg-green-50 border border-green-200 rounded-md p-3 inline-block">
+                <p className="text-sm text-green-700">Settings saved successfully</p>
+              </div>
+            )}
+          </div>
           <Button
             size="sm"
             onClick={handleSaveChanges}
