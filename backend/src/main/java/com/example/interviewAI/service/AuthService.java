@@ -1,6 +1,7 @@
 package com.example.interviewAI.service;
 
 import com.example.interviewAI.dto.AuthResponse;
+import com.example.interviewAI.dto.ChangePasswordRequest;
 import com.example.interviewAI.dto.LoginRequest;
 import com.example.interviewAI.dto.PasswordResetRequest;
 import com.example.interviewAI.dto.ResetPasswordRequest;
@@ -217,6 +218,37 @@ public class AuthService {
         log.info("Password reset successful for user: {}", user.getEmail());
 
         return buildAuthResponse(user, null, "Password reset successful");
+    }
+
+    /**
+     * Change password for authenticated user.
+     *
+     * @param email email of the user changing password
+     * @param request change password request with current and new password
+     * @return response confirming password change
+     * @throws ResourceNotFoundException if user not found
+     * @throws UnauthorizedException if current password is invalid
+     */
+    @Transactional
+    public AuthResponse changePassword(String email, ChangePasswordRequest request) {
+        log.info("Processing password change for email: {}", email);
+
+        // Find user by email
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "email", email));
+
+        // Validate current password
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPasswordHash())) {
+            throw new UnauthorizedException("Current password is incorrect");
+        }
+
+        // Update password
+        user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+
+        log.info("Password change successful for user: {}", user.getEmail());
+
+        return buildAuthResponse(user, null, "Password changed successfully");
     }
 
     /**

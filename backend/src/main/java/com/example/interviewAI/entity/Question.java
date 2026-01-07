@@ -80,6 +80,10 @@ public class Question {
     @Column
     private String aiHelperName; // Name of custom AI helper (e.g., "Expert Mentor")
 
+    @ManyToOne
+    @JoinColumn(name = "agent_template_id")
+    private AgentTemplate agentTemplate; // Reference to AI agent template
+
     // ========== Follow-up Questions (JSONB) ==========
     // Format: [{"id": "fq_1", "question": "...", "expectedAnswer": "..."}]
     @Column(columnDefinition = "TEXT")

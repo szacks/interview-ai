@@ -40,6 +40,8 @@ public class QuestionResponse {
 
     private String initialCodeJavascript;
 
+    private Long agentTemplateId;
+
     private String aiPromptTemplate;
 
     private String aiCustomPrompt;

@@ -3,6 +3,7 @@ package com.example.interviewAI.controller;
 import com.example.interviewAI.config.JwtProperties;
 import com.example.interviewAI.dto.AcceptInvitationRequest;
 import com.example.interviewAI.dto.AuthResponse;
+import com.example.interviewAI.dto.ChangePasswordRequest;
 import com.example.interviewAI.dto.LoginRequest;
 import com.example.interviewAI.dto.PasswordResetRequest;
 import com.example.interviewAI.dto.ResetPasswordRequest;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
@@ -126,5 +128,19 @@ public class AuthController {
         response.setMessage("Invitation accepted successfully");
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    /**
+     * Change password for authenticated user.
+     *
+     * @param request change password request with current and new password
+     * @return response confirming password change
+     */
+    @PostMapping("/change-password")
+    public ResponseEntity<AuthResponse> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
+        log.info("Change password request received");
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        AuthResponse response = authService.changePassword(email, request);
+        return ResponseEntity.ok(response);
     }
 }

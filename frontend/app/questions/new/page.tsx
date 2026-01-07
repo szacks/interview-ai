@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
 import { ArrowLeft } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { interviewService } from "@/services/interviewService"
@@ -1395,6 +1394,11 @@ function StepAIConfiguration({
               label: "Minimal Helper",
               desc: "Answers only when asked, no volunteering",
             },
+            {
+              value: "custom",
+              label: "Create new AI agent",
+              desc: "Define custom behavior for your interviews",
+            },
           ].map((option) => (
             <div key={option.value} className="flex items-center gap-3 p-3 border rounded cursor-pointer hover:bg-muted transition">
               <input
@@ -1402,11 +1406,20 @@ function StepAIConfiguration({
                 id={`ai-${option.value}`}
                 name="aiTemplate"
                 value={option.value}
-                checked={data.aiPromptTemplate === option.value && !data.useCustomPrompt}
-                onChange={(e) => onUpdate({
-                  aiPromptTemplate: e.target.value as any,
-                  useCustomPrompt: false,
-                })}
+                checked={option.value === "custom" ? data.useCustomPrompt : (data.aiPromptTemplate === option.value && !data.useCustomPrompt)}
+                onChange={(e) => {
+                  if (e.target.value === "custom") {
+                    onUpdate({
+                      useCustomPrompt: true,
+                      aiPromptTemplate: undefined as any,
+                    })
+                  } else {
+                    onUpdate({
+                      aiPromptTemplate: e.target.value as any,
+                      useCustomPrompt: false,
+                    })
+                  }
+                }}
               />
               <label htmlFor={`ai-${option.value}`} className="flex-1 cursor-pointer">
                 <p className="font-medium text-sm">{option.label}</p>
@@ -1415,32 +1428,6 @@ function StepAIConfiguration({
             </div>
           ))}
         </div>
-      </div>
-
-      <div className="flex items-center gap-2">
-        <Checkbox
-          id="custom-prompt"
-          checked={data.useCustomPrompt}
-          onCheckedChange={(checked) => {
-            const isChecked = checked as boolean
-            if (isChecked) {
-              // When enabling custom prompt, deselect all presets
-              onUpdate({
-                useCustomPrompt: true,
-                aiPromptTemplate: undefined as any,
-              })
-            } else {
-              // When disabling custom prompt, default to helpful
-              onUpdate({
-                useCustomPrompt: false,
-                aiPromptTemplate: "helpful",
-              })
-            }
-          }}
-        />
-        <Label htmlFor="custom-prompt" className="cursor-pointer">
-          Use custom prompt instead
-        </Label>
       </div>
 
       {data.useCustomPrompt && (

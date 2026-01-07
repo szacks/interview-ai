@@ -47,11 +47,13 @@ public class CreateQuestionRequest {
     private String testsJson; // JSON stringified array of TestCaseDefinition - optional for drafts
 
     // ========== Step 5: AI Configuration + Follow-up Questions ==========
-    private String aiPromptTemplate; // 'helpful', 'minimal' (defaults to 'helpful')
+    private Long agentTemplateId; // Reference to AgentTemplate (preferred for new questions)
 
-    private String aiCustomPrompt; // Custom prompt if provided
+    private String aiPromptTemplate; // 'helpful', 'minimal' (defaults to 'helpful') - for backward compatibility
 
-    private String aiHelperName; // Name of custom AI helper (e.g., "Expert Mentor")
+    private String aiCustomPrompt; // Custom prompt if provided - for backward compatibility
+
+    private String aiHelperName; // Name of custom AI helper (e.g., "Expert Mentor") - for backward compatibility
 
     // Follow-up questions for interviewer guidance
     // Format: [{"id": "fq_1", "question": "...", "expectedAnswer": "..."}]

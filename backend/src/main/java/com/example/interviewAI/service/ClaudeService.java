@@ -4,8 +4,10 @@ import com.example.interviewAI.config.ClaudeProperties;
 import com.example.interviewAI.dto.ClaudeEvaluationRequest;
 import com.example.interviewAI.dto.ClaudeEvaluationResponse;
 import com.example.interviewAI.dto.EvaluationResultDto;
+import com.example.interviewAI.entity.AgentTemplate;
 import com.example.interviewAI.entity.ChatMessage;
 import com.example.interviewAI.entity.Interview;
+import com.example.interviewAI.repository.AgentTemplateRepository;
 import com.example.interviewAI.repository.InterviewRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,9 @@ public class ClaudeService {
 
     @Autowired
     private InterviewRepository interviewRepository;
+
+    @Autowired
+    private AgentTemplateRepository agentTemplateRepository;
 
     /**
      * Evaluate interview code submission using Claude AI
@@ -273,8 +278,7 @@ public class ClaudeService {
                     .orElseThrow(() -> new RuntimeException("Interview not found"));
 
             // Build system prompt with question context
-            String systemPrompt = buildChatSystemPrompt(interview.getQuestion().getTitle(),
-                    interview.getQuestion().getDescription());
+            String systemPrompt = buildChatSystemPrompt(interview.getQuestion());
 
             // Build conversation history for context
             List<ClaudeEvaluationRequest.ClaudeMessage> messages = buildConversationContext(
@@ -310,14 +314,67 @@ public class ClaudeService {
 
     /**
      * Build system prompt for live chat assistance
+     * Priority: AgentTemplate FK > custom prompt > template name > default
      */
-    private String buildChatSystemPrompt(String questionTitle, String questionDescription) {
-        return String.format("""
+    private String buildChatSystemPrompt(com.example.interviewAI.entity.Question question) {
+        String basePrompt;
+        String questionTitle = question.getTitle();
+        String questionDescription = question.getDescription();
+
+        // Priority 1: AgentTemplate FK - if question references an agent template
+        if (question.getAgentTemplate() != null) {
+            basePrompt = question.getAgentTemplate().getSystemPrompt();
+            log.debug("Using agent template: {} for question: {}", question.getAgentTemplate().getName(), questionTitle);
+        }
+        // Priority 2: Custom prompt - if question has custom prompt defined
+        else if (question.getAiCustomPrompt() != null && !question.getAiCustomPrompt().isEmpty()) {
+            basePrompt = question.getAiCustomPrompt();
+            log.debug("Using custom prompt for question: {}", questionTitle);
+        }
+        // Priority 3: Template name - if question references a template by name (backward compatibility)
+        else if (question.getAiPromptTemplate() != null && !question.getAiPromptTemplate().isEmpty()) {
+            java.util.Optional<AgentTemplate> template = agentTemplateRepository
+                    .findByNameAndIsSystemTrue(question.getAiPromptTemplate());
+            basePrompt = template.map(AgentTemplate::getSystemPrompt)
+                    .orElse(getDefaultPrompt());
+            if (template.isPresent()) {
+                log.debug("Using template by name: {} for question: {}", question.getAiPromptTemplate(), questionTitle);
+            } else {
+                log.debug("Template not found: {}, using default prompt for question: {}", question.getAiPromptTemplate(), questionTitle);
+            }
+        }
+        // Priority 4: Default prompt
+        else {
+            basePrompt = getDefaultPrompt();
+            log.debug("Using default prompt for question: {}", questionTitle);
+        }
+
+        // Replace placeholders with question context
+        return basePrompt
+                .replace("{questionTitle}", questionTitle)
+                .replace("{questionDescription}", questionDescription);
+    }
+
+    /**
+     * Get the default system prompt (helpful_imperfect template)
+     */
+    private String getDefaultPrompt() {
+        return agentTemplateRepository
+                .findByNameAndIsSystemTrue("Helpful but Imperfect")
+                .map(AgentTemplate::getSystemPrompt)
+                .orElse(getHardcodedDefaultPrompt());
+    }
+
+    /**
+     * Fallback hardcoded default prompt if template doesn't exist in database
+     */
+    private String getHardcodedDefaultPrompt() {
+        return """
         You are an AI coding assistant helping a candidate during a live technical interview.
 
         ## Context
-        - Question: %s
-        - Description: %s
+        - Question: {questionTitle}
+        - Description: {questionDescription}
 
         ## Your Role
         This interview evaluates how well candidates collaborate with AI tools — a critical modern developer skill. You should be helpful and write code when asked, but you are NOT trying to help them ace the interview. Your job is to be a realistic AI assistant, not a perfect one.
@@ -371,9 +428,7 @@ public class ClaudeService {
         ✅ Good (letting them lead):
         Candidate: "Does this look right?"
         AI: "It handles the basic case. Is there a specific scenario you're worried about?"
-        """,
-        questionTitle, questionDescription
-    );
+        """;
     }
 
     /**

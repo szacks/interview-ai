@@ -38,6 +38,7 @@ public class UpdateQuestionRequest {
     private String testsJson;
 
     // ========== Step 5: AI Configuration + Follow-up Questions ==========
+    private Long agentTemplateId;
     private String aiPromptTemplate;
     private String aiCustomPrompt;
     private String aiHelperName;

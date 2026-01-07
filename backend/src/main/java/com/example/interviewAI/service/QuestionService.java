@@ -5,9 +5,11 @@ import com.example.interviewAI.dto.FollowUpQuestionResponse;
 import com.example.interviewAI.dto.TestCaseResponse;
 import com.example.interviewAI.dto.CreateQuestionRequest;
 import com.example.interviewAI.dto.UpdateQuestionRequest;
+import com.example.interviewAI.entity.AgentTemplate;
 import com.example.interviewAI.entity.Question;
 import com.example.interviewAI.entity.FollowUpQuestion;
 import com.example.interviewAI.entity.TestCase;
+import com.example.interviewAI.repository.AgentTemplateRepository;
 import com.example.interviewAI.repository.QuestionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,9 @@ public class QuestionService {
 
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private AgentTemplateRepository agentTemplateRepository;
 
     /**
      * Get all questions
@@ -97,6 +102,9 @@ public class QuestionService {
         response.setInitialCodeJava(question.getInitialCodeJava());
         response.setInitialCodePython(question.getInitialCodePython());
         response.setInitialCodeJavascript(question.getInitialCodeJavascript());
+        if (question.getAgentTemplate() != null) {
+            response.setAgentTemplateId(question.getAgentTemplate().getId());
+        }
         response.setAiPromptTemplate(question.getAiPromptTemplate());
         response.setAiCustomPrompt(question.getAiCustomPrompt());
         response.setAiHelperName(question.getAiHelperName());
@@ -180,6 +188,14 @@ public class QuestionService {
         question.setInitialCodePython(request.getInitialCodePython());
         question.setInitialCodeJavascript(request.getInitialCodeJavascript());
         question.setTestsJson(request.getTestsJson());
+
+        // Handle agent template
+        if (request.getAgentTemplateId() != null) {
+            AgentTemplate template = agentTemplateRepository.findById(request.getAgentTemplateId()).orElse(null);
+            question.setAgentTemplate(template);
+            log.debug("Setting agent template with id: {}", request.getAgentTemplateId());
+        }
+
         question.setAiPromptTemplate(request.getAiPromptTemplate() != null ? request.getAiPromptTemplate() : "helpful");
         question.setAiCustomPrompt(request.getAiCustomPrompt());
         question.setAiHelperName(request.getAiHelperName());
@@ -260,6 +276,11 @@ public class QuestionService {
         }
         if (request.getTestsJson() != null) {
             question.setTestsJson(request.getTestsJson());
+        }
+        if (request.getAgentTemplateId() != null) {
+            AgentTemplate template = agentTemplateRepository.findById(request.getAgentTemplateId()).orElse(null);
+            question.setAgentTemplate(template);
+            log.debug("Updating agent template to id: {}", request.getAgentTemplateId());
         }
         if (request.getAiPromptTemplate() != null) {
             question.setAiPromptTemplate(request.getAiPromptTemplate());

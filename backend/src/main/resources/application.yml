@@ -112,6 +112,7 @@ app:
       - /interviews/*/start
       - /interviews/*/complete
       - /questions/**
+      - /agents/**
       - /candidates/**
       - /chat/**
       - /code/**
