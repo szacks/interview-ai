@@ -225,3 +225,146 @@ public class RateLimiter {
 [01:04:05.982] Browser LOG     [API Client] Successful response: /user-settings 200
 [01:04:12.325] Browser LOG     [API Client] Adding auth token to request: /user-settings
 [01:04:12.325] Browser LOG     [API Client] Successful response: /user-settings 200
+[01:05:23.062] Server  LOG      ✓ Compiled in 47ms
+[01:05:23.173] Browser LOG     [API Client] Adding auth token to request: /agents
+[01:05:23.173] Browser LOG     [API Client] Successful response: /agents 200
+[01:05:23.173] Browser LOG     [API Client] Adding auth token to request: /user-settings
+[01:05:23.173] Browser LOG     [API Client] Successful response: /user-settings 200
+[01:05:29.000] Server  LOG      ✓ Compiled in 42ms
+[01:05:29.106] Browser LOG     [API Client] Adding auth token to request: /agents
+[01:05:29.106] Browser LOG     [API Client] Successful response: /agents 200
+[01:05:29.106] Browser LOG     [API Client] Adding auth token to request: /user-settings
+[01:05:29.106] Browser LOG     [API Client] Successful response: /user-settings 200
+[01:21:27.808] Browser LOG     [API Client] Adding auth token to request: /user-settings
+[01:21:27.808] Browser LOG     [API Client] Successful response: /user-settings 200
+[01:22:37.232] Server  LOG      ✓ Compiled in 106ms
+[01:22:37.345] Browser LOG     [API Client] Adding auth token to request: /agents
+[01:22:37.345] Browser LOG     [API Client] Successful response: /agents 200
+[01:22:37.345] Browser LOG     [API Client] Adding auth token to request: /user-settings
+[01:22:37.345] Browser LOG     [API Client] Successful response: /user-settings 200
+[01:22:46.693] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:22:46.838] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[01:22:46.838] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/settings","route":"/settings"}
+[01:22:46.838] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/settings color: rgb(120, 120, 120) color: inherit {"dp":"/settings","o":"http://localhost:3000/settings","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767794000609}
+[01:22:48.019] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:22:48.145] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[01:22:48.145] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/settings","route":"/settings"}
+[01:22:48.145] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/settings color: rgb(120, 120, 120) color: inherit {"dp":"/settings","o":"http://localhost:3000/settings","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767794001916}
+[01:22:57.053] Browser LOG     [API Client] Adding auth token to request: /agents
+[01:22:57.053] Browser LOG     [API Client] Successful response: /agents 200
+[01:22:57.053] Browser LOG     [API Client] Adding auth token to request: /user-settings
+[01:22:57.054] Browser LOG     [API Client] Successful response: /user-settings 200
+[01:23:31.881] Server  LOG      ✓ Compiled in 108ms
+[01:23:31.993] Browser LOG     [API Client] Adding auth token to request: /agents
+[01:23:31.993] Browser LOG     [API Client] Successful response: /agents 200
+[01:23:31.993] Browser LOG     [API Client] Adding auth token to request: /user-settings
+[01:23:31.993] Browser LOG     [API Client] Successful response: /user-settings 200
+[01:23:45.270] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:23:45.395] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[01:23:45.395] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/settings","route":"/settings"}
+[01:23:45.395] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/settings color: rgb(120, 120, 120) color: inherit {"dp":"/settings","o":"http://localhost:3000/settings","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767794059166}
+[01:23:46.337] Browser LOG     [API Client] Adding auth token to request: /agents
+[01:23:46.337] Browser LOG     [API Client] Successful response: /agents 200
+[01:23:46.337] Browser LOG     [API Client] Adding auth token to request: /user-settings
+[01:23:46.337] Browser LOG     [API Client] Successful response: /user-settings 200
+[01:24:10.381] Server  LOG      ✓ Compiled in 107ms
+[01:24:10.491] Browser LOG     [API Client] Adding auth token to request: /agents
+[01:24:10.491] Browser LOG     [API Client] Successful response: /agents 200
+[01:24:10.491] Browser LOG     [API Client] Adding auth token to request: /user-settings
+[01:24:10.491] Browser LOG     [API Client] Successful response: /user-settings 200
+[01:24:41.597] Server  LOG      ✓ Compiled in 42ms
+[01:24:41.709] Browser LOG     [API Client] Adding auth token to request: /agents
+[01:24:41.709] Browser LOG     [API Client] Successful response: /agents 200
+[01:24:41.709] Browser LOG     [API Client] Adding auth token to request: /user-settings
+[01:24:41.709] Browser LOG     [API Client] Successful response: /user-settings 200
+[01:24:48.524] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:24:48.653] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[01:24:48.653] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/settings","route":"/settings"}
+[01:24:48.653] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/settings color: rgb(120, 120, 120) color: inherit {"dp":"/settings","o":"http://localhost:3000/settings","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767794122424}
+[01:24:50.955] Browser LOG     [API Client] Adding auth token to request: /agents
+[01:24:50.955] Browser LOG     [API Client] Successful response: /agents 200
+[01:24:50.955] Browser LOG     [API Client] Adding auth token to request: /user-settings
+[01:24:50.955] Browser LOG     [API Client] Successful response: /user-settings 200
+[01:25:14.390] Browser LOG     [API Client] Adding auth token to request: /agents
+[01:25:14.390] Browser LOG     [API Client] Successful response: /agents 200
+[01:25:14.391] Browser LOG     [API Client] Adding auth token to request: /user-settings
+[01:25:14.391] Browser LOG     [API Client] Successful response: /user-settings 200
+[01:25:21.992] Browser LOG     [API Client] Adding auth token to request: /agents
+[01:25:21.992] Browser LOG     [API Client] Successful response: /agents 200
+[01:25:21.993] Browser LOG     [API Client] Adding auth token to request: /user-settings
+[01:25:21.993] Browser LOG     [API Client] Successful response: /user-settings 200
+[01:25:33.244] Browser LOG     [API Client] Adding auth token to request: /agents
+[01:25:33.244] Browser LOG     [API Client] Successful response: /agents 200
+[01:25:33.244] Browser LOG     [API Client] Adding auth token to request: /user-settings
+[01:25:33.244] Browser LOG     [API Client] Successful response: /user-settings 200
+[01:25:43.636] Server  LOG      ✓ Compiled in 40ms
+[01:25:43.744] Browser LOG     [API Client] Adding auth token to request: /agents
+[01:25:43.745] Browser LOG     [API Client] Successful response: /agents 200
+[01:25:43.745] Browser LOG     [API Client] Adding auth token to request: /user-settings
+[01:25:43.745] Browser LOG     [API Client] Successful response: /user-settings 200
+[01:26:40.607] Server  LOG      ✓ Compiled in 105ms
+[01:26:40.718] Browser LOG     [API Client] Adding auth token to request: /agents
+[01:26:40.718] Browser LOG     [API Client] Successful response: /agents 200
+[01:26:40.718] Browser LOG     [API Client] Adding auth token to request: /user-settings
+[01:26:40.718] Browser LOG     [API Client] Successful response: /user-settings 200
+[01:26:41.249] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:26:41.383] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[01:26:41.383] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/settings","route":"/settings"}
+[01:26:41.383] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/settings color: rgb(120, 120, 120) color: inherit {"dp":"/settings","o":"http://localhost:3000/settings","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767794235154}
+[01:26:43.029] Browser LOG     [API Client] Adding auth token to request: /agents
+[01:26:43.029] Browser LOG     [API Client] Successful response: /agents 200
+[01:26:43.029] Browser LOG     [API Client] Adding auth token to request: /user-settings
+[01:26:43.029] Browser LOG     [API Client] Successful response: /user-settings 200
+[01:27:17.487] Server  LOG      ✓ Compiled in 51ms
+[01:27:17.589] Browser LOG     [API Client] Adding auth token to request: /agents
+[01:27:17.589] Browser LOG     [API Client] Successful response: /agents 200
+[01:27:17.589] Browser LOG     [API Client] Adding auth token to request: /user-settings
+[01:27:17.589] Browser LOG     [API Client] Successful response: /user-settings 200
+[01:27:19.446] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:27:19.575] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[01:27:19.575] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/settings","route":"/settings"}
+[01:27:19.575] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/settings color: rgb(120, 120, 120) color: inherit {"dp":"/settings","o":"http://localhost:3000/settings","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767794273346}
+[01:27:20.237] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:27:20.354] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[01:27:20.354] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/settings","route":"/settings"}
+[01:27:20.354] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/settings color: rgb(120, 120, 120) color: inherit {"dp":"/settings","o":"http://localhost:3000/settings","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767794274125}
+[01:27:21.530] Browser LOG     [API Client] Adding auth token to request: /agents
+[01:27:21.530] Browser LOG     [API Client] Successful response: /agents 200
+[01:27:21.530] Browser LOG     [API Client] Adding auth token to request: /user-settings
+[01:27:21.530] Browser LOG     [API Client] Successful response: /user-settings 200
+[01:29:11.676] Server  LOG      ✓ Compiled in 41ms
+[01:29:11.777] Browser LOG     [API Client] Adding auth token to request: /agents
+[01:29:11.777] Browser LOG     [API Client] Successful response: /agents 200
+[01:29:11.777] Browser LOG     [API Client] Adding auth token to request: /user-settings
+[01:29:11.777] Browser LOG     [API Client] Successful response: /user-settings 200
+[01:29:17.958] Server  LOG      ✓ Compiled in 47ms
+[01:29:18.065] Browser LOG     [API Client] Adding auth token to request: /agents
+[01:29:18.065] Browser LOG     [API Client] Successful response: /agents 200
+[01:29:18.065] Browser LOG     [API Client] Adding auth token to request: /user-settings
+[01:29:18.065] Browser LOG     [API Client] Successful response: /user-settings 200
+[01:29:27.709] Server  LOG      ✓ Compiled in 62ms
+[01:29:27.818] Browser LOG     [API Client] Adding auth token to request: /agents
+[01:29:27.818] Browser LOG     [API Client] Successful response: /agents 200
+[01:29:27.818] Browser LOG     [API Client] Adding auth token to request: /user-settings
+[01:29:27.818] Browser LOG     [API Client] Successful response: /user-settings 200
+[01:29:32.430] Server  LOG      ✓ Compiled in 38ms
+[01:29:32.530] Browser LOG     [API Client] Adding auth token to request: /agents
+[01:29:32.531] Browser LOG     [API Client] Successful response: /agents 200
+[01:29:32.531] Browser LOG     [API Client] Adding auth token to request: /user-settings
+[01:29:32.531] Browser LOG     [API Client] Successful response: /user-settings 200
+[01:29:40.111] Server  LOG      ✓ Compiled in 40ms
+[01:29:40.213] Browser LOG     [API Client] Adding auth token to request: /agents
+[01:29:40.213] Browser LOG     [API Client] Successful response: /agents 200
+[01:29:40.213] Browser LOG     [API Client] Adding auth token to request: /user-settings
+[01:29:40.213] Browser LOG     [API Client] Successful response: /user-settings 200
+[01:29:48.989] Server  LOG      ✓ Compiled in 42ms
+[01:29:49.092] Browser LOG     [API Client] Adding auth token to request: /agents
+[01:29:49.092] Browser LOG     [API Client] Successful response: /agents 200
+[01:29:49.092] Browser LOG     [API Client] Adding auth token to request: /user-settings
+[01:29:49.092] Browser LOG     [API Client] Successful response: /user-settings 200
+[01:44:26.753] Browser LOG     [API Client] Adding auth token to request: /agents/3
+[01:44:26.753] Browser LOG     [API Client] Successful response: /agents/3 200
+[01:45:19.021] Browser LOG     [API Client] Adding auth token to request: /agents/3
+[01:45:19.021] Browser LOG     [API Client] Successful response: /agents/3 200
+[01:45:22.947] Browser LOG     [API Client] Adding auth token to request: /user-settings
+[01:45:22.947] Browser LOG     [API Client] Successful response: /user-settings 200

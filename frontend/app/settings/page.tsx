@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Switch } from "@/components/ui/switch"
 import { CreateAgentModal } from "@/components/CreateAgentModal"
+import { EditAgentModal } from "@/components/EditAgentModal"
 import { agentService, type AgentTemplate } from "@/services/agentService"
 import { userSettingsService } from "@/services/userSettingsService"
 
@@ -165,6 +166,8 @@ function InterviewDefaultsSection() {
   const [agents, setAgents] = useState<AgentTemplate[]>([])
   const [loading, setLoading] = useState(true)
   const [createModalOpen, setCreateModalOpen] = useState(false)
+  const [editModalOpen, setEditModalOpen] = useState(false)
+  const [editingAgent, setEditingAgent] = useState<AgentTemplate | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [savingError, setSavingError] = useState<string | null>(null)
   const [saveSuccess, setSaveSuccess] = useState(false)
@@ -239,6 +242,22 @@ function InterviewDefaultsSection() {
     setAgents((prev) => [...prev, newAgent])
     // Auto-select the newly created agent
     setSelectedAgentId(newAgent.id)
+  }
+
+  const handleEditAgent = (agent: AgentTemplate) => {
+    setEditingAgent(agent)
+    setEditModalOpen(true)
+  }
+
+  const handleAgentUpdated = (updatedAgent: AgentTemplate) => {
+    setAgents((prev) => prev.map((a) => (a.id === updatedAgent.id ? updatedAgent : a)))
+  }
+
+  const handleAgentDeleted = (agentId: number) => {
+    setAgents((prev) => prev.filter((a) => a.id !== agentId))
+    if (selectedAgentId === agentId) {
+      setSelectedAgentId(null)
+    }
   }
 
   const systemAgents = agents.filter((a) => a.isSystem)
@@ -320,6 +339,7 @@ function InterviewDefaultsSection() {
                       agent={agent}
                       selected={selectedAgentId === agent.id}
                       onSelect={() => setSelectedAgentId(agent.id)}
+                      onEdit={() => handleEditAgent(agent)}
                     />
                   ))}
                 </>
@@ -355,6 +375,14 @@ function InterviewDefaultsSection() {
         onOpenChange={setCreateModalOpen}
         onSuccess={handleAgentCreated}
       />
+
+      <EditAgentModal
+        open={editModalOpen}
+        agent={editingAgent}
+        onOpenChange={setEditModalOpen}
+        onSuccess={handleAgentUpdated}
+        onDelete={handleAgentDeleted}
+      />
     </div>
   )
 }
@@ -363,34 +391,54 @@ function AgentCard({
   agent,
   selected,
   onSelect,
+  onEdit,
 }: {
   agent: AgentTemplate
   selected: boolean
   onSelect: () => void
+  onEdit?: () => void
 }) {
   return (
-    <button
-      onClick={onSelect}
+    <div
       className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
         selected ? "border-primary bg-primary/5" : "border-border/50 hover:border-border hover:bg-muted/30"
       }`}
     >
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
+        <button
+          onClick={onSelect}
+          className="flex-1 text-left flex items-center gap-2"
+        >
           <span className="font-medium text-sm">{agent.name}</span>
           <Badge variant={agent.isSystem ? "outline" : "secondary"} className="text-xs font-normal">
             {agent.isSystem ? "System" : "Custom"}
           </Badge>
-        </div>
-        <div
-          className={`size-5 rounded-full border-2 flex-shrink-0 ml-3 flex items-center justify-center ${
-            selected ? "border-primary" : "border-border"
-          }`}
-        >
-          {selected && <div className="size-2.5 rounded-full bg-primary" />}
+        </button>
+        <div className="flex items-center gap-2">
+          {!agent.isSystem && onEdit && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={(e) => {
+                e.stopPropagation()
+                onEdit()
+              }}
+            >
+              ✎
+            </Button>
+          )}
+          <div
+            onClick={onSelect}
+            className={`size-5 rounded-full border-2 flex-shrink-0 ml-1 flex items-center justify-center cursor-pointer ${
+              selected ? "border-primary" : "border-border"
+            }`}
+          >
+            {selected && <div className="size-2.5 rounded-full bg-primary" />}
+          </div>
         </div>
       </div>
-    </button>
+    </div>
   )
 }
 
