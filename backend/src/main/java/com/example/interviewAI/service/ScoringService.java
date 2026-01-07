@@ -1,11 +1,15 @@
 package com.example.interviewAI.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ScoringService {
+
+    private final ScoringSettingsService scoringSettingsService;
 
     /**
      * Calculate the manual score from the 4 parameters.
@@ -33,12 +37,28 @@ public class ScoringService {
     }
 
     /**
-     * Calculate the final score from auto and manual scores.
+     * Calculate the final score from auto and manual scores using company-specific settings.
+     * Formula: (Auto Score × autoWeight) + (Manual Score × manualWeight)
+     * Weights are retrieved from ScoringSettings for the company.
+     */
+    public int calculateFinalScore(int autoScore, int manualScore, Long companyId) {
+        Double autoWeight = scoringSettingsService.getAutoScoreWeight(companyId);
+        Double manualWeight = scoringSettingsService.getManualScoreWeight(companyId);
+
+        int finalScore = (int) Math.round(autoScore * autoWeight + manualScore * manualWeight);
+        log.debug("Final score (with company settings): ({} × {}) + ({} × {}) = {}",
+                autoScore, autoWeight, manualScore, manualWeight, finalScore);
+        return Math.min(100, Math.max(0, finalScore));
+    }
+
+    /**
+     * Calculate the final score from auto and manual scores using default weights.
      * Formula: (Auto Score × 0.4) + (Manual Score × 0.6)
+     * Used when company ID is not available or for backward compatibility.
      */
     public int calculateFinalScore(int autoScore, int manualScore) {
         int finalScore = (int) Math.round(autoScore * 0.4 + manualScore * 0.6);
-        log.debug("Final score: ({} × 0.4) + ({} × 0.6) = {}", autoScore, manualScore, finalScore);
+        log.debug("Final score (default weights): ({} × 0.4) + ({} × 0.6) = {}", autoScore, manualScore, finalScore);
         return Math.min(100, Math.max(0, finalScore));
     }
 
