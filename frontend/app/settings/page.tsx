@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Switch } from "@/components/ui/switch"
 import { CreateAgentModal } from "@/components/CreateAgentModal"
 import { EditAgentModal } from "@/components/EditAgentModal"
+import { ChangePasswordModal } from "@/components/ChangePasswordModal"
 import { agentService, type AgentTemplate } from "@/services/agentService"
 import { userSettingsService } from "@/services/userSettingsService"
 
@@ -95,6 +96,14 @@ function getIconSymbol(icon: string): string {
 }
 
 function ProfileSection() {
+  const [changePasswordModalOpen, setChangePasswordModalOpen] = useState(false)
+  const [passwordChangeSuccess, setPasswordChangeSuccess] = useState(false)
+
+  const handlePasswordChangeSuccess = () => {
+    setPasswordChangeSuccess(true)
+    setTimeout(() => setPasswordChangeSuccess(false), 3000)
+  }
+
   return (
     <div className="space-y-6">
       <Card className="border-border/50">
@@ -143,19 +152,35 @@ function ProfileSection() {
           <h2 className="text-lg font-semibold mb-1">Security</h2>
           <p className="text-sm text-muted-foreground mb-6">Manage your password and authentication settings</p>
 
+          {passwordChangeSuccess && (
+            <div className="mb-4 bg-green-50 border border-green-200 rounded-md p-3">
+              <p className="text-sm text-green-800 font-medium">Password changed successfully!</p>
+            </div>
+          )}
+
           <div className="space-y-4">
             <div className="flex items-center justify-between py-3 border-b border-border/50">
               <div>
                 <p className="text-sm font-medium mb-0.5">Password</p>
                 <p className="text-xs text-muted-foreground">Last changed 3 months ago</p>
               </div>
-              <Button variant="outline" size="sm">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setChangePasswordModalOpen(true)}
+              >
                 Change Password
               </Button>
             </div>
           </div>
         </div>
       </Card>
+
+      <ChangePasswordModal
+        open={changePasswordModalOpen}
+        onOpenChange={setChangePasswordModalOpen}
+        onSuccess={handlePasswordChangeSuccess}
+      />
     </div>
   )
 }

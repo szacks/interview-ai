@@ -239,7 +239,7 @@ public class AuthService {
 
         // Validate current password
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPasswordHash())) {
-            throw new UnauthorizedException("Current password is incorrect");
+            throw new BadRequestException("Current password is incorrect");
         }
 
         // Update password

@@ -32,6 +32,11 @@ export interface PasswordResetConfirm {
   newPassword: string;
 }
 
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}
+
 const authService = {
   // User login
   login: async (credentials: LoginRequest): Promise<AuthResponse> => {
@@ -94,6 +99,14 @@ const authService = {
   ): Promise<any> => {
     const response = await apiClient.post('/auth/reset-password', data);
     return response;
+  },
+
+  // Change password for authenticated user
+  changePassword: async (
+    data: ChangePasswordRequest
+  ): Promise<AuthResponse> => {
+    const response = await apiClient.post('/auth/change-password', data);
+    return (response as any)?.data || response;
   },
 
   // Check if user is authenticated
