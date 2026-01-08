@@ -39,7 +39,8 @@ export default function SettingsPage() {
     { id: "billing" as const, label: "Billing", icon: "credit-card", roles: ["admin"] },
   ]
 
-  const visibleSections = sections.filter((s) => s.roles.includes(currentUser.role))
+  // Filter out billing tab for now (hidden, not deleted)
+  const visibleSections = sections.filter((s) => s.roles.includes(currentUser.role) && s.id !== "billing")
 
   return (
     <div className="flex-1 overflow-auto">
