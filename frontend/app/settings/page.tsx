@@ -12,6 +12,7 @@ import { EditAgentModal } from "@/components/EditAgentModal"
 import { ChangePasswordModal } from "@/components/ChangePasswordModal"
 import { agentService, type AgentTemplate } from "@/services/agentService"
 import { userSettingsService } from "@/services/userSettingsService"
+import userService, { type UserProfile } from "@/services/userService"
 
 type SettingsSection = "profile" | "interview-defaults" | "scoring" | "team" | "security" | "billing"
 
@@ -98,11 +99,56 @@ function getIconSymbol(icon: string): string {
 function ProfileSection() {
   const [changePasswordModalOpen, setChangePasswordModalOpen] = useState(false)
   const [passwordChangeSuccess, setPasswordChangeSuccess] = useState(false)
+  const [user, setUser] = useState<UserProfile | null>(null)
+  const [name, setName] = useState("")
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [saveSuccess, setSaveSuccess] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetchUserProfile()
+  }, [])
+
+  const fetchUserProfile = async () => {
+    try {
+      setLoading(true)
+      const userData = await userService.getCurrentUser()
+      setUser(userData)
+      setName(userData.name)
+    } catch (error) {
+      console.error("Failed to fetch user profile:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSaveChanges = async () => {
+    if (!name.trim()) {
+      setSaveError("Name is required")
+      return
+    }
+
+    try {
+      setSaving(true)
+      setSaveError(null)
+      const updatedUser = await userService.updateProfile({ name: name.trim() })
+      setUser(updatedUser)
+      setSaveSuccess(true)
+      setTimeout(() => setSaveSuccess(false), 3000)
+    } catch (error: any) {
+      setSaveError(error.message || "Failed to save changes")
+    } finally {
+      setSaving(false)
+    }
+  }
 
   const handlePasswordChangeSuccess = () => {
     setPasswordChangeSuccess(true)
     setTimeout(() => setPasswordChangeSuccess(false), 3000)
   }
+
+  const hasChanges = user && name !== user.name
 
   return (
     <div className="space-y-6">
@@ -111,39 +157,66 @@ function ProfileSection() {
           <h2 className="text-lg font-semibold mb-1">Personal Information</h2>
           <p className="text-sm text-muted-foreground mb-6">Update your personal details</p>
 
-          <div className="space-y-6">
-            <div className="flex items-center gap-6 pb-6 border-b border-border/50">
-              <div className="flex-1">
-                <Label htmlFor="fullName" className="text-sm font-medium mb-2 block">
-                  Full Name
-                </Label>
-                <Input id="fullName" defaultValue="John Smith" className="h-10" />
-              </div>
-            </div>
-
-            <div className="grid gap-6">
-              <div className="grid gap-2">
-                <Label htmlFor="email" className="text-sm font-medium">
-                  Email Address
-                </Label>
-                <Input id="email" defaultValue="john@acme.com" disabled className="h-10 bg-muted/30" />
-                <p className="text-xs text-muted-foreground">Contact support to change your email address</p>
-              </div>
-
-              <div className="grid gap-2">
-                <Label className="text-sm font-medium">Role</Label>
-                <div className="flex items-center gap-3">
-                  <Badge variant="secondary" className="font-medium">
-                    Admin
-                  </Badge>
-                  <span className="text-xs text-muted-foreground">Managed by team administrators</span>
+          {loading ? (
+            <div className="py-8 text-center text-muted-foreground">Loading...</div>
+          ) : (
+            <div className="space-y-6">
+              <div className="flex items-center gap-6 pb-6 border-b border-border/50">
+                <div className="flex-1">
+                  <Label htmlFor="fullName" className="text-sm font-medium mb-2 block">
+                    Full Name
+                  </Label>
+                  <Input
+                    id="fullName"
+                    value={name}
+                    onChange={(e) => {
+                      setName(e.target.value)
+                      setSaveError(null)
+                    }}
+                    className="h-10"
+                    disabled={saving}
+                  />
                 </div>
               </div>
+
+              <div className="grid gap-6">
+                <div className="grid gap-2">
+                  <Label htmlFor="email" className="text-sm font-medium">
+                    Email Address
+                  </Label>
+                  <Input id="email" value={user?.email || ""} disabled className="h-10 bg-muted/30" />
+                  <p className="text-xs text-muted-foreground">Contact support to change your email address</p>
+                </div>
+
+                <div className="grid gap-2">
+                  <Label className="text-sm font-medium">Role</Label>
+                  <div className="flex items-center gap-3">
+                    <Badge variant="secondary" className="font-medium capitalize">
+                      {user?.role || "User"}
+                    </Badge>
+                    <span className="text-xs text-muted-foreground">Managed by team administrators</span>
+                  </div>
+                </div>
+              </div>
+
+              {saveSuccess && (
+                <div className="bg-green-50 border border-green-200 rounded-md p-3">
+                  <p className="text-sm text-green-800 font-medium">Profile saved successfully!</p>
+                </div>
+              )}
+
+              {saveError && (
+                <div className="bg-red-50 border border-red-200 rounded-md p-3">
+                  <p className="text-sm text-red-800">{saveError}</p>
+                </div>
+              )}
             </div>
-          </div>
+          )}
         </div>
         <div className="px-6 py-4 bg-muted/20 border-t border-border/50 flex justify-end">
-          <Button size="sm">Save Changes</Button>
+          <Button size="sm" onClick={handleSaveChanges} disabled={saving || loading || !hasChanges}>
+            {saving ? "Saving..." : "Save Changes"}
+          </Button>
         </div>
       </Card>
 
