@@ -11,4 +11,6 @@ public class UpdateUserSettingsRequest {
     private Long defaultAgentId;
     private Boolean showRunTests;
     private Integer autoScoreWeight;
+    private Integer sessionTimeoutMinutes;
+    private Integer dataRetentionDays;
 }

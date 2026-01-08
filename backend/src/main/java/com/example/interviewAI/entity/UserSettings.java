@@ -35,6 +35,14 @@ public class UserSettings {
 
     @Column(nullable = false)
     @Builder.Default
+    private Integer sessionTimeoutMinutes = 120; // default 2 hours, -1 means never
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer dataRetentionDays = 90; // default 90 days, -1 means forever
+
+    @Column(nullable = false)
+    @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column
