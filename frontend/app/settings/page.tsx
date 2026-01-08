@@ -162,7 +162,6 @@ function ProfileSection() {
 
 function InterviewDefaultsSection() {
   const [selectedAgentId, setSelectedAgentId] = useState<number | null>(null)
-  const [showRunTests, setShowRunTests] = useState(true)
   const [agents, setAgents] = useState<AgentTemplate[]>([])
   const [loading, setLoading] = useState(true)
   const [createModalOpen, setCreateModalOpen] = useState(false)
@@ -197,10 +196,6 @@ function InterviewDefaultsSection() {
           setSelectedAgentId(defaultAgent.id)
         }
       }
-
-      if (settings) {
-        setShowRunTests(settings.showRunTests)
-      }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to load settings"
       setError(errorMessage)
@@ -223,7 +218,6 @@ function InterviewDefaultsSection() {
 
       await userSettingsService.updateSettings({
         defaultAgentId: selectedAgentId,
-        showRunTests: showRunTests,
       })
 
       setSaveSuccess(true)
@@ -265,32 +259,6 @@ function InterviewDefaultsSection() {
 
   return (
     <div className="space-y-6">
-      <Card className="border-border/50">
-        <div className="p-6">
-          <h2 className="text-lg font-semibold mb-1">Candidate Experience</h2>
-          <p className="text-sm text-muted-foreground mb-6">Configure default settings for interview sessions</p>
-
-          <div className="space-y-6">
-            <div className="flex items-center justify-between py-3">
-              <div className="flex-1 pr-4">
-                <Label htmlFor="runTests" className="text-sm font-medium mb-1 block">
-                  Show "Run Tests" Button to Candidates
-                </Label>
-                <p className="text-xs text-muted-foreground">Allow candidates to run test cases during the interview</p>
-              </div>
-              <div
-                className={`flex items-center justify-center w-6 h-6 rounded border-2 flex-shrink-0 cursor-pointer transition-colors ${
-                  showRunTests ? 'bg-primary border-primary' : 'border-primary/40 bg-transparent'
-                }`}
-                onClick={() => setShowRunTests(!showRunTests)}
-              >
-                {showRunTests && <span className="text-white text-sm font-bold">✓</span>}
-              </div>
-            </div>
-          </div>
-        </div>
-      </Card>
-
       <Card className="border-border/50">
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">

@@ -344,16 +344,8 @@ public class InterviewService {
             response.setInterviewer(interviewerResponse);
         }
 
-        // Fetch interviewer's showRunTests setting
-        if (interview.getInterviewer() != null) {
-            try {
-                com.example.interviewAI.entity.UserSettings settings = userSettingsService.getOrCreateSettings(interview.getInterviewer().getId());
-                response.setShowRunTests(settings.getShowRunTests());
-            } catch (Exception e) {
-                log.warn("Failed to fetch user settings for interviewer {}: {}", interview.getInterviewer().getId(), e.getMessage());
-                response.setShowRunTests(false); // Default to false if we can't fetch settings
-            }
-        }
+        // Set showRunTests to false for now (feature disabled)
+        response.setShowRunTests(false);
 
         return response;
     }
