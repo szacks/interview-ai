@@ -10,7 +10,18 @@ import lombok.NoArgsConstructor;
 public class UpdateUserSettingsRequest {
     private Long defaultAgentId;
     private Boolean showRunTests;
+
+    /**
+     * @deprecated Use company settings API instead - /company-settings
+     */
+    @Deprecated
     private Integer autoScoreWeight;
+
     private Integer sessionTimeoutMinutes;
+
+    /**
+     * @deprecated Use company settings API instead - /company-settings
+     */
+    @Deprecated
     private Integer dataRetentionDays;
 }
