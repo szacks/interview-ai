@@ -8,8 +8,10 @@ import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { CreateAgentModal } from "@/components/CreateAgentModal"
 import { EditAgentModal } from "@/components/EditAgentModal"
+import { ChangePasswordModal } from "@/components/ChangePasswordModal"
 import { agentService, type AgentTemplate } from "@/services/agentService"
 import { userSettingsService } from "@/services/userSettingsService"
+import userService, { type UserProfile } from "@/services/userService"
 
 type SettingsSection = "profile" | "interview-defaults" | "scoring" | "team" | "security" | "billing"
 
@@ -37,7 +39,8 @@ export default function SettingsPage() {
     { id: "billing" as const, label: "Billing", icon: "credit-card", roles: ["admin"] },
   ]
 
-  const visibleSections = sections.filter((s) => s.roles.includes(currentUser.role))
+  // Filter out billing tab for now (hidden, not deleted)
+  const visibleSections = sections.filter((s) => s.roles.includes(currentUser.role) && s.id !== "billing")
 
   return (
     <div className="flex-1 overflow-auto">
@@ -94,6 +97,59 @@ function getIconSymbol(icon: string): string {
 }
 
 function ProfileSection() {
+  const [changePasswordModalOpen, setChangePasswordModalOpen] = useState(false)
+  const [passwordChangeSuccess, setPasswordChangeSuccess] = useState(false)
+  const [user, setUser] = useState<UserProfile | null>(null)
+  const [name, setName] = useState("")
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [saveSuccess, setSaveSuccess] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetchUserProfile()
+  }, [])
+
+  const fetchUserProfile = async () => {
+    try {
+      setLoading(true)
+      const userData = await userService.getCurrentUser()
+      setUser(userData)
+      setName(userData.name)
+    } catch (error) {
+      console.error("Failed to fetch user profile:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSaveChanges = async () => {
+    if (!name.trim()) {
+      setSaveError("Name is required")
+      return
+    }
+
+    try {
+      setSaving(true)
+      setSaveError(null)
+      const updatedUser = await userService.updateProfile({ name: name.trim() })
+      setUser(updatedUser)
+      setSaveSuccess(true)
+      setTimeout(() => setSaveSuccess(false), 3000)
+    } catch (error: any) {
+      setSaveError(error.message || "Failed to save changes")
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handlePasswordChangeSuccess = () => {
+    setPasswordChangeSuccess(true)
+    setTimeout(() => setPasswordChangeSuccess(false), 3000)
+  }
+
+  const hasChanges = user && name !== user.name
+
   return (
     <div className="space-y-6">
       <Card className="border-border/50">
@@ -101,39 +157,66 @@ function ProfileSection() {
           <h2 className="text-lg font-semibold mb-1">Personal Information</h2>
           <p className="text-sm text-muted-foreground mb-6">Update your personal details</p>
 
-          <div className="space-y-6">
-            <div className="flex items-center gap-6 pb-6 border-b border-border/50">
-              <div className="flex-1">
-                <Label htmlFor="fullName" className="text-sm font-medium mb-2 block">
-                  Full Name
-                </Label>
-                <Input id="fullName" defaultValue="John Smith" className="h-10" />
-              </div>
-            </div>
-
-            <div className="grid gap-6">
-              <div className="grid gap-2">
-                <Label htmlFor="email" className="text-sm font-medium">
-                  Email Address
-                </Label>
-                <Input id="email" defaultValue="john@acme.com" disabled className="h-10 bg-muted/30" />
-                <p className="text-xs text-muted-foreground">Contact support to change your email address</p>
-              </div>
-
-              <div className="grid gap-2">
-                <Label className="text-sm font-medium">Role</Label>
-                <div className="flex items-center gap-3">
-                  <Badge variant="secondary" className="font-medium">
-                    Admin
-                  </Badge>
-                  <span className="text-xs text-muted-foreground">Managed by team administrators</span>
+          {loading ? (
+            <div className="py-8 text-center text-muted-foreground">Loading...</div>
+          ) : (
+            <div className="space-y-6">
+              <div className="flex items-center gap-6 pb-6 border-b border-border/50">
+                <div className="flex-1">
+                  <Label htmlFor="fullName" className="text-sm font-medium mb-2 block">
+                    Full Name
+                  </Label>
+                  <Input
+                    id="fullName"
+                    value={name}
+                    onChange={(e) => {
+                      setName(e.target.value)
+                      setSaveError(null)
+                    }}
+                    className="h-10"
+                    disabled={saving}
+                  />
                 </div>
               </div>
+
+              <div className="grid gap-6">
+                <div className="grid gap-2">
+                  <Label htmlFor="email" className="text-sm font-medium">
+                    Email Address
+                  </Label>
+                  <Input id="email" value={user?.email || ""} disabled className="h-10 bg-muted/30" />
+                  <p className="text-xs text-muted-foreground">Contact support to change your email address</p>
+                </div>
+
+                <div className="grid gap-2">
+                  <Label className="text-sm font-medium">Role</Label>
+                  <div className="flex items-center gap-3">
+                    <Badge variant="secondary" className="font-medium capitalize">
+                      {user?.role || "User"}
+                    </Badge>
+                    <span className="text-xs text-muted-foreground">Managed by team administrators</span>
+                  </div>
+                </div>
+              </div>
+
+              {saveSuccess && (
+                <div className="bg-green-50 border border-green-200 rounded-md p-3">
+                  <p className="text-sm text-green-800 font-medium">Profile saved successfully!</p>
+                </div>
+              )}
+
+              {saveError && (
+                <div className="bg-red-50 border border-red-200 rounded-md p-3">
+                  <p className="text-sm text-red-800">{saveError}</p>
+                </div>
+              )}
             </div>
-          </div>
+          )}
         </div>
         <div className="px-6 py-4 bg-muted/20 border-t border-border/50 flex justify-end">
-          <Button size="sm">Save Changes</Button>
+          <Button size="sm" onClick={handleSaveChanges} disabled={saving || loading || !hasChanges}>
+            {saving ? "Saving..." : "Save Changes"}
+          </Button>
         </div>
       </Card>
 
@@ -142,26 +225,41 @@ function ProfileSection() {
           <h2 className="text-lg font-semibold mb-1">Security</h2>
           <p className="text-sm text-muted-foreground mb-6">Manage your password and authentication settings</p>
 
+          {passwordChangeSuccess && (
+            <div className="mb-4 bg-green-50 border border-green-200 rounded-md p-3">
+              <p className="text-sm text-green-800 font-medium">Password changed successfully!</p>
+            </div>
+          )}
+
           <div className="space-y-4">
             <div className="flex items-center justify-between py-3 border-b border-border/50">
               <div>
                 <p className="text-sm font-medium mb-0.5">Password</p>
                 <p className="text-xs text-muted-foreground">Last changed 3 months ago</p>
               </div>
-              <Button variant="outline" size="sm">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setChangePasswordModalOpen(true)}
+              >
                 Change Password
               </Button>
             </div>
           </div>
         </div>
       </Card>
+
+      <ChangePasswordModal
+        open={changePasswordModalOpen}
+        onOpenChange={setChangePasswordModalOpen}
+        onSuccess={handlePasswordChangeSuccess}
+      />
     </div>
   )
 }
 
 function InterviewDefaultsSection() {
   const [selectedAgentId, setSelectedAgentId] = useState<number | null>(null)
-  const [showRunTests, setShowRunTests] = useState(true)
   const [agents, setAgents] = useState<AgentTemplate[]>([])
   const [loading, setLoading] = useState(true)
   const [createModalOpen, setCreateModalOpen] = useState(false)
@@ -196,10 +294,6 @@ function InterviewDefaultsSection() {
           setSelectedAgentId(defaultAgent.id)
         }
       }
-
-      if (settings) {
-        setShowRunTests(settings.showRunTests)
-      }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to load settings"
       setError(errorMessage)
@@ -222,7 +316,6 @@ function InterviewDefaultsSection() {
 
       await userSettingsService.updateSettings({
         defaultAgentId: selectedAgentId,
-        showRunTests: showRunTests,
       })
 
       setSaveSuccess(true)
@@ -264,32 +357,6 @@ function InterviewDefaultsSection() {
 
   return (
     <div className="space-y-6">
-      <Card className="border-border/50">
-        <div className="p-6">
-          <h2 className="text-lg font-semibold mb-1">Candidate Experience</h2>
-          <p className="text-sm text-muted-foreground mb-6">Configure default settings for interview sessions</p>
-
-          <div className="space-y-6">
-            <div className="flex items-center justify-between py-3">
-              <div className="flex-1 pr-4">
-                <Label htmlFor="runTests" className="text-sm font-medium mb-1 block">
-                  Show "Run Tests" Button to Candidates
-                </Label>
-                <p className="text-xs text-muted-foreground">Allow candidates to run test cases during the interview</p>
-              </div>
-              <div
-                className={`flex items-center justify-center w-6 h-6 rounded border-2 flex-shrink-0 cursor-pointer transition-colors ${
-                  showRunTests ? 'bg-primary border-primary' : 'border-primary/40 bg-transparent'
-                }`}
-                onClick={() => setShowRunTests(!showRunTests)}
-              >
-                {showRunTests && <span className="text-white text-sm font-bold">✓</span>}
-              </div>
-            </div>
-          </div>
-        </div>
-      </Card>
-
       <Card className="border-border/50">
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">

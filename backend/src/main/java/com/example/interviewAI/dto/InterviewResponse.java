@@ -42,4 +42,6 @@ public class InterviewResponse {
     private UserResponse interviewer;
 
     private CompanyResponse company;
+
+    private Boolean showRunTests; // Whether interviewer allows candidates to run tests
 }

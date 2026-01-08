@@ -72,7 +72,7 @@ apiClient.interceptors.response.use(
       code: response.statusText,
     };
 
-    apiError.message = response.data?.error || response.data?.message || 'Server error';
+    apiError.message = response.data?.message || response.data?.error || 'Server error';
 
     // Handle specific status codes
     switch (status) {

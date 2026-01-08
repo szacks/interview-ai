@@ -42,9 +42,11 @@ export default function CandidateInterviewPage({
   const [language, setLanguage] = useState("python")
   const [code, setCode] = useState("")
   const [isRunning, setIsRunning] = useState(false)
-  const [testResults, setTestResults] = useState<Array<{ name: string; passed: boolean }>>([])
+  const [testResults, setTestResults] = useState<Array<{ name: string; passed: boolean; testCaseId?: number; expected?: string; actual?: string; errorMessage?: string }>>([])
   const [showChat, setShowChat] = useState(false)
   const [startTime] = useState(Date.now())
+  const [showRunTests, setShowRunTests] = useState(false)
+  const [expandedTests, setExpandedTests] = useState<Set<number>>(new Set())
 
   // Candidate setup state
   const [candidateFullName, setCandidateFullName] = useState("")
@@ -97,6 +99,12 @@ export default function CandidateInterviewPage({
         } else if (interviewData?.question?.initialCodeJavascript && interviewData.language === "javascript") {
           setCode(interviewData.question.initialCodeJavascript)
         }
+
+        // Get showRunTests setting from interview (includes interviewer's settings)
+        console.log("[Candidate] Full interview data:", interviewData)
+        console.log("[Candidate] showRunTests field:", interviewData?.showRunTests)
+        setShowRunTests(interviewData?.showRunTests === true) // Only true if explicitly true
+        console.log("[Candidate] State set to showRunTests:", interviewData?.showRunTests === true)
       } catch (error) {
         console.error("[Candidate] Error fetching interview details:", error)
       }
@@ -346,6 +354,10 @@ export default function CandidateInterviewPage({
       const mappedResults = result.testDetails.map((t) => ({
         name: t.testName,
         passed: t.passed,
+        testCaseId: t.testCaseId,
+        expected: t.expected,
+        actual: t.actual,
+        errorMessage: t.errorMessage,
       }))
 
       setTestResults(mappedResults)
@@ -597,7 +609,7 @@ export default function CandidateInterviewPage({
           </div>
 
           {/* Editor Controls */}
-          <div className="border-b border-border bg-card/50 px-4 py-2">
+          <div className="border-b border-border bg-card/50 px-4 py-2 flex items-center justify-between">
             <Select value={language} onValueChange={handleLanguageChange}>
               <SelectTrigger className="w-40">
                 <SelectValue />
@@ -608,6 +620,26 @@ export default function CandidateInterviewPage({
                 <SelectItem value="java">Java</SelectItem>
               </SelectContent>
             </Select>
+            {showRunTests && (
+              <Button
+                onClick={handleRunTests}
+                disabled={isRunning || !code.trim()}
+                size="sm"
+                className="gap-2"
+              >
+                {isRunning ? (
+                  <>
+                    <Loader2 className="size-4 animate-spin" />
+                    Running Tests...
+                  </>
+                ) : (
+                  <>
+                    <Play className="size-4" />
+                    Run Tests
+                  </>
+                )}
+              </Button>
+            )}
           </div>
 
           {/* Code Editor */}
@@ -629,28 +661,75 @@ export default function CandidateInterviewPage({
           </div>
 
           {/* Test Results */}
-          {testResults.length > 0 && (
-            <div className="border-t border-border bg-card p-4 max-h-48 overflow-y-auto">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold text-sm">Test Results</h3>
-                <span className="text-sm text-muted-foreground">
-                  {testResults.filter((t) => t.passed).length} / {testResults.length} Passed
-                </span>
+          {showRunTests && testResults.length > 0 && (
+            <div className="border-t border-border bg-card max-h-48 overflow-y-auto flex flex-col">
+              <div className="p-4 border-b border-border/50 sticky top-0 bg-card">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-sm">Test Results</h3>
+                  <span className={`text-sm font-medium ${testResults.filter((t) => t.passed).length === testResults.length ? 'text-chart-3' : 'text-destructive'}`}>
+                    {testResults.filter((t) => t.passed).length} / {testResults.length} Passed
+                  </span>
+                </div>
               </div>
-              <div className="space-y-2">
+              <div className="flex-1 overflow-y-auto space-y-2 p-4">
                 {testResults.map((test, idx) => (
                   <div
                     key={idx}
-                    className={`text-sm flex items-center gap-2 p-2 rounded ${
-                      test.passed ? "bg-chart-3/10 text-chart-3" : "bg-destructive/10 text-destructive"
+                    className={`border rounded-lg overflow-hidden transition-all ${
+                      test.passed
+                        ? "border-chart-3/20 bg-chart-3/5"
+                        : "border-destructive/20 bg-destructive/5"
                     }`}
                   >
-                    {test.passed ? (
-                      <CheckCircle2 className="size-4 flex-shrink-0" />
-                    ) : (
-                      <XCircle className="size-4 flex-shrink-0" />
+                    {/* Test Header - Clickable */}
+                    <button
+                      onClick={() => {
+                        const newExpanded = new Set(expandedTests)
+                        if (newExpanded.has(idx)) {
+                          newExpanded.delete(idx)
+                        } else {
+                          newExpanded.add(idx)
+                        }
+                        setExpandedTests(newExpanded)
+                      }}
+                      className="w-full text-left p-3 flex items-center gap-3 hover:bg-muted/20 transition-colors"
+                    >
+                      {test.passed ? (
+                        <CheckCircle2 className="size-4 flex-shrink-0 text-chart-3" />
+                      ) : (
+                        <XCircle className="size-4 flex-shrink-0 text-destructive" />
+                      )}
+                      <span className="font-medium text-sm flex-1">{test.name}</span>
+                      {test.errorMessage || test.expected ? (
+                        <div className="text-xs text-muted-foreground">
+                          {expandedTests.has(idx) ? "▲" : "▼"}
+                        </div>
+                      ) : null}
+                    </button>
+
+                    {/* Test Details - Expandable */}
+                    {expandedTests.has(idx) && (test.errorMessage || test.expected) && (
+                      <div className="border-t border-border/20 bg-muted/20 p-3 space-y-2 text-sm">
+                        {test.errorMessage && (
+                          <div>
+                            <p className="text-xs font-medium text-muted-foreground mb-1">Error:</p>
+                            <p className="text-destructive font-mono text-xs bg-destructive/10 p-2 rounded">{test.errorMessage}</p>
+                          </div>
+                        )}
+                        {test.expected && (
+                          <div>
+                            <p className="text-xs font-medium text-muted-foreground mb-1">Expected:</p>
+                            <p className="font-mono text-xs bg-muted/50 p-2 rounded">{test.expected}</p>
+                          </div>
+                        )}
+                        {test.actual && (
+                          <div>
+                            <p className="text-xs font-medium text-muted-foreground mb-1">Actual:</p>
+                            <p className="font-mono text-xs bg-muted/50 p-2 rounded">{test.actual}</p>
+                          </div>
+                        )}
+                      </div>
                     )}
-                    <span>{test.name}</span>
                   </div>
                 ))}
               </div>
