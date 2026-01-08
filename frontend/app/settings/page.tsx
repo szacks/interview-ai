@@ -957,43 +957,6 @@ function SecuritySection() {
           </Button>
         </div>
       </Card>
-
-      <Card className="border-border/50 border-destructive/20">
-        <div className="p-6">
-          <h2 className="text-lg font-semibold mb-1 text-destructive">Danger Zone</h2>
-          <p className="text-sm text-muted-foreground mb-6">Irreversible actions</p>
-
-          <div className="space-y-3">
-            <div className="flex items-center justify-between py-3 border-b border-border/50">
-              <div>
-                <p className="text-sm font-medium mb-1">Delete All Interview Data</p>
-                <p className="text-xs text-muted-foreground">Permanently remove all interview records</p>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                className="text-destructive border-destructive/30 hover:bg-destructive/10 bg-transparent"
-              >
-                Delete Data
-              </Button>
-            </div>
-
-            <div className="flex items-center justify-between py-3">
-              <div>
-                <p className="text-sm font-medium mb-1">Close Account</p>
-                <p className="text-xs text-muted-foreground">Permanently delete your account and all data</p>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                className="text-destructive border-destructive/30 hover:bg-destructive/10 bg-transparent"
-              >
-                Close Account
-              </Button>
-            </div>
-          </div>
-        </div>
-      </Card>
     </div>
   )
 }
