@@ -6,6 +6,8 @@ export interface UserSettings {
   defaultAgentId?: number
   showRunTests: boolean
   autoScoreWeight: number
+  sessionTimeoutMinutes: number
+  dataRetentionDays: number
   createdAt:  Date
   updatedAt?:  Date
 }
@@ -14,6 +16,8 @@ export interface UpdateUserSettingsRequest {
   defaultAgentId?: number
   showRunTests?: boolean
   autoScoreWeight?: number
+  sessionTimeoutMinutes?: number
+  dataRetentionDays?: number
 }
 
 export const userSettingsService = {

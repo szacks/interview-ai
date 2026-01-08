@@ -41,6 +41,8 @@ public class UserSettingsController {
                 .defaultAgentId(request.getDefaultAgentId())
                 .showRunTests(request.getShowRunTests())
                 .autoScoreWeight(request.getAutoScoreWeight())
+                .sessionTimeoutMinutes(request.getSessionTimeoutMinutes())
+                .dataRetentionDays(request.getDataRetentionDays())
                 .build();
 
         UserSettings updated = userSettingsService.updateSettings(userId, newSettings);
@@ -102,6 +104,8 @@ public class UserSettingsController {
                 .defaultAgentId(settings.getDefaultAgentId())
                 .showRunTests(settings.getShowRunTests())
                 .autoScoreWeight(settings.getAutoScoreWeight())
+                .sessionTimeoutMinutes(settings.getSessionTimeoutMinutes())
+                .dataRetentionDays(settings.getDataRetentionDays())
                 .createdAt(settings.getCreatedAt())
                 .updatedAt(settings.getUpdatedAt())
                 .build();

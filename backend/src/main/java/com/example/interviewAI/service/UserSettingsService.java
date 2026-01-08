@@ -26,6 +26,8 @@ public class UserSettingsService {
                             .userId(userId)
                             .showRunTests(true)
                             .autoScoreWeight(50)
+                            .sessionTimeoutMinutes(120) // default 2 hours
+                            .dataRetentionDays(90) // default 90 days
                             .createdAt(LocalDateTime.now())
                             .updatedAt(LocalDateTime.now())
                             .build();
@@ -48,6 +50,12 @@ public class UserSettingsService {
         }
         if (settings.getAutoScoreWeight() != null) {
             existing.setAutoScoreWeight(settings.getAutoScoreWeight());
+        }
+        if (settings.getSessionTimeoutMinutes() != null) {
+            existing.setSessionTimeoutMinutes(settings.getSessionTimeoutMinutes());
+        }
+        if (settings.getDataRetentionDays() != null) {
+            existing.setDataRetentionDays(settings.getDataRetentionDays());
         }
 
         existing.setUpdatedAt(LocalDateTime.now());

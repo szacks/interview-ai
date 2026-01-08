@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Switch } from "@/components/ui/switch"
 import { CreateAgentModal } from "@/components/CreateAgentModal"
 import { EditAgentModal } from "@/components/EditAgentModal"
 import { ChangePasswordModal } from "@/components/ChangePasswordModal"
@@ -830,32 +829,81 @@ function TeamManagementSection() {
 }
 
 function SecuritySection() {
-  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false)
+  const [sessionTimeout, setSessionTimeout] = useState("120")
   const [dataRetention, setDataRetention] = useState("90")
+  const [loading, setLoading] = useState(true)
+  const [isSaving, setIsSaving] = useState(false)
+  const [saveSuccess, setSaveSuccess] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetchSecuritySettings()
+  }, [])
+
+  const fetchSecuritySettings = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      const settings = await userSettingsService.getSettings()
+      if (settings) {
+        setSessionTimeout(settings.sessionTimeoutMinutes === -1 ? "never" : String(settings.sessionTimeoutMinutes))
+        setDataRetention(settings.dataRetentionDays === -1 ? "forever" : String(settings.dataRetentionDays))
+      }
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to load security settings"
+      setError(errorMessage)
+      console.error("Error fetching security settings:", err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSaveChanges = async () => {
+    try {
+      setIsSaving(true)
+      setError(null)
+      setSaveSuccess(false)
+
+      await userSettingsService.updateSettings({
+        sessionTimeoutMinutes: sessionTimeout === "never" ? -1 : parseInt(sessionTimeout),
+        dataRetentionDays: dataRetention === "forever" ? -1 : parseInt(dataRetention),
+      })
+
+      setSaveSuccess(true)
+      setTimeout(() => setSaveSuccess(false), 3000)
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to save security settings"
+      setError(errorMessage)
+      console.error("Error saving security settings:", err)
+    } finally {
+      setIsSaving(false)
+    }
+  }
 
   return (
     <div className="space-y-6">
       <Card className="border-border/50">
         <div className="p-6">
-          <h2 className="text-lg font-semibold mb-1">Authentication</h2>
-          <p className="text-sm text-muted-foreground mb-6">Manage authentication and access security</p>
+          <h2 className="text-lg font-semibold mb-1">Session Security</h2>
+          <p className="text-sm text-muted-foreground mb-6">Configure session timeout settings</p>
+
+          {error && (
+            <div className="bg-destructive/10 border border-destructive/20 rounded-md p-3 mb-6">
+              <p className="text-sm text-destructive">{error}</p>
+            </div>
+          )}
 
           <div className="space-y-4">
-            <div className="flex items-center justify-between py-3 border-b border-border/50">
-              <div className="flex-1 pr-4">
-                <Label htmlFor="2fa" className="text-sm font-medium mb-1 block">
-                  Two-Factor Authentication
-                </Label>
-                <p className="text-xs text-muted-foreground">Add an extra layer of security to your account</p>
-              </div>
-              <Switch id="2fa" checked={twoFactorEnabled} onCheckedChange={setTwoFactorEnabled} />
-            </div>
-
             <div className="py-3">
               <div className="flex items-center justify-between mb-3">
                 <Label className="text-sm font-medium">Session Timeout</Label>
               </div>
-              <select className="w-full h-10 px-3 text-sm border border-border rounded-md bg-background">
+              <select
+                value={sessionTimeout}
+                onChange={(e) => setSessionTimeout(e.target.value)}
+                disabled={loading}
+                className="w-full h-10 px-3 text-sm border border-border rounded-md bg-background disabled:opacity-50"
+              >
                 <option value="30">30 minutes</option>
                 <option value="60">1 hour</option>
                 <option value="120">2 hours</option>
@@ -879,7 +927,8 @@ function SecuritySection() {
               <select
                 value={dataRetention}
                 onChange={(e) => setDataRetention(e.target.value)}
-                className="w-full h-10 px-3 text-sm border border-border rounded-md bg-background"
+                disabled={loading}
+                className="w-full h-10 px-3 text-sm border border-border rounded-md bg-background disabled:opacity-50"
               >
                 <option value="30">30 days</option>
                 <option value="90">90 days</option>
@@ -889,59 +938,23 @@ function SecuritySection() {
               </select>
               <p className="text-xs text-muted-foreground mt-2">How long to keep completed interview data</p>
             </div>
-
-            <div className="pt-3 border-t border-border/50">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium mb-1">Export All Data</p>
-                  <p className="text-xs text-muted-foreground">Download a copy of all your company data</p>
-                </div>
-                <Button variant="outline" size="sm">
-                  Export
-                </Button>
-              </div>
-            </div>
           </div>
         </div>
-        <div className="px-6 py-4 bg-muted/20 border-t border-border/50 flex justify-end">
-          <Button size="sm">Save Changes</Button>
-        </div>
-      </Card>
-
-      <Card className="border-border/50 border-destructive/20">
-        <div className="p-6">
-          <h2 className="text-lg font-semibold mb-1 text-destructive">Danger Zone</h2>
-          <p className="text-sm text-muted-foreground mb-6">Irreversible actions</p>
-
-          <div className="space-y-3">
-            <div className="flex items-center justify-between py-3 border-b border-border/50">
-              <div>
-                <p className="text-sm font-medium mb-1">Delete All Interview Data</p>
-                <p className="text-xs text-muted-foreground">Permanently remove all interview records</p>
+        <div className="px-6 py-4 bg-muted/20 border-t border-border/50 flex items-center justify-between">
+          <div className="flex-1">
+            {saveSuccess && (
+              <div className="bg-green-50 border border-green-200 rounded-md p-3 inline-block">
+                <p className="text-sm text-green-700">Settings saved successfully</p>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                className="text-destructive border-destructive/30 hover:bg-destructive/10 bg-transparent"
-              >
-                Delete Data
-              </Button>
-            </div>
-
-            <div className="flex items-center justify-between py-3">
-              <div>
-                <p className="text-sm font-medium mb-1">Close Account</p>
-                <p className="text-xs text-muted-foreground">Permanently delete your account and all data</p>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                className="text-destructive border-destructive/30 hover:bg-destructive/10 bg-transparent"
-              >
-                Close Account
-              </Button>
-            </div>
+            )}
           </div>
+          <Button
+            size="sm"
+            onClick={handleSaveChanges}
+            disabled={isSaving || loading}
+          >
+            {isSaving ? "Saving..." : "Save Changes"}
+          </Button>
         </div>
       </Card>
     </div>
