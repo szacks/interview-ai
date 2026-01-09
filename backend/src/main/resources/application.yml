@@ -118,6 +118,7 @@ app:
       - /code/**
       - /ws/**
       - /interview-evaluations/**
+      - /scoring-settings/**
 
   # Docker Sandbox Execution Configuration
   sandbox:

@@ -4,5 +4,6 @@
   "/page": "app/page.js",
   "/questions/new/page": "app/questions/new/page.js",
   "/questions/page": "app/questions/page.js",
+  "/results/[id]/page": "app/results/[id]/page.js",
   "/settings/page": "app/settings/page.js"
 }

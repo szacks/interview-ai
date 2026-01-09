@@ -1,16 +1,23 @@
 package com.example.interviewAI.service;
 
+import com.example.interviewAI.dto.ScoringParameterRequest;
+import com.example.interviewAI.dto.ScoringParameterResponse;
 import com.example.interviewAI.dto.ScoringSettingsRequest;
 import com.example.interviewAI.dto.ScoringSettingsResponse;
 import com.example.interviewAI.entity.Company;
+import com.example.interviewAI.entity.ScoringParameter;
 import com.example.interviewAI.entity.ScoringSettings;
 import com.example.interviewAI.exception.ResourceNotFoundException;
 import com.example.interviewAI.repository.CompanyRepository;
+import com.example.interviewAI.repository.ScoringParameterRepository;
 import com.example.interviewAI.repository.ScoringSettingsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -18,6 +25,7 @@ import java.time.LocalDateTime;
 public class ScoringSettingsService {
 
     private final ScoringSettingsRepository scoringSettingsRepository;
+    private final ScoringParameterRepository scoringParameterRepository;
     private final CompanyRepository companyRepository;
 
     /**
@@ -56,17 +64,23 @@ public class ScoringSettingsService {
                     return newSettings;
                 });
 
-        // Update weights
+        // Update overall weights
         settings.setAutoScoreWeight(request.getAutoScoreWeight());
         settings.setManualScoreWeight(request.getManualScoreWeight());
-        settings.setCommunicationWeight(request.getCommunicationWeight());
-        settings.setAlgorithmicWeight(request.getAlgorithmicWeight());
-        settings.setProblemSolvingWeight(request.getProblemSolvingWeight());
-        settings.setAiCollaborationWeight(request.getAiCollaborationWeight());
 
-        // Update additional parameters if provided
-        if (request.getAdditionalParameters() != null) {
-            settings.setAdditionalParameters(request.getAdditionalParameters());
+        // Update parameters if provided
+        if (request.getParameters() != null && !request.getParameters().isEmpty()) {
+            settings.getParameters().clear();
+            for (int i = 0; i < request.getParameters().size(); i++) {
+                ScoringParameterRequest paramRequest = request.getParameters().get(i);
+                ScoringParameter param = new ScoringParameter();
+                param.setScoringSettings(settings);
+                param.setName(paramRequest.getName());
+                param.setDescription(paramRequest.getDescription());
+                param.setOrderIndex(i);
+                param.setCreatedAt(LocalDateTime.now());
+                settings.getParameters().add(param);
+            }
         }
 
         settings.setUpdatedAt(LocalDateTime.now());
@@ -79,10 +93,10 @@ public class ScoringSettingsService {
     }
 
     /**
-     * Add or update an additional parameter.
+     * Add a new parameter to scoring settings.
      */
-    public ScoringSettingsResponse addParameter(Long companyId, String paramName, Double paramWeight) {
-        log.info("Adding parameter '{}' with weight {} for company: {}", paramName, paramWeight, companyId);
+    public ScoringSettingsResponse addParameter(Long companyId, ScoringParameterRequest paramRequest) {
+        log.info("Adding parameter '{}' for company: {}", paramRequest.getName(), companyId);
 
         // Verify company exists
         Company company = companyRepository.findById(companyId)
@@ -96,20 +110,21 @@ public class ScoringSettingsService {
                     return newSettings;
                 });
 
-        // Parse existing parameters or create new JSON
-        // For simplicity, storing as JSON string
-        // In a production system, consider a separate ParameterSettings entity
-        String currentParams = settings.getAdditionalParameters() != null ?
-                settings.getAdditionalParameters() : "[]";
+        // Create new parameter
+        ScoringParameter param = new ScoringParameter();
+        param.setScoringSettings(settings);
+        param.setName(paramRequest.getName());
+        param.setDescription(paramRequest.getDescription());
+        param.setOrderIndex(settings.getParameters().size());
+        param.setCreatedAt(LocalDateTime.now());
+        param.setIsDefault(false);
 
-        // Simple JSON manipulation (in production, use proper JSON library like Jackson)
-        String newParams = addParameterToJson(currentParams, paramName, paramWeight);
-        settings.setAdditionalParameters(newParams);
+        settings.getParameters().add(param);
         settings.setUpdatedAt(LocalDateTime.now());
 
         ScoringSettings saved = scoringSettingsRepository.save(settings);
 
-        log.info("Parameter '{}' added for company: {}", paramName, companyId);
+        log.info("Parameter '{}' added for company: {}", paramRequest.getName(), companyId);
 
         return toResponse(saved);
     }
@@ -132,14 +147,46 @@ public class ScoringSettingsService {
         settings.setCompany(company);
         settings.setAutoScoreWeight(0.4);
         settings.setManualScoreWeight(0.6);
-        settings.setCommunicationWeight(0.25);
-        settings.setAlgorithmicWeight(0.25);
-        settings.setProblemSolvingWeight(0.25);
-        settings.setAiCollaborationWeight(0.25);
         settings.setCreatedAt(LocalDateTime.now());
         settings.setUpdatedAt(LocalDateTime.now());
 
+        // Create default parameters
+        settings.setParameters(createDefaultParameters(settings));
+
         return scoringSettingsRepository.save(settings);
+    }
+
+    /**
+     * Create default assessment parameters.
+     */
+    private List<ScoringParameter> createDefaultParameters(ScoringSettings settings) {
+        List<ScoringParameter> params = new ArrayList<>();
+
+        params.add(createParameter(settings, "Communication",
+                "Can explain code clearly, uses correct terminology", 1, true));
+        params.add(createParameter(settings, "Algorithmic Thinking",
+                "Considers edge cases, discusses alternatives", 2, true));
+        params.add(createParameter(settings, "Problem Solving",
+                "Clean code, systematic debugging, error handling", 3, true));
+        params.add(createParameter(settings, "AI Collaboration",
+                "Uses AI effectively, reviews suggestions critically", 4, true));
+
+        return params;
+    }
+
+    /**
+     * Helper to create a parameter.
+     */
+    private ScoringParameter createParameter(ScoringSettings settings, String name, String description,
+                                            Integer orderIndex, Boolean isDefault) {
+        ScoringParameter param = new ScoringParameter();
+        param.setScoringSettings(settings);
+        param.setName(name);
+        param.setDescription(description);
+        param.setOrderIndex(orderIndex);
+        param.setIsDefault(isDefault);
+        param.setCreatedAt(LocalDateTime.now());
+        return param;
     }
 
     /**
@@ -151,29 +198,25 @@ public class ScoringSettingsService {
         response.setCompanyId(settings.getCompany().getId());
         response.setAutoScoreWeight(settings.getAutoScoreWeight());
         response.setManualScoreWeight(settings.getManualScoreWeight());
-        response.setCommunicationWeight(settings.getCommunicationWeight());
-        response.setAlgorithmicWeight(settings.getAlgorithmicWeight());
-        response.setProblemSolvingWeight(settings.getProblemSolvingWeight());
-        response.setAiCollaborationWeight(settings.getAiCollaborationWeight());
-        response.setAdditionalParameters(settings.getAdditionalParameters());
+        response.setParameters(settings.getParameters().stream()
+                .map(this::toParameterResponse)
+                .collect(Collectors.toList()));
         response.setCreatedAt(settings.getCreatedAt());
         response.setUpdatedAt(settings.getUpdatedAt());
         return response;
     }
 
     /**
-     * Helper method to add parameter to JSON string.
-     * In production, use Jackson's ObjectMapper for proper JSON handling.
+     * Convert parameter entity to response DTO.
      */
-    private String addParameterToJson(String jsonArray, String paramName, Double paramWeight) {
-        // Simple implementation - in production use proper JSON library
-        if (jsonArray == null || jsonArray.isEmpty() || jsonArray.equals("[]")) {
-            return String.format("[{\"name\":\"%s\",\"weight\":%f}]", paramName, paramWeight);
-        }
-
-        // Remove closing bracket and append new parameter
-        String updatedJson = jsonArray.substring(0, jsonArray.length() - 1);
-        return updatedJson + String.format(",{\"name\":\"%s\",\"weight\":%f}]", paramName, paramWeight);
+    private ScoringParameterResponse toParameterResponse(ScoringParameter param) {
+        ScoringParameterResponse response = new ScoringParameterResponse();
+        response.setId(param.getId());
+        response.setName(param.getName());
+        response.setDescription(param.getDescription());
+        response.setOrderIndex(param.getOrderIndex());
+        response.setIsDefault(param.getIsDefault());
+        return response;
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.example.interviewAI.controller;
 
+import com.example.interviewAI.dto.ScoringParameterRequest;
 import com.example.interviewAI.dto.ScoringSettingsRequest;
 import com.example.interviewAI.dto.ScoringSettingsResponse;
 import com.example.interviewAI.enums.RoleEnum;
@@ -15,8 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 /**
  * REST controller for scoring settings management.
@@ -49,6 +48,8 @@ public class ScoringSettingsController {
                 if (!user.getRole().equals(RoleEnum.ADMIN) && !user.getRole().equals(RoleEnum.INTERVIEWER)) {
                     throw new ForbiddenException("You are not authorized to view scoring settings");
                 }
+            } catch (ForbiddenException ex) {
+                throw ex;  // Re-throw authorization errors
             } catch (Exception e) {
                 log.debug("Could not extract user from token, allowing access for testing");
             }
@@ -76,6 +77,8 @@ public class ScoringSettingsController {
                 if (!user.getRole().equals(RoleEnum.ADMIN)) {
                     throw new ForbiddenException("You are not authorized to update scoring settings");
                 }
+            } catch (ForbiddenException ex) {
+                throw ex;  // Re-throw authorization errors
             } catch (Exception e) {
                 log.debug("Could not extract user from token, allowing access for testing");
             }
@@ -91,7 +94,7 @@ public class ScoringSettingsController {
     @PostMapping("/company/{companyId}/parameters")
     public ResponseEntity<ScoringSettingsResponse> addParameter(
             @PathVariable Long companyId,
-            @Valid @RequestBody Map<String, Object> request,
+            @Valid @RequestBody ScoringParameterRequest paramRequest,
             @RequestHeader(value = "Authorization", required = false) String bearerToken) {
         log.info("Adding parameter for company: {}", companyId);
 
@@ -103,25 +106,14 @@ public class ScoringSettingsController {
                 if (!user.getRole().equals(RoleEnum.ADMIN)) {
                     throw new ForbiddenException("You are not authorized to add parameters");
                 }
+            } catch (ForbiddenException ex) {
+                throw ex;  // Re-throw authorization errors
             } catch (Exception e) {
                 log.debug("Could not extract user from token, allowing access for testing");
             }
         }
 
-        // Extract parameter details
-        String paramName = (String) request.get("name");
-        Double paramWeight = null;
-        if (request.get("weight") instanceof Number) {
-            paramWeight = ((Number) request.get("weight")).doubleValue();
-        }
-
-        if (paramName == null || paramName.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        paramWeight = paramWeight != null ? paramWeight : 0.0;
-
-        ScoringSettingsResponse updatedSettings = scoringSettingsService.addParameter(companyId, paramName, paramWeight);
+        ScoringSettingsResponse updatedSettings = scoringSettingsService.addParameter(companyId, paramRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(updatedSettings);
     }
 
@@ -143,6 +135,8 @@ public class ScoringSettingsController {
                 if (!user.getRole().equals(RoleEnum.ADMIN)) {
                     throw new ForbiddenException("You are not authorized to save scoring settings");
                 }
+            } catch (ForbiddenException ex) {
+                throw ex;  // Re-throw authorization errors
             } catch (Exception e) {
                 log.debug("Could not extract user from token, allowing access for testing");
             }

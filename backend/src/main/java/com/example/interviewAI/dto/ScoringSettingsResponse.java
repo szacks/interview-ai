@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -17,14 +18,8 @@ public class ScoringSettingsResponse {
     private Double autoScoreWeight;
     private Double manualScoreWeight;
 
-    // Individual manual score parameter weights
-    private Double communicationWeight;
-    private Double algorithmicWeight;
-    private Double problemSolvingWeight;
-    private Double aiCollaborationWeight;
-
-    // Additional custom parameters
-    private String additionalParameters;
+    // Dynamic assessment parameters
+    private List<ScoringParameterResponse> parameters;
 
     // Timestamps
     private LocalDateTime createdAt;

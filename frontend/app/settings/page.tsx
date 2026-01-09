@@ -7,6 +7,14 @@ import { Label } from "@/components/ui/label"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Switch } from "@/components/ui/switch"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog"
 import { CreateAgentModal } from "@/components/CreateAgentModal"
 import { agentService, type AgentTemplate } from "@/services/agentService"
 
@@ -69,7 +77,7 @@ export default function SettingsPage() {
           <div className="flex-1 max-w-3xl">
             {activeSection === "profile" && <ProfileSection />}
             {activeSection === "interview-defaults" && <InterviewDefaultsSection />}
-            {activeSection === "scoring" && <ScoringSection />}
+            {activeSection === "scoring" && <ScoringSection companyId={1} />}
             {activeSection === "team" && <TeamManagementSection />}
             {activeSection === "security" && <SecuritySection />}
             {activeSection === "billing" && <BillingSection />}
@@ -327,40 +335,132 @@ function AgentCard({
   )
 }
 
-function ScoringSection() {
+interface ScoringProps {
+  companyId: number
+}
+
+function ScoringSection({ companyId }: ScoringProps) {
   const [autoWeight, setAutoWeight] = useState(40)
   const manualWeight = 100 - autoWeight
+  const [showAddParameter, setShowAddParameter] = useState(false)
+  const [newParameter, setNewParameter] = useState({
+    name: "",
+    description: "",
+  })
+  const [loading, setLoading] = useState(true)
 
-  const [parameters] = useState([
-    {
-      id: 1,
-      name: "Communication",
-      description: "Can explain code clearly, uses correct terminology",
-      maxPoints: 15,
-      weight: 22,
-    },
-    {
-      id: 2,
-      name: "Algorithmic Thinking",
-      description: "Considers edge cases, discusses alternatives",
-      maxPoints: 20,
-      weight: 28,
-    },
-    {
-      id: 3,
-      name: "Problem Solving",
-      description: "Clean code, systematic debugging, error handling",
-      maxPoints: 20,
-      weight: 28,
-    },
-    {
-      id: 4,
-      name: "AI Collaboration",
-      description: "Uses AI effectively, reviews suggestions critically",
-      maxPoints: 15,
-      weight: 22,
-    },
-  ])
+  const [parameters, setParameters] = useState<Array<{
+    id?: number
+    name: string
+    description?: string
+    orderIndex?: number
+    isDefault?: boolean
+  }>>([])
+
+  // Fetch scoring settings on mount
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        await fetchScoringSettings(companyId)
+      } catch (error) {
+        console.error("Error loading scoring settings:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadSettings()
+  }, [companyId])
+
+  const fetchScoringSettings = async (cId: number) => {
+    try {
+      const response = await fetch(`/api/scoring-settings/company/${cId}`)
+      if (response.ok) {
+        const data = await response.json()
+        if (data.autoScoreWeight) {
+          setAutoWeight(Math.round(data.autoScoreWeight * 100))
+        }
+        if (data.parameters && Array.isArray(data.parameters)) {
+          setParameters(data.parameters)
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching scoring settings:", error)
+    }
+  }
+
+  const handleAddParameter = async () => {
+    if (!newParameter.name.trim()) {
+      console.error("Parameter name is required")
+      return
+    }
+
+    if (!companyId) {
+      console.error("Company ID not found")
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/scoring-settings/company/${companyId}/parameters`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: newParameter.name,
+          description: newParameter.description || "",
+        }),
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        if (data.parameters && Array.isArray(data.parameters)) {
+          setParameters(data.parameters)
+        }
+        setNewParameter({
+          name: "",
+          description: "",
+        })
+        setShowAddParameter(false)
+      } else {
+        console.error("Failed to add parameter:", response.status, response.statusText)
+        const errorData = await response.json().catch(() => ({}))
+        console.error("Error details:", errorData)
+      }
+    } catch (error) {
+      console.error("Error adding parameter:", error)
+    }
+  }
+
+  const handleSaveChanges = async () => {
+    if (!companyId) {
+      console.error("Company ID not found")
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/scoring-settings/company/${companyId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          autoScoreWeight: autoWeight / 100, // Convert percentage to decimal
+          manualScoreWeight: manualWeight / 100,
+          parameters: parameters.map((p) => ({
+            name: p.name,
+            description: p.description,
+          })),
+        }),
+      })
+
+      if (response.ok) {
+        console.log("Settings saved successfully")
+      }
+    } catch (error) {
+      console.error("Error saving settings:", error)
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -413,7 +513,7 @@ function ScoringSection() {
               <h2 className="text-lg font-semibold mb-1">Assessment Parameters</h2>
               <p className="text-sm text-muted-foreground">Define what interviewers evaluate manually</p>
             </div>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={() => setShowAddParameter(true)}>
               Add Parameter
             </Button>
           </div>
@@ -424,8 +524,6 @@ function ScoringSection() {
                 <thead>
                   <tr className="bg-muted/50 border-b border-border/50">
                     <th className="text-left text-xs font-medium text-muted-foreground px-4 py-3">Parameter</th>
-                    <th className="text-left text-xs font-medium text-muted-foreground px-4 py-3 w-28">Max Points</th>
-                    <th className="text-left text-xs font-medium text-muted-foreground px-4 py-3 w-24">Weight</th>
                     <th className="text-right text-xs font-medium text-muted-foreground px-4 py-3 w-24">Actions</th>
                   </tr>
                 </thead>
@@ -436,8 +534,6 @@ function ScoringSection() {
                         <div className="font-medium text-sm mb-0.5">{param.name}</div>
                         <div className="text-xs text-muted-foreground">{param.description}</div>
                       </td>
-                      <td className="px-4 py-3 text-sm tabular-nums">{param.maxPoints}</td>
-                      <td className="px-4 py-3 text-sm tabular-nums">{param.weight}%</td>
                       <td className="px-4 py-3 text-right">
                         <div className="flex gap-1 justify-end">
                           <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
@@ -456,9 +552,50 @@ function ScoringSection() {
           <Button variant="ghost" size="sm" className="text-muted-foreground">
             Reset to Defaults
           </Button>
-          <Button size="sm">Save Changes</Button>
+          <Button size="sm" onClick={handleSaveChanges}>
+            Save Changes
+          </Button>
         </div>
       </Card>
+
+      <Dialog open={showAddParameter} onOpenChange={setShowAddParameter}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add Assessment Parameter</DialogTitle>
+            <DialogDescription>Create a new assessment parameter for manual scoring</DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="param-name">Parameter Name</Label>
+              <Input
+                id="param-name"
+                placeholder="e.g., Code Quality"
+                value={newParameter.name}
+                onChange={(e) => setNewParameter({ ...newParameter, name: e.target.value })}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="param-description">Description</Label>
+              <Input
+                id="param-description"
+                placeholder="Brief description of what this evaluates"
+                value={newParameter.description}
+                onChange={(e) => setNewParameter({ ...newParameter, description: e.target.value })}
+              />
+            </div>
+
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowAddParameter(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleAddParameter}>Add Parameter</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
