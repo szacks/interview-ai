@@ -15,6 +15,12 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { CreateAgentModal } from "@/components/CreateAgentModal"
 import { agentService, type AgentTemplate } from "@/services/agentService"
 
@@ -357,6 +363,9 @@ function ScoringSection({ companyId }: ScoringProps) {
     isDefault?: boolean
   }>>([])
 
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
+  const [paramToDelete, setParamToDelete] = useState<{ id?: number; name: string } | null>(null)
+
   // Fetch scoring settings on mount
   useEffect(() => {
     const loadSettings = async () => {
@@ -429,6 +438,42 @@ function ScoringSection({ companyId }: ScoringProps) {
       }
     } catch (error) {
       console.error("Error adding parameter:", error)
+    }
+  }
+
+  const handleDeleteParameter = (param: { id?: number; name: string }) => {
+    setParamToDelete(param)
+    setDeleteConfirmOpen(true)
+  }
+
+  const confirmDelete = async () => {
+    if (!paramToDelete?.id || !companyId) {
+      console.error("Parameter ID or Company ID not found")
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/scoring-settings/company/${companyId}/parameters/${paramToDelete.id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        if (data.parameters && Array.isArray(data.parameters)) {
+          setParameters(data.parameters)
+        }
+        console.log("Parameter deleted successfully")
+      } else {
+        console.error("Failed to delete parameter:", response.status, response.statusText)
+      }
+    } catch (error) {
+      console.error("Error deleting parameter:", error)
+    } finally {
+      setDeleteConfirmOpen(false)
+      setParamToDelete(null)
     }
   }
 
@@ -535,11 +580,21 @@ function ScoringSection({ companyId }: ScoringProps) {
                         <div className="text-xs text-muted-foreground">{param.description}</div>
                       </td>
                       <td className="px-4 py-3 text-right">
-                        <div className="flex gap-1 justify-end">
-                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                            ⋯
-                          </Button>
-                        </div>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                              ⋯
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                              className="text-destructive cursor-pointer"
+                              onClick={() => handleDeleteParameter({ id: param.id, name: param.name })}
+                            >
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </td>
                     </tr>
                   ))}
@@ -548,10 +603,7 @@ function ScoringSection({ companyId }: ScoringProps) {
             </div>
           </div>
         </div>
-        <div className="px-6 py-4 bg-muted/20 border-t border-border/50 flex items-center justify-between">
-          <Button variant="ghost" size="sm" className="text-muted-foreground">
-            Reset to Defaults
-          </Button>
+        <div className="px-6 py-4 bg-muted/20 border-t border-border/50 flex justify-end">
           <Button size="sm" onClick={handleSaveChanges}>
             Save Changes
           </Button>
@@ -593,6 +645,25 @@ function ScoringSection({ companyId }: ScoringProps) {
               Cancel
             </Button>
             <Button onClick={handleAddParameter}>Add Parameter</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Parameter</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete "{paramToDelete?.name}"? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteConfirmOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={confirmDelete}>
+              Delete
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

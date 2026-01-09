@@ -174,3 +174,23 @@ Check the render method of `div`.  It was passed a child from StepTestCases.
 [00:28:37.261] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
 [00:28:37.261] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/settings","route":"/settings"}
 [00:28:37.261] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/settings color: rgb(120, 120, 120) color: inherit {"dp":"/settings","o":"http://localhost:3000/settings","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767929146104}
+[00:30:11.483] Server  LOG      ✓ Compiled in 72ms
+[00:30:58.410] Server  LOG      ✓ Compiled in 108ms
+[00:31:03.492] Server  LOG      ✓ Compiled in 60ms
+[00:31:25.652] Browser ERROR   Failed to delete parameter: 500 Internal Server Error
+[00:32:13.400] Browser ERROR   Failed to delete parameter: 404 Not Found
+[00:33:59.918] Server  LOG      ✓ Compiled in 66ms
+[00:34:07.706] Server  LOG      ✓ Compiled in 72ms
+[00:34:14.161] Server  LOG      ✓ Compiled in 67ms
+[00:34:22.226] Server  LOG      ✓ Compiled in 87ms
+[00:34:38.564] Server  LOG      ✓ Compiled in 83ms
+[00:35:09.423] Browser LOG     Parameter deleted successfully
+[00:35:18.977] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:35:19.123] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:35:19.123] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/settings","route":"/settings"}
+[00:35:19.124] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/settings color: rgb(120, 120, 120) color: inherit {"dp":"/settings","o":"http://localhost:3000/settings","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767929547966}
+[00:35:35.635] Browser LOG     Parameter deleted successfully
+[00:35:37.920] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:35:38.054] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:35:38.054] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/settings","route":"/settings"}
+[00:35:38.054] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/settings color: rgb(120, 120, 120) color: inherit {"dp":"/settings","o":"http://localhost:3000/settings","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767929566896}

@@ -130,6 +130,36 @@ public class ScoringSettingsService {
     }
 
     /**
+     * Delete a scoring parameter.
+     */
+    public ScoringSettingsResponse deleteParameter(Long companyId, Long parameterId) {
+        log.info("Deleting parameter {} for company: {}", parameterId, companyId);
+
+        // Verify company exists
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Company", "id", companyId));
+
+        ScoringSettings settings = scoringSettingsRepository.findByCompanyId(companyId)
+                .orElseThrow(() -> new ResourceNotFoundException("ScoringSettings", "companyId", companyId));
+
+        // Find and remove the parameter
+        ScoringParameter paramToDelete = settings.getParameters().stream()
+                .filter(p -> p.getId().equals(parameterId))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("ScoringParameter", "id", parameterId));
+
+        settings.getParameters().remove(paramToDelete);
+        settings.setUpdatedAt(LocalDateTime.now());
+
+        ScoringSettings saved = scoringSettingsRepository.save(settings);
+        scoringParameterRepository.deleteById(parameterId);
+
+        log.info("Parameter {} deleted for company: {}", parameterId, companyId);
+
+        return toResponse(saved);
+    }
+
+    /**
      * Save changes to scoring settings (wrapper for updateSettings).
      */
     public ScoringSettingsResponse saveChanges(Long companyId, ScoringSettingsRequest request) {

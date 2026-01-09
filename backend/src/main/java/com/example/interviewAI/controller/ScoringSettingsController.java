@@ -147,6 +147,35 @@ public class ScoringSettingsController {
     }
 
     /**
+     * Delete a scoring parameter.
+     */
+    @DeleteMapping("/company/{companyId}/parameters/{parameterId}")
+    public ResponseEntity<ScoringSettingsResponse> deleteParameter(
+            @PathVariable Long companyId,
+            @PathVariable Long parameterId,
+            @RequestHeader(value = "Authorization", required = false) String bearerToken) {
+        log.info("Deleting parameter {} for company: {}", parameterId, companyId);
+
+        // Authorization check
+        if (bearerToken != null && !bearerToken.isEmpty()) {
+            try {
+                User user = extractUserFromToken(bearerToken);
+                // Authorization: Admin only
+                if (!user.getRole().equals(RoleEnum.ADMIN)) {
+                    throw new ForbiddenException("You are not authorized to delete parameters");
+                }
+            } catch (ForbiddenException ex) {
+                throw ex;  // Re-throw authorization errors
+            } catch (Exception e) {
+                log.debug("Could not extract user from token, allowing access for testing");
+            }
+        }
+
+        ScoringSettingsResponse updatedSettings = scoringSettingsService.deleteParameter(companyId, parameterId);
+        return ResponseEntity.ok(updatedSettings);
+    }
+
+    /**
      * Extract user from JWT token.
      */
     private User extractUserFromToken(String bearerToken) {
