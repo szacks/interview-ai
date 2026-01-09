@@ -60,7 +60,7 @@ export default function SettingsPage() {
 
   return (
     <div className="flex-1 overflow-auto">
-      <div className="max-w-7xl mx-auto p-8">
+      <div className="w-full p-8">
         <div className="mb-8">
           <h1 className="text-3xl font-semibold tracking-tight mb-2">Settings</h1>
           <p className="text-muted-foreground text-sm">Manage your account settings and preferences</p>
@@ -73,20 +73,20 @@ export default function SettingsPage() {
                 <button
                   key={section.id}
                   onClick={() => setActiveSection(section.id)}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${
+                  className={`w-56 flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors overflow-hidden ${
                     activeSection === section.id
                       ? "bg-primary text-primary-foreground shadow-sm"
                       : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   }`}
                 >
-                  <span className="text-base">{getIconSymbol(section.icon)}</span>
-                  <span>{section.label}</span>
+                  <span className="text-base flex-shrink-0">{getIconSymbol(section.icon)}</span>
+                  <span className="truncate">{section.label}</span>
                 </button>
               ))}
             </nav>
           </aside>
 
-          <div className="flex-1 max-w-3xl">
+          <div className="flex-1 min-w-0 max-w-3xl">
             {activeSection === "profile" && <ProfileSection />}
             {activeSection === "interview-defaults" && <InterviewDefaultsSection />}
             {activeSection === "scoring" && <ScoringSection companyId={1} />}

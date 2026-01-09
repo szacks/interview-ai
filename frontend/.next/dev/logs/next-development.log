@@ -132,3 +132,80 @@ class RateLimiter:
 [01:38:50.947] Server  LOG      ✓ Compiled in 61ms
 [01:38:57.712] Server  LOG      ✓ Compiled in 62ms
 [01:39:07.127] Server  LOG      ✓ Compiled in 69ms
+[01:56:02.274] Server  LOG      ✓ Compiled in 108ms
+[01:56:03.331] Browser LOG     [API Client] Adding auth token to request: /teams/members
+[01:56:03.331] Browser LOG     [API Client] Successful response: /teams/members 200
+[01:56:03.331] Browser LOG     [API Client] Adding auth token to request: /teams/pending-invitations
+[01:56:03.331] Browser LOG     [API Client] Successful response: /teams/pending-invitations 200
+[01:56:03.331] Browser LOG     [API Client] Adding auth token to request: /interview-evaluations/interview/274
+[01:56:03.331] Browser LOG     [API Client] Adding auth token to request: /chat/history/274
+[01:56:03.331] Browser LOG     [API Client] Adding auth token to request: /code/latest/274
+[01:56:03.331] Browser LOG     [API Client] Adding auth token to request: /code/execution/274
+[01:56:03.331] Browser LOG     [API Client] Adding auth token to request: /scoring-settings/company/1
+[01:56:03.331] Browser LOG     [API Client] Successful response: /chat/history/274 200
+[01:56:03.331] Browser LOG     [API Client] Successful response: /code/latest/274 200
+[01:56:03.331] Browser LOG     [API Client] Successful response: /code/execution/274 200
+[01:56:03.331] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/274 200
+[01:56:03.331] Browser LOG     [API Client] Successful response: /scoring-settings/company/1 200
+[01:56:03.331] Browser LOG     [Results] Interview ID: 274
+[01:56:03.331] Browser LOG     [Results] Code data received: {"code":"# Rate Limiter\nimport time\n\nclass RateLimiter:\n    def __init__(self, max_requests, window_ms):\n        # TODO: Initialize the rate limiter\n        pass\n\n    def allow_request(self):\n        # TODO: Return True if request allowed, False if limit exceeded\n        return False","id":37,"language":"python","timestamp":"2026-01-09T11:39:42.1573"}
+[01:56:03.331] Browser LOG     [Results] Code submission ID: 37 Language: python Timestamp: 2026-01-09T11:39:42.1573 Length: 275
+[01:56:03.331] Browser LOG     [Results] First 100 chars: # Rate Limiter
+import time
+
+class RateLimiter:
+    def __init__(self, max_requests, window_ms):
+    
+[01:56:03.331] Browser LOG     [Results] Scoring data received: {"autoScoreWeight":0.77,"companyId":1,"createdAt":"2026-01-08T16:24:44.523772","id":1,"manualScoreWeight":0.23,"parameters":[{"description":"Considers edge cases, discusses alternatives","id":150,"isDefault":false,"name":"Algorithmic Thinking","orderIndex":0},{"description":"Clean code, systematic debugging, error handling","id":151,"isDefault":false,"name":"Problem Solving","orderIndex":1},{"description":"Uses AI effectively, reviews suggestions critically","id":152,"isDefault":false,"name":"AI Collaboration","orderIndex":2}],"updatedAt":"2026-01-09T14:03:19.244029"}
+[01:56:03.331] Browser LOG     [Results] Weights set to: {"autoScoreWeight":0.77,"manualScoreWeight":0.23}
+[01:56:46.807] Server  LOG      ✓ Compiled in 104ms
+[01:56:47.331] Browser LOG     [API Client] Adding auth token to request: /teams/members
+[01:56:47.331] Browser LOG     [API Client] Successful response: /teams/members 200
+[01:56:47.331] Browser LOG     [API Client] Adding auth token to request: /teams/pending-invitations
+[01:56:47.331] Browser LOG     [API Client] Successful response: /teams/pending-invitations 200
+[02:02:20.385] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:02:20.545] Browser LOG     [API Client] Adding auth token to request: /users/me
+[02:02:20.545] Browser LOG     [API Client] Adding auth token to request: /users/me
+[02:02:20.545] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[02:02:20.545] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/settings","route":"/settings"}
+[02:02:20.545] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/settings color: rgb(120, 120, 120) color: inherit {"dp":"/settings","o":"http://localhost:3000/settings","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767961795939}
+[02:02:20.545] Browser LOG     [API Client] Successful response: /users/me 200
+[02:02:20.545] Browser LOG     [API Client] Successful response: /users/me 200
+[02:02:21.385] Browser LOG     [API Client] Adding auth token to request: /agents
+[02:02:21.385] Browser LOG     [API Client] Successful response: /agents 200
+[02:02:21.385] Browser LOG     [API Client] Adding auth token to request: /user-settings
+[02:02:21.385] Browser LOG     [API Client] Successful response: /user-settings 200
+[02:02:50.342] Server  LOG      ✓ Compiled in 67ms
+[02:02:51.331] Browser LOG     [API Client] Adding auth token to request: /agents
+[02:02:51.331] Browser LOG     [API Client] Successful response: /agents 200
+[02:02:51.331] Browser LOG     [API Client] Adding auth token to request: /user-settings
+[02:02:51.331] Browser LOG     [API Client] Successful response: /user-settings 200
+[02:03:26.930] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:03:27.117] Browser LOG     [API Client] Adding auth token to request: /users/me
+[02:03:27.117] Browser LOG     [API Client] Adding auth token to request: /users/me
+[02:03:27.117] Browser LOG     [API Client] Successful response: /users/me 200
+[02:03:27.117] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[02:03:27.117] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/settings","route":"/settings"}
+[02:03:27.117] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/settings color: rgb(120, 120, 120) color: inherit {"dp":"/settings","o":"http://localhost:3000/settings","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767961862511}
+[02:03:27.117] Browser LOG     [API Client] Successful response: /users/me 200
+[02:03:28.092] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:03:28.327] Browser LOG     [API Client] Adding auth token to request: /users/me
+[02:03:28.328] Browser LOG     [API Client] Adding auth token to request: /users/me
+[02:03:28.328] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[02:03:28.328] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/settings","route":"/settings"}
+[02:03:28.328] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/settings color: rgb(120, 120, 120) color: inherit {"dp":"/settings","o":"http://localhost:3000/settings","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767961863720}
+[02:03:28.328] Browser LOG     [API Client] Successful response: /users/me 200
+[02:03:28.328] Browser LOG     [API Client] Successful response: /users/me 200
+[02:04:05.800] Server  LOG      ✓ Compiled in 39ms
+[02:08:49.795] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:08:50.039] Browser LOG     [API Client] Adding auth token to request: /users/me
+[02:08:50.040] Browser LOG     [API Client] Adding auth token to request: /users/me
+[02:08:50.040] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[02:08:50.040] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/settings","route":"/settings"}
+[02:08:50.040] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/settings color: rgb(120, 120, 120) color: inherit {"dp":"/settings","o":"http://localhost:3000/settings","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767962185432}
+[02:08:50.040] Browser LOG     [API Client] Successful response: /users/me 200
+[02:08:50.040] Browser LOG     [API Client] Successful response: /users/me 200
+[02:08:54.405] Browser LOG     [API Client] Adding auth token to request: /agents
+[02:08:54.405] Browser LOG     [API Client] Successful response: /agents 200
+[02:08:54.405] Browser LOG     [API Client] Adding auth token to request: /user-settings
+[02:08:54.405] Browser LOG     [API Client] Successful response: /user-settings 200
