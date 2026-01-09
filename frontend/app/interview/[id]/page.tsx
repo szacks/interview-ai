@@ -17,7 +17,6 @@ import {
   XCircle,
   Clock,
   StickyNote,
-  Eye,
   ArrowLeft,
   Terminal,
   HelpCircle,
@@ -623,11 +622,16 @@ export default function InterviewSessionPage({
           <div className="flex-1 flex overflow-hidden">
             {/* Code Area */}
             <div className="flex-1 flex flex-col overflow-hidden border-r border-border">
-              <div className="px-4 py-2 border-b border-border bg-card/50 flex items-center justify-between">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Eye className="size-4" />
-                  <span>Viewing candidate's code in real-time</span>
+              {/* Problem Description Panel */}
+              {interview?.question?.description && (
+                <div className="border-b border-border bg-card p-4 flex-shrink-0 max-h-[200px] overflow-y-auto">
+                  <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
+                    {interview.question.description}
+                  </p>
                 </div>
+              )}
+              <div className="px-4 py-2 border-b border-border bg-card/50 flex items-center justify-between">
+                <div></div>
                 <Badge variant="outline" className="text-xs">
                   {codeLanguage}
                 </Badge>

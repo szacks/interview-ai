@@ -4,5 +4,8 @@
   "/interview/[id]/page": "app/interview/[id]/page.js",
   "/interviews/new/page": "app/interviews/new/page.js",
   "/login/page": "app/login/page.js",
-  "/page": "app/page.js"
+  "/page": "app/page.js",
+  "/questions/new/page": "app/questions/new/page.js",
+  "/questions/page": "app/questions/page.js",
+  "/settings/page": "app/settings/page.js"
 }

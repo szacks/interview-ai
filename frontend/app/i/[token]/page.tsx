@@ -604,7 +604,6 @@ export default function CandidateInterviewPage({
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Question Panel */}
           <div className="border-b border-border bg-card p-4 flex-shrink-0">
-            <h2 className="font-semibold mb-2">Problem Description</h2>
             <p className="text-sm text-muted-foreground leading-relaxed">{interview?.question?.description || "Loading question description..."}</p>
           </div>
 
