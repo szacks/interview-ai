@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "agent_templates")
+@Table(name = "agents")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,9 +19,6 @@ public class AgentTemplate {
 
     @Column(nullable = false, length = 100)
     private String name;
-
-    @Column(columnDefinition = "TEXT", length = 500)
-    private String description;
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String systemPrompt;

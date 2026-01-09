@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -15,19 +15,32 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { agentService, type AgentTemplate } from '@/services/agentService'
 
-interface CreateAgentModalProps {
+interface EditAgentModalProps {
   open: boolean
+  agent: AgentTemplate | null
   onOpenChange: (open: boolean) => void
   onSuccess: (agent: AgentTemplate) => void
+  onDelete?: (agentId: number) => void
 }
 
-export function CreateAgentModal({ open, onOpenChange, onSuccess }: CreateAgentModalProps) {
+export function EditAgentModal({ open, agent, onOpenChange, onSuccess, onDelete }: EditAgentModalProps) {
   const [formData, setFormData] = useState({
     name: '',
     systemPrompt: '',
   })
   const [loading, setLoading] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (agent && open) {
+      setFormData({
+        name: agent.name,
+        systemPrompt: agent.systemPrompt,
+      })
+      setError(null)
+    }
+  }, [agent, open])
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({
@@ -54,7 +67,7 @@ export function CreateAgentModal({ open, onOpenChange, onSuccess }: CreateAgentM
   }
 
   const handleSubmit = async () => {
-    if (!validateForm()) {
+    if (!agent || !validateForm()) {
       return
     }
 
@@ -62,32 +75,45 @@ export function CreateAgentModal({ open, onOpenChange, onSuccess }: CreateAgentM
     setError(null)
 
     try {
-      const newAgent = await agentService.createAgent({
+      const updatedAgent = await agentService.updateAgent(agent.id, {
         name: formData.name.trim(),
         systemPrompt: formData.systemPrompt.trim(),
       })
 
-      onSuccess(newAgent)
-      setFormData({
-        name: '',
-        systemPrompt: '',
-      })
+      onSuccess(updatedAgent)
       onOpenChange(false)
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to create agent'
+      const errorMessage = err instanceof Error ? err.message : 'Failed to update agent'
       setError(errorMessage)
-      console.error('Error creating agent:', err)
+      console.error('Error updating agent:', err)
     } finally {
       setLoading(false)
     }
   }
 
+  const handleDelete = async () => {
+    if (!agent || !confirm('Are you sure you want to delete this agent? This action cannot be undone.')) {
+      return
+    }
+
+    setDeleting(true)
+    setError(null)
+
+    try {
+      await agentService.deleteAgent(agent.id)
+      onDelete?.(agent.id)
+      onOpenChange(false)
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to delete agent'
+      setError(errorMessage)
+      console.error('Error deleting agent:', err)
+    } finally {
+      setDeleting(false)
+    }
+  }
+
   const handleOpenChange = (newOpen: boolean) => {
     if (!newOpen) {
-      setFormData({
-        name: '',
-        systemPrompt: '',
-      })
       setError(null)
     }
     onOpenChange(newOpen)
@@ -97,23 +123,23 @@ export function CreateAgentModal({ open, onOpenChange, onSuccess }: CreateAgentM
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Create Custom AI Agent</DialogTitle>
+          <DialogTitle>Edit AI Agent</DialogTitle>
           <DialogDescription>
-            Define a custom AI behavior for your interviews
+            Modify your custom AI agent configuration
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
           <div>
-            <Label htmlFor="name" className="text-sm font-medium">
+            <Label htmlFor="edit-name" className="text-sm font-medium">
               AI Helper Name *
             </Label>
             <Input
-              id="name"
+              id="edit-name"
               placeholder="Name for your custom AI helper"
               value={formData.name}
               onChange={(e) => handleInputChange('name', e.target.value)}
-              disabled={loading}
+              disabled={loading || deleting}
               className="mt-1 h-10"
             />
             <p className="text-xs text-muted-foreground mt-1">
@@ -122,11 +148,11 @@ export function CreateAgentModal({ open, onOpenChange, onSuccess }: CreateAgentM
           </div>
 
           <div>
-            <Label htmlFor="systemPrompt" className="text-sm font-medium">
+            <Label htmlFor="edit-systemPrompt" className="text-sm font-medium">
               Custom AI Prompt *
             </Label>
             <Textarea
-              id="systemPrompt"
+              id="edit-systemPrompt"
               className="min-h-[250px] font-mono text-sm mt-1"
               placeholder={`You are a helpful coding assistant for a rate limiter problem.
 
@@ -143,7 +169,7 @@ IMPORTANT RESTRICTIONS:
 - Encourage the candidate to think through problems`}
               value={formData.systemPrompt}
               onChange={(e) => handleInputChange('systemPrompt', e.target.value)}
-              disabled={loading}
+              disabled={loading || deleting}
             />
             <p className="text-xs text-muted-foreground mt-1">
               Include instructions for intentional weaknesses or specific guidance for the AI
@@ -157,20 +183,29 @@ IMPORTANT RESTRICTIONS:
           )}
         </div>
 
-        <DialogFooter className="flex gap-3">
+        <DialogFooter className="flex gap-3 justify-between">
           <Button
-            variant="outline"
-            onClick={() => handleOpenChange(false)}
-            disabled={loading}
+            variant="destructive"
+            onClick={handleDelete}
+            disabled={loading || deleting}
           >
-            Cancel
+            {deleting ? 'Deleting...' : 'Delete Agent'}
           </Button>
-          <Button
-            onClick={handleSubmit}
-            disabled={loading}
-          >
-            {loading ? 'Creating...' : 'Create Agent'}
-          </Button>
+          <div className="flex gap-3">
+            <Button
+              variant="outline"
+              onClick={() => handleOpenChange(false)}
+              disabled={loading || deleting}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSubmit}
+              disabled={loading || deleting}
+            >
+              {loading ? 'Saving...' : 'Save Changes'}
+            </Button>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>

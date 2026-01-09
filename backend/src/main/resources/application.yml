@@ -20,6 +20,11 @@ spring:
         use_sql_comments: true
     show-sql: false
 
+  # Flyway Configuration for database migrations
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
   # Server Configuration
   servlet:
     encoding:
@@ -35,6 +40,11 @@ spring:
       allowed-headers: Authorization,Content-Type,Accept,Origin
       allow-credentials: true
       max-age: 3600
+
+  # Web Configuration - disable default resource handling to prevent /api routes from being treated as static resources
+  web:
+    resources:
+      add-mappings: false
 
   # Mail Configuration (Resend with test domain)
   mail:
@@ -118,6 +128,7 @@ app:
       - /code/**
       - /ws/**
       - /interview-evaluations/**
+      - /user-settings/**
       - /scoring-settings/**
 
   # Docker Sandbox Execution Configuration

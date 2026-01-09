@@ -71,6 +71,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private boolean isPublicEndpoint(String requestPath) {
         // The request path doesn't include /api context, so we check for direct paths
+        // Exclude /auth/change-password as it requires authentication
+        if (requestPath.equals("/auth/change-password")) {
+            return false;
+        }
         return requestPath.startsWith("/auth/") ||
                requestPath.startsWith("/health/") ||
                requestPath.startsWith("/error") ||

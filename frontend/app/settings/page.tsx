@@ -22,7 +22,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { CreateAgentModal } from "@/components/CreateAgentModal"
+import { EditAgentModal } from "@/components/EditAgentModal"
+import { ChangePasswordModal } from "@/components/ChangePasswordModal"
 import { agentService, type AgentTemplate } from "@/services/agentService"
+import { userSettingsService } from "@/services/userSettingsService"
+import userService, { type UserProfile } from "@/services/userService"
 
 type SettingsSection = "profile" | "interview-defaults" | "scoring" | "team" | "security" | "billing"
 
@@ -50,7 +54,8 @@ export default function SettingsPage() {
     { id: "billing" as const, label: "Billing", icon: "credit-card", roles: ["admin"] },
   ]
 
-  const visibleSections = sections.filter((s) => s.roles.includes(currentUser.role))
+  // Filter out billing tab for now (hidden, not deleted)
+  const visibleSections = sections.filter((s) => s.roles.includes(currentUser.role) && s.id !== "billing")
 
   return (
     <div className="flex-1 overflow-auto">
@@ -107,6 +112,59 @@ function getIconSymbol(icon: string): string {
 }
 
 function ProfileSection() {
+  const [changePasswordModalOpen, setChangePasswordModalOpen] = useState(false)
+  const [passwordChangeSuccess, setPasswordChangeSuccess] = useState(false)
+  const [user, setUser] = useState<UserProfile | null>(null)
+  const [name, setName] = useState("")
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [saveSuccess, setSaveSuccess] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetchUserProfile()
+  }, [])
+
+  const fetchUserProfile = async () => {
+    try {
+      setLoading(true)
+      const userData = await userService.getCurrentUser()
+      setUser(userData)
+      setName(userData.name)
+    } catch (error) {
+      console.error("Failed to fetch user profile:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSaveChanges = async () => {
+    if (!name.trim()) {
+      setSaveError("Name is required")
+      return
+    }
+
+    try {
+      setSaving(true)
+      setSaveError(null)
+      const updatedUser = await userService.updateProfile({ name: name.trim() })
+      setUser(updatedUser)
+      setSaveSuccess(true)
+      setTimeout(() => setSaveSuccess(false), 3000)
+    } catch (error: any) {
+      setSaveError(error.message || "Failed to save changes")
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handlePasswordChangeSuccess = () => {
+    setPasswordChangeSuccess(true)
+    setTimeout(() => setPasswordChangeSuccess(false), 3000)
+  }
+
+  const hasChanges = user && name !== user.name
+
   return (
     <div className="space-y-6">
       <Card className="border-border/50">
@@ -114,39 +172,66 @@ function ProfileSection() {
           <h2 className="text-lg font-semibold mb-1">Personal Information</h2>
           <p className="text-sm text-muted-foreground mb-6">Update your personal details</p>
 
-          <div className="space-y-6">
-            <div className="flex items-center gap-6 pb-6 border-b border-border/50">
-              <div className="flex-1">
-                <Label htmlFor="fullName" className="text-sm font-medium mb-2 block">
-                  Full Name
-                </Label>
-                <Input id="fullName" defaultValue="John Smith" className="h-10" />
-              </div>
-            </div>
-
-            <div className="grid gap-6">
-              <div className="grid gap-2">
-                <Label htmlFor="email" className="text-sm font-medium">
-                  Email Address
-                </Label>
-                <Input id="email" defaultValue="john@acme.com" disabled className="h-10 bg-muted/30" />
-                <p className="text-xs text-muted-foreground">Contact support to change your email address</p>
-              </div>
-
-              <div className="grid gap-2">
-                <Label className="text-sm font-medium">Role</Label>
-                <div className="flex items-center gap-3">
-                  <Badge variant="secondary" className="font-medium">
-                    Admin
-                  </Badge>
-                  <span className="text-xs text-muted-foreground">Managed by team administrators</span>
+          {loading ? (
+            <div className="py-8 text-center text-muted-foreground">Loading...</div>
+          ) : (
+            <div className="space-y-6">
+              <div className="flex items-center gap-6 pb-6 border-b border-border/50">
+                <div className="flex-1">
+                  <Label htmlFor="fullName" className="text-sm font-medium mb-2 block">
+                    Full Name
+                  </Label>
+                  <Input
+                    id="fullName"
+                    value={name}
+                    onChange={(e) => {
+                      setName(e.target.value)
+                      setSaveError(null)
+                    }}
+                    className="h-10"
+                    disabled={saving}
+                  />
                 </div>
               </div>
+
+              <div className="grid gap-6">
+                <div className="grid gap-2">
+                  <Label htmlFor="email" className="text-sm font-medium">
+                    Email Address
+                  </Label>
+                  <Input id="email" value={user?.email || ""} disabled className="h-10 bg-muted/30" />
+                  <p className="text-xs text-muted-foreground">Contact support to change your email address</p>
+                </div>
+
+                <div className="grid gap-2">
+                  <Label className="text-sm font-medium">Role</Label>
+                  <div className="flex items-center gap-3">
+                    <Badge variant="secondary" className="font-medium capitalize">
+                      {user?.role || "User"}
+                    </Badge>
+                    <span className="text-xs text-muted-foreground">Managed by team administrators</span>
+                  </div>
+                </div>
+              </div>
+
+              {saveSuccess && (
+                <div className="bg-green-50 border border-green-200 rounded-md p-3">
+                  <p className="text-sm text-green-800 font-medium">Profile saved successfully!</p>
+                </div>
+              )}
+
+              {saveError && (
+                <div className="bg-red-50 border border-red-200 rounded-md p-3">
+                  <p className="text-sm text-red-800">{saveError}</p>
+                </div>
+              )}
             </div>
-          </div>
+          )}
         </div>
         <div className="px-6 py-4 bg-muted/20 border-t border-border/50 flex justify-end">
-          <Button size="sm">Save Changes</Button>
+          <Button size="sm" onClick={handleSaveChanges} disabled={saving || loading || !hasChanges}>
+            {saving ? "Saving..." : "Save Changes"}
+          </Button>
         </div>
       </Card>
 
@@ -155,52 +240,108 @@ function ProfileSection() {
           <h2 className="text-lg font-semibold mb-1">Security</h2>
           <p className="text-sm text-muted-foreground mb-6">Manage your password and authentication settings</p>
 
+          {passwordChangeSuccess && (
+            <div className="mb-4 bg-green-50 border border-green-200 rounded-md p-3">
+              <p className="text-sm text-green-800 font-medium">Password changed successfully!</p>
+            </div>
+          )}
+
           <div className="space-y-4">
             <div className="flex items-center justify-between py-3 border-b border-border/50">
               <div>
                 <p className="text-sm font-medium mb-0.5">Password</p>
                 <p className="text-xs text-muted-foreground">Last changed 3 months ago</p>
               </div>
-              <Button variant="outline" size="sm">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setChangePasswordModalOpen(true)}
+              >
                 Change Password
               </Button>
             </div>
           </div>
         </div>
       </Card>
+
+      <ChangePasswordModal
+        open={changePasswordModalOpen}
+        onOpenChange={setChangePasswordModalOpen}
+        onSuccess={handlePasswordChangeSuccess}
+      />
     </div>
   )
 }
 
 function InterviewDefaultsSection() {
   const [selectedAgentId, setSelectedAgentId] = useState<number | null>(null)
-  const [showRunTests, setShowRunTests] = useState(true)
   const [agents, setAgents] = useState<AgentTemplate[]>([])
   const [loading, setLoading] = useState(true)
   const [createModalOpen, setCreateModalOpen] = useState(false)
+  const [editModalOpen, setEditModalOpen] = useState(false)
+  const [editingAgent, setEditingAgent] = useState<AgentTemplate | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [savingError, setSavingError] = useState<string | null>(null)
+  const [saveSuccess, setSaveSuccess] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
 
   useEffect(() => {
-    fetchAgents()
+    fetchAgentsAndSettings()
   }, [])
 
-  const fetchAgents = async () => {
+  const fetchAgentsAndSettings = async () => {
     try {
       setLoading(true)
       setError(null)
+
+      // Fetch agents
       const fetchedAgents = await agentService.getAllAgents()
       setAgents(fetchedAgents)
-      // Set the first system agent as default
-      const defaultAgent = fetchedAgents.find((a) => a.isSystem)
-      if (defaultAgent) {
-        setSelectedAgentId(defaultAgent.id)
+
+      // Fetch user settings
+      const settings = await userSettingsService.getSettings()
+      if (settings && settings.defaultAgentId) {
+        setSelectedAgentId(settings.defaultAgentId)
+      } else {
+        // Set the first system agent as default if no preference exists
+        const defaultAgent = fetchedAgents.find((a) => a.isSystem)
+        if (defaultAgent) {
+          setSelectedAgentId(defaultAgent.id)
+        }
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to load agents"
+      const errorMessage = err instanceof Error ? err.message : "Failed to load settings"
       setError(errorMessage)
-      console.error("Error fetching agents:", err)
+      console.error("Error fetching settings:", err)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleSaveChanges = async () => {
+    if (!selectedAgentId) {
+      setSavingError("Please select an AI assistant")
+      return
+    }
+
+    try {
+      setIsSaving(true)
+      setSavingError(null)
+      setSaveSuccess(false)
+
+      await userSettingsService.updateSettings({
+        defaultAgentId: selectedAgentId,
+      })
+
+      setSaveSuccess(true)
+      // Hide success message after 3 seconds
+      setTimeout(() => setSaveSuccess(false), 3000)
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to save settings"
+      setSavingError(errorMessage)
+      console.error("Error saving settings:", err)
+    } finally {
+      setIsSaving(false)
     }
   }
 
@@ -210,30 +351,27 @@ function InterviewDefaultsSection() {
     setSelectedAgentId(newAgent.id)
   }
 
+  const handleEditAgent = (agent: AgentTemplate) => {
+    setEditingAgent(agent)
+    setEditModalOpen(true)
+  }
+
+  const handleAgentUpdated = (updatedAgent: AgentTemplate) => {
+    setAgents((prev) => prev.map((a) => (a.id === updatedAgent.id ? updatedAgent : a)))
+  }
+
+  const handleAgentDeleted = (agentId: number) => {
+    setAgents((prev) => prev.filter((a) => a.id !== agentId))
+    if (selectedAgentId === agentId) {
+      setSelectedAgentId(null)
+    }
+  }
+
   const systemAgents = agents.filter((a) => a.isSystem)
   const customAgents = agents.filter((a) => !a.isSystem)
 
   return (
     <div className="space-y-6">
-      <Card className="border-border/50">
-        <div className="p-6">
-          <h2 className="text-lg font-semibold mb-1">Candidate Experience</h2>
-          <p className="text-sm text-muted-foreground mb-6">Configure default settings for interview sessions</p>
-
-          <div className="space-y-6">
-            <div className="flex items-center justify-between py-3">
-              <div className="flex-1 pr-4">
-                <Label htmlFor="runTests" className="text-sm font-medium mb-1 block">
-                  Show "Run Tests" Button to Candidates
-                </Label>
-                <p className="text-xs text-muted-foreground">Allow candidates to run test cases during the interview</p>
-              </div>
-              <Switch id="runTests" checked={showRunTests} onCheckedChange={setShowRunTests} />
-            </div>
-          </div>
-        </div>
-      </Card>
-
       <Card className="border-border/50">
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
@@ -282,6 +420,7 @@ function InterviewDefaultsSection() {
                       agent={agent}
                       selected={selectedAgentId === agent.id}
                       onSelect={() => setSelectedAgentId(agent.id)}
+                      onEdit={() => handleEditAgent(agent)}
                     />
                   ))}
                 </>
@@ -289,8 +428,26 @@ function InterviewDefaultsSection() {
             </div>
           )}
         </div>
-        <div className="px-6 py-4 bg-muted/20 border-t border-border/50 flex justify-end">
-          <Button size="sm">Save Changes</Button>
+        <div className="px-6 py-4 bg-muted/20 border-t border-border/50 flex items-center justify-between">
+          <div className="flex-1">
+            {savingError && (
+              <div className="bg-destructive/10 border border-destructive/20 rounded-md p-3 inline-block">
+                <p className="text-sm text-destructive">{savingError}</p>
+              </div>
+            )}
+            {saveSuccess && (
+              <div className="bg-green-50 border border-green-200 rounded-md p-3 inline-block">
+                <p className="text-sm text-green-700">Settings saved successfully</p>
+              </div>
+            )}
+          </div>
+          <Button
+            size="sm"
+            onClick={handleSaveChanges}
+            disabled={isSaving || loading}
+          >
+            {isSaving ? "Saving..." : "Save Changes"}
+          </Button>
         </div>
       </Card>
 
@@ -298,6 +455,14 @@ function InterviewDefaultsSection() {
         open={createModalOpen}
         onOpenChange={setCreateModalOpen}
         onSuccess={handleAgentCreated}
+      />
+
+      <EditAgentModal
+        open={editModalOpen}
+        agent={editingAgent}
+        onOpenChange={setEditModalOpen}
+        onSuccess={handleAgentUpdated}
+        onDelete={handleAgentDeleted}
       />
     </div>
   )
@@ -307,37 +472,54 @@ function AgentCard({
   agent,
   selected,
   onSelect,
+  onEdit,
 }: {
   agent: AgentTemplate
   selected: boolean
   onSelect: () => void
+  onEdit?: () => void
 }) {
   return (
-    <button
-      onClick={onSelect}
+    <div
       className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
         selected ? "border-primary bg-primary/5" : "border-border/50 hover:border-border hover:bg-muted/30"
       }`}
     >
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-1.5">
-            <span className="font-medium text-sm">{agent.name}</span>
-            <Badge variant={agent.isSystem ? "outline" : "secondary"} className="text-xs font-normal">
-              {agent.isSystem ? "System" : "Custom"}
-            </Badge>
-          </div>
-          <p className="text-xs text-muted-foreground leading-relaxed">{agent.description}</p>
-        </div>
-        <div
-          className={`size-5 rounded-full border-2 flex-shrink-0 ml-3 mt-0.5 flex items-center justify-center ${
-            selected ? "border-primary" : "border-border"
-          }`}
+      <div className="flex items-center justify-between">
+        <button
+          onClick={onSelect}
+          className="flex-1 text-left flex items-center gap-2"
         >
-          {selected && <div className="size-2.5 rounded-full bg-primary" />}
+          <span className="font-medium text-sm">{agent.name}</span>
+          <Badge variant={agent.isSystem ? "outline" : "secondary"} className="text-xs font-normal">
+            {agent.isSystem ? "System" : "Custom"}
+          </Badge>
+        </button>
+        <div className="flex items-center gap-2">
+          {!agent.isSystem && onEdit && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={(e) => {
+                e.stopPropagation()
+                onEdit()
+              }}
+            >
+              ✎
+            </Button>
+          )}
+          <div
+            onClick={onSelect}
+            className={`size-5 rounded-full border-2 flex-shrink-0 ml-1 flex items-center justify-center cursor-pointer ${
+              selected ? "border-primary" : "border-border"
+            }`}
+          >
+            {selected && <div className="size-2.5 rounded-full bg-primary" />}
+          </div>
         </div>
       </div>
-    </button>
+    </div>
   )
 }
 
@@ -856,32 +1038,81 @@ function TeamManagementSection() {
 }
 
 function SecuritySection() {
-  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false)
+  const [sessionTimeout, setSessionTimeout] = useState("120")
   const [dataRetention, setDataRetention] = useState("90")
+  const [loading, setLoading] = useState(true)
+  const [isSaving, setIsSaving] = useState(false)
+  const [saveSuccess, setSaveSuccess] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetchSecuritySettings()
+  }, [])
+
+  const fetchSecuritySettings = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      const settings = await userSettingsService.getSettings()
+      if (settings) {
+        setSessionTimeout(settings.sessionTimeoutMinutes === -1 ? "never" : String(settings.sessionTimeoutMinutes))
+        setDataRetention(settings.dataRetentionDays === -1 ? "forever" : String(settings.dataRetentionDays))
+      }
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to load security settings"
+      setError(errorMessage)
+      console.error("Error fetching security settings:", err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSaveChanges = async () => {
+    try {
+      setIsSaving(true)
+      setError(null)
+      setSaveSuccess(false)
+
+      await userSettingsService.updateSettings({
+        sessionTimeoutMinutes: sessionTimeout === "never" ? -1 : parseInt(sessionTimeout),
+        dataRetentionDays: dataRetention === "forever" ? -1 : parseInt(dataRetention),
+      })
+
+      setSaveSuccess(true)
+      setTimeout(() => setSaveSuccess(false), 3000)
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to save security settings"
+      setError(errorMessage)
+      console.error("Error saving security settings:", err)
+    } finally {
+      setIsSaving(false)
+    }
+  }
 
   return (
     <div className="space-y-6">
       <Card className="border-border/50">
         <div className="p-6">
-          <h2 className="text-lg font-semibold mb-1">Authentication</h2>
-          <p className="text-sm text-muted-foreground mb-6">Manage authentication and access security</p>
+          <h2 className="text-lg font-semibold mb-1">Session Security</h2>
+          <p className="text-sm text-muted-foreground mb-6">Configure session timeout settings</p>
+
+          {error && (
+            <div className="bg-destructive/10 border border-destructive/20 rounded-md p-3 mb-6">
+              <p className="text-sm text-destructive">{error}</p>
+            </div>
+          )}
 
           <div className="space-y-4">
-            <div className="flex items-center justify-between py-3 border-b border-border/50">
-              <div className="flex-1 pr-4">
-                <Label htmlFor="2fa" className="text-sm font-medium mb-1 block">
-                  Two-Factor Authentication
-                </Label>
-                <p className="text-xs text-muted-foreground">Add an extra layer of security to your account</p>
-              </div>
-              <Switch id="2fa" checked={twoFactorEnabled} onCheckedChange={setTwoFactorEnabled} />
-            </div>
-
             <div className="py-3">
               <div className="flex items-center justify-between mb-3">
                 <Label className="text-sm font-medium">Session Timeout</Label>
               </div>
-              <select className="w-full h-10 px-3 text-sm border border-border rounded-md bg-background">
+              <select
+                value={sessionTimeout}
+                onChange={(e) => setSessionTimeout(e.target.value)}
+                disabled={loading}
+                className="w-full h-10 px-3 text-sm border border-border rounded-md bg-background disabled:opacity-50"
+              >
                 <option value="30">30 minutes</option>
                 <option value="60">1 hour</option>
                 <option value="120">2 hours</option>
@@ -905,7 +1136,8 @@ function SecuritySection() {
               <select
                 value={dataRetention}
                 onChange={(e) => setDataRetention(e.target.value)}
-                className="w-full h-10 px-3 text-sm border border-border rounded-md bg-background"
+                disabled={loading}
+                className="w-full h-10 px-3 text-sm border border-border rounded-md bg-background disabled:opacity-50"
               >
                 <option value="30">30 days</option>
                 <option value="90">90 days</option>
@@ -915,59 +1147,23 @@ function SecuritySection() {
               </select>
               <p className="text-xs text-muted-foreground mt-2">How long to keep completed interview data</p>
             </div>
-
-            <div className="pt-3 border-t border-border/50">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium mb-1">Export All Data</p>
-                  <p className="text-xs text-muted-foreground">Download a copy of all your company data</p>
-                </div>
-                <Button variant="outline" size="sm">
-                  Export
-                </Button>
-              </div>
-            </div>
           </div>
         </div>
-        <div className="px-6 py-4 bg-muted/20 border-t border-border/50 flex justify-end">
-          <Button size="sm">Save Changes</Button>
-        </div>
-      </Card>
-
-      <Card className="border-border/50 border-destructive/20">
-        <div className="p-6">
-          <h2 className="text-lg font-semibold mb-1 text-destructive">Danger Zone</h2>
-          <p className="text-sm text-muted-foreground mb-6">Irreversible actions</p>
-
-          <div className="space-y-3">
-            <div className="flex items-center justify-between py-3 border-b border-border/50">
-              <div>
-                <p className="text-sm font-medium mb-1">Delete All Interview Data</p>
-                <p className="text-xs text-muted-foreground">Permanently remove all interview records</p>
+        <div className="px-6 py-4 bg-muted/20 border-t border-border/50 flex items-center justify-between">
+          <div className="flex-1">
+            {saveSuccess && (
+              <div className="bg-green-50 border border-green-200 rounded-md p-3 inline-block">
+                <p className="text-sm text-green-700">Settings saved successfully</p>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                className="text-destructive border-destructive/30 hover:bg-destructive/10 bg-transparent"
-              >
-                Delete Data
-              </Button>
-            </div>
-
-            <div className="flex items-center justify-between py-3">
-              <div>
-                <p className="text-sm font-medium mb-1">Close Account</p>
-                <p className="text-xs text-muted-foreground">Permanently delete your account and all data</p>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                className="text-destructive border-destructive/30 hover:bg-destructive/10 bg-transparent"
-              >
-                Close Account
-              </Button>
-            </div>
+            )}
           </div>
+          <Button
+            size="sm"
+            onClick={handleSaveChanges}
+            disabled={isSaving || loading}
+          >
+            {isSaving ? "Saving..." : "Save Changes"}
+          </Button>
         </div>
       </Card>
     </div>

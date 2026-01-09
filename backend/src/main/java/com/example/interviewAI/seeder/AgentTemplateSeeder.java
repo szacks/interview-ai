@@ -42,7 +42,6 @@ public class AgentTemplateSeeder implements CommandLineRunner {
     private void seedHelpfulImperfectTemplate() {
         AgentTemplate template = new AgentTemplate();
         template.setName("Helpful but Imperfect");
-        template.setDescription("Makes subtle mistakes to test candidate oversight");
         template.setSystemPrompt(getHelpfulImperfectPrompt());
         template.setIsSystem(true);
         template.setCompanyId(null);
@@ -56,7 +55,6 @@ public class AgentTemplateSeeder implements CommandLineRunner {
     private void seedMinimalTemplate() {
         AgentTemplate template = new AgentTemplate();
         template.setName("Minimal Assistance");
-        template.setDescription("Only answers direct questions, no suggestions");
         template.setSystemPrompt(getMinimalPrompt());
         template.setIsSystem(true);
         template.setCompanyId(null);

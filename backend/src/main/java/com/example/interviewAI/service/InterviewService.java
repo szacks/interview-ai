@@ -50,6 +50,9 @@ public class InterviewService {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private UserSettingsService userSettingsService;
+
     /**
      * Get all interviews for a company
      */
@@ -330,6 +333,19 @@ public class InterviewService {
             candidateResponse.setCreatedAt(interview.getCandidate().getCreatedAt());
             response.setCandidate(candidateResponse);
         }
+
+        // Map interviewer
+        if (interview.getInterviewer() != null) {
+            UserResponse interviewerResponse = new UserResponse();
+            interviewerResponse.setId(interview.getInterviewer().getId());
+            interviewerResponse.setEmail(interview.getInterviewer().getEmail());
+            interviewerResponse.setRole(interview.getInterviewer().getRole().toString());
+            interviewerResponse.setCreatedAt(interview.getInterviewer().getCreatedAt());
+            response.setInterviewer(interviewerResponse);
+        }
+
+        // Set showRunTests to false for now (feature disabled)
+        response.setShowRunTests(false);
 
         return response;
     }

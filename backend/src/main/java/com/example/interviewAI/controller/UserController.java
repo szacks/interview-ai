@@ -1,11 +1,14 @@
 package com.example.interviewAI.controller;
 
+import com.example.interviewAI.dto.UpdateUserProfileRequest;
 import com.example.interviewAI.dto.UserResponse;
 import com.example.interviewAI.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -74,6 +77,33 @@ public class UserController {
         log.debug("Fetching interviewers for company ID: {}", companyId);
         List<UserResponse> interviewers = userService.getInterviewersByCompany(companyId);
         return ResponseEntity.ok(interviewers);
+    }
+
+    /**
+     * Get current authenticated user's profile.
+     *
+     * @return user details
+     */
+    @GetMapping("/me")
+    public ResponseEntity<UserResponse> getCurrentUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        log.debug("Fetching current user profile for: {}", email);
+        UserResponse user = userService.getUserByEmail(email);
+        return ResponseEntity.ok(user);
+    }
+
+    /**
+     * Update current authenticated user's profile.
+     *
+     * @param request update profile request with new name
+     * @return updated user details
+     */
+    @PutMapping("/me")
+    public ResponseEntity<UserResponse> updateCurrentUserProfile(@Valid @RequestBody UpdateUserProfileRequest request) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        log.info("Updating profile for user: {}", email);
+        UserResponse user = userService.updateUserProfile(email, request);
+        return ResponseEntity.ok(user);
     }
 }
 

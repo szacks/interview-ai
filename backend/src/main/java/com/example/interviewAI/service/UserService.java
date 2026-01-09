@@ -1,5 +1,6 @@
 package com.example.interviewAI.service;
 
+import com.example.interviewAI.dto.UpdateUserProfileRequest;
 import com.example.interviewAI.dto.UserResponse;
 import com.example.interviewAI.entity.Company;
 import com.example.interviewAI.entity.User;
@@ -85,6 +86,17 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         user.setRole(role);
         user = userRepository.save(user);
+        return mapToUserResponse(user);
+    }
+
+    @Transactional
+    public UserResponse updateUserProfile(String email, UpdateUserProfileRequest request) {
+        log.info("Updating profile for user: {}", email);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        user.setName(request.getName());
+        user = userRepository.save(user);
+        log.info("Profile updated successfully for user: {}", email);
         return mapToUserResponse(user);
     }
 
