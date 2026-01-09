@@ -210,6 +210,10 @@ export default function ScoringPage() {
   const [reviewSectionExpanded, setReviewSectionExpanded] = useState(false)
   const [isExporting, setIsExporting] = useState(false)
 
+  // Weight settings from backend
+  const [autoScoreWeight, setAutoScoreWeight] = useState(0.4)
+  const [manualScoreWeight, setManualScoreWeight] = useState(0.6)
+
   // Fetch evaluation data on mount
   useEffect(() => {
     const fetchData = async () => {
@@ -223,12 +227,13 @@ export default function ScoringPage() {
         setLoading(true)
         setError(null)
 
-        // Fetch evaluation, chat history, code, and code execution results in parallel
-        const [evalData, chatData, codeData, executionData] = await Promise.all([
+        // Fetch evaluation, chat history, code, code execution results, and scoring settings in parallel
+        const [evalData, chatData, codeData, executionData, scoringData] = await Promise.all([
           evaluationService.getEvaluation(interviewId),
           chatService.getChatHistory(interviewId).catch(() => []),
           codeService.getLatestCode(interviewId).catch(() => null),
           evaluationService.getCodeExecutionResults(interviewId).catch(() => null),
+          apiClient.get("/scoring-settings/company/1").then(res => res.data || res).catch(() => null),
         ])
 
         setChatHistory(chatData)
@@ -268,6 +273,19 @@ export default function ScoringPage() {
         }
 
         setEvaluation(evalData)
+
+        // Load scoring weights from backend
+        if (scoringData && scoringData.autoScoreWeight) {
+          console.log("[Results] Scoring data received:", scoringData)
+          setAutoScoreWeight(scoringData.autoScoreWeight || 0.4)
+          setManualScoreWeight(scoringData.manualScoreWeight || 0.6)
+          console.log("[Results] Weights set to:", {
+            autoScoreWeight: scoringData.autoScoreWeight || 0.4,
+            manualScoreWeight: scoringData.manualScoreWeight || 0.6,
+          })
+        } else {
+          console.log("[Results] No scoring data received, using defaults (0.4, 0.6)")
+        }
 
         // Populate form with existing evaluation data
         if (evalData) {
@@ -412,7 +430,7 @@ export default function ScoringPage() {
   const calculateFinalScore = () => {
     const autoScore = adjustAutoScore ? autoScoreAdjusted : (evaluation?.autoScoreOriginal || 0)
     const manualScore = calculateManualScore()
-    return Math.round(autoScore * 0.4 + manualScore * 0.6)
+    return Math.round(autoScore * autoScoreWeight + manualScore * manualScoreWeight)
   }
 
   // Loading state
@@ -522,7 +540,7 @@ export default function ScoringPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <CheckCircle2 className="size-5 text-chart-3" />
-                  Auto Score Review (40% weight)
+                  Auto Score Review ({Math.round(autoScoreWeight * 100)}% weight)
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -592,7 +610,7 @@ export default function ScoringPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <FileText className="size-5 text-primary" />
-                  Manual Assessment (60% weight)
+                  Manual Assessment ({Math.round(manualScoreWeight * 100)}% weight)
                 </CardTitle>
                 <p className="text-sm text-muted-foreground mt-2">
                   Score each parameter from 1-5 - all parameters have equal weight (25% each)
@@ -759,16 +777,16 @@ export default function ScoringPage() {
                   <div className="text-sm font-medium mb-2">Score Breakdown</div>
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Auto Score (40%)</span>
+                      <span className="text-muted-foreground">Auto Score ({Math.round(autoScoreWeight * 100)}%)</span>
                       <span className="font-medium">
-                        {adjustAutoScore ? autoScoreAdjusted : (evaluation.autoScoreOriginal || 0)} × 0.4 ={" "}
-                        {Math.round((adjustAutoScore ? autoScoreAdjusted : (evaluation.autoScoreOriginal || 0)) * 0.4)}
+                        {adjustAutoScore ? autoScoreAdjusted : (evaluation.autoScoreOriginal || 0)} × {autoScoreWeight.toFixed(2)} ={" "}
+                        {Math.round((adjustAutoScore ? autoScoreAdjusted : (evaluation.autoScoreOriginal || 0)) * autoScoreWeight)}
                       </span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Manual Score (60%)</span>
+                      <span className="text-muted-foreground">Manual Score ({Math.round(manualScoreWeight * 100)}%)</span>
                       <span className="font-medium">
-                        {manualScore} × 0.6 = {Math.round(manualScore * 0.6)}
+                        {manualScore} × {manualScoreWeight.toFixed(2)} = {Math.round(manualScore * manualScoreWeight)}
                       </span>
                     </div>
                   </div>
