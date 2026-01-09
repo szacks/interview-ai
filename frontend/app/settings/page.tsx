@@ -919,7 +919,7 @@ function TeamManagementSection({ companyId, currentUser }: TeamManagementProps) 
         // Fetch active team members
         try {
           const members = await apiClient.get('/teams/members')
-          if (Array.isArray(members)) {
+          if (members && Array.isArray(members)) {
             const formattedMembers = members.map((member: any) => ({
               id: member.id,
               name: member.name,
@@ -932,14 +932,15 @@ function TeamManagementSection({ companyId, currentUser }: TeamManagementProps) 
             }))
             setTeamMembers(formattedMembers)
           }
-        } catch (error) {
-          console.error("Error fetching team members:", error)
+        } catch (error: any) {
+          console.error("Error fetching team members:", error?.message || error)
+          // Don't throw, continue loading
         }
 
         // Fetch pending invitations
         try {
           const invitations = await apiClient.get('/teams/pending-invitations')
-          if (Array.isArray(invitations)) {
+          if (invitations && Array.isArray(invitations)) {
             const formattedInvitations = invitations.map((inv: any) => ({
               id: inv.id,
               email: inv.email,
@@ -949,15 +950,23 @@ function TeamManagementSection({ companyId, currentUser }: TeamManagementProps) 
             }))
             setPendingInvitations(formattedInvitations)
           }
-        } catch (error) {
-          console.error("Error fetching pending invitations:", error)
+        } catch (error: any) {
+          console.error("Error fetching pending invitations:", error?.message || error)
+          // Don't throw, continue loading
         }
+      } catch (error: any) {
+        console.error("Unexpected error loading team data:", error)
       } finally {
         setLoading(false)
       }
     }
 
-    loadTeamData()
+    try {
+      loadTeamData()
+    } catch (err) {
+      console.error("Error in loadTeamData:", err)
+      setLoading(false)
+    }
   }, [currentUser?.id])
 
   const allMembers = [
