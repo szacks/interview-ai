@@ -89,7 +89,7 @@ export default function SettingsPage() {
             {activeSection === "profile" && <ProfileSection />}
             {activeSection === "interview-defaults" && <InterviewDefaultsSection />}
             {activeSection === "scoring" && <ScoringSection companyId={1} />}
-            {activeSection === "team" && <TeamManagementSection />}
+            {activeSection === "team" && <TeamManagementSection companyId={1} currentUser={{ id: 1, name: currentUser.name, email: currentUser.email }} />}
             {activeSection === "security" && <SecuritySection />}
             {activeSection === "billing" && <BillingSection />}
           </div>
@@ -527,6 +527,15 @@ interface ScoringProps {
   companyId: number
 }
 
+interface TeamManagementProps {
+  companyId?: number
+  currentUser?: {
+    id: number
+    name: string
+    email: string
+  }
+}
+
 function ScoringSection({ companyId }: ScoringProps) {
   const [autoWeight, setAutoWeight] = useState(40)
   const manualWeight = 100 - autoWeight
@@ -873,49 +882,94 @@ function ScoringSection({ companyId }: ScoringProps) {
   )
 }
 
-function TeamManagementSection() {
-  const teamMembers = [
-    {
-      id: 1,
-      name: "John Smith",
-      email: "john@acme.com",
-      role: "Admin",
-      lastLogin: "Today, 2:30 PM",
-      interviews: 45,
-      isCurrentUser: true,
-      status: "active",
-    },
-    {
-      id: 2,
-      name: "Jane Doe",
-      email: "jane@acme.com",
-      role: "Interviewer",
-      lastLogin: "Yesterday, 5:15 PM",
-      interviews: 23,
-      isCurrentUser: false,
-      status: "active",
-    },
-    {
-      id: 3,
-      name: "Bob Wilson",
-      email: "bob@acme.com",
-      role: "Lead Interviewer",
-      lastLogin: "3 days ago",
-      interviews: 67,
-      isCurrentUser: false,
-      status: "active",
-    },
-    {
-      id: 4,
-      name: "Alice Brown",
-      email: "alice@acme.com",
+function TeamManagementSection({ companyId, currentUser }: TeamManagementProps) {
+  const [teamMembers, setTeamMembers] = useState<Array<{
+    id: number
+    name: string
+    email: string
+    role: string
+    joinedAt?: string
+    lastLogin?: string | null
+    isCurrentUser: boolean
+    status: "active" | "pending"
+  }>>([])
+  const [pendingInvitations, setPendingInvitations] = useState<Array<{
+    id: number
+    email: string
+    invitedByName: string
+    invitedAt: string
+    expiresAt: string
+  }>>([])
+  const [loading, setLoading] = useState(true)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [selectedRole, setSelectedRole] = useState("all")
+
+  // Fetch team members and pending invitations on mount
+  useEffect(() => {
+    const loadTeamData = async () => {
+      try {
+        setLoading(true)
+        // Fetch active team members
+        const membersResponse = await fetch(`/teams/members`)
+        if (membersResponse.ok) {
+          const members = await membersResponse.json()
+          const formattedMembers = members.map((member: any) => ({
+            id: member.id,
+            name: member.name,
+            email: member.email,
+            role: member.role === "INTERVIEWER" ? "Interviewer" : member.role,
+            joinedAt: member.joinedAt,
+            lastLogin: member.lastLogin,
+            isCurrentUser: member.id === currentUser?.id,
+            status: "active" as const,
+          }))
+          setTeamMembers(formattedMembers)
+        }
+
+        // Fetch pending invitations
+        const invitationsResponse = await fetch(`/teams/pending-invitations`)
+        if (invitationsResponse.ok) {
+          const invitations = await invitationsResponse.json()
+          const formattedInvitations = invitations.map((inv: any) => ({
+            id: inv.id,
+            email: inv.email,
+            invitedByName: inv.invitedByName,
+            invitedAt: inv.invitedAt,
+            expiresAt: inv.expiresAt,
+          }))
+          setPendingInvitations(formattedInvitations)
+        }
+      } catch (error) {
+        console.error("Error loading team data:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadTeamData()
+  }, [currentUser?.id])
+
+  const allMembers = [
+    ...teamMembers.map((m) => ({ ...m, status: "active" as const })),
+    ...pendingInvitations.map((inv) => ({
+      id: inv.id,
+      name: inv.email,
+      email: inv.email,
       role: "Pending",
+      joinedAt: inv.invitedAt,
       lastLogin: null,
-      interviews: 0,
       isCurrentUser: false,
-      status: "pending",
-    },
+      status: "pending" as const,
+    })),
   ]
+
+  const filteredMembers = allMembers.filter((member) => {
+    const matchesSearch =
+      member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.email.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesRole = selectedRole === "all" || member.role.toLowerCase().includes(selectedRole.toLowerCase())
+    return matchesSearch && matchesRole
+  })
 
   return (
     <div className="space-y-6">
@@ -930,65 +984,82 @@ function TeamManagementSection() {
           </div>
 
           <div className="flex gap-3 mb-6">
-            <Input placeholder="Search members..." className="flex-1 h-9" />
-            <select className="h-9 px-3 text-sm border border-border rounded-md bg-background">
-              <option>All roles</option>
-              <option>Admin</option>
-              <option>Lead Interviewer</option>
-              <option>Interviewer</option>
+            <Input
+              placeholder="Search members..."
+              className="flex-1 h-9"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <select
+              className="h-9 px-3 text-sm border border-border rounded-md bg-background"
+              value={selectedRole}
+              onChange={(e) => setSelectedRole(e.target.value)}
+            >
+              <option value="all">All roles</option>
+              <option value="admin">Admin</option>
+              <option value="interviewer">Interviewer</option>
+              <option value="pending">Pending</option>
             </select>
           </div>
 
-          <div className="space-y-3">
-            {teamMembers.map((member) => (
-              <div
-                key={member.id}
-                className="border border-border/50 rounded-lg p-4 hover:bg-muted/20 transition-colors"
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start gap-3 flex-1">
-                    <div className="size-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border border-border/50 flex-shrink-0">
-                      <span className="text-sm text-muted-foreground">○</span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-medium text-sm">{member.name}</span>
-                        {member.isCurrentUser && <span className="text-xs text-muted-foreground">(you)</span>}
+          {loading ? (
+            <div className="text-center py-8">
+              <p className="text-sm text-muted-foreground">Loading team members...</p>
+            </div>
+          ) : filteredMembers.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-sm text-muted-foreground">No team members found</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {filteredMembers.map((member) => (
+                <div
+                  key={`${member.status}-${member.id}`}
+                  className="border border-border/50 rounded-lg p-4 hover:bg-muted/20 transition-colors"
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-start gap-3 flex-1">
+                      <div className="size-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border border-border/50 flex-shrink-0">
+                        <span className="text-sm text-muted-foreground">○</span>
                       </div>
-                      <p className="text-xs text-muted-foreground mb-2">{member.email}</p>
-                      <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                        {member.status === "active" ? (
-                          <>
-                            <span>Last login: {member.lastLogin}</span>
-                            <span>•</span>
-                            <span>{member.interviews} interviews</span>
-                          </>
-                        ) : (
-                          <span>Invite sent: Jan 14, 2025</span>
-                        )}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-medium text-sm">{member.name}</span>
+                          {member.isCurrentUser && <span className="text-xs text-muted-foreground">(you)</span>}
+                        </div>
+                        <p className="text-xs text-muted-foreground mb-2">{member.email}</p>
+                        <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                          {member.status === "active" && member.lastLogin ? (
+                            <>
+                              <span>Last login: {new Date(member.lastLogin).toLocaleDateString()}</span>
+                            </>
+                          ) : member.status === "pending" ? (
+                            <span>Invite sent: {new Date(member.joinedAt!).toLocaleDateString()}</span>
+                          ) : null}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    {member.status === "pending" ? (
-                      <Badge variant="outline" className="text-xs">
-                        Pending
-                      </Badge>
-                    ) : (
-                      <Badge variant="secondary" className="text-xs font-medium">
-                        {member.role}
-                      </Badge>
-                    )}
-                    {!member.isCurrentUser && (
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                        ⋯
-                      </Button>
-                    )}
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      {member.status === "pending" ? (
+                        <Badge variant="outline" className="text-xs">
+                          Pending
+                        </Badge>
+                      ) : (
+                        <Badge variant="secondary" className="text-xs font-medium">
+                          {member.role}
+                        </Badge>
+                      )}
+                      {!member.isCurrentUser && (
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                          ⋯
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </Card>
 
