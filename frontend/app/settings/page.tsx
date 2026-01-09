@@ -27,6 +27,7 @@ import { ChangePasswordModal } from "@/components/ChangePasswordModal"
 import { agentService, type AgentTemplate } from "@/services/agentService"
 import { userSettingsService } from "@/services/userSettingsService"
 import userService, { type UserProfile } from "@/services/userService"
+import apiClient from "@/services/apiClient"
 
 type SettingsSection = "profile" | "interview-defaults" | "scoring" | "team" | "security" | "billing"
 
@@ -903,6 +904,12 @@ function TeamManagementSection({ companyId, currentUser }: TeamManagementProps) 
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedRole, setSelectedRole] = useState("all")
+  const [showInviteDialog, setShowInviteDialog] = useState(false)
+  const [inviteEmail, setInviteEmail] = useState("")
+  const [inviteName, setInviteName] = useState("")
+  const [inviteLoading, setInviteLoading] = useState(false)
+  const [inviteError, setInviteError] = useState<string | null>(null)
+  const [inviteSuccess, setInviteSuccess] = useState(false)
 
   // Fetch team members and pending invitations on mount
   useEffect(() => {
@@ -910,37 +917,41 @@ function TeamManagementSection({ companyId, currentUser }: TeamManagementProps) 
       try {
         setLoading(true)
         // Fetch active team members
-        const membersResponse = await fetch(`/teams/members`)
-        if (membersResponse.ok) {
-          const members = await membersResponse.json()
-          const formattedMembers = members.map((member: any) => ({
-            id: member.id,
-            name: member.name,
-            email: member.email,
-            role: member.role === "INTERVIEWER" ? "Interviewer" : member.role,
-            joinedAt: member.joinedAt,
-            lastLogin: member.lastLogin,
-            isCurrentUser: member.id === currentUser?.id,
-            status: "active" as const,
-          }))
-          setTeamMembers(formattedMembers)
+        try {
+          const members = await apiClient.get('/teams/members')
+          if (Array.isArray(members)) {
+            const formattedMembers = members.map((member: any) => ({
+              id: member.id,
+              name: member.name,
+              email: member.email,
+              role: member.role === "INTERVIEWER" ? "Interviewer" : member.role,
+              joinedAt: member.joinedAt,
+              lastLogin: member.lastLogin,
+              isCurrentUser: member.id === currentUser?.id,
+              status: "active" as const,
+            }))
+            setTeamMembers(formattedMembers)
+          }
+        } catch (error) {
+          console.error("Error fetching team members:", error)
         }
 
         // Fetch pending invitations
-        const invitationsResponse = await fetch(`/teams/pending-invitations`)
-        if (invitationsResponse.ok) {
-          const invitations = await invitationsResponse.json()
-          const formattedInvitations = invitations.map((inv: any) => ({
-            id: inv.id,
-            email: inv.email,
-            invitedByName: inv.invitedByName,
-            invitedAt: inv.invitedAt,
-            expiresAt: inv.expiresAt,
-          }))
-          setPendingInvitations(formattedInvitations)
+        try {
+          const invitations = await apiClient.get('/teams/pending-invitations')
+          if (Array.isArray(invitations)) {
+            const formattedInvitations = invitations.map((inv: any) => ({
+              id: inv.id,
+              email: inv.email,
+              invitedByName: inv.invitedByName,
+              invitedAt: inv.invitedAt,
+              expiresAt: inv.expiresAt,
+            }))
+            setPendingInvitations(formattedInvitations)
+          }
+        } catch (error) {
+          console.error("Error fetching pending invitations:", error)
         }
-      } catch (error) {
-        console.error("Error loading team data:", error)
       } finally {
         setLoading(false)
       }
@@ -971,6 +982,82 @@ function TeamManagementSection({ companyId, currentUser }: TeamManagementProps) 
     return matchesSearch && matchesRole
   })
 
+  const handleInviteMember = async () => {
+    if (!inviteEmail.trim()) {
+      setInviteError("Email is required")
+      return
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(inviteEmail)) {
+      setInviteError("Please enter a valid email address")
+      return
+    }
+
+    setInviteError(null)
+    setInviteSuccess(false)
+    setInviteLoading(true)
+
+    try {
+      await apiClient.post(`/teams/invite`, {
+        email: inviteEmail.trim(),
+        name: inviteName.trim() || undefined,
+      })
+
+      setInviteSuccess(true)
+      setInviteEmail("")
+      setInviteName("")
+      // Refresh team data
+      await new Promise((resolve) => setTimeout(resolve, 1500))
+      // Reload team members and invitations
+      try {
+        const members = await apiClient.get('/teams/members')
+        if (Array.isArray(members)) {
+          const formattedMembers = members.map((member: any) => ({
+            id: member.id,
+            name: member.name,
+            email: member.email,
+            role: member.role === "INTERVIEWER" ? "Interviewer" : member.role,
+            joinedAt: member.joinedAt,
+            lastLogin: member.lastLogin,
+            isCurrentUser: member.id === currentUser?.id,
+            status: "active" as const,
+          }))
+          setTeamMembers(formattedMembers)
+        }
+      } catch (error) {
+        console.error("Error refreshing team members:", error)
+      }
+
+      try {
+        const invitations = await apiClient.get('/teams/pending-invitations')
+        if (Array.isArray(invitations)) {
+          const formattedInvitations = invitations.map((inv: any) => ({
+            id: inv.id,
+            email: inv.email,
+            invitedByName: inv.invitedByName,
+            invitedAt: inv.invitedAt,
+            expiresAt: inv.expiresAt,
+          }))
+          setPendingInvitations(formattedInvitations)
+        }
+      } catch (error) {
+        console.error("Error refreshing pending invitations:", error)
+      }
+
+      setShowInviteDialog(false)
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error && 'message' in error
+          ? (error as any).message
+          : "An error occurred while sending the invitation"
+      setInviteError(errorMessage)
+    } finally {
+      setInviteLoading(false)
+    }
+  }
+
   return (
     <div className="space-y-6">
       <Card className="border-border/50">
@@ -980,7 +1067,9 @@ function TeamManagementSection({ companyId, currentUser }: TeamManagementProps) 
               <h2 className="text-lg font-semibold mb-1">Team Members</h2>
               <p className="text-sm text-muted-foreground">Manage your team and their permissions</p>
             </div>
-            <Button size="sm">Invite Member</Button>
+            <Button size="sm" onClick={() => setShowInviteDialog(true)}>
+              Invite Member
+            </Button>
           </div>
 
           <div className="flex gap-3 mb-6">
@@ -1079,7 +1168,6 @@ function TeamManagementSection({ companyId, currentUser }: TeamManagementProps) 
                   <tr className="bg-muted/50 border-b border-border/50">
                     <th className="text-left text-xs font-medium text-muted-foreground px-4 py-3">Permission</th>
                     <th className="text-center text-xs font-medium text-muted-foreground px-4 py-3 w-28">Admin</th>
-                    <th className="text-center text-xs font-medium text-muted-foreground px-4 py-3 w-28">Lead Int.</th>
                     <th className="text-center text-xs font-medium text-muted-foreground px-4 py-3 w-28">
                       Interviewer
                     </th>
@@ -1087,28 +1175,22 @@ function TeamManagementSection({ companyId, currentUser }: TeamManagementProps) 
                 </thead>
                 <tbody className="text-sm">
                   {[
-                    { name: "Create interviews", admin: true, lead: true, int: true },
-                    { name: "View own interviews", admin: true, lead: true, int: true },
-                    { name: "View all interviews", admin: true, lead: true, int: false },
-                    { name: "Submit evaluations", admin: true, lead: true, int: true },
-                    { name: "Manage questions", admin: true, lead: true, int: false },
-                    { name: "Change scoring settings", admin: true, lead: false, int: false },
-                    { name: "Invite team members", admin: true, lead: false, int: false },
-                    { name: "Manage roles", admin: true, lead: false, int: false },
-                    { name: "Access billing", admin: true, lead: false, int: false },
-                    { name: "Export company data", admin: true, lead: true, int: false },
-                    { name: "View audit log", admin: true, lead: false, int: false },
-                  ].map((perm, index) => (
-                    <tr key={index} className={index !== 10 ? "border-b border-border/50" : ""}>
+                    { name: "Create interviews", admin: true, int: true },
+                    { name: "View own interviews", admin: true, int: true },
+                    { name: "View all interviews", admin: true, int: false },
+                    { name: "Submit evaluations", admin: true, int: true },
+                    { name: "Manage questions", admin: true, int: false },
+                    { name: "Change scoring settings", admin: true, int: false },
+                    { name: "Invite team members", admin: true, int: false },
+                    { name: "Manage roles", admin: true, int: false },
+                    { name: "Access billing", admin: true, int: false },
+                    { name: "View audit log", admin: true, int: false },
+                  ].map((perm, index, arr) => (
+                    <tr key={index} className={index !== arr.length - 1 ? "border-b border-border/50" : ""}>
                       <td className="px-4 py-3 text-sm">{perm.name}</td>
                       <td className="text-center px-4 py-3">
                         <span className={perm.admin ? "text-primary" : "text-muted-foreground/30"}>
                           {perm.admin ? "✓" : "○"}
-                        </span>
-                      </td>
-                      <td className="text-center px-4 py-3">
-                        <span className={perm.lead ? "text-primary" : "text-muted-foreground/30"}>
-                          {perm.lead ? "✓" : "○"}
                         </span>
                       </td>
                       <td className="text-center px-4 py-3">
@@ -1124,6 +1206,61 @@ function TeamManagementSection({ companyId, currentUser }: TeamManagementProps) 
           </div>
         </div>
       </Card>
+
+      <Dialog open={showInviteDialog} onOpenChange={setShowInviteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Invite Team Member</DialogTitle>
+            <DialogDescription>Send an invitation to join your team as an Interviewer</DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            {inviteSuccess && (
+              <div className="bg-green-50 border border-green-200 rounded-md p-3">
+                <p className="text-sm text-green-800 font-medium">Invitation sent successfully!</p>
+              </div>
+            )}
+
+            {inviteError && (
+              <div className="bg-red-50 border border-red-200 rounded-md p-3">
+                <p className="text-sm text-red-800">{inviteError}</p>
+              </div>
+            )}
+
+            <div className="space-y-2">
+              <Label htmlFor="invite-email">Email Address</Label>
+              <Input
+                id="invite-email"
+                type="email"
+                placeholder="colleague@example.com"
+                value={inviteEmail}
+                onChange={(e) => setInviteEmail(e.target.value)}
+                disabled={inviteLoading}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="invite-name">Name (Optional)</Label>
+              <Input
+                id="invite-name"
+                placeholder="John Doe"
+                value={inviteName}
+                onChange={(e) => setInviteName(e.target.value)}
+                disabled={inviteLoading}
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowInviteDialog(false)} disabled={inviteLoading}>
+              Cancel
+            </Button>
+            <Button onClick={handleInviteMember} disabled={inviteLoading}>
+              {inviteLoading ? "Sending..." : "Send Invitation"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
