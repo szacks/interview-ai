@@ -48,7 +48,7 @@ export default function InterviewSessionPage({
 
   // Interview state
   const [notes, setNotes] = useState("")
-  const [activeTab, setActiveTab] = useState("chat")
+  const [activeTab, setActiveTab] = useState("question")
   const [isPending, setIsPending] = useState(true) // Default to true, will be updated after fetch
   const [isLoadingInterview, setIsLoadingInterview] = useState(true)
   const [isStarting, setIsStarting] = useState(false)
@@ -618,18 +618,10 @@ export default function InterviewSessionPage({
 
       {/* Live Interview Interface */}
       <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Main Content Area with Code on Left and Tabs on Right */}
+          {/* Main Content Area with Code on Left, Tabs in Middle, and Question on Right */}
           <div className="flex-1 flex overflow-hidden">
             {/* Code Area */}
             <div className="flex-1 flex flex-col overflow-hidden border-r border-border">
-              {/* Problem Description Panel */}
-              {interview?.question?.description && (
-                <div className="border-b border-border bg-card p-4 flex-shrink-0 max-h-[200px] overflow-y-auto">
-                  <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
-                    {interview.question.description}
-                  </p>
-                </div>
-              )}
               <div className="px-4 py-2 border-b border-border bg-card/50 flex items-center justify-between">
                 <div></div>
                 <Badge variant="outline" className="text-xs">
@@ -668,11 +660,18 @@ export default function InterviewSessionPage({
               </div>
             </div>
 
-            {/* Tabs Section - Chat, Tests, Follow-ups */}
+            {/* Tabs Section - Chat, Tests, Follow-ups, Question */}
             <div className="w-[550px] flex flex-col border-r border-border overflow-hidden">
               <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
                 <div className="border-b border-border px-4 bg-card">
                   <TabsList className="bg-transparent p-0 h-auto w-full">
+                    <TabsTrigger
+                      value="question"
+                      className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+                    >
+                      <Code2 className="size-4 mr-2" />
+                      Question
+                    </TabsTrigger>
                     <TabsTrigger
                       value="chat"
                       className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
@@ -996,6 +995,33 @@ export default function InterviewSessionPage({
                         <div className="text-center">
                           <HelpCircle className="size-12 text-muted-foreground mx-auto mb-3 opacity-50" />
                           <p className="text-sm text-muted-foreground">No follow-up questions available</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </TabsContent>
+
+                {/* Question Tab */}
+                <TabsContent value="question" className="flex-1 m-0 overflow-y-auto">
+                  <div className="p-4 space-y-4">
+                    {interview?.question ? (
+                      <div>
+                        <h2 className="text-base font-semibold mb-3 text-foreground">
+                          {interview.question.title}
+                        </h2>
+                        {interview.question.description && (
+                          <div className="space-y-3">
+                            <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
+                              {interview.question.description}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center p-8">
+                        <div className="text-center">
+                          <Skeleton className="h-8 w-full mb-4" />
+                          <Skeleton className="h-40 w-full" />
                         </div>
                       </div>
                     )}

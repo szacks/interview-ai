@@ -6,7 +6,8 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Code2, Play, Send, Loader2, CheckCircle2, XCircle, Clock, MessageSquare, Terminal } from "lucide-react"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Code2, Play, Send, Loader2, CheckCircle2, XCircle, Clock, MessageSquare, Terminal, HelpCircle, PlayCircle } from "lucide-react"
 import Editor from "@monaco-editor/react"
 import { Textarea } from "@/components/ui/textarea"
 import { useChatStore } from "@/stores/chatStore"
@@ -47,6 +48,7 @@ export default function CandidateInterviewPage({
   const [startTime] = useState(Date.now())
   const [showRunTests, setShowRunTests] = useState(false)
   const [expandedTests, setExpandedTests] = useState<Set<number>>(new Set())
+  const [activeTab, setActiveTab] = useState("question")
 
   // Candidate setup state
   const [candidateFullName, setCandidateFullName] = useState("")
@@ -602,11 +604,6 @@ export default function CandidateInterviewPage({
       <div className="flex-1 flex overflow-hidden">
         {/* Main Editor Area */}
         <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Question Panel */}
-          <div className="border-b border-border bg-card p-4 flex-shrink-0">
-            <p className="text-sm text-muted-foreground leading-relaxed">{interview?.question?.description || "Loading question description..."}</p>
-          </div>
-
           {/* Editor Controls */}
           <div className="border-b border-border bg-card/50 px-4 py-2 flex items-center justify-between">
             <Select value={language} onValueChange={handleLanguageChange}>
@@ -736,115 +733,167 @@ export default function CandidateInterviewPage({
           )}
         </div>
 
-        {/* AI Chat Sidebar */}
+        {/* Right Panel with Tabs */}
         <div className="w-[550px] border-l border-border bg-card flex flex-col overflow-hidden">
-          {/* Header */}
-          <div className="p-4 border-b border-border">
-            <div className="flex items-center gap-2">
-              <div className="size-8 rounded-lg bg-accent/10 flex items-center justify-center">
-                <MessageSquare className="size-4 text-accent" />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-semibold text-sm">AI Assistant</h3>
-                <p className="text-xs text-muted-foreground">
-                  {conversation.isConnected ? "● Connected" : "○ Disconnected"}
-                </p>
-              </div>
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
+            <div className="border-b border-border px-4 bg-card">
+              <TabsList className="bg-transparent p-0 h-auto w-full">
+                <TabsTrigger
+                  value="question"
+                  className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+                >
+                  <Code2 className="size-4 mr-2" />
+                  Question
+                </TabsTrigger>
+                <TabsTrigger
+                  value="chat"
+                  className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+                >
+                  <HelpCircle className="size-4 mr-2" />
+                  AI Chat
+                </TabsTrigger>
+                <TabsTrigger
+                  value="tests"
+                  className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+                >
+                  <PlayCircle className="size-4 mr-2" />
+                  Tests
+                </TabsTrigger>
+              </TabsList>
             </div>
-          </div>
 
-          {/* Chat Messages */}
-          <div
-            className="flex-1 overflow-y-auto p-4 space-y-4"
-            ref={scrollRef}
-          >
-            <div className="space-y-4">
-              {conversation.messages.map((msg, idx) => (
-                <div key={idx} className="flex gap-3">
-                  <div
-                    className={`size-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      msg.role === "candidate" ? "bg-primary/10 text-primary" : "bg-accent/10 text-accent"
-                    }`}
-                  >
-                    {msg.role === "candidate" ? (
-                      <Terminal className="size-4" />
-                    ) : (
-                      <MessageSquare className="size-4" />
+            {/* Question Tab */}
+            <TabsContent value="question" className="flex-1 m-0 overflow-y-auto">
+              <div className="p-4 space-y-4">
+                {interview?.question ? (
+                  <div>
+                    <h2 className="text-base font-semibold mb-3 text-foreground">
+                      {interview.question.title}
+                    </h2>
+                    {interview.question.description && (
+                      <div className="space-y-3">
+                        <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
+                          {interview.question.description}
+                        </p>
+                      </div>
                     )}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-xs text-muted-foreground mb-1">
-                      {msg.role === "candidate" ? "You" : "AI Assistant"}
-                    </div>
-                    <div className="text-sm leading-relaxed space-y-2">
-                      {msg.content.split(/```[\s\S]*?```|```/g).map((part, i) => {
-                        const codeMatch = msg.content.match(/```([\s\S]*?)```/g);
-                        if (i % 2 === 1 && codeMatch) {
-                          const codeContent = codeMatch[Math.floor(i / 2)]
-                            .replace(/```/g, '')
-                            .trim();
-                          return (
-                            <div key={i} className="bg-gray-800 rounded-lg overflow-hidden my-2 border border-gray-700">
-                              <pre className="text-gray-100 p-3 font-mono text-sm leading-relaxed whitespace-pre-wrap break-all">
-                                <code>{codeContent}</code>
-                              </pre>
-                            </div>
-                          );
-                        }
-                        return (
-                          <div key={i} className="whitespace-pre-wrap">
-                            {part}
-                          </div>
-                        );
-                      })}
-                    </div>
-                    <div className="text-xs text-muted-foreground mt-1">
-                      {msg.timestamp instanceof Date
-                        ? msg.timestamp.toLocaleTimeString()
-                        : new Date(msg.timestamp).toLocaleTimeString()}
+                ) : (
+                  <div className="flex items-center justify-center p-8">
+                    <div className="text-center">
+                      <Skeleton className="h-8 w-full mb-4" />
+                      <Skeleton className="h-40 w-full" />
                     </div>
                   </div>
-                </div>
-              ))}
+                )}
+              </div>
+            </TabsContent>
 
-              {conversation.isLoading && (
-                <div className="flex gap-3">
-                  <Skeleton className="size-8 rounded-full" />
-                  <div className="space-y-2 flex-1">
-                    <Skeleton className="h-4 w-3/4" />
-                    <Skeleton className="h-4 w-1/2" />
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Chat Input */}
-          <div className="p-4 border-t border-border flex-shrink-0 bg-card">
-            <div className="flex gap-2 items-end">
-              <Textarea
-                placeholder="Ask a question..."
-                value={chatMessage}
-                onChange={(e) => setChatMessage(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey && !conversation.isLoading) {
-                    e.preventDefault()
-                    handleSendMessage()
-                  }
-                }}
-                disabled={conversation.isLoading}
-                className="flex-1 h-16 resize-none overflow-y-auto"
-              />
-              <Button
-                size="icon"
-                onClick={handleSendMessage}
-                disabled={conversation.isLoading || !chatMessage.trim()}
-                className="flex-shrink-0"
+            {/* AI Chat Tab */}
+            <TabsContent value="chat" className="flex-1 m-0 overflow-hidden flex flex-col">
+              {/* Chat Messages */}
+              <div
+                className="flex-1 overflow-y-auto p-4 space-y-4"
+                ref={scrollRef}
               >
-                <Send className="size-4" />
-              </Button>
-            </div>
-          </div>
+                <div className="space-y-4">
+                  {conversation.messages.map((msg, idx) => (
+                    <div key={idx} className="flex gap-3">
+                      <div
+                        className={`size-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                          msg.role === "candidate" ? "bg-primary/10 text-primary" : "bg-accent/10 text-accent"
+                        }`}
+                      >
+                        {msg.role === "candidate" ? (
+                          <Terminal className="size-4" />
+                        ) : (
+                          <MessageSquare className="size-4" />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-xs text-muted-foreground mb-1">
+                          {msg.role === "candidate" ? "You" : "AI Assistant"}
+                        </div>
+                        <div className="text-sm leading-relaxed space-y-2">
+                          {msg.content.split(/```[\s\S]*?```|```/g).map((part, i) => {
+                            const codeMatch = msg.content.match(/```([\s\S]*?)```/g);
+                            if (i % 2 === 1 && codeMatch) {
+                              const codeContent = codeMatch[Math.floor(i / 2)]
+                                .replace(/```/g, '')
+                                .trim();
+                              return (
+                                <div key={i} className="bg-gray-800 rounded-lg overflow-hidden my-2 border border-gray-700">
+                                  <pre className="text-gray-100 p-3 font-mono text-sm leading-relaxed whitespace-pre-wrap break-all">
+                                    <code>{codeContent}</code>
+                                  </pre>
+                                </div>
+                              );
+                            }
+                            return (
+                              <div key={i} className="whitespace-pre-wrap">
+                                {part}
+                              </div>
+                            );
+                          })}
+                        </div>
+                        <div className="text-xs text-muted-foreground mt-1">
+                          {msg.timestamp instanceof Date
+                            ? msg.timestamp.toLocaleTimeString()
+                            : new Date(msg.timestamp).toLocaleTimeString()}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+
+                  {conversation.isLoading && (
+                    <div className="flex gap-3">
+                      <Skeleton className="size-8 rounded-full" />
+                      <div className="space-y-2 flex-1">
+                        <Skeleton className="h-4 w-3/4" />
+                        <Skeleton className="h-4 w-1/2" />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Chat Input */}
+              <div className="p-4 border-t border-border flex-shrink-0 bg-card">
+                <div className="flex gap-2 items-end">
+                  <Textarea
+                    placeholder="Ask a question..."
+                    value={chatMessage}
+                    onChange={(e) => setChatMessage(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey && !conversation.isLoading) {
+                        e.preventDefault()
+                        handleSendMessage()
+                      }
+                    }}
+                    disabled={conversation.isLoading}
+                    className="flex-1 h-16 resize-none overflow-y-auto"
+                  />
+                  <Button
+                    size="icon"
+                    onClick={handleSendMessage}
+                    disabled={conversation.isLoading || !chatMessage.trim()}
+                    className="flex-shrink-0"
+                  >
+                    <Send className="size-4" />
+                  </Button>
+                </div>
+              </div>
+            </TabsContent>
+
+            {/* Tests Tab */}
+            <TabsContent value="tests" className="flex-1 m-0 overflow-y-auto">
+              <div className="p-4 space-y-4">
+                <div className="text-xs text-muted-foreground">
+                  Test results will appear here when you run tests from the main area.
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </div>
