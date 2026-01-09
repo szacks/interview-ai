@@ -125,7 +125,7 @@ public class InterviewEvaluationController {
                 request.getManualScoreProblemSolving(),
                 request.getManualScoreAiCollaboration()
         );
-        int finalScore = scoringService.calculateFinalScore(autoScore, manualScore);
+        int finalScore = scoringService.calculateFinalScore(autoScore, manualScore, interview.getCompany().getId());
         evaluation.setFinalScore(finalScore);
 
         // Handle draft vs submit

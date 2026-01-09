@@ -115,7 +115,7 @@ public class PdfExportService {
         document.add(heading);
 
         int finalScore = evaluation.getFinalScore() != null ? evaluation.getFinalScore() : 0;
-        String interpretation = scoringService.getScoreInterpretation(finalScore);
+        String interpretation = scoringService.getScoreInterpretation(finalScore, 91, 81, 71, 51);
 
         Table table = new Table(2);
         table.setWidth(UnitValue.createPercentValue(100));

@@ -29,17 +29,27 @@ public class UserSettings {
     @Builder.Default
     private Boolean showRunTests = true;
 
+    /**
+     * @deprecated Use CompanySettings.autoScoreWeight instead (company-level setting)
+     * Kept for backward compatibility - new code should use company settings
+     */
+    @Deprecated
     @Column(nullable = false)
     @Builder.Default
-    private Integer autoScoreWeight = 50; // 0-100, percentage
+    private Integer autoScoreWeight = 50; // 0-100, percentage - DEPRECATED: use company settings
 
     @Column(nullable = false)
     @Builder.Default
     private Integer sessionTimeoutMinutes = 120; // default 2 hours, -1 means never
 
+    /**
+     * @deprecated Use CompanySettings.dataRetentionDays instead (admin-level setting)
+     * Kept for backward compatibility - new code should use company settings
+     */
+    @Deprecated
     @Column(nullable = false)
     @Builder.Default
-    private Integer dataRetentionDays = 90; // default 90 days, -1 means forever
+    private Integer dataRetentionDays = 90; // default 90 days - DEPRECATED: use company settings
 
     @Column(nullable = false)
     @Builder.Default

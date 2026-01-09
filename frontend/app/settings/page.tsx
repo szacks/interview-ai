@@ -27,6 +27,7 @@ import { ChangePasswordModal } from "@/components/ChangePasswordModal"
 import { agentService, type AgentTemplate } from "@/services/agentService"
 import { userSettingsService } from "@/services/userSettingsService"
 import userService, { type UserProfile } from "@/services/userService"
+import apiClient from "@/services/apiClient"
 
 type SettingsSection = "profile" | "interview-defaults" | "scoring" | "team" | "security" | "billing"
 
@@ -89,7 +90,7 @@ export default function SettingsPage() {
             {activeSection === "profile" && <ProfileSection />}
             {activeSection === "interview-defaults" && <InterviewDefaultsSection />}
             {activeSection === "scoring" && <ScoringSection companyId={1} />}
-            {activeSection === "team" && <TeamManagementSection />}
+            {activeSection === "team" && <TeamManagementSection companyId={1} currentUser={{ id: 1, name: currentUser.name, email: currentUser.email }} />}
             {activeSection === "security" && <SecuritySection />}
             {activeSection === "billing" && <BillingSection />}
           </div>
@@ -527,6 +528,15 @@ interface ScoringProps {
   companyId: number
 }
 
+interface TeamManagementProps {
+  companyId?: number
+  currentUser?: {
+    id: number
+    name: string
+    email: string
+  }
+}
+
 function ScoringSection({ companyId }: ScoringProps) {
   const [autoWeight, setAutoWeight] = useState(40)
   const manualWeight = 100 - autoWeight
@@ -536,6 +546,8 @@ function ScoringSection({ companyId }: ScoringProps) {
     description: "",
   })
   const [loading, setLoading] = useState(true)
+  const [saveSuccess, setSaveSuccess] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
 
   const [parameters, setParameters] = useState<Array<{
     id?: number
@@ -661,9 +673,12 @@ function ScoringSection({ companyId }: ScoringProps) {
 
   const handleSaveChanges = async () => {
     if (!companyId) {
-      console.error("Company ID not found")
+      setSaveError("Company ID not found")
       return
     }
+
+    setSaveError(null)
+    setSaveSuccess(false)
 
     try {
       const response = await fetch(`/api/scoring-settings/company/${companyId}`, {
@@ -682,10 +697,15 @@ function ScoringSection({ companyId }: ScoringProps) {
       })
 
       if (response.ok) {
-        console.log("Settings saved successfully")
+        setSaveSuccess(true)
+        // Auto-dismiss success message after 3 seconds
+        setTimeout(() => setSaveSuccess(false), 3000)
+      } else {
+        const errorData = await response.json().catch(() => ({ message: "Failed to save settings" }))
+        setSaveError(errorData.message || "Failed to save settings")
       }
     } catch (error) {
-      console.error("Error saving settings:", error)
+      setSaveError(error instanceof Error ? error.message : "An error occurred while saving settings")
     }
   }
 
@@ -785,6 +805,16 @@ function ScoringSection({ companyId }: ScoringProps) {
             </div>
           </div>
         </div>
+        {saveSuccess && (
+          <div className="mx-6 mt-4 bg-green-50 border border-green-200 rounded-md p-3">
+            <p className="text-sm text-green-800 font-medium">Scoring settings saved successfully!</p>
+          </div>
+        )}
+        {saveError && (
+          <div className="mx-6 mt-4 bg-red-50 border border-red-200 rounded-md p-3">
+            <p className="text-sm text-red-800">{saveError}</p>
+          </div>
+        )}
         <div className="px-6 py-4 bg-muted/20 border-t border-border/50 flex justify-end">
           <Button size="sm" onClick={handleSaveChanges}>
             Save Changes
@@ -853,49 +883,180 @@ function ScoringSection({ companyId }: ScoringProps) {
   )
 }
 
-function TeamManagementSection() {
-  const teamMembers = [
-    {
-      id: 1,
-      name: "John Smith",
-      email: "john@acme.com",
-      role: "Admin",
-      lastLogin: "Today, 2:30 PM",
-      interviews: 45,
-      isCurrentUser: true,
-      status: "active",
-    },
-    {
-      id: 2,
-      name: "Jane Doe",
-      email: "jane@acme.com",
-      role: "Interviewer",
-      lastLogin: "Yesterday, 5:15 PM",
-      interviews: 23,
-      isCurrentUser: false,
-      status: "active",
-    },
-    {
-      id: 3,
-      name: "Bob Wilson",
-      email: "bob@acme.com",
-      role: "Lead Interviewer",
-      lastLogin: "3 days ago",
-      interviews: 67,
-      isCurrentUser: false,
-      status: "active",
-    },
-    {
-      id: 4,
-      name: "Alice Brown",
-      email: "alice@acme.com",
+function TeamManagementSection({ companyId, currentUser }: TeamManagementProps) {
+  const [teamMembers, setTeamMembers] = useState<Array<{
+    id: number
+    name: string
+    email: string
+    role: string
+    joinedAt?: string
+    lastLogin?: string | null
+    isCurrentUser: boolean
+    status: "active" | "pending"
+  }>>([])
+  const [pendingInvitations, setPendingInvitations] = useState<Array<{
+    id: number
+    email: string
+    invitedByName: string
+    invitedAt: string
+    expiresAt: string
+  }>>([])
+  const [loading, setLoading] = useState(true)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [selectedRole, setSelectedRole] = useState("all")
+  const [showInviteDialog, setShowInviteDialog] = useState(false)
+  const [inviteEmail, setInviteEmail] = useState("")
+  const [inviteName, setInviteName] = useState("")
+  const [inviteLoading, setInviteLoading] = useState(false)
+  const [inviteError, setInviteError] = useState<string | null>(null)
+  const [inviteSuccess, setInviteSuccess] = useState(false)
+
+  // Fetch team members and pending invitations on mount
+  useEffect(() => {
+    const loadTeamData = async () => {
+      try {
+        setLoading(true)
+        // Fetch active team members
+        try {
+          const members = await apiClient.get('/teams/members')
+          if (Array.isArray(members)) {
+            const formattedMembers = members.map((member: any) => ({
+              id: member.id,
+              name: member.name,
+              email: member.email,
+              role: member.role === "INTERVIEWER" ? "Interviewer" : member.role,
+              joinedAt: member.joinedAt,
+              lastLogin: member.lastLogin,
+              isCurrentUser: member.id === currentUser?.id,
+              status: "active" as const,
+            }))
+            setTeamMembers(formattedMembers)
+          }
+        } catch (error) {
+          console.error("Error fetching team members:", error)
+        }
+
+        // Fetch pending invitations
+        try {
+          const invitations = await apiClient.get('/teams/pending-invitations')
+          if (Array.isArray(invitations)) {
+            const formattedInvitations = invitations.map((inv: any) => ({
+              id: inv.id,
+              email: inv.email,
+              invitedByName: inv.invitedByName,
+              invitedAt: inv.invitedAt,
+              expiresAt: inv.expiresAt,
+            }))
+            setPendingInvitations(formattedInvitations)
+          }
+        } catch (error) {
+          console.error("Error fetching pending invitations:", error)
+        }
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadTeamData()
+  }, [currentUser?.id])
+
+  const allMembers = [
+    ...teamMembers.map((m) => ({ ...m, status: "active" as const })),
+    ...pendingInvitations.map((inv) => ({
+      id: inv.id,
+      name: inv.email,
+      email: inv.email,
       role: "Pending",
+      joinedAt: inv.invitedAt,
       lastLogin: null,
-      interviews: 0,
       isCurrentUser: false,
-      status: "pending",
-    },
+      status: "pending" as const,
+    })),
   ]
+
+  const filteredMembers = allMembers.filter((member) => {
+    const matchesSearch =
+      member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.email.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesRole = selectedRole === "all" || member.role.toLowerCase().includes(selectedRole.toLowerCase())
+    return matchesSearch && matchesRole
+  })
+
+  const handleInviteMember = async () => {
+    if (!inviteEmail.trim()) {
+      setInviteError("Email is required")
+      return
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(inviteEmail)) {
+      setInviteError("Please enter a valid email address")
+      return
+    }
+
+    setInviteError(null)
+    setInviteSuccess(false)
+    setInviteLoading(true)
+
+    try {
+      await apiClient.post(`/teams/invite`, {
+        email: inviteEmail.trim(),
+        name: inviteName.trim() || undefined,
+      })
+
+      setInviteSuccess(true)
+      setInviteEmail("")
+      setInviteName("")
+      // Refresh team data
+      await new Promise((resolve) => setTimeout(resolve, 1500))
+      // Reload team members and invitations
+      try {
+        const members = await apiClient.get('/teams/members')
+        if (Array.isArray(members)) {
+          const formattedMembers = members.map((member: any) => ({
+            id: member.id,
+            name: member.name,
+            email: member.email,
+            role: member.role === "INTERVIEWER" ? "Interviewer" : member.role,
+            joinedAt: member.joinedAt,
+            lastLogin: member.lastLogin,
+            isCurrentUser: member.id === currentUser?.id,
+            status: "active" as const,
+          }))
+          setTeamMembers(formattedMembers)
+        }
+      } catch (error) {
+        console.error("Error refreshing team members:", error)
+      }
+
+      try {
+        const invitations = await apiClient.get('/teams/pending-invitations')
+        if (Array.isArray(invitations)) {
+          const formattedInvitations = invitations.map((inv: any) => ({
+            id: inv.id,
+            email: inv.email,
+            invitedByName: inv.invitedByName,
+            invitedAt: inv.invitedAt,
+            expiresAt: inv.expiresAt,
+          }))
+          setPendingInvitations(formattedInvitations)
+        }
+      } catch (error) {
+        console.error("Error refreshing pending invitations:", error)
+      }
+
+      setShowInviteDialog(false)
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error && 'message' in error
+          ? (error as any).message
+          : "An error occurred while sending the invitation"
+      setInviteError(errorMessage)
+    } finally {
+      setInviteLoading(false)
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -906,69 +1067,88 @@ function TeamManagementSection() {
               <h2 className="text-lg font-semibold mb-1">Team Members</h2>
               <p className="text-sm text-muted-foreground">Manage your team and their permissions</p>
             </div>
-            <Button size="sm">Invite Member</Button>
+            <Button size="sm" onClick={() => setShowInviteDialog(true)}>
+              Invite Member
+            </Button>
           </div>
 
           <div className="flex gap-3 mb-6">
-            <Input placeholder="Search members..." className="flex-1 h-9" />
-            <select className="h-9 px-3 text-sm border border-border rounded-md bg-background">
-              <option>All roles</option>
-              <option>Admin</option>
-              <option>Lead Interviewer</option>
-              <option>Interviewer</option>
+            <Input
+              placeholder="Search members..."
+              className="flex-1 h-9"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <select
+              className="h-9 px-3 text-sm border border-border rounded-md bg-background"
+              value={selectedRole}
+              onChange={(e) => setSelectedRole(e.target.value)}
+            >
+              <option value="all">All roles</option>
+              <option value="admin">Admin</option>
+              <option value="interviewer">Interviewer</option>
+              <option value="pending">Pending</option>
             </select>
           </div>
 
-          <div className="space-y-3">
-            {teamMembers.map((member) => (
-              <div
-                key={member.id}
-                className="border border-border/50 rounded-lg p-4 hover:bg-muted/20 transition-colors"
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start gap-3 flex-1">
-                    <div className="size-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border border-border/50 flex-shrink-0">
-                      <span className="text-sm text-muted-foreground">○</span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-medium text-sm">{member.name}</span>
-                        {member.isCurrentUser && <span className="text-xs text-muted-foreground">(you)</span>}
+          {loading ? (
+            <div className="text-center py-8">
+              <p className="text-sm text-muted-foreground">Loading team members...</p>
+            </div>
+          ) : filteredMembers.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-sm text-muted-foreground">No team members found</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {filteredMembers.map((member) => (
+                <div
+                  key={`${member.status}-${member.id}`}
+                  className="border border-border/50 rounded-lg p-4 hover:bg-muted/20 transition-colors"
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-start gap-3 flex-1">
+                      <div className="size-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border border-border/50 flex-shrink-0">
+                        <span className="text-sm text-muted-foreground">○</span>
                       </div>
-                      <p className="text-xs text-muted-foreground mb-2">{member.email}</p>
-                      <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                        {member.status === "active" ? (
-                          <>
-                            <span>Last login: {member.lastLogin}</span>
-                            <span>•</span>
-                            <span>{member.interviews} interviews</span>
-                          </>
-                        ) : (
-                          <span>Invite sent: Jan 14, 2025</span>
-                        )}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-medium text-sm">{member.name}</span>
+                          {member.isCurrentUser && <span className="text-xs text-muted-foreground">(you)</span>}
+                        </div>
+                        <p className="text-xs text-muted-foreground mb-2">{member.email}</p>
+                        <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                          {member.status === "active" && member.lastLogin ? (
+                            <>
+                              <span>Last login: {new Date(member.lastLogin).toLocaleDateString()}</span>
+                            </>
+                          ) : member.status === "pending" ? (
+                            <span>Invite sent: {new Date(member.joinedAt!).toLocaleDateString()}</span>
+                          ) : null}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    {member.status === "pending" ? (
-                      <Badge variant="outline" className="text-xs">
-                        Pending
-                      </Badge>
-                    ) : (
-                      <Badge variant="secondary" className="text-xs font-medium">
-                        {member.role}
-                      </Badge>
-                    )}
-                    {!member.isCurrentUser && (
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                        ⋯
-                      </Button>
-                    )}
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      {member.status === "pending" ? (
+                        <Badge variant="outline" className="text-xs">
+                          Pending
+                        </Badge>
+                      ) : (
+                        <Badge variant="secondary" className="text-xs font-medium">
+                          {member.role}
+                        </Badge>
+                      )}
+                      {!member.isCurrentUser && (
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                          ⋯
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </Card>
 
@@ -988,7 +1168,6 @@ function TeamManagementSection() {
                   <tr className="bg-muted/50 border-b border-border/50">
                     <th className="text-left text-xs font-medium text-muted-foreground px-4 py-3">Permission</th>
                     <th className="text-center text-xs font-medium text-muted-foreground px-4 py-3 w-28">Admin</th>
-                    <th className="text-center text-xs font-medium text-muted-foreground px-4 py-3 w-28">Lead Int.</th>
                     <th className="text-center text-xs font-medium text-muted-foreground px-4 py-3 w-28">
                       Interviewer
                     </th>
@@ -996,28 +1175,22 @@ function TeamManagementSection() {
                 </thead>
                 <tbody className="text-sm">
                   {[
-                    { name: "Create interviews", admin: true, lead: true, int: true },
-                    { name: "View own interviews", admin: true, lead: true, int: true },
-                    { name: "View all interviews", admin: true, lead: true, int: false },
-                    { name: "Submit evaluations", admin: true, lead: true, int: true },
-                    { name: "Manage questions", admin: true, lead: true, int: false },
-                    { name: "Change scoring settings", admin: true, lead: false, int: false },
-                    { name: "Invite team members", admin: true, lead: false, int: false },
-                    { name: "Manage roles", admin: true, lead: false, int: false },
-                    { name: "Access billing", admin: true, lead: false, int: false },
-                    { name: "Export company data", admin: true, lead: true, int: false },
-                    { name: "View audit log", admin: true, lead: false, int: false },
-                  ].map((perm, index) => (
-                    <tr key={index} className={index !== 10 ? "border-b border-border/50" : ""}>
+                    { name: "Create interviews", admin: true, int: true },
+                    { name: "View own interviews", admin: true, int: true },
+                    { name: "View all interviews", admin: true, int: false },
+                    { name: "Submit evaluations", admin: true, int: true },
+                    { name: "Manage questions", admin: true, int: false },
+                    { name: "Change scoring settings", admin: true, int: false },
+                    { name: "Invite team members", admin: true, int: false },
+                    { name: "Manage roles", admin: true, int: false },
+                    { name: "Access billing", admin: true, int: false },
+                    { name: "View audit log", admin: true, int: false },
+                  ].map((perm, index, arr) => (
+                    <tr key={index} className={index !== arr.length - 1 ? "border-b border-border/50" : ""}>
                       <td className="px-4 py-3 text-sm">{perm.name}</td>
                       <td className="text-center px-4 py-3">
                         <span className={perm.admin ? "text-primary" : "text-muted-foreground/30"}>
                           {perm.admin ? "✓" : "○"}
-                        </span>
-                      </td>
-                      <td className="text-center px-4 py-3">
-                        <span className={perm.lead ? "text-primary" : "text-muted-foreground/30"}>
-                          {perm.lead ? "✓" : "○"}
                         </span>
                       </td>
                       <td className="text-center px-4 py-3">
@@ -1033,6 +1206,61 @@ function TeamManagementSection() {
           </div>
         </div>
       </Card>
+
+      <Dialog open={showInviteDialog} onOpenChange={setShowInviteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Invite Team Member</DialogTitle>
+            <DialogDescription>Send an invitation to join your team as an Interviewer</DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            {inviteSuccess && (
+              <div className="bg-green-50 border border-green-200 rounded-md p-3">
+                <p className="text-sm text-green-800 font-medium">Invitation sent successfully!</p>
+              </div>
+            )}
+
+            {inviteError && (
+              <div className="bg-red-50 border border-red-200 rounded-md p-3">
+                <p className="text-sm text-red-800">{inviteError}</p>
+              </div>
+            )}
+
+            <div className="space-y-2">
+              <Label htmlFor="invite-email">Email Address</Label>
+              <Input
+                id="invite-email"
+                type="email"
+                placeholder="colleague@example.com"
+                value={inviteEmail}
+                onChange={(e) => setInviteEmail(e.target.value)}
+                disabled={inviteLoading}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="invite-name">Name (Optional)</Label>
+              <Input
+                id="invite-name"
+                placeholder="John Doe"
+                value={inviteName}
+                onChange={(e) => setInviteName(e.target.value)}
+                disabled={inviteLoading}
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowInviteDialog(false)} disabled={inviteLoading}>
+              Cancel
+            </Button>
+            <Button onClick={handleInviteMember} disabled={inviteLoading}>
+              {inviteLoading ? "Sending..." : "Send Invitation"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
