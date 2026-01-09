@@ -35,7 +35,7 @@ public class QuestionService {
     public List<QuestionResponse> getAllQuestions() {
         List<Question> questions = questionRepository.findAll();
         return questions.stream()
-                .filter(q -> q.getDeactivated() == null || !q.getDeactivated()) // Exclude deactivated questions
+                .filter(q -> (q.getDeactivated() == null || !q.getDeactivated()) && !"ARCHIVED".equals(q.getStatus())) // Exclude deactivated and archived questions
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
     }
@@ -55,7 +55,7 @@ public class QuestionService {
     public List<QuestionResponse> getQuestionsByDifficulty(String difficulty) {
         List<Question> questions = questionRepository.findByDifficulty(difficulty);
         return questions.stream()
-                .filter(q -> q.getDeactivated() == null || !q.getDeactivated()) // Exclude deactivated questions
+                .filter(q -> (q.getDeactivated() == null || !q.getDeactivated()) && !"ARCHIVED".equals(q.getStatus())) // Exclude deactivated and archived questions
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
     }
@@ -66,7 +66,7 @@ public class QuestionService {
     public List<QuestionResponse> getQuestionsByLanguage(String language) {
         List<Question> questions = questionRepository.findByLanguage(language);
         return questions.stream()
-                .filter(q -> q.getDeactivated() == null || !q.getDeactivated()) // Exclude deactivated questions
+                .filter(q -> (q.getDeactivated() == null || !q.getDeactivated()) && !"ARCHIVED".equals(q.getStatus())) // Exclude deactivated and archived questions
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
     }
@@ -77,7 +77,7 @@ public class QuestionService {
     public List<QuestionResponse> getQuestionsByDifficultyAndLanguage(String difficulty, String language) {
         List<Question> questions = questionRepository.findByDifficultyAndLanguage(difficulty, language);
         return questions.stream()
-                .filter(q -> q.getDeactivated() == null || !q.getDeactivated()) // Exclude deactivated questions
+                .filter(q -> (q.getDeactivated() == null || !q.getDeactivated()) && !"ARCHIVED".equals(q.getStatus())) // Exclude deactivated and archived questions
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
     }
