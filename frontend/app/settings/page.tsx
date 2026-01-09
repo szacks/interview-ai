@@ -536,6 +536,8 @@ function ScoringSection({ companyId }: ScoringProps) {
     description: "",
   })
   const [loading, setLoading] = useState(true)
+  const [saveSuccess, setSaveSuccess] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
 
   const [parameters, setParameters] = useState<Array<{
     id?: number
@@ -661,9 +663,12 @@ function ScoringSection({ companyId }: ScoringProps) {
 
   const handleSaveChanges = async () => {
     if (!companyId) {
-      console.error("Company ID not found")
+      setSaveError("Company ID not found")
       return
     }
+
+    setSaveError(null)
+    setSaveSuccess(false)
 
     try {
       const response = await fetch(`/api/scoring-settings/company/${companyId}`, {
@@ -682,10 +687,15 @@ function ScoringSection({ companyId }: ScoringProps) {
       })
 
       if (response.ok) {
-        console.log("Settings saved successfully")
+        setSaveSuccess(true)
+        // Auto-dismiss success message after 3 seconds
+        setTimeout(() => setSaveSuccess(false), 3000)
+      } else {
+        const errorData = await response.json().catch(() => ({ message: "Failed to save settings" }))
+        setSaveError(errorData.message || "Failed to save settings")
       }
     } catch (error) {
-      console.error("Error saving settings:", error)
+      setSaveError(error instanceof Error ? error.message : "An error occurred while saving settings")
     }
   }
 
@@ -785,6 +795,16 @@ function ScoringSection({ companyId }: ScoringProps) {
             </div>
           </div>
         </div>
+        {saveSuccess && (
+          <div className="mx-6 mt-4 bg-green-50 border border-green-200 rounded-md p-3">
+            <p className="text-sm text-green-800 font-medium">Scoring settings saved successfully!</p>
+          </div>
+        )}
+        {saveError && (
+          <div className="mx-6 mt-4 bg-red-50 border border-red-200 rounded-md p-3">
+            <p className="text-sm text-red-800">{saveError}</p>
+          </div>
+        )}
         <div className="px-6 py-4 bg-muted/20 border-t border-border/50 flex justify-end">
           <Button size="sm" onClick={handleSaveChanges}>
             Save Changes
