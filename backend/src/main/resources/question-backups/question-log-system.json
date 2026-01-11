@@ -1,0 +1,103 @@
+{
+  "question": {
+    "companyId": null,
+    "createdBy": 1,
+    "title": "Design a Log System",
+    "description": "# Design a Log System\n\nDesign a logging system that stores log messages with timestamps and supports querying logs by time range.\n\n## Requirements\n\n1. **Store logs** - Each log has:\n   - `id` (unique number)\n   - `timestamp` (Unix timestamp in seconds)\n   - `message` (string)\n\n2. **Store log** - Add a new log entry\n   ```javascript\n   void storeLog(int timestamp, string message)\n   ```\n\n3. **Retrieve logs** - Get all logs within a time range [start, end] inclusive\n   ```javascript\n   string[] retrieveLogs(int start, int end)\n   ```\n\n## Constraints\n\n- All timestamps are in ascending order (each new log has a timestamp >= previous)\n- 1 <= timestamp <= 10^9\n- 1 <= message.length <= 100\n- At most 10^5 calls total to `storeLog` and `retrieveLogs`\n- start <= end for all retrieve calls\n\n## Examples\n\n### Example 1: Basic Usage\n```javascript\nconst logger = new LogSystem();\nlogger.storeLog(1, \"System started\");\nlogger.storeLog(2, \"User logged in\");\nlogger.storeLog(3, \"Error occurred\");\nlogger.storeLog(6, \"System shutdown\");\n\nlogger.retrieveLogs(1, 3);\n// Returns: [\"1: System started\", \"2: User logged in\", \"3: Error occurred\"]\n\nlogger.retrieveLogs(2, 5);\n// Returns: [\"2: User logged in\", \"3: Error occurred\"]\n\nlogger.retrieveLogs(10, 20);\n// Returns: [] (no logs in this range)\n```\n\n### Example 2: Edge Cases\n```javascript\nconst logger = new LogSystem();\nlogger.storeLog(1, \"First log\");\nlogger.retrieveLogs(1, 1);\n// Returns: [\"1: First log\"] (single timestamp range)\n\nlogger.retrieveLogs(0, 0);\n// Returns: [] (no logs before first entry)\n```\n\n### Example 3: Large Time Range\n```javascript\nconst logger = new LogSystem();\nlogger.storeLog(1, \"Log A\");\nlogger.storeLog(1000000, \"Log B\");\nlogger.retrieveLogs(1, 1000000);\n// Returns: [\"1: Log A\", \"1000000: Log B\"]\n```\n\n## Follow-up Considerations\n\n- How would you optimize for frequent retrievals?\n- What if logs don't come in sorted order?\n- How would you handle millions of logs?\n- How would you add filtering by log level (INFO, ERROR, etc.)?",
+    "shortDescription": "Design a logging system that stores timestamped messages and supports time-range queries",
+    "category": "data_structures",
+    "difficulty": "medium",
+    "timeLimitMinutes": 25,
+    "primaryLanguage": "javascript",
+    "supportedLanguages": "java,python,javascript",
+    "initialCodeJava": "// Log System\nimport java.util.*;\n\npublic class LogSystem {\n    \n    public LogSystem() {\n        // TODO: Initialize data structures\n    }\n    \n    public void storeLog(int timestamp, String message) {\n        // TODO: Store the log entry\n    }\n    \n    public List<String> retrieveLogs(int start, int end) {\n        // TODO: Return all logs in time range [start, end]\n        return new ArrayList<>();\n    }\n}",
+    "initialCodePython": "# Log System\nfrom typing import List\n\nclass LogSystem:\n    \n    def __init__(self):\n        # TODO: Initialize data structures\n        pass\n    \n    def store_log(self, timestamp: int, message: str) -> None:\n        # TODO: Store the log entry\n        pass\n    \n    def retrieve_logs(self, start: int, end: int) -> List[str]:\n        # TODO: Return all logs in time range [start, end]\n        return []",
+    "initialCodeJavascript": "// Log System\n\nclass LogSystem {\n  constructor() {\n    // TODO: Initialize data structures\n  }\n\n  storeLog(timestamp, message) {\n    // TODO: Store the log entry\n  }\n\n  retrieveLogs(start, end) {\n    // TODO: Return all logs in time range [start, end]\n    return [];\n  }\n}",
+    "testsJson": "[\n  {\n    \"id\": \"test_1\",\n    \"name\": \"Basic Storage and Retrieval\",\n    \"description\": \"Store multiple logs and retrieve them\",\n    \"visibleToCandidate\": true,\n    \"timeout\": 5000,\n    \"setup\": \"const logger = new LogSystem(); logger.storeLog(1, 'System started'); logger.storeLog(2, 'User logged in'); logger.storeLog(3, 'Error occurred');\",\n    \"input\": \"logger.retrieveLogs(1, 3)\",\n    \"expectedOutput\": \"['1: System started', '2: User logged in', '3: Error occurred']\"\n  },\n  {\n    \"id\": \"test_2\",\n    \"name\": \"Partial Range Retrieval\",\n    \"description\": \"Retrieve logs in a partial time range\",\n    \"visibleToCandidate\": true,\n    \"timeout\": 5000,\n    \"setup\": \"const logger = new LogSystem(); logger.storeLog(1, 'A'); logger.storeLog(2, 'B'); logger.storeLog(3, 'C'); logger.storeLog(6, 'D');\",\n    \"input\": \"logger.retrieveLogs(2, 5)\",\n    \"expectedOutput\": \"['2: B', '3: C']\"\n  },\n  {\n    \"id\": \"test_3\",\n    \"name\": \"Empty Range\",\n    \"description\": \"No logs in the specified range\",\n    \"visibleToCandidate\": true,\n    \"timeout\": 5000,\n    \"setup\": \"const logger = new LogSystem(); logger.storeLog(1, 'First'); logger.storeLog(5, 'Last');\",\n    \"input\": \"logger.retrieveLogs(10, 20)\",\n    \"expectedOutput\": \"[]\"\n  },\n  {\n    \"id\": \"test_4\",\n    \"name\": \"Single Timestamp Range\",\n    \"description\": \"Retrieve logs with start == end\",\n    \"visibleToCandidate\": false,\n    \"timeout\": 5000,\n    \"setup\": \"const logger = new LogSystem(); logger.storeLog(1, 'First'); logger.storeLog(2, 'Second');\",\n    \"input\": \"logger.retrieveLogs(1, 1)\",\n    \"expectedOutput\": \"['1: First']\"\n  },\n  {\n    \"id\": \"test_5\",\n    \"name\": \"Large Time Gaps\",\n    \"description\": \"Handle large gaps between timestamps\",\n    \"visibleToCandidate\": false,\n    \"timeout\": 5000,\n    \"setup\": \"const logger = new LogSystem(); logger.storeLog(1, 'Start'); logger.storeLog(1000000, 'End');\",\n    \"input\": \"logger.retrieveLogs(1, 1000000)\",\n    \"expectedOutput\": \"['1: Start', '1000000: End']\"\n  },\n  {\n    \"id\": \"test_6\",\n    \"name\": \"Multiple Same Timestamps\",\n    \"description\": \"Handle multiple logs at the same timestamp\",\n    \"visibleToCandidate\": false,\n    \"timeout\": 5000,\n    \"setup\": \"const logger = new LogSystem(); logger.storeLog(1, 'A'); logger.storeLog(1, 'B'); logger.storeLog(1, 'C');\",\n    \"input\": \"logger.retrieveLogs(1, 1)\",\n    \"expectedOutput\": \"['1: A', '1: B', '1: C']\"\n  },\n  {\n    \"id\": \"test_7\",\n    \"name\": \"Performance Test\",\n    \"description\": \"Handle many logs efficiently\",\n    \"visibleToCandidate\": false,\n    \"timeout\": 10000,\n    \"setup\": \"const logger = new LogSystem(); for(let i = 1; i <= 1000; i++) { logger.storeLog(i, 'Log ' + i); }\",\n    \"input\": \"logger.retrieveLogs(400, 600).length\",\n    \"expectedOutput\": \"201\"\n  }\n]",
+    "requirementsJson": "{\"requirements\":[\"Implement LogSystem class with constructor\",\"Store logs with timestamp and message\",\"Retrieve logs within time range [start, end] inclusive\",\"Handle edge cases (empty range, single timestamp)\",\"Maintain chronological order\",\"Optimize for time and space efficiency\"]}",
+    "rubricJson": "{\"categories\":[{\"category\":\"Correctness\",\"points\":25,\"description\":\"Basic solution passes all test cases\"},{\"category\":\"Data Structure Choice\",\"points\":20,\"description\":\"Chooses appropriate data structure (array, map, etc.)\"},{\"category\":\"Efficiency\",\"points\":20,\"description\":\"Efficient retrieval algorithm (binary search for large datasets)\"},{\"category\":\"Edge Cases\",\"points\":15,\"description\":\"Handles empty ranges, same timestamps, boundaries\"},{\"category\":\"Code Quality\",\"points\":10,\"description\":\"Clean, readable code with good naming\"},{\"category\":\"AI Collaboration\",\"points\":10,\"description\":\"Uses AI effectively for optimization ideas\"}]}",
+    "intentionalBugsJson": "{\"bugs\":[{\"name\":\"Off-by-one in range check\",\"description\":\"Uses < instead of <= causing boundary logs to be missed\",\"difficulty\":\"common\"},{\"name\":\"Inefficient linear search\",\"description\":\"Doesn't use binary search for large log sets\",\"difficulty\":\"medium\"},{\"name\":\"Doesn't handle same timestamps\",\"description\":\"Only stores one log per timestamp\",\"difficulty\":\"medium\"},{\"name\":\"Return format incorrect\",\"description\":\"Returns wrong format (missing timestamp prefix or colon)\",\"difficulty\":\"common\"}]}",
+    "aiPromptTemplate": "helpful",
+    "aiCustomPrompt": null,
+    "aiHelperName": "System Design Mentor",
+    "agentTemplateId": null,
+    "followupQuestionsJson": null,
+    "generatedLanguagesJson": "{\"java\": {\"generated\": false, \"reviewed\": true}, \"python\": {\"generated\": false, \"reviewed\": true}, \"javascript\": {\"generated\": false, \"reviewed\": true}}",
+    "status": "PUBLISHED",
+    "version": 1,
+    "parentQuestionId": null,
+    "currentStep": 7,
+    "usageCount": 0,
+    "averageScore": null,
+    "deactivated": false
+  },
+  "followUpQuestions": [
+    {
+      "questionText": "What is the time complexity of your solution for both storing and retrieving logs?",
+      "answer": "Expected answer:\n• Store: O(1) - just append to list/array\n• Retrieve: O(n) for linear scan, or O(log n + k) for binary search where k = results\n\nStrong candidates:\n• Explain trade-offs between different approaches\n• Mention binary search optimization",
+      "orderIndex": 0
+    },
+    {
+      "questionText": "How would you optimize this if retrieveLogs is called much more frequently than storeLog?",
+      "answer": "Look for:\n• Binary search for finding range boundaries\n• Indexing strategies (by hour/day for faster lookup)\n• Caching frequent queries\n\nAdvanced:\n• Segment tree or interval tree for complex queries\n• Time-based indexing/bucketing",
+      "orderIndex": 1
+    },
+    {
+      "questionText": "What if logs don't arrive in chronological order? How would you modify your solution?",
+      "answer": "Should discuss:\n• Need to sort logs (adds O(n log n) complexity)\n• Using a sorted data structure (TreeMap, heap)\n• Trade-offs in insertion vs retrieval performance\n\nBonus:\n• Buffering and periodic sorting\n• Maintaining sorted invariant",
+      "orderIndex": 2
+    },
+    {
+      "questionText": "How would you extend this to support filtering by log level (INFO, WARN, ERROR)?",
+      "answer": "Good answers include:\n• Add level field to log entries\n• Multiple indexes (one per level)\n• Composite filtering in retrieve method\n• Hash map of level -> logs\n\nShows:\n• Understanding of multi-dimensional indexing\n• Design extensibility thinking",
+      "orderIndex": 3
+    }
+  ],
+  "testCases": [
+    {
+      "testName": "Basic Storage and Retrieval",
+      "testCase": "logger.retrieveLogs(1, 3)",
+      "description": "Store and retrieve multiple logs within range",
+      "operationsJson": "[{\"method\": \"storeLog\", \"args\": [1, \"System started\"]}, {\"method\": \"storeLog\", \"args\": [2, \"User logged in\"]}, {\"method\": \"storeLog\", \"args\": [3, \"Error occurred\"]}, {\"method\": \"retrieveLogs\", \"args\": [1, 3]}]",
+      "assertionsJson": "[{\"type\": \"assertArrayEquals\", \"expected\": [\"1: System started\", \"2: User logged in\", \"3: Error occurred\"], \"message\": \"Should return all 3 logs\"}]",
+      "orderIndex": 0,
+      "passed": false
+    },
+    {
+      "testName": "Partial Range Retrieval",
+      "testCase": "logger.retrieveLogs(2, 5)",
+      "description": "Retrieve only logs within specified range",
+      "operationsJson": "[{\"method\": \"storeLog\", \"args\": [1, \"A\"]}, {\"method\": \"storeLog\", \"args\": [2, \"B\"]}, {\"method\": \"storeLog\", \"args\": [3, \"C\"]}, {\"method\": \"storeLog\", \"args\": [6, \"D\"]}, {\"method\": \"retrieveLogs\", \"args\": [2, 5]}]",
+      "assertionsJson": "[{\"type\": \"assertArrayEquals\", \"expected\": [\"2: B\", \"3: C\"], \"message\": \"Should return only B and C\"}]",
+      "orderIndex": 1,
+      "passed": false
+    },
+    {
+      "testName": "Empty Range",
+      "testCase": "logger.retrieveLogs(10, 20)",
+      "description": "Return empty array when no logs in range",
+      "operationsJson": "[{\"method\": \"storeLog\", \"args\": [1, \"First\"]}, {\"method\": \"storeLog\", \"args\": [5, \"Last\"]}, {\"method\": \"retrieveLogs\", \"args\": [10, 20]}]",
+      "assertionsJson": "[{\"type\": \"assertArrayEquals\", \"expected\": [], \"message\": \"Should return empty array\"}]",
+      "orderIndex": 2,
+      "passed": false
+    },
+    {
+      "testName": "Single Timestamp Range",
+      "testCase": "logger.retrieveLogs(1, 1)",
+      "description": "Handle start == end case",
+      "operationsJson": "[{\"method\": \"storeLog\", \"args\": [1, \"First\"]}, {\"method\": \"storeLog\", \"args\": [2, \"Second\"]}, {\"method\": \"retrieveLogs\", \"args\": [1, 1]}]",
+      "assertionsJson": "[{\"type\": \"assertArrayEquals\", \"expected\": [\"1: First\"], \"message\": \"Should return only first log\"}]",
+      "orderIndex": 3,
+      "passed": false
+    },
+    {
+      "testName": "Multiple Same Timestamps",
+      "testCase": "logger.retrieveLogs(1, 1) with duplicates",
+      "description": "Handle multiple logs at same timestamp",
+      "operationsJson": "[{\"method\": \"storeLog\", \"args\": [1, \"A\"]}, {\"method\": \"storeLog\", \"args\": [1, \"B\"]}, {\"method\": \"storeLog\", \"args\": [1, \"C\"]}, {\"method\": \"retrieveLogs\", \"args\": [1, 1]}]",
+      "assertionsJson": "[{\"type\": \"assertArrayEquals\", \"expected\": [\"1: A\", \"1: B\", \"1: C\"], \"message\": \"Should return all logs at timestamp 1\"}]",
+      "orderIndex": 4,
+      "passed": false
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "question": {
+    "companyId": null,
+    "createdBy": 1,
+    "title": "Binary Search",
+    "description": "# Binary Search\n\nGiven an array of integers `nums` which is sorted in ascending order, and an integer `target`, write a function to search `target` in `nums`. If `target` exists, return its index. Otherwise, return `-1`.\n\n## Requirements\n- You must write an algorithm with O(log n) runtime complexity\n- The array is sorted in ascending order\n- All integers in `nums` are unique\n\n## Constraints\n- 1 <= nums.length <= 10^4\n- -10^4 < nums[i], target < 10^4\n\n## Examples\n\n### Example 1:\n```\nInput: nums = [-1,0,3,5,9,12], target = 9\nOutput: 4\nExplanation: 9 exists in nums and its index is 4\n```\n\n### Example 2:\n```\nInput: nums = [-1,0,3,5,9,12], target = 2\nOutput: -1\nExplanation: 2 does not exist in nums so return -1\n```\n\n### Example 3:\n```\nInput: nums = [5], target = 5\nOutput: 0\n```\n\n## Algorithm Hint\nBinary search works by repeatedly dividing the search interval in half. Compare the target with the middle element and decide which half to continue searching.",
+    "shortDescription": "Implement binary search to find a target value in a sorted array with O(log n) complexity",
+    "category": "algorithm",
+    "difficulty": "easy",
+    "timeLimitMinutes": 15,
+    "primaryLanguage": "java",
+    "supportedLanguages": "java,python,javascript",
+    "initialCodeJava": "public class Solution {\n    public int search(int[] nums, int target) {\n        // TODO: Implement binary search\n        return -1;\n    }\n}",
+    "initialCodePython": "class Solution:\n    def search(self, nums: List[int], target: int) -> int:\n        # TODO: Implement binary search\n        return -1",
+    "initialCodeJavascript": "/**\n * @param {number[]} nums\n * @param {number} target\n * @return {number}\n */\nvar search = function(nums, target) {\n    // TODO: Implement binary search\n    return -1;\n};",
+    "testsJson": "[\n  {\n    \"id\": \"test_1\",\n    \"name\": \"Target Found in Middle\",\n    \"description\": \"Target exists in the array\",\n    \"visibleToCandidate\": true,\n    \"timeout\": 5000,\n    \"setup\": \"Solution solution = new Solution();\",\n    \"input\": \"solution.search(new int[]{-1,0,3,5,9,12}, 9)\",\n    \"expectedOutput\": \"4\"\n  },\n  {\n    \"id\": \"test_2\",\n    \"name\": \"Target Not Found\",\n    \"description\": \"Target does not exist in the array\",\n    \"visibleToCandidate\": true,\n    \"timeout\": 5000,\n    \"setup\": \"Solution solution = new Solution();\",\n    \"input\": \"solution.search(new int[]{-1,0,3,5,9,12}, 2)\",\n    \"expectedOutput\": \"-1\"\n  },\n  {\n    \"id\": \"test_3\",\n    \"name\": \"Single Element - Found\",\n    \"description\": \"Array with single element that matches\",\n    \"visibleToCandidate\": true,\n    \"timeout\": 5000,\n    \"setup\": \"Solution solution = new Solution();\",\n    \"input\": \"solution.search(new int[]{5}, 5)\",\n    \"expectedOutput\": \"0\"\n  },\n  {\n    \"id\": \"test_4\",\n    \"name\": \"Target at Beginning\",\n    \"description\": \"Target is the first element\",\n    \"visibleToCandidate\": false,\n    \"timeout\": 5000,\n    \"setup\": \"Solution solution = new Solution();\",\n    \"input\": \"solution.search(new int[]{-1,0,3,5,9,12}, -1)\",\n    \"expectedOutput\": \"0\"\n  },\n  {\n    \"id\": \"test_5\",\n    \"name\": \"Target at End\",\n    \"description\": \"Target is the last element\",\n    \"visibleToCandidate\": false,\n    \"timeout\": 5000,\n    \"setup\": \"Solution solution = new Solution();\",\n    \"input\": \"solution.search(new int[]{-1,0,3,5,9,12}, 12)\",\n    \"expectedOutput\": \"5\"\n  }\n]",
+    "requirementsJson": null,
+    "rubricJson": null,
+    "intentionalBugsJson": null,
+    "aiPromptTemplate": "minimal",
+    "aiCustomPrompt": null,
+    "aiHelperName": "Coding Assistant",
+    "agentTemplateId": null,
+    "followupQuestionsJson": null,
+    "generatedLanguagesJson": "{\"java\": {\"generated\": false, \"reviewed\": true}, \"python\": {\"generated\": true, \"reviewed\": false}, \"javascript\": {\"generated\": true, \"reviewed\": false}}",
+    "status": "PUBLISHED",
+    "version": 1,
+    "parentQuestionId": null,
+    "currentStep": 7,
+    "usageCount": 0,
+    "averageScore": null,
+    "deactivated": false
+  },
+  "followUpQuestions": [
+    {
+      "questionText": "What is the time and space complexity of your solution?",
+      "answer": "Expected answer:\n• Time: O(log n) - halving search space each iteration\n• Space: O(1) for iterative, O(log n) for recursive (call stack)\n\nRed flags:\n• Says O(n)\n• Cannot explain why it's logarithmic",
+      "orderIndex": 0
+    },
+    {
+      "questionText": "What are common bugs in binary search implementation?",
+      "answer": "Look for mention of:\n• Integer overflow in mid calculation: (left + right) / 2 vs left + (right - left) / 2\n• Off-by-one errors in boundary conditions\n• Infinite loops from incorrect pointer updates\n\nShows:\n• Attention to edge cases\n• Understanding of integer arithmetic",
+      "orderIndex": 1
+    },
+    {
+      "questionText": "How would you modify this to find the first/last occurrence of a target in an array with duplicates?",
+      "answer": "Strong answer:\n• Continue searching even after finding target\n• For first: search left half when found\n• For last: search right half when found\n• Track best result found so far\n\nShows ability to:\n• Extend basic algorithm\n• Handle variations",
+      "orderIndex": 2
+    }
+  ],
+  "testCases": [
+    {
+      "testName": "Standard Search - Target Found",
+      "testCase": "solution.search(new int[]{-1,0,3,5,9,12}, 9)",
+      "description": "Find target that exists in array",
+      "operationsJson": "[{\"method\": \"search\", \"args\": [[-1,0,3,5,9,12], 9]}]",
+      "assertionsJson": "[{\"type\": \"assertEquals\", \"expected\": 4, \"message\": \"Should return index 4\"}]",
+      "orderIndex": 0,
+      "passed": false
+    },
+    {
+      "testName": "Target Not Present",
+      "testCase": "solution.search(new int[]{-1,0,3,5,9,12}, 2)",
+      "description": "Search for target not in array",
+      "operationsJson": "[{\"method\": \"search\", \"args\": [[-1,0,3,5,9,12], 2]}]",
+      "assertionsJson": "[{\"type\": \"assertEquals\", \"expected\": -1, \"message\": \"Should return -1 when not found\"}]",
+      "orderIndex": 1,
+      "passed": false
+    },
+    {
+      "testName": "Single Element Match",
+      "testCase": "solution.search(new int[]{5}, 5)",
+      "description": "Array with one element that matches",
+      "operationsJson": "[{\"method\": \"search\", \"args\": [[5], 5]}]",
+      "assertionsJson": "[{\"type\": \"assertEquals\", \"expected\": 0, \"message\": \"Should handle single element array\"}]",
+      "orderIndex": 2,
+      "passed": false
+    },
+    {
+      "testName": "Boundary Test - First Element",
+      "testCase": "solution.search(new int[]{-1,0,3,5,9,12}, -1)",
+      "description": "Target at beginning of array",
+      "operationsJson": "[{\"method\": \"search\", \"args\": [[-1,0,3,5,9,12], -1]}]",
+      "assertionsJson": "[{\"type\": \"assertEquals\", \"expected\": 0, \"message\": \"Should find first element\"}]",
+      "orderIndex": 3,
+      "passed": false
+    }
+  ]
+}

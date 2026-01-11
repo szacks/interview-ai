@@ -1,0 +1,80 @@
+{
+  "question": {
+    "companyId": null,
+    "createdBy": 1,
+    "title": "Two Sum",
+    "description": "# Two Sum\n\nGiven an array of integers `nums` and an integer `target`, return indices of the two numbers such that they add up to `target`.\n\n## Requirements\n- You may assume that each input would have exactly one solution\n- You may not use the same element twice\n- Return the answer in any order\n\n## Constraints\n- 2 <= nums.length <= 10^4\n- -10^9 <= nums[i] <= 10^9\n- -10^9 <= target <= 10^9\n- Only one valid answer exists\n\n## Examples\n\n### Example 1:\n```\nInput: nums = [2,7,11,15], target = 9\nOutput: [0,1]\nExplanation: Because nums[0] + nums[1] == 9, we return [0, 1].\n```\n\n### Example 2:\n```\nInput: nums = [3,2,4], target = 6\nOutput: [1,2]\n```\n\n### Example 3:\n```\nInput: nums = [3,3], target = 6\nOutput: [0,1]\n```\n\n## Follow-up\nCan you come up with an algorithm that is less than O(n^2) time complexity?",
+    "shortDescription": "Find two numbers in an array that add up to a target value and return their indices",
+    "category": "algorithm",
+    "difficulty": "easy",
+    "timeLimitMinutes": 20,
+    "primaryLanguage": "java",
+    "supportedLanguages": "java,python,javascript",
+    "initialCodeJava": "public class Solution {\n    public int[] twoSum(int[] nums, int target) {\n        // TODO: Implement\n        return new int[0];\n    }\n}",
+    "initialCodePython": "class Solution:\n    def twoSum(self, nums: List[int], target: int) -> List[int]:\n        # TODO: Implement\n        pass",
+    "initialCodeJavascript": "/**\n * @param {number[]} nums\n * @param {number} target\n * @return {number[]}\n */\nvar twoSum = function(nums, target) {\n    // TODO: Implement\n};",
+    "testsJson": "[\n  {\n    \"id\": \"test_1\",\n    \"name\": \"Example 1\",\n    \"description\": \"Basic test with target 9\",\n    \"visibleToCandidate\": true,\n    \"timeout\": 5000,\n    \"setup\": \"Solution solution = new Solution();\",\n    \"input\": \"solution.twoSum(new int[]{2,7,11,15}, 9)\",\n    \"expectedOutput\": \"[0,1]\"\n  },\n  {\n    \"id\": \"test_2\",\n    \"name\": \"Example 2\",\n    \"description\": \"Test with target 6\",\n    \"visibleToCandidate\": true,\n    \"timeout\": 5000,\n    \"setup\": \"Solution solution = new Solution();\",\n    \"input\": \"solution.twoSum(new int[]{3,2,4}, 6)\",\n    \"expectedOutput\": \"[1,2]\"\n  },\n  {\n    \"id\": \"test_3\",\n    \"name\": \"Duplicate Numbers\",\n    \"description\": \"Test with same numbers\",\n    \"visibleToCandidate\": true,\n    \"timeout\": 5000,\n    \"setup\": \"Solution solution = new Solution();\",\n    \"input\": \"solution.twoSum(new int[]{3,3}, 6)\",\n    \"expectedOutput\": \"[0,1]\"\n  },\n  {\n    \"id\": \"test_4\",\n    \"name\": \"Negative Numbers\",\n    \"description\": \"Test with negative numbers\",\n    \"visibleToCandidate\": false,\n    \"timeout\": 5000,\n    \"setup\": \"Solution solution = new Solution();\",\n    \"input\": \"solution.twoSum(new int[]{-1,-2,-3,-4,-5}, -8)\",\n    \"expectedOutput\": \"[2,4]\"\n  },\n  {\n    \"id\": \"test_5\",\n    \"name\": \"Large Numbers\",\n    \"description\": \"Test with large numbers\",\n    \"visibleToCandidate\": false,\n    \"timeout\": 5000,\n    \"setup\": \"Solution solution = new Solution();\",\n    \"input\": \"solution.twoSum(new int[]{1000000000,999999999,1}, 1999999999)\",\n    \"expectedOutput\": \"[0,1]\"\n  }\n]",
+    "requirementsJson": null,
+    "rubricJson": null,
+    "intentionalBugsJson": null,
+    "aiPromptTemplate": "helpful",
+    "aiCustomPrompt": null,
+    "aiHelperName": "Algorithm Mentor",
+    "agentTemplateId": null,
+    "followupQuestionsJson": null,
+    "generatedLanguagesJson": "{\"java\": {\"generated\": false, \"reviewed\": true}, \"python\": {\"generated\": true, \"reviewed\": true}, \"javascript\": {\"generated\": true, \"reviewed\": true}}",
+    "status": "PUBLISHED",
+    "version": 1,
+    "parentQuestionId": null,
+    "currentStep": 7,
+    "usageCount": 0,
+    "averageScore": null,
+    "deactivated": false
+  },
+  "followUpQuestions": [
+    {
+      "questionText": "What is the time and space complexity of your solution?",
+      "answer": "Optimal solution using hash map:\n• Time: O(n) - single pass through array\n• Space: O(n) - hash map storage\n\nBrute force:\n• Time: O(n^2) - nested loops\n• Space: O(1) - no extra space",
+      "orderIndex": 0
+    },
+    {
+      "questionText": "Can you solve it without using extra space?",
+      "answer": "Candidates might mention:\n• Two-pointer approach (requires sorted array)\n• Would need to sort first (O(n log n))\n• Trade-off between time and space\n\nNote: Hash map approach is preferred for unsorted array",
+      "orderIndex": 1
+    },
+    {
+      "questionText": "What if the array was sorted? Would you change your approach?",
+      "answer": "With sorted array:\n• Two-pointer approach becomes optimal\n• Time: O(n), Space: O(1)\n• Start from both ends, move pointers based on sum\n\nShows understanding of:\n• Different approaches for different constraints\n• Time-space trade-offs",
+      "orderIndex": 2
+    }
+  ],
+  "testCases": [
+    {
+      "testName": "Basic Test - Target 9",
+      "testCase": "solution.twoSum(new int[]{2,7,11,15}, 9)",
+      "description": "Standard test case with target 9",
+      "operationsJson": "[{\"method\": \"twoSum\", \"args\": [[2,7,11,15], 9]}]",
+      "assertionsJson": "[{\"type\": \"assertArrayEquals\", \"expected\": [0,1], \"message\": \"Should return indices [0,1]\"}]",
+      "orderIndex": 0,
+      "passed": false
+    },
+    {
+      "testName": "Order Doesn't Matter",
+      "testCase": "solution.twoSum(new int[]{3,2,4}, 6)",
+      "description": "Numbers not in sorted order",
+      "operationsJson": "[{\"method\": \"twoSum\", \"args\": [[3,2,4], 6]}]",
+      "assertionsJson": "[{\"type\": \"assertArrayEquals\", \"expected\": [1,2], \"message\": \"Should return indices [1,2]\"}]",
+      "orderIndex": 1,
+      "passed": false
+    },
+    {
+      "testName": "Duplicate Values",
+      "testCase": "solution.twoSum(new int[]{3,3}, 6)",
+      "description": "Array with duplicate values",
+      "operationsJson": "[{\"method\": \"twoSum\", \"args\": [[3,3], 6]}]",
+      "assertionsJson": "[{\"type\": \"assertArrayEquals\", \"expected\": [0,1], \"message\": \"Should handle duplicates correctly\"}]",
+      "orderIndex": 2,
+      "passed": false
+    }
+  ]
+}
