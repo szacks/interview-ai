@@ -1,0 +1,116 @@
+{
+  "question": {
+    "companyId": null,
+    "createdBy": 1,
+    "title": "Rate Limiter",
+    "description": "Build a rate limiter that controls how many requests are allowed in a time window.\n\nEXAMPLE:\nconst limiter = new RateLimiter(3, 1000); // 3 requests per second\nlimiter.allowRequest(); // true\nlimiter.allowRequest(); // true\nlimiter.allowRequest(); // true\nlimiter.allowRequest(); // false (limit reached)\n// After 1 second passes, requests are allowed again",
+    "shortDescription": "Build a rate limiter that controls request frequency within a time window",
+    "category": "backend",
+    "difficulty": "medium",
+    "timeLimitMinutes": 30,
+    "primaryLanguage": "javascript",
+    "supportedLanguages": "java,python,javascript",
+    "initialCodeJava": "// Rate Limiter\nimport java.util.*;\n\npublic class RateLimiter {\n    \n    public RateLimiter(int maxRequests, long windowMs) {\n        // TODO: Initialize the rate limiter\n    }\n    \n    public boolean allowRequest() {\n        // TODO: Return true if request allowed, false if limit exceeded\n        return false;\n    }\n}",
+    "initialCodePython": "# Rate Limiter\nimport time\n\nclass RateLimiter:\n    def __init__(self, max_requests, window_ms):\n        # TODO: Initialize the rate limiter\n        pass\n\n    def allow_request(self):\n        # TODO: Return True if request allowed, False if limit exceeded\n        return False",
+    "initialCodeJavascript": "// Rate Limiter\n\nclass RateLimiter {\n  constructor(maxRequests, windowMs) {\n    // TODO: Initialize the rate limiter\n  }\n\n  allowRequest() {\n    // TODO: Return true if request allowed, false if limit exceeded\n    return false;\n  }\n}",
+    "testsJson": "{\"tests\":[{\"testCase\":\"TC1\",\"name\":\"allows requests under limit\",\"operations\":[],\"assertions\":[],\"description\":\"3 requests with limit 3 should all be true\"},{\"testCase\":\"TC2\",\"name\":\"blocks request when limit reached\",\"operations\":[],\"assertions\":[],\"description\":\"3rd request with limit 2 should be false\"},{\"testCase\":\"TC3\",\"name\":\"allows request after window expires\",\"operations\":[],\"assertions\":[],\"description\":\"After window expires, new requests should be allowed\"},{\"testCase\":\"TC4\",\"name\":\"each limiter is independent\",\"operations\":[],\"assertions\":[],\"description\":\"Two limiters should track separately\"},{\"testCase\":\"TC5\",\"name\":\"handles limit of 1\",\"operations\":[],\"assertions\":[],\"description\":\"Single request limit should work correctly\"},{\"testCase\":\"TC6\",\"name\":\"sliding window - partial expiry\",\"operations\":[],\"assertions\":[],\"description\":\"Sliding window should handle partial expiry correctly\"},{\"testCase\":\"TC7\",\"name\":\"high volume - 10 requests with limit 10\",\"operations\":[],\"assertions\":[],\"description\":\"Should handle high volume requests\"}]}",
+    "requirementsJson": "{\"requirements\":[\"Create a rate limiter with max requests and time window\",\"Implement allowRequest function\",\"Track request timestamps efficiently\",\"Handle time window expiration\",\"Support multiple independent limiters\"]}",
+    "rubricJson": "{\"categories\":[{\"category\":\"Correctness\",\"points\":25,\"description\":\"Basic solution passes tests\"},{\"category\":\"Edge Cases\",\"points\":15,\"description\":\"Handles edge cases (limit=1, empty, boundary)\"},{\"category\":\"Memory Efficiency\",\"points\":20,\"description\":\"Recognizes memory problem with high traffic\"},{\"category\":\"Alternative Solutions\",\"points\":20,\"description\":\"Discusses or implements memory-efficient alternative\"},{\"category\":\"AI Collaboration\",\"points\":20,\"description\":\"Uses AI effectively - asks good questions, reviews critically\"}]}",
+    "intentionalBugsJson": "{\"bugs\":[{\"name\":\"Memory grows unbounded\",\"description\":\"Stores all timestamps causing memory issues with high traffic\",\"difficulty\":\"common\"},{\"name\":\"Doesn't filter expired requests\",\"description\":\"Counts expired requests towards the limit\",\"difficulty\":\"medium\"},{\"name\":\"Off-by-one error\",\"description\":\"Allows one too many or too few requests\",\"difficulty\":\"common\"},{\"name\":\"No window reset\",\"description\":\"Never allows new requests after window fills up\",\"difficulty\":\"hard\"}]}",
+    "aiPromptTemplate": "helpful",
+    "aiCustomPrompt": null,
+    "aiHelperName": "Rate Limiting Expert",
+    "agentTemplateId": null,
+    "followupQuestionsJson": null,
+    "generatedLanguagesJson": "{\"java\": {\"generated\": false, \"reviewed\": true}, \"python\": {\"generated\": false, \"reviewed\": true}, \"javascript\": {\"generated\": false, \"reviewed\": true}}",
+    "status": "PUBLISHED",
+    "version": 1,
+    "parentQuestionId": null,
+    "currentStep": 7,
+    "usageCount": 0,
+    "averageScore": null,
+    "deactivated": false
+  },
+  "followUpQuestions": [
+    {
+      "questionText": "What happens if we have millions of requests? How would you optimize memory usage?",
+      "answer": "Strong candidates should:\n• Identify that storing all timestamps causes memory growth\n• Propose cleanup of old timestamps\n• Mention token bucket or leaky bucket algorithms\n• Discuss distributed rate limiting (Redis)\n\nRed flags:\n• Doesn't recognize memory issue\n• No optimization ideas",
+      "orderIndex": 0
+    },
+    {
+      "questionText": "How would you handle rate limiting across multiple servers?",
+      "answer": "Look for:\n• Centralized storage (Redis, Memcached)\n• Distributed consensus challenges\n• Trade-offs between accuracy and performance\n\nBonus:\n• Mentions eventual consistency\n• Discusses sharding strategies",
+      "orderIndex": 1
+    },
+    {
+      "questionText": "What are the differences between sliding window and fixed window rate limiting?",
+      "answer": "Should explain:\n• Fixed window: Simple but allows bursts at boundaries\n• Sliding window: More accurate but more complex\n• Trade-offs in implementation complexity vs accuracy\n\nStrong answer:\n• Explains with examples\n• Discusses when to use each",
+      "orderIndex": 2
+    }
+  ],
+  "testCases": [
+    {
+      "testName": "TC1: Allows requests under limit",
+      "testCase": "3 requests with limit 3 should all be true",
+      "description": "When the limit is 3, the first 3 requests should all be allowed",
+      "operationsJson": "[{\"operation\": \"allowRequest\", \"count\": 3}]",
+      "assertionsJson": "[{\"type\": \"allTrue\", \"message\": \"All 3 requests should be allowed\"}]",
+      "orderIndex": 0,
+      "passed": false
+    },
+    {
+      "testName": "TC2: Blocks request when limit reached",
+      "testCase": "3rd request with limit 2 should be false",
+      "description": "When limit is 2, the 3rd request should be blocked",
+      "operationsJson": "[{\"operation\": \"allowRequest\", \"count\": 2}, {\"operation\": \"allowRequest\", \"count\": 1, \"expected\": false}]",
+      "assertionsJson": "[{\"type\": \"assertEquals\", \"expected\": false, \"message\": \"3rd request should be blocked\"}]",
+      "orderIndex": 1,
+      "passed": false
+    },
+    {
+      "testName": "TC3: Allows request after window expires",
+      "testCase": "After window expires, new requests should be allowed",
+      "description": "After the time window passes, requests should be allowed again",
+      "operationsJson": "[{\"operation\": \"fillLimit\"}, {\"operation\": \"wait\", \"duration\": \"windowMs\"}, {\"operation\": \"allowRequest\"}]",
+      "assertionsJson": "[{\"type\": \"assertTrue\", \"message\": \"Request after window should be allowed\"}]",
+      "orderIndex": 2,
+      "passed": false
+    },
+    {
+      "testName": "TC4: Each limiter is independent",
+      "testCase": "Two limiters should track separately",
+      "description": "Creating multiple limiter instances should not interfere with each other",
+      "operationsJson": "[{\"operation\": \"createTwo\"}, {\"operation\": \"fillFirst\"}, {\"operation\": \"testSecond\"}]",
+      "assertionsJson": "[{\"type\": \"assertTrue\", \"message\": \"Second limiter should be independent\"}]",
+      "orderIndex": 3,
+      "passed": false
+    },
+    {
+      "testName": "TC5: Handles limit of 1",
+      "testCase": "Single request limit should work correctly",
+      "description": "Edge case with limit=1",
+      "operationsJson": "[{\"operation\": \"createWithLimit\", \"limit\": 1}, {\"operation\": \"allowRequest\"}, {\"operation\": \"allowRequest\"}]",
+      "assertionsJson": "[{\"type\": \"assertPattern\", \"expected\": [true, false], \"message\": \"Limit 1 should allow first, block second\"}]",
+      "orderIndex": 4,
+      "passed": false
+    },
+    {
+      "testName": "TC6: Sliding window - partial expiry",
+      "testCase": "Sliding window should handle partial expiry correctly",
+      "description": "Advanced: sliding window implementation",
+      "operationsJson": "[{\"operation\": \"complexScenario\"}]",
+      "assertionsJson": "[{\"type\": \"slidingWindowCorrect\", \"message\": \"Sliding window logic correct\"}]",
+      "orderIndex": 5,
+      "passed": false
+    },
+    {
+      "testName": "TC7: High volume - 10 requests with limit 10",
+      "testCase": "Should handle high volume requests",
+      "description": "Stress test with multiple requests",
+      "operationsJson": "[{\"operation\": \"bulkRequest\", \"count\": 10, \"limit\": 10}]",
+      "assertionsJson": "[{\"type\": \"bulkCorrect\", \"message\": \"All 10 requests handled correctly\"}]",
+      "orderIndex": 6,
+      "passed": false
+    }
+  ]
+}

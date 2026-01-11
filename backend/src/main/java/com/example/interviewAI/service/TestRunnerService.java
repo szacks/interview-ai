@@ -420,9 +420,15 @@ public class TestRunnerService {
 
         // Clean candidate code: remove package and import statements, make classes non-public
         String cleanedCode = candidateCode
-                .replaceAll("(?m)^\\s*package\\s+[^;]+;\\s*$", "") // Remove package declarations
-                .replaceAll("(?m)^\\s*import\\s+[^;]+;\\s*$", "")   // Remove import statements
-                .replaceAll("(?m)\\bpublic\\s+class\\b", "static class");  // Change public class to static inner class
+                .replaceAll("(?m)^\\s*package\\s+[^;]+;\\s*", "") // Remove package declarations (with or without newline)
+                .replaceAll("(?m)^\\s*import\\s+[^;]+;\\s*", "")   // Remove import statements (with or without newline)
+                .replaceAll("import\\s+[^;]+;\\s*", "")            // Remove any remaining imports (even inline)
+                .replaceAll("(?m)\\bpublic\\s+class\\b", "static class")  // Change public class to static inner class
+                .replaceAll("\\n\\s*\\n\\s*\\n", "\n\n")           // Clean up multiple blank lines
+                .trim();                                            // Remove leading/trailing whitespace
+
+        log.info("=== ORIGINAL CANDIDATE CODE ===\n{}", candidateCode);
+        log.info("=== CLEANED CANDIDATE CODE ===\n{}", cleanedCode);
 
         // Solution/Test runner class with nested TestResult and nested candidate classes
         sb.append("""
@@ -502,10 +508,30 @@ public class TestRunnerService {
                 }
                 """);
 
-        return sb.toString();
+        String result = sb.toString();
+        log.info("=== GENERATED JAVA TEST HARNESS (first 2000 chars) ===\n{}",
+                result.length() > 2000 ? result.substring(0, 2000) + "\n... (truncated)" : result);
+
+        // Also write to temp file for debugging
+        try {
+            java.nio.file.Files.writeString(
+                java.nio.file.Path.of("/tmp/generated-test-harness.java"),
+                result
+            );
+            log.info("Full test harness written to /tmp/generated-test-harness.java");
+        } catch (Exception e) {
+            log.warn("Failed to write debug file: {}", e.getMessage());
+        }
+
+        return result;
     }
 
     private String generateJavaTestCase(TestCase tc) {
+        // If raw test code is provided, use it instead of JSON-based generation
+        if (tc.getTestCase() != null && !tc.getTestCase().trim().isEmpty()) {
+            return generateRawJavaTestCase(tc);
+        }
+
         StringBuilder sb = new StringBuilder();
         sb.append(String.format("    static void runTest%d() {\n", tc.getId()));
         sb.append(String.format("        TestResult result = new TestResult(%d, \"%s\");\n",
@@ -596,6 +622,37 @@ public class TestRunnerService {
             sb.append("            throw new RuntimeException(\"Failed to parse test case\");\n");
         }
 
+        sb.append("        } catch (Exception e) {\n");
+        sb.append("            result.passed = false;\n");
+        sb.append("            result.error = e.getMessage();\n");
+        sb.append("        }\n");
+        sb.append("        result.executionTimeMs = System.currentTimeMillis() - startTime;\n");
+        sb.append("        results.add(result);\n");
+        sb.append("    }\n\n");
+
+        return sb.toString();
+    }
+
+    private String generateRawJavaTestCase(TestCase tc) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("    static void runTest%d() {\n", tc.getId()));
+        sb.append(String.format("        TestResult result = new TestResult(%d, \"%s\");\n",
+                tc.getId(), escapeString(tc.getTestName())));
+        sb.append("        long startTime = System.currentTimeMillis();\n");
+        sb.append("        try {\n");
+
+        // Insert raw test code with proper indentation
+        String[] lines = tc.getTestCase().split("\n");
+        for (String line : lines) {
+            sb.append("            ").append(line).append("\n");
+        }
+
+        sb.append("            result.passed = true;\n");
+        sb.append("            result.expected = \"All assertions passed\";\n");
+        sb.append("            result.actual = \"All assertions passed\";\n");
+        sb.append("        } catch (AssertionError e) {\n");
+        sb.append("            result.passed = false;\n");
+        sb.append("            result.error = \"Assertion failed: \" + e.getMessage();\n");
         sb.append("        } catch (Exception e) {\n");
         sb.append("            result.passed = false;\n");
         sb.append("            result.error = e.getMessage();\n");

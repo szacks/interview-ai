@@ -560,31 +560,43 @@ public class CodeController {
                                        List<ValidateTestsWithAIRequest.TestCaseDefinition> tests) {
         StringBuilder sb = new StringBuilder();
 
-        // Implementation
-        sb.append(implementation).append("\n\n");
+        // Imports must come FIRST in Java
+        sb.append("import java.util.*;\n\n");
 
-        // Test runner class with assertion support
-        sb.append("""
-                import java.util.*;
-                import com.fasterxml.jackson.databind.ObjectMapper;
+        // Clean implementation: remove any imports/package declarations from AI code
+        String cleanedImplementation = implementation
+                .replaceAll("(?m)^\\s*package\\s+[^;]+;\\s*", "")
+                .replaceAll("(?m)^\\s*import\\s+[^;]+;\\s*", "")
+                .replaceAll("import\\s+[^;]+;\\s*", "")
+                .replaceAll("\\bpublic\\s+class\\b", "static class")  // Make classes static inner classes
+                .replaceAll("(?m)^class\\b", "static class")  // Make non-public classes static too
+                .trim();
 
-                public class TestRunner {
-                    public static void assertEquals(Object expected, Object actual) {
-                        if (!Objects.equals(expected, actual)) {
-                            throw new AssertionError("Expected " + expected + ", got " + actual);
-                        }
-                    }
+        // Wrap everything in public class Solution (required by Docker)
+        sb.append("public class Solution {\n");
 
-                    public static void assertTrue(boolean condition) {
-                        if (!condition) {
-                            throw new AssertionError("Assertion failed");
-                        }
-                    }
+        // Add implementation as static inner classes (properly indented)
+        for (String line : cleanedImplementation.split("\n")) {
+            sb.append("    ").append(line).append("\n");
+        }
 
-                    public static void main(String[] args) throws Exception {
-                        List<Map<String, Object>> testResults = new ArrayList<>();
+        sb.append("\n");
 
-                """);
+        // Test runner methods and main method
+        sb.append("    public static void assertEquals(Object expected, Object actual) {\n");
+        sb.append("        if (!Objects.equals(expected, actual)) {\n");
+        sb.append("            throw new AssertionError(\"Expected \" + expected + \", got \" + actual);\n");
+        sb.append("        }\n");
+        sb.append("    }\n\n");
+
+        sb.append("    public static void assertTrue(boolean condition) {\n");
+        sb.append("        if (!condition) {\n");
+        sb.append("            throw new AssertionError(\"Assertion failed\");\n");
+        sb.append("        }\n");
+        sb.append("    }\n\n");
+
+        sb.append("    public static void main(String[] args) throws Exception {\n");
+        sb.append("        List<Map<String, Object>> testResults = new ArrayList<>();\n\n");
 
         // Test execution
         for (ValidateTestsWithAIRequest.TestCaseDefinition test : tests) {
@@ -614,8 +626,23 @@ public class CodeController {
             sb.append("        }\n\n");
         }
 
-        sb.append("        System.out.println(new ObjectMapper().writeValueAsString(")
-                .append("new HashMap<String, Object>() {{ put(\"results\", testResults); }}));\n");
+        // Build JSON manually (no Jackson dependency in sandbox)
+        sb.append("        // Build JSON output\n");
+        sb.append("        StringBuilder json = new StringBuilder();\n");
+        sb.append("        json.append(\"{\\\"results\\\":[\");\n");
+        sb.append("        for (int i = 0; i < testResults.size(); i++) {\n");
+        sb.append("            if (i > 0) json.append(\",\");\n");
+        sb.append("            Map<String, Object> r = testResults.get(i);\n");
+        sb.append("            json.append(\"{\");\n");
+        sb.append("            json.append(\"\\\"testName\\\":\\\"\").append(r.get(\"testName\")).append(\"\\\",\");\n");
+        sb.append("            json.append(\"\\\"passed\\\":\").append(r.get(\"passed\"));\n");
+        sb.append("            if (r.containsKey(\"error\")) {\n");
+        sb.append("                json.append(\",\\\"error\\\":\\\"\").append(String.valueOf(r.get(\"error\")).replace(\"\\\"\", \"\\\\\\\\\\\"\")).append(\"\\\"\");\n");
+        sb.append("            }\n");
+        sb.append("            json.append(\"}\");\n");
+        sb.append("        }\n");
+        sb.append("        json.append(\"]}\");\n");
+        sb.append("        System.out.println(json.toString());\n");
         sb.append("    }\n");
         sb.append("}\n");
 
