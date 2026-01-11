@@ -754,7 +754,8 @@ export default function CandidateInterviewPage({
                 </TabsTrigger>
                 <TabsTrigger
                   value="tests"
-                  className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+                  disabled={!showRunTests}
+                  className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <PlayCircle className="size-4 mr-2" />
                   Tests

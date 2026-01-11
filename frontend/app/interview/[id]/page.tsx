@@ -397,7 +397,7 @@ export default function InterviewSessionPage({
   const testsPassed = displayTestCases.filter((t: any) => t.passed).length
   const allTestsPassed = testsPassed === displayTestCases.length && displayTestCases.length > 0
 
-  const followUpQuestions = interview?.question?.followUpQuestions || []
+  const followUpQuestions = Array.isArray(interview?.question?.followUpQuestions) ? interview?.question?.followUpQuestions : []
 
   const copyLink = () => {
     navigator.clipboard.writeText(`${window.location.origin}/i/xK9mPq2nR4vL`)
