@@ -428,3 +428,11 @@
 [04:08:58.028] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/154 200
 [04:08:58.028] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/7 200
 [04:08:58.028] Browser LOG     [API Client] Successful response: /interview-evaluations/interview/16 200
+[05:48:43.818] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[05:48:43.976] Browser LOG     [API Client] Adding auth token to request: /users/me
+[05:48:43.976] Browser LOG     [API Client] Adding auth token to request: /questions
+[05:48:43.976] Browser LOG     [API Client] Successful response: /users/me 200
+[05:48:43.976] Browser LOG     [API Client] Successful response: /questions 200
+[05:48:43.976] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[05:48:43.976] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/questions","route":"/questions"}
+[05:48:43.976] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/questions color: rgb(120, 120, 120) color: inherit {"dp":"/questions","o":"http://localhost:3000/questions","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1768219621320}
