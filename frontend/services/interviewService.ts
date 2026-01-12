@@ -15,7 +15,7 @@ export const interviewService = {
   createInterview: async (request: CreateInterviewRequest): Promise<CreateInterviewResponse> => {
     try {
       const data = await apiClient.post('/interviews', request)
-      return data as CreateInterviewResponse
+      return data as unknown as CreateInterviewResponse
     } catch (error) {
       console.error('Error creating interview:', error)
       throw error
@@ -29,7 +29,7 @@ export const interviewService = {
     try {
       const params = status ? `?status=${status}` : ''
       const data = await apiClient.get(`/interviews${params}`)
-      return data as InterviewListResponse[]
+      return data as unknown as InterviewListResponse[]
     } catch (error) {
       console.error('Error fetching interviews:', error)
       throw error
@@ -42,7 +42,7 @@ export const interviewService = {
   getInterviewsFromLastSevenDays: async (): Promise<InterviewListResponse[]> => {
     try {
       const data = await apiClient.get('/interviews/week')
-      return data as InterviewListResponse[]
+      return data as unknown as InterviewListResponse[]
     } catch (error) {
       console.error('Error fetching interviews from last 7 days:', error)
       throw error
@@ -55,7 +55,7 @@ export const interviewService = {
   getInterviewById: async (interviewId: number): Promise<Interview> => {
     try {
       const data = await apiClient.get(`/interviews/${interviewId}`)
-      return data as Interview
+      return data as unknown as Interview
     } catch (error) {
       console.error('Error fetching interview:', error)
       throw error
@@ -68,7 +68,7 @@ export const interviewService = {
   getInterviewByToken: async (token: string): Promise<Interview> => {
     try {
       const data = await apiClient.get(`/interviews/link/${token}`)
-      return data as Interview
+      return data as unknown as Interview
     } catch (error) {
       console.error('Error fetching interview by token:', error)
       throw error
@@ -81,7 +81,7 @@ export const interviewService = {
   startInterview: async (interviewId: number): Promise<Interview> => {
     try {
       const data = await apiClient.post(`/interviews/${interviewId}/start`, {})
-      return data as Interview
+      return data as unknown as Interview
     } catch (error) {
       console.error('Error starting interview:', error)
       throw error
@@ -94,7 +94,7 @@ export const interviewService = {
   completeInterview: async (interviewId: number): Promise<Interview> => {
     try {
       const data = await apiClient.post(`/interviews/${interviewId}/complete`, {})
-      return data as Interview
+      return data as unknown as Interview
     } catch (error) {
       console.error('Error completing interview:', error)
       throw error
@@ -107,7 +107,7 @@ export const interviewService = {
   updateInterviewStatus: async (interviewId: number, status: string): Promise<Interview> => {
     try {
       const data = await apiClient.put(`/interviews/${interviewId}`, { status })
-      return data as Interview
+      return data as unknown as Interview
     } catch (error) {
       console.error('Error updating interview:', error)
       throw error
@@ -120,7 +120,7 @@ export const interviewService = {
   changeQuestion: async (interviewId: number, questionId: number): Promise<Interview> => {
     try {
       const data = await apiClient.put(`/interviews/${interviewId}/question`, { questionId })
-      return data as Interview
+      return data as unknown as Interview
     } catch (error) {
       console.error('Error changing question:', error)
       throw error
@@ -133,7 +133,7 @@ export const interviewService = {
   getQuestions: async (): Promise<Question[]> => {
     try {
       const data = await apiClient.get('/questions')
-      return data as Question[]
+      return data as unknown as Question[]
     } catch (error) {
       console.error('Error fetching questions:', error)
       throw error
@@ -146,7 +146,7 @@ export const interviewService = {
   getQuestionById: async (questionId: number): Promise<Question> => {
     try {
       const data = await apiClient.get(`/questions/${questionId}`)
-      return data as Question
+      return data as unknown as Question
     } catch (error) {
       console.error('Error fetching question:', error)
       throw error
@@ -159,7 +159,7 @@ export const interviewService = {
   getCandidates: async (): Promise<Candidate[]> => {
     try {
       const data = await apiClient.get('/candidates')
-      return data as Candidate[]
+      return data as unknown as Candidate[]
     } catch (error) {
       console.error('Error fetching candidates:', error)
       throw error
@@ -172,7 +172,7 @@ export const interviewService = {
   createCandidate: async (name: string, email: string): Promise<Candidate> => {
     try {
       const data = await apiClient.post('/candidates', { name, email })
-      return data as Candidate
+      return data as unknown as Candidate
     } catch (error) {
       console.error('Error creating candidate:', error)
       throw error
@@ -198,7 +198,7 @@ export const interviewService = {
   createQuestion: async (request: any): Promise<Question> => {
     try {
       const data = await apiClient.post('/questions', request)
-      return data as Question
+      return data as unknown as Question
     } catch (error) {
       console.error('Error creating question:', error)
       throw error
@@ -211,7 +211,7 @@ export const interviewService = {
   updateQuestion: async (questionId: number, request: any): Promise<Question> => {
     try {
       const data = await apiClient.put(`/questions/${questionId}`, request)
-      return data as Question
+      return data as unknown as Question
     } catch (error) {
       console.error('Error updating question:', error)
       throw error
@@ -236,7 +236,7 @@ export const interviewService = {
   deactivateQuestion: async (questionId: number): Promise<Question> => {
     try {
       const data = await apiClient.put(`/questions/${questionId}/deactivate`, {})
-      return data as Question
+      return data as unknown as Question
     } catch (error) {
       console.error('Error deactivating question:', error)
       throw error
@@ -249,7 +249,7 @@ export const interviewService = {
   activateQuestion: async (questionId: number): Promise<Question> => {
     try {
       const data = await apiClient.put(`/questions/${questionId}/activate`, {})
-      return data as Question
+      return data as unknown as Question
     } catch (error) {
       console.error('Error activating question:', error)
       throw error
@@ -266,7 +266,7 @@ export const interviewService = {
   }): Promise<{ targetLanguage: string; convertedCode: string; success: boolean; error?: string }> => {
     try {
       const data = await apiClient.post('/questions/convert-code', request)
-      return data as { targetLanguage: string; convertedCode: string; success: boolean; error?: string }
+      return data as unknown as { targetLanguage: string; convertedCode: string; success: boolean; error?: string }
     } catch (error) {
       console.error('Error converting code:', error)
       throw error
@@ -295,7 +295,7 @@ export const interviewService = {
   }): Promise<{ message: string }> => {
     try {
       const data = await apiClient.post(`/questions/${questionId}/test-ai`, request)
-      return data as { message: string }
+      return data as unknown as { message: string }
     } catch (error) {
       console.error('Error testing AI chat:', error)
       throw error

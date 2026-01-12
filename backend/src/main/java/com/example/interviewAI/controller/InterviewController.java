@@ -50,10 +50,24 @@ public class InterviewController {
         User user = extractUserFromToken(bearerToken);
 
         List<InterviewResponse> interviews;
-        if (status != null && !status.isEmpty()) {
-            interviews = interviewService.getInterviewsByCompanyAndStatus(user.getCompany().getId(), status);
+
+        // Admin: Get all company interviews
+        if (user.getRole().equals(RoleEnum.ADMIN)) {
+            if (status != null && !status.isEmpty()) {
+                interviews = interviewService.getInterviewsByCompanyAndStatus(user.getCompany().getId(), status);
+            } else {
+                interviews = interviewService.getInterviewsByCompany(user.getCompany().getId());
+            }
+        }
+        // Interviewer: Get only interviews they created
+        else if (user.getRole().equals(RoleEnum.INTERVIEWER)) {
+            if (status != null && !status.isEmpty()) {
+                interviews = interviewService.getInterviewsByInterviewerAndStatus(user.getId(), status);
+            } else {
+                interviews = interviewService.getInterviewsByInterviewer(user.getId());
+            }
         } else {
-            interviews = interviewService.getInterviewsByCompany(user.getCompany().getId());
+            interviews = List.of();
         }
 
         return ResponseEntity.ok(interviews);
@@ -71,7 +85,19 @@ public class InterviewController {
         log.debug("Fetching interviews from last 7 days");
         User user = extractUserFromToken(bearerToken);
 
-        List<InterviewResponse> interviews = interviewService.getInterviewsByCompanyLastSevenDays(user.getCompany().getId());
+        List<InterviewResponse> interviews;
+
+        // Admin: Get all company interviews from last 7 days
+        if (user.getRole().equals(RoleEnum.ADMIN)) {
+            interviews = interviewService.getInterviewsByCompanyLastSevenDays(user.getCompany().getId());
+        }
+        // Interviewer: Get only their interviews from last 7 days
+        else if (user.getRole().equals(RoleEnum.INTERVIEWER)) {
+            interviews = interviewService.getInterviewsByInterviewerLastSevenDays(user.getId());
+        } else {
+            interviews = List.of();
+        }
+
         return ResponseEntity.ok(interviews);
     }
 

@@ -84,11 +84,32 @@ public class InterviewService {
     }
 
     /**
+     * Get interviews assigned to a specific interviewer filtered by status
+     */
+    public List<InterviewResponse> getInterviewsByInterviewerAndStatus(Long interviewerId, String status) {
+        List<Interview> interviews = interviewRepository.findByInterviewerIdAndStatusOrderByCreatedAtDesc(interviewerId, status);
+        return interviews.stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
+    }
+
+    /**
      * Get interviews for a company from the last 7 days
      */
     public List<InterviewResponse> getInterviewsByCompanyLastSevenDays(Long companyId) {
         LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
         List<Interview> interviews = interviewRepository.findByCompanyIdAndCreatedAtAfter(companyId, sevenDaysAgo);
+        return interviews.stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Get interviews assigned to a specific interviewer from the last 7 days
+     */
+    public List<InterviewResponse> getInterviewsByInterviewerLastSevenDays(Long interviewerId) {
+        LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
+        List<Interview> interviews = interviewRepository.findByInterviewerIdAndCreatedAtAfter(interviewerId, sevenDaysAgo);
         return interviews.stream()
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
