@@ -38,7 +38,15 @@ print_usage() {
 
 export_all() {
     echo -e "${GREEN}Exporting all questions...${NC}"
-    mvn spring-boot:run -Dspring-boot.run.arguments="--export-questions"
+    # Check if using Gradle or Maven
+    if [ -f "gradlew" ]; then
+        ./gradlew bootRun --args='--export-questions'
+    elif [ -f "pom.xml" ]; then
+        mvn spring-boot:run -Dspring-boot.run.arguments="--export-questions"
+    else
+        echo -e "${RED}Error: Neither Gradle nor Maven found${NC}"
+        exit 1
+    fi
 }
 
 export_question() {
@@ -48,12 +56,26 @@ export_question() {
         exit 1
     fi
     echo -e "${GREEN}Exporting question: $1${NC}"
-    mvn spring-boot:run -Dspring-boot.run.arguments="--export-question=$1"
+    if [ -f "gradlew" ]; then
+        ./gradlew bootRun --args="--export-question=$1"
+    elif [ -f "pom.xml" ]; then
+        mvn spring-boot:run -Dspring-boot.run.arguments="--export-question=$1"
+    else
+        echo -e "${RED}Error: Neither Gradle nor Maven found${NC}"
+        exit 1
+    fi
 }
 
 restore_all() {
     echo -e "${GREEN}Restoring all questions from backups...${NC}"
-    mvn spring-boot:run -Dspring-boot.run.arguments="--restore-questions"
+    if [ -f "gradlew" ]; then
+        ./gradlew bootRun --args='--restore-questions'
+    elif [ -f "pom.xml" ]; then
+        mvn spring-boot:run -Dspring-boot.run.arguments="--restore-questions"
+    else
+        echo -e "${RED}Error: Neither Gradle nor Maven found${NC}"
+        exit 1
+    fi
 }
 
 restore_sql() {

@@ -60,6 +60,8 @@ public class QuestionResponse {
 
     private String category;
 
+    private Long companyId;
+
     private Boolean deactivated;
 
     private LocalDateTime deactivatedAt;

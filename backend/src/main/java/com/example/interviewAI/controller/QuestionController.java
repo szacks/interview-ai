@@ -122,7 +122,8 @@ public class QuestionController {
         log.info("Creating new question: {}", request.getTitle());
 
         Long userId = extractUserIdFromAuthentication(authentication);
-        QuestionResponse response = questionService.createQuestion(request, userId);
+        Long companyId = extractCompanyIdFromAuthentication(authentication);
+        QuestionResponse response = questionService.createQuestion(request, userId, companyId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

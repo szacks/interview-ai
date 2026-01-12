@@ -126,7 +126,6 @@ app:
       - /interviews/link/**
       - /interviews/*/start
       - /interviews/*/complete
-      - /questions/**
       - /agents/**
       - /candidates/**
       - /chat/**

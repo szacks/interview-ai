@@ -179,6 +179,7 @@ public class QuestionService {
         response.setStatus(question.getStatus());
         response.setCurrentStep(question.getCurrentStep());
         response.setCategory(question.getCategory());
+        response.setCompanyId(question.getCompanyId());
         response.setDeactivated(question.getDeactivated());
         response.setDeactivatedAt(question.getDeactivatedAt());
         response.setCreatedAt(question.getCreatedAt());
@@ -240,7 +241,7 @@ public class QuestionService {
      * Create a new question from the question builder
      */
     @CacheEvict(value = "questions", allEntries = true)
-    public QuestionResponse createQuestion(CreateQuestionRequest request, Long userId) {
+    public QuestionResponse createQuestion(CreateQuestionRequest request, Long userId, Long companyId) {
         log.info("Creating new question: {}", request.getTitle());
 
         Question question = new Question();
@@ -269,7 +270,7 @@ public class QuestionService {
         question.setTimeLimitMinutes(request.getTimeLimitMinutes());
         question.setStatus(request.getStatus());
         question.setCreatedBy(userId);
-        question.setCompanyId(request.getCompanyId());
+        question.setCompanyId(companyId);
         question.setCreatedAt(LocalDateTime.now());
         question.setUpdatedAt(LocalDateTime.now());
 
