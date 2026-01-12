@@ -64,6 +64,11 @@ spring:
           timeout: 10000
           writetimeout: 10000
 
+  # Cache Configuration
+  cache:
+    type: simple
+    cache-names: questions
+
 # Server Configuration
 server:
   port: ${SERVER_PORT:8080}

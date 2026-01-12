@@ -1,6 +1,7 @@
 package com.example.interviewAI.controller;
 
 import com.example.interviewAI.dto.*;
+import com.example.interviewAI.security.CustomUserDetails;
 import com.example.interviewAI.service.QuestionService;
 import com.example.interviewAI.service.CodeConversionService;
 import lombok.RequiredArgsConstructor;
@@ -29,13 +30,17 @@ public class QuestionController {
 
     /**
      * Get all questions.
+     * For authenticated users, returns questions for their company.
+     * For unauthenticated users, returns platform questions.
      *
-     * @return list of all questions
+     * @param authentication the authenticated user
+     * @return list of questions
      */
     @GetMapping
-    public ResponseEntity<List<QuestionResponse>> getAllQuestions() {
-        log.debug("Fetching all questions");
-        List<QuestionResponse> questions = questionService.getAllQuestions();
+    public ResponseEntity<List<QuestionResponse>> getAllQuestions(Authentication authentication) {
+        Long companyId = extractCompanyIdFromAuthentication(authentication);
+        log.debug("Fetching all questions for companyId: {}", companyId);
+        List<QuestionResponse> questions = questionService.getAllQuestions(companyId);
         return ResponseEntity.ok(questions);
     }
 
@@ -56,12 +61,14 @@ public class QuestionController {
      * Get questions filtered by difficulty level.
      *
      * @param difficulty difficulty level (e.g., easy, medium, hard)
+     * @param authentication the authenticated user
      * @return list of questions matching difficulty
      */
     @GetMapping("/difficulty/{difficulty}")
-    public ResponseEntity<List<QuestionResponse>> getQuestionsByDifficulty(@PathVariable String difficulty) {
-        log.debug("Fetching questions with difficulty: {}", difficulty);
-        List<QuestionResponse> questions = questionService.getQuestionsByDifficulty(difficulty);
+    public ResponseEntity<List<QuestionResponse>> getQuestionsByDifficulty(@PathVariable String difficulty, Authentication authentication) {
+        Long companyId = extractCompanyIdFromAuthentication(authentication);
+        log.debug("Fetching questions with difficulty: {} for companyId: {}", difficulty, companyId);
+        List<QuestionResponse> questions = questionService.getQuestionsByDifficulty(difficulty, companyId);
         return ResponseEntity.ok(questions);
     }
 
@@ -69,12 +76,14 @@ public class QuestionController {
      * Get questions filtered by supported language.
      *
      * @param language programming language (e.g., java, python, javascript)
+     * @param authentication the authenticated user
      * @return list of questions supporting the language
      */
     @GetMapping("/language/{language}")
-    public ResponseEntity<List<QuestionResponse>> getQuestionsByLanguage(@PathVariable String language) {
-        log.debug("Fetching questions for language: {}", language);
-        List<QuestionResponse> questions = questionService.getQuestionsByLanguage(language);
+    public ResponseEntity<List<QuestionResponse>> getQuestionsByLanguage(@PathVariable String language, Authentication authentication) {
+        Long companyId = extractCompanyIdFromAuthentication(authentication);
+        log.debug("Fetching questions for language: {} and companyId: {}", language, companyId);
+        List<QuestionResponse> questions = questionService.getQuestionsByLanguage(language, companyId);
         return ResponseEntity.ok(questions);
     }
 
@@ -83,14 +92,17 @@ public class QuestionController {
      *
      * @param difficulty difficulty level
      * @param language programming language
+     * @param authentication the authenticated user
      * @return list of questions matching both criteria
      */
     @GetMapping("/filter")
     public ResponseEntity<List<QuestionResponse>> getQuestionsByDifficultyAndLanguage(
             @RequestParam String difficulty,
-            @RequestParam String language) {
-        log.debug("Fetching questions with difficulty: {} and language: {}", difficulty, language);
-        List<QuestionResponse> questions = questionService.getQuestionsByDifficultyAndLanguage(difficulty, language);
+            @RequestParam String language,
+            Authentication authentication) {
+        Long companyId = extractCompanyIdFromAuthentication(authentication);
+        log.debug("Fetching questions with difficulty: {}, language: {}, and companyId: {}", difficulty, language, companyId);
+        List<QuestionResponse> questions = questionService.getQuestionsByDifficultyAndLanguage(difficulty, language, companyId);
         return ResponseEntity.ok(questions);
     }
 
@@ -280,6 +292,11 @@ public class QuestionController {
         try {
             Object principal = authentication.getPrincipal();
 
+            // If principal is a CustomUserDetails, extract userId from there
+            if (principal instanceof CustomUserDetails) {
+                return ((CustomUserDetails) principal).getUserId();
+            }
+
             // If principal is a UserDetails implementation with user ID
             if (principal instanceof UserDetails) {
                 // Try to extract ID from username if it's numeric
@@ -312,6 +329,39 @@ public class QuestionController {
         } catch (Exception e) {
             log.warn("Error extracting user ID from authentication", e);
             return 1L; // Fallback to system user
+        }
+    }
+
+    /**
+     * Extract company ID from Authentication object.
+     * For authenticated users with CustomUserDetails, returns their company ID.
+     * For unauthenticated users, returns null (platform questions only).
+     *
+     * @param authentication the Spring Security authentication object
+     * @return the company ID, or null for platform questions
+     */
+    private Long extractCompanyIdFromAuthentication(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            log.debug("No authentication found, using platform questions (companyId=null)");
+            return null;
+        }
+
+        try {
+            Object principal = authentication.getPrincipal();
+
+            // If principal is CustomUserDetails, extract companyId from there
+            if (principal instanceof CustomUserDetails) {
+                Long companyId = ((CustomUserDetails) principal).getCompanyId();
+                log.debug("Extracted companyId from authentication: {}", companyId);
+                return companyId;
+            }
+
+            log.debug("Authentication principal is not CustomUserDetails, using platform questions");
+            return null;
+
+        } catch (Exception e) {
+            log.debug("Error extracting company ID from authentication", e);
+            return null;
         }
     }
 }

@@ -21,15 +21,25 @@ public class JwtTokenProvider {
     private long jwtExpirationMs;
 
     public String generateToken(Long userId, String email, String role) {
+        return generateToken(userId, email, role, null);
+    }
+
+    public String generateToken(Long userId, String email, String role, Long companyId) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
 
         SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
 
-        return Jwts.builder()
+        var builder = Jwts.builder()
                 .subject(email)
                 .claim("userId", userId)
-                .claim("role", role)
+                .claim("role", role);
+
+        if (companyId != null) {
+            builder.claim("companyId", companyId);
+        }
+
+        return builder
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .signWith(key)
@@ -64,6 +74,16 @@ public class JwtTokenProvider {
                 .parseSignedClaims(token)
                 .getPayload();
         return claims.get("role", String.class);
+    }
+
+    public Long getCompanyIdFromToken(String token) {
+        SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+        Claims claims = Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+        return claims.get("companyId", Long.class);
     }
 
     public boolean validateToken(String token) {
