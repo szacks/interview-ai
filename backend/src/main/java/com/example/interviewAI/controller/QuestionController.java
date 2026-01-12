@@ -3,6 +3,7 @@ package com.example.interviewAI.controller;
 import com.example.interviewAI.dto.*;
 import com.example.interviewAI.security.CustomUserDetails;
 import com.example.interviewAI.service.QuestionService;
+import com.example.interviewAI.service.UserService;
 import com.example.interviewAI.service.CodeConversionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,7 @@ public class QuestionController {
 
     private final QuestionService questionService;
     private final CodeConversionService codeConversionService;
+    private final UserService userService;
 
     /**
      * Get all questions.
@@ -335,6 +337,7 @@ public class QuestionController {
     /**
      * Extract company ID from Authentication object.
      * For authenticated users with CustomUserDetails, returns their company ID.
+     * For old tokens without companyId, looks up company from User entity.
      * For unauthenticated users, returns null (platform questions only).
      *
      * @param authentication the Spring Security authentication object
@@ -352,11 +355,32 @@ public class QuestionController {
             // If principal is CustomUserDetails, extract companyId from there
             if (principal instanceof CustomUserDetails) {
                 Long companyId = ((CustomUserDetails) principal).getCompanyId();
-                log.debug("Extracted companyId from authentication: {}", companyId);
+                log.debug("Extracted companyId from CustomUserDetails: {}", companyId);
                 return companyId;
             }
 
-            log.debug("Authentication principal is not CustomUserDetails, using platform questions");
+            // For old tokens without CustomUserDetails, try to get email and look up user
+            String email = null;
+            if (principal instanceof CustomUserDetails) {
+                email = ((CustomUserDetails) principal).getEmail();
+            } else if (principal instanceof String) {
+                email = (String) principal;
+            }
+
+            if (email != null) {
+                try {
+                    var user = userService.findByEmail(email);
+                    if (user != null && user.getCompany() != null) {
+                        Long companyId = user.getCompany().getId();
+                        log.debug("Extracted companyId from User entity: {} for email: {}", companyId, email);
+                        return companyId;
+                    }
+                } catch (Exception e) {
+                    log.debug("Could not find user by email: {}", email, e);
+                }
+            }
+
+            log.debug("Could not extract companyId from authentication, using platform questions");
             return null;
 
         } catch (Exception e) {
