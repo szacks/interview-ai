@@ -274,10 +274,12 @@ public class AuthService {
      * @return JWT token string
      */
     private String generateToken(User user) {
+        Long companyId = user.getCompany() != null ? user.getCompany().getId() : null;
         return jwtTokenProvider.generateToken(
                 user.getId(),
                 user.getEmail(),
-                user.getRole().getValue()
+                user.getRole().getValue(),
+                companyId
         );
     }
 

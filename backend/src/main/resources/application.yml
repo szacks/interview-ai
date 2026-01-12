@@ -24,6 +24,7 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
+    validate-on-migrate: false
 
   # Server Configuration
   servlet:
@@ -63,6 +64,11 @@ spring:
           connectiontimeout: 10000
           timeout: 10000
           writetimeout: 10000
+
+  # Cache Configuration
+  cache:
+    type: simple
+    cache-names: questions
 
 # Server Configuration
 server:
@@ -121,7 +127,6 @@ app:
       - /interviews/link/**
       - /interviews/*/start
       - /interviews/*/complete
-      - /questions/**
       - /agents/**
       - /candidates/**
       - /chat/**

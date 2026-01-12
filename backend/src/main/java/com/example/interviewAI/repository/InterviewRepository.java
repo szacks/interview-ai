@@ -35,4 +35,10 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
 
     @Query("SELECT i FROM Interview i WHERE i.company.id = ?1 AND i.createdAt >= ?2 ORDER BY i.createdAt DESC")
     List<Interview> findByCompanyIdAndCreatedAtAfter(Long companyId, java.time.LocalDateTime startDate);
+
+    @Query("SELECT i FROM Interview i WHERE i.interviewer.id = ?1 AND i.status = ?2 ORDER BY i.createdAt DESC")
+    List<Interview> findByInterviewerIdAndStatusOrderByCreatedAtDesc(Long interviewerId, String status);
+
+    @Query("SELECT i FROM Interview i WHERE i.interviewer.id = ?1 AND i.createdAt >= ?2 ORDER BY i.createdAt DESC")
+    List<Interview> findByInterviewerIdAndCreatedAtAfter(Long interviewerId, java.time.LocalDateTime startDate);
 }

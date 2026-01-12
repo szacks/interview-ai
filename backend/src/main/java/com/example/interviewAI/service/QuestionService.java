@@ -13,6 +13,8 @@ import com.example.interviewAI.repository.AgentTemplateRepository;
 import com.example.interviewAI.repository.QuestionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -30,10 +32,28 @@ public class QuestionService {
     private AgentTemplateRepository agentTemplateRepository;
 
     /**
-     * Get all questions
+     * Get all questions for the public/platform
      */
     public List<QuestionResponse> getAllQuestions() {
-        List<Question> questions = questionRepository.findAll();
+        return getAllQuestions(null);
+    }
+
+    /**
+     * Get all questions belonging to a company (includes platform questions with companyId=null)
+     * Cached by company to improve performance
+     */
+    @Cacheable(value = "questions", key = "'company_' + #companyId", unless = "#companyId == null")
+    public List<QuestionResponse> getAllQuestions(Long companyId) {
+        List<Question> questions;
+
+        if (companyId != null) {
+            log.debug("Fetching questions for companyId: {}", companyId);
+            questions = questionRepository.findByCompanyIdOrCompanyIdIsNull(companyId);
+        } else {
+            log.debug("Fetching all public questions");
+            questions = questionRepository.findAll();
+        }
+
         return questions.stream()
                 .filter(q -> (q.getDeactivated() == null || !q.getDeactivated()) && !"ARCHIVED".equals(q.getStatus())) // Exclude deactivated and archived questions
                 .map(this::convertToResponse)
@@ -53,9 +73,24 @@ public class QuestionService {
      * Get questions by difficulty level
      */
     public List<QuestionResponse> getQuestionsByDifficulty(String difficulty) {
-        List<Question> questions = questionRepository.findByDifficulty(difficulty);
+        return getQuestionsByDifficulty(difficulty, null);
+    }
+
+    /**
+     * Get questions by difficulty level for a company
+     */
+    @Cacheable(value = "questions", key = "'company_' + #companyId + '_diff_' + #difficulty", unless = "#companyId == null")
+    public List<QuestionResponse> getQuestionsByDifficulty(String difficulty, Long companyId) {
+        List<Question> questions;
+
+        if (companyId != null) {
+            questions = questionRepository.findByCompanyIdOrCompanyIdIsNullAndDifficulty(companyId, difficulty);
+        } else {
+            questions = questionRepository.findByDifficulty(difficulty);
+        }
+
         return questions.stream()
-                .filter(q -> (q.getDeactivated() == null || !q.getDeactivated()) && !"ARCHIVED".equals(q.getStatus())) // Exclude deactivated and archived questions
+                .filter(q -> (q.getDeactivated() == null || !q.getDeactivated()) && !"ARCHIVED".equals(q.getStatus()))
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
     }
@@ -64,9 +99,24 @@ public class QuestionService {
      * Get questions by supported language
      */
     public List<QuestionResponse> getQuestionsByLanguage(String language) {
-        List<Question> questions = questionRepository.findByLanguage(language);
+        return getQuestionsByLanguage(language, null);
+    }
+
+    /**
+     * Get questions by supported language for a company
+     */
+    @Cacheable(value = "questions", key = "'company_' + #companyId + '_lang_' + #language", unless = "#companyId == null")
+    public List<QuestionResponse> getQuestionsByLanguage(String language, Long companyId) {
+        List<Question> questions;
+
+        if (companyId != null) {
+            questions = questionRepository.findByCompanyIdOrCompanyIdIsNullAndSupportedLanguagesContaining(companyId, language);
+        } else {
+            questions = questionRepository.findByLanguage(language);
+        }
+
         return questions.stream()
-                .filter(q -> (q.getDeactivated() == null || !q.getDeactivated()) && !"ARCHIVED".equals(q.getStatus())) // Exclude deactivated and archived questions
+                .filter(q -> (q.getDeactivated() == null || !q.getDeactivated()) && !"ARCHIVED".equals(q.getStatus()))
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
     }
@@ -75,9 +125,24 @@ public class QuestionService {
      * Get questions by difficulty and language
      */
     public List<QuestionResponse> getQuestionsByDifficultyAndLanguage(String difficulty, String language) {
-        List<Question> questions = questionRepository.findByDifficultyAndLanguage(difficulty, language);
+        return getQuestionsByDifficultyAndLanguage(difficulty, language, null);
+    }
+
+    /**
+     * Get questions by difficulty and language for a company
+     */
+    @Cacheable(value = "questions", key = "'company_' + #companyId + '_diff_' + #difficulty + '_lang_' + #language", unless = "#companyId == null")
+    public List<QuestionResponse> getQuestionsByDifficultyAndLanguage(String difficulty, String language, Long companyId) {
+        List<Question> questions;
+
+        if (companyId != null) {
+            questions = questionRepository.findByCompanyIdOrCompanyIdIsNullAndDifficultyAndLanguage(companyId, difficulty, language);
+        } else {
+            questions = questionRepository.findByDifficultyAndLanguage(difficulty, language);
+        }
+
         return questions.stream()
-                .filter(q -> (q.getDeactivated() == null || !q.getDeactivated()) && !"ARCHIVED".equals(q.getStatus())) // Exclude deactivated and archived questions
+                .filter(q -> (q.getDeactivated() == null || !q.getDeactivated()) && !"ARCHIVED".equals(q.getStatus()))
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
     }
@@ -114,6 +179,7 @@ public class QuestionService {
         response.setStatus(question.getStatus());
         response.setCurrentStep(question.getCurrentStep());
         response.setCategory(question.getCategory());
+        response.setCompanyId(question.getCompanyId());
         response.setDeactivated(question.getDeactivated());
         response.setDeactivatedAt(question.getDeactivatedAt());
         response.setCreatedAt(question.getCreatedAt());
@@ -174,7 +240,8 @@ public class QuestionService {
     /**
      * Create a new question from the question builder
      */
-    public QuestionResponse createQuestion(CreateQuestionRequest request, Long userId) {
+    @CacheEvict(value = "questions", allEntries = true)
+    public QuestionResponse createQuestion(CreateQuestionRequest request, Long userId, Long companyId) {
         log.info("Creating new question: {}", request.getTitle());
 
         Question question = new Question();
@@ -203,7 +270,7 @@ public class QuestionService {
         question.setTimeLimitMinutes(request.getTimeLimitMinutes());
         question.setStatus(request.getStatus());
         question.setCreatedBy(userId);
-        question.setCompanyId(request.getCompanyId());
+        question.setCompanyId(companyId);
         question.setCreatedAt(LocalDateTime.now());
         question.setUpdatedAt(LocalDateTime.now());
 
@@ -234,6 +301,7 @@ public class QuestionService {
     /**
      * Update an existing question
      */
+    @CacheEvict(value = "questions", allEntries = true)
     public QuestionResponse updateQuestion(Long id, UpdateQuestionRequest request, Long userId) {
         log.info("Updating question with id: {}", id);
 
@@ -332,6 +400,7 @@ public class QuestionService {
     /**
      * Soft delete a question by marking it as archived
      */
+    @CacheEvict(value = "questions", allEntries = true)
     public void deleteQuestion(Long id) {
         log.info("Archiving question with id: {}", id);
 
@@ -350,6 +419,7 @@ public class QuestionService {
     /**
      * Deactivate a question (soft disable - marks as inactive but preserves data)
      */
+    @CacheEvict(value = "questions", allEntries = true)
     public QuestionResponse deactivateQuestion(Long id) {
         log.info("Deactivating question with id: {}", id);
 
@@ -369,6 +439,7 @@ public class QuestionService {
     /**
      * Activate a deactivated question
      */
+    @CacheEvict(value = "questions", allEntries = true)
     public QuestionResponse activateQuestion(Long id) {
         log.info("Activating question with id: {}", id);
 

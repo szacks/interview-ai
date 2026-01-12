@@ -51,18 +51,44 @@ export const useChatStore = create<ChatState>()(
        * Add a single message to the conversation
        */
       addMessage: (interviewId, message) => {
-        set((state) => ({
-          conversations: {
-            ...state.conversations,
-            [interviewId]: {
-              ...(state.conversations[interviewId] || defaultConversation),
-              messages: [
-                ...(state.conversations[interviewId]?.messages || []),
-                message,
-              ],
+        set((state) => {
+          const existingMessages = state.conversations[interviewId]?.messages || [];
+
+          // Check if message already exists (deduplication)
+          // Compare by role, content, and timestamp to avoid duplicates from optimistic updates
+          const isDuplicate = existingMessages.some((existingMsg) => {
+            const existingTime = existingMsg.timestamp instanceof Date
+              ? existingMsg.timestamp.getTime()
+              : new Date(existingMsg.timestamp).getTime();
+            const newTime = message.timestamp instanceof Date
+              ? message.timestamp.getTime()
+              : new Date(message.timestamp).getTime();
+
+            // Allow 1 second tolerance for timestamp comparison
+            return (
+              existingMsg.role === message.role &&
+              existingMsg.content === message.content &&
+              Math.abs(existingTime - newTime) < 1000
+            );
+          });
+
+          if (isDuplicate) {
+            return state; // Don't add duplicate
+          }
+
+          return {
+            conversations: {
+              ...state.conversations,
+              [interviewId]: {
+                ...(state.conversations[interviewId] || defaultConversation),
+                messages: [
+                  ...existingMessages,
+                  message,
+                ],
+              },
             },
-          },
-        }));
+          };
+        });
       },
 
       /**

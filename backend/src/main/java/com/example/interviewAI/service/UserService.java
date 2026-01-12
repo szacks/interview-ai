@@ -42,6 +42,10 @@ public class UserService {
         return mapToUserResponse(user);
     }
 
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
+    }
+
     public List<UserResponse> getUsersByCompany(Long companyId) {
         List<User> users = userRepository.findByCompanyId(companyId);
         return users.stream()
