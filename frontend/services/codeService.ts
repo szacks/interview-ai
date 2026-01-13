@@ -40,7 +40,7 @@ export const codeService = {
     try {
       // apiClient interceptor already extracts response.data
       const data = await apiClient.post('/code/submit', request);
-      return data as CodeSubmissionResponse;
+      return data as unknown as CodeSubmissionResponse;
     } catch (error) {
       console.error('Error submitting code:', error);
       throw error;
@@ -58,7 +58,7 @@ export const codeService = {
       const data = await apiClient.get(
         `/code/latest/${interviewId}`
       );
-      return data as CodeSubmissionResponse;
+      return data as unknown as CodeSubmissionResponse;
     } catch (error) {
       console.error('Error fetching latest code:', error);
       throw error;
@@ -71,7 +71,7 @@ export const codeService = {
   executeCode: async (request: CodeExecutionRequest): Promise<CodeExecutionResponse> => {
     try {
       const data = await apiClient.post('/code/execute', request);
-      return data as CodeExecutionResponse;
+      return data as unknown as CodeExecutionResponse;
     } catch (error) {
       console.error('Error executing code:', error);
       throw error;
