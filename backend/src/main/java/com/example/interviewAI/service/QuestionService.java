@@ -2,6 +2,7 @@ package com.example.interviewAI.service;
 
 import com.example.interviewAI.dto.QuestionResponse;
 import com.example.interviewAI.dto.FollowUpQuestionResponse;
+import com.example.interviewAI.dto.FollowUpQuestionRequest;
 import com.example.interviewAI.dto.TestCaseResponse;
 import com.example.interviewAI.dto.CreateQuestionRequest;
 import com.example.interviewAI.dto.UpdateQuestionRequest;
@@ -11,6 +12,7 @@ import com.example.interviewAI.entity.FollowUpQuestion;
 import com.example.interviewAI.entity.TestCase;
 import com.example.interviewAI.repository.AgentTemplateRepository;
 import com.example.interviewAI.repository.QuestionRepository;
+import com.example.interviewAI.repository.FollowUpQuestionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -18,6 +20,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +30,9 @@ public class QuestionService {
 
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private FollowUpQuestionRepository followUpQuestionRepository;
 
     @Autowired
     private AgentTemplateRepository agentTemplateRepository;
@@ -185,7 +191,6 @@ public class QuestionService {
         response.setAiHelperName(question.getAiHelperName());
         response.setPrimaryLanguage(question.getPrimaryLanguage());
         response.setGeneratedLanguagesJson(question.getGeneratedLanguagesJson());
-        response.setFollowupQuestionsJson(question.getFollowupQuestionsJson());
         response.setStatus(question.getStatus());
         response.setCurrentStep(question.getCurrentStep());
         response.setCategory(question.getCategory());
@@ -276,7 +281,22 @@ public class QuestionService {
         question.setAiPromptTemplate(request.getAiPromptTemplate() != null ? request.getAiPromptTemplate() : "helpful");
         question.setAiCustomPrompt(request.getAiCustomPrompt());
         question.setAiHelperName(request.getAiHelperName());
-        question.setFollowupQuestionsJson(request.getFollowupQuestionsJson());
+
+        // Handle follow-up questions from request
+        if (request.getFollowUpQuestions() != null && !request.getFollowUpQuestions().isEmpty()) {
+            List<FollowUpQuestion> followUpQuestions = new ArrayList<>();
+            for (FollowUpQuestionRequest fqRequest : request.getFollowUpQuestions()) {
+                FollowUpQuestion fq = new FollowUpQuestion();
+                fq.setQuestion(question);
+                fq.setQuestionText(fqRequest.getQuestion());
+                fq.setAnswer(fqRequest.getAnswer());
+                fq.setOrderIndex(fqRequest.getOrderIndex() != null ? fqRequest.getOrderIndex() : 0);
+                fq.setCreatedAt(LocalDateTime.now());
+                followUpQuestions.add(fq);
+            }
+            question.setFollowUpQuestions(followUpQuestions);
+        }
+
         question.setTimeLimitMinutes(request.getTimeLimitMinutes());
         question.setStatus(request.getStatus());
         question.setCreatedBy(userId);
@@ -302,6 +322,16 @@ public class QuestionService {
         log.info("[Question CREATE] Before save - timeLimitMinutes: {}", question.getTimeLimitMinutes());
         Question saved = questionRepository.save(question);
         log.info("[Question CREATE] After save - id: {}, timeLimitMinutes: {}", saved.getId(), saved.getTimeLimitMinutes());
+
+        // Explicitly save follow-up questions to ensure they're persisted
+        if (saved.getFollowUpQuestions() != null && !saved.getFollowUpQuestions().isEmpty()) {
+            log.info("[Question CREATE] Saving {} follow-up questions for question ID: {}", saved.getFollowUpQuestions().size(), saved.getId());
+            for (FollowUpQuestion fq : saved.getFollowUpQuestions()) {
+                fq.setQuestion(saved);
+                followUpQuestionRepository.save(fq);
+            }
+        }
+
         log.info("Question created successfully with id: {}", saved.getId());
 
         return convertToResponse(saved);
@@ -369,8 +399,18 @@ public class QuestionService {
         if (request.getAiHelperName() != null) {
             question.setAiHelperName(request.getAiHelperName());
         }
-        if (request.getFollowupQuestionsJson() != null) {
-            question.setFollowupQuestionsJson(request.getFollowupQuestionsJson());
+        if (request.getFollowUpQuestions() != null) {
+            List<FollowUpQuestion> followUpQuestions = new ArrayList<>();
+            for (FollowUpQuestionRequest fqRequest : request.getFollowUpQuestions()) {
+                FollowUpQuestion fq = new FollowUpQuestion();
+                fq.setQuestion(question);
+                fq.setQuestionText(fqRequest.getQuestion());
+                fq.setAnswer(fqRequest.getAnswer());
+                fq.setOrderIndex(fqRequest.getOrderIndex() != null ? fqRequest.getOrderIndex() : 0);
+                fq.setCreatedAt(LocalDateTime.now());
+                followUpQuestions.add(fq);
+            }
+            question.setFollowUpQuestions(followUpQuestions);
         }
         if (request.getStatus() != null) {
             question.setStatus(request.getStatus());
@@ -401,6 +441,16 @@ public class QuestionService {
         log.info("[Question {}] Before save - timeLimitMinutes value: {}", id, question.getTimeLimitMinutes());
         Question updated = questionRepository.save(question);
         log.info("[Question {}] After save - timeLimitMinutes value: {}", updated.getId(), updated.getTimeLimitMinutes());
+
+        // Explicitly save follow-up questions to ensure they're persisted
+        if (updated.getFollowUpQuestions() != null && !updated.getFollowUpQuestions().isEmpty()) {
+            log.info("[Question UPDATE] Saving {} follow-up questions for question ID: {}", updated.getFollowUpQuestions().size(), updated.getId());
+            for (FollowUpQuestion fq : updated.getFollowUpQuestions()) {
+                fq.setQuestion(updated);
+                followUpQuestionRepository.save(fq);
+            }
+        }
+
         log.info("Question updated successfully with id: {}", updated.getId());
 
         return convertToResponse(updated);

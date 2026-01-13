@@ -168,7 +168,7 @@ public class QuestionBackupRestorer implements CommandLineRunner {
         question.setRequirementsJson(getTextOrNull(questionNode, "requirementsJson", "requirements_json"));
         question.setRubricJson(getTextOrNull(questionNode, "rubricJson", "rubric_json"));
         question.setIntentionalBugsJson(getTextOrNull(questionNode, "intentionalBugsJson", "intentional_bugs_json"));
-        question.setFollowupQuestionsJson(getTextOrNull(questionNode, "followupQuestionsJson", "followup_questions_json"));
+        // Note: followupQuestionsJson is deprecated - we use the followUpQuestions entity relationship instead
         question.setGeneratedLanguagesJson(getTextOrNull(questionNode, "generatedLanguagesJson", "generated_languages_json"));
 
         // AI configuration
@@ -326,28 +326,6 @@ public class QuestionBackupRestorer implements CommandLineRunner {
                     savedFQ.getId(), savedQuestion.getId(), fq.getQuestionText().substring(0, Math.min(50, fq.getQuestionText().length())));
             }
             logger.info("Successfully saved {} follow-up questions for '{}'", savedQuestion.getFollowUpQuestions().size(), title);
-
-            // Also serialize follow-up questions to JSON field for backward compatibility
-            // Create simple DTOs to avoid circular references
-            try {
-                List<java.util.Map<String, Object>> followupQuestionsJsonList = new ArrayList<>();
-                for (FollowUpQuestion fq : savedQuestion.getFollowUpQuestions()) {
-                    java.util.Map<String, Object> fqMap = new java.util.LinkedHashMap<>();
-                    fqMap.put("id", fq.getId());
-                    fqMap.put("questionText", fq.getQuestionText());
-                    fqMap.put("answer", fq.getAnswer());
-                    fqMap.put("orderIndex", fq.getOrderIndex());
-                    fqMap.put("createdAt", fq.getCreatedAt());
-                    followupQuestionsJsonList.add(fqMap);
-                }
-                String followupQuestionsJson = objectMapper.writeValueAsString(followupQuestionsJsonList);
-                savedQuestion.setFollowupQuestionsJson(followupQuestionsJson);
-                questionRepository.save(savedQuestion);
-                logger.info("Serialized and saved followupQuestionsJson field for '{}' with {} questions",
-                    title, savedQuestion.getFollowUpQuestions().size());
-            } catch (Exception e) {
-                logger.warn("Failed to serialize followupQuestionsJson for '{}': {}", title, e.getMessage());
-            }
         } else {
             logger.warn("No follow-up questions found to save for '{}' (null or empty list)", title);
         }

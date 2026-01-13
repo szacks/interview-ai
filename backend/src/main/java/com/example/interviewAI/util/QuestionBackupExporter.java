@@ -124,7 +124,7 @@ public class QuestionBackupExporter implements CommandLineRunner {
         putIfNotNull(questionNode, "requirementsJson", question.getRequirementsJson());
         putIfNotNull(questionNode, "rubricJson", question.getRubricJson());
         putIfNotNull(questionNode, "intentionalBugsJson", question.getIntentionalBugsJson());
-        putIfNotNull(questionNode, "followupQuestionsJson", question.getFollowupQuestionsJson());
+        // Note: followupQuestionsJson is deprecated - follow-up questions are now exported from the entity relationship
         putIfNotNull(questionNode, "generatedLanguagesJson", question.getGeneratedLanguagesJson());
 
         // AI configuration

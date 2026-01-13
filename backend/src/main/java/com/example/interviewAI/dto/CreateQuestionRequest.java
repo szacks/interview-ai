@@ -3,8 +3,7 @@ package com.example.interviewAI.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -56,8 +55,7 @@ public class CreateQuestionRequest {
     private String aiHelperName; // Name of custom AI helper (e.g., "Expert Mentor") - for backward compatibility
 
     // Follow-up questions for interviewer guidance
-    // Format: [{"id": "fq_1", "question": "...", "expectedAnswer": "..."}]
-    private String followupQuestionsJson;
+    private List<FollowUpQuestionRequest> followUpQuestions;
 
     // ========== Step 7: Publish ==========
     private String status = "DRAFT"; // 'DRAFT' or 'PUBLISHED' - defaults to DRAFT

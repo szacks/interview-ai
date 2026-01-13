@@ -117,7 +117,13 @@ function CreateQuestionPageContent() {
             aiPromptTemplate: (question.aiPromptTemplate || "helpful") as any,
             useCustomPrompt: !!question.aiCustomPrompt,
             aiCustomPrompt: question.aiCustomPrompt || "",
-            followUpQuestions: JSON.parse(question.followupQuestionsJson || "[]") || [],
+            followUpQuestions: question.followUpQuestions && Array.isArray(question.followUpQuestions)
+              ? question.followUpQuestions.map((fq: any) => ({
+                  id: fq.id?.toString() || "",
+                  question: fq.question || "",
+                  expectedAnswer: fq.answer || "",
+                }))
+              : [],
             timeLimitMinutes: question.timeLimitMinutes,
             status: (question.status || "DRAFT") as any,
           })
@@ -308,7 +314,12 @@ function CreateQuestionPageContent() {
         aiPromptTemplate: questionData.aiPromptTemplate,
         aiCustomPrompt: questionData.useCustomPrompt ? questionData.aiCustomPrompt : undefined,
         aiHelperName: questionData.useCustomPrompt ? questionData.aiHelperName : undefined,
-        followupQuestionsJson: JSON.stringify(questionData.followUpQuestions),
+        followUpQuestions: questionData.followUpQuestions.map((fq: any) => ({
+          id: fq.id && !fq.id.startsWith("fq_") ? parseInt(fq.id) : undefined,
+          question: fq.question,
+          answer: fq.expectedAnswer,
+          orderIndex: questionData.followUpQuestions.indexOf(fq),
+        })),
         validationResultsJson: questionData.validationResults ? JSON.stringify(questionData.validationResults) : undefined,
         aiImplementation: questionData.aiImplementation || undefined,
         timeLimitMinutes: questionData.timeLimitMinutes,
@@ -374,7 +385,12 @@ function CreateQuestionPageContent() {
         aiPromptTemplate: questionData.aiPromptTemplate,
         aiCustomPrompt: questionData.useCustomPrompt ? questionData.aiCustomPrompt : undefined,
         aiHelperName: questionData.useCustomPrompt ? questionData.aiHelperName : undefined,
-        followupQuestionsJson: JSON.stringify(questionData.followUpQuestions),
+        followUpQuestions: questionData.followUpQuestions.map((fq: any) => ({
+          id: fq.id && !fq.id.startsWith("fq_") ? parseInt(fq.id) : undefined,
+          question: fq.question,
+          answer: fq.expectedAnswer,
+          orderIndex: questionData.followUpQuestions.indexOf(fq),
+        })),
         validationResultsJson: questionData.validationResults ? JSON.stringify(questionData.validationResults) : undefined,
         aiImplementation: questionData.aiImplementation || undefined,
         timeLimitMinutes: questionData.timeLimitMinutes,
@@ -437,7 +453,12 @@ function CreateQuestionPageContent() {
         aiPromptTemplate: questionData.aiPromptTemplate,
         aiCustomPrompt: questionData.useCustomPrompt ? questionData.aiCustomPrompt : undefined,
         aiHelperName: questionData.useCustomPrompt ? questionData.aiHelperName : undefined,
-        followupQuestionsJson: JSON.stringify(questionData.followUpQuestions),
+        followUpQuestions: questionData.followUpQuestions.map((fq: any) => ({
+          id: fq.id && !fq.id.startsWith("fq_") ? parseInt(fq.id) : undefined,
+          question: fq.question,
+          answer: fq.expectedAnswer,
+          orderIndex: questionData.followUpQuestions.indexOf(fq),
+        })),
         validationResultsJson: questionData.validationResults ? JSON.stringify(questionData.validationResults) : undefined,
         aiImplementation: questionData.aiImplementation || undefined,
         timeLimitMinutes: questionData.timeLimitMinutes,

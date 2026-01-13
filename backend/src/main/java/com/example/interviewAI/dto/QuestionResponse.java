@@ -52,8 +52,6 @@ public class QuestionResponse {
 
     private String generatedLanguagesJson;
 
-    private String followupQuestionsJson;
-
     private String status;
 
     private Integer currentStep;

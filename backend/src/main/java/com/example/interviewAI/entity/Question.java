@@ -84,10 +84,8 @@ public class Question {
     @JoinColumn(name = "agent_template_id")
     private AgentTemplate agentTemplate; // Reference to AI agent template
 
-    // ========== Follow-up Questions (JSONB) ==========
-    // Format: [{"id": "fq_1", "question": "...", "expectedAnswer": "..."}]
-    @Column(columnDefinition = "TEXT")
-    private String followupQuestionsJson;
+    // ========== Follow-up Questions ==========
+    // Managed via the followUpQuestions entity relationship below (One-to-Many)
 
     // ========== Code Generation Tracking ==========
     @Column
