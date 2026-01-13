@@ -4,6 +4,7 @@ import com.example.interviewAI.entity.Question;
 import com.example.interviewAI.entity.FollowUpQuestion;
 import com.example.interviewAI.entity.TestCase;
 import com.example.interviewAI.repository.QuestionRepository;
+import com.example.interviewAI.repository.FollowUpQuestionRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -36,6 +37,9 @@ public class QuestionBackupRestorer implements CommandLineRunner {
 
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private FollowUpQuestionRepository followUpQuestionRepository;
 
     @Autowired
     private ResourceLoader resourceLoader;
@@ -197,18 +201,38 @@ public class QuestionBackupRestorer implements CommandLineRunner {
         // Try to find followUpQuestions in root (for nested structure like rate-limiter)
         if (root.has("followUpQuestions") && root.get("followUpQuestions").isArray()) {
             followUpQuestionsNode = root.get("followUpQuestions");
+            logger.debug("Found followUpQuestions in root for '{}'", title);
         }
         // Try to find in questionNode (for nested "question" object)
         else if (questionNode.has("followUpQuestions") && questionNode.get("followUpQuestions").isArray()) {
             followUpQuestionsNode = questionNode.get("followUpQuestions");
+            logger.debug("Found followUpQuestions in questionNode for '{}'", title);
         }
-        // Try to find followup_questions_json which may be a JSON array field
+        // Try to find followup_questions_json in questionNode (flat structure like log-aggregator)
         else if (questionNode.has("followup_questions_json")) {
             JsonNode jsonField = questionNode.get("followup_questions_json");
+            logger.debug("Found followup_questions_json field for '{}', type: {}", title, jsonField.getNodeType());
             if (jsonField.isArray()) {
                 followUpQuestionsNode = jsonField;
+                logger.debug("followup_questions_json is an array with {} items", jsonField.size());
             } else if (jsonField.isTextual()) {
                 // It's a string containing JSON, parse it
+                try {
+                    followUpQuestionsNode = objectMapper.readTree(jsonField.asText());
+                    logger.debug("Parsed followup_questions_json as JSON string");
+                } catch (Exception e) {
+                    logger.warn("Failed to parse followup_questions_json for '{}': {}", title, e.getMessage());
+                }
+            }
+        }
+        // Also check root level for followup_questions_json (in case of flat structure)
+        else if (root.has("followup_questions_json")) {
+            JsonNode jsonField = root.get("followup_questions_json");
+            logger.debug("Found followup_questions_json in root for '{}'", title);
+            if (jsonField.isArray()) {
+                followUpQuestionsNode = jsonField;
+                logger.debug("followup_questions_json is an array with {} items", jsonField.size());
+            } else if (jsonField.isTextual()) {
                 try {
                     followUpQuestionsNode = objectMapper.readTree(jsonField.asText());
                 } catch (Exception e) {
@@ -219,6 +243,7 @@ public class QuestionBackupRestorer implements CommandLineRunner {
 
         // Add follow-up questions if found
         if (followUpQuestionsNode != null && followUpQuestionsNode.isArray()) {
+            logger.debug("Processing {} follow-up questions for '{}'", followUpQuestionsNode.size(), title);
             List<FollowUpQuestion> followUpQuestions = new ArrayList<>();
             for (JsonNode fqNode : followUpQuestionsNode) {
                 FollowUpQuestion fq = new FollowUpQuestion();
@@ -228,8 +253,12 @@ public class QuestionBackupRestorer implements CommandLineRunner {
                 String questionText = null;
                 if (fqNode.has("questionText")) {
                     questionText = fqNode.get("questionText").asText();
+                    logger.debug("Using questionText field");
                 } else if (fqNode.has("question")) {
                     questionText = fqNode.get("question").asText();
+                    logger.debug("Using question field");
+                } else {
+                    logger.debug("No question/questionText field found in follow-up question");
                 }
 
                 if (questionText != null) {
@@ -239,20 +268,27 @@ public class QuestionBackupRestorer implements CommandLineRunner {
                     String answer = null;
                     if (fqNode.has("answer")) {
                         answer = getTextOrNull(fqNode, "answer");
+                        logger.debug("Using answer field");
                     } else if (fqNode.has("expectedAnswer")) {
                         answer = getTextOrNull(fqNode, "expectedAnswer");
+                        logger.debug("Using expectedAnswer field");
                     }
                     fq.setAnswer(answer);
 
                     fq.setOrderIndex(fqNode.has("orderIndex") ? fqNode.get("orderIndex").asInt() : 0);
                     fq.setCreatedAt(LocalDateTime.now());
                     followUpQuestions.add(fq);
+                    logger.debug("Added follow-up question: {}", questionText);
                 }
             }
             if (!followUpQuestions.isEmpty()) {
                 question.setFollowUpQuestions(followUpQuestions);
-                logger.debug("Added {} follow-up questions for '{}'", followUpQuestions.size(), title);
+                logger.info("Added {} follow-up questions for '{}'", followUpQuestions.size(), title);
+            } else {
+                logger.warn("No valid follow-up questions found for '{}' despite having nodes", title);
             }
+        } else {
+            logger.debug("No follow-up questions found for '{}'", title);
         }
 
         // Parse and add TestCases
@@ -275,9 +311,48 @@ public class QuestionBackupRestorer implements CommandLineRunner {
         }
 
         // Save to database
-        questionRepository.save(question);
-        logger.info("Successfully restored question: {}", title);
+        Question savedQuestion = questionRepository.save(question);
+        logger.info("Saved question: {}", title);
 
+        // Explicitly save follow-up questions to ensure they are persisted
+        if (savedQuestion.getFollowUpQuestions() != null && !savedQuestion.getFollowUpQuestions().isEmpty()) {
+            logger.info("About to save {} follow-up questions for '{}' (Question ID: {})",
+                savedQuestion.getFollowUpQuestions().size(), title, savedQuestion.getId());
+
+            for (FollowUpQuestion fq : savedQuestion.getFollowUpQuestions()) {
+                fq.setQuestion(savedQuestion);  // Ensure question reference is set
+                FollowUpQuestion savedFQ = followUpQuestionRepository.save(fq);
+                logger.info("Saved follow-up question ID: {} for Question ID: {}: {}",
+                    savedFQ.getId(), savedQuestion.getId(), fq.getQuestionText().substring(0, Math.min(50, fq.getQuestionText().length())));
+            }
+            logger.info("Successfully saved {} follow-up questions for '{}'", savedQuestion.getFollowUpQuestions().size(), title);
+
+            // Also serialize follow-up questions to JSON field for backward compatibility
+            // Create simple DTOs to avoid circular references
+            try {
+                List<java.util.Map<String, Object>> followupQuestionsJsonList = new ArrayList<>();
+                for (FollowUpQuestion fq : savedQuestion.getFollowUpQuestions()) {
+                    java.util.Map<String, Object> fqMap = new java.util.LinkedHashMap<>();
+                    fqMap.put("id", fq.getId());
+                    fqMap.put("questionText", fq.getQuestionText());
+                    fqMap.put("answer", fq.getAnswer());
+                    fqMap.put("orderIndex", fq.getOrderIndex());
+                    fqMap.put("createdAt", fq.getCreatedAt());
+                    followupQuestionsJsonList.add(fqMap);
+                }
+                String followupQuestionsJson = objectMapper.writeValueAsString(followupQuestionsJsonList);
+                savedQuestion.setFollowupQuestionsJson(followupQuestionsJson);
+                questionRepository.save(savedQuestion);
+                logger.info("Serialized and saved followupQuestionsJson field for '{}' with {} questions",
+                    title, savedQuestion.getFollowUpQuestions().size());
+            } catch (Exception e) {
+                logger.warn("Failed to serialize followupQuestionsJson for '{}': {}", title, e.getMessage());
+            }
+        } else {
+            logger.warn("No follow-up questions found to save for '{}' (null or empty list)", title);
+        }
+
+        logger.info("Successfully restored question: {}", title);
         return true;
     }
 
