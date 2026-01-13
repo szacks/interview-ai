@@ -123,11 +123,11 @@ public class QuestionBackupRestorer implements CommandLineRunner {
 
         String title = questionNode.get("title").asText();
 
-        // Check if question already exists
+        // Check if question already exists - delete it to restore from fresh JSON backup
         List<Question> existingQuestions = questionRepository.findByTitle(title);
         if (!existingQuestions.isEmpty()) {
-            logger.info("Question '{}' already exists, skipping", title);
-            return false;
+            logger.info("Question '{}' already exists, deleting old version to restore from JSON", title);
+            questionRepository.deleteAll(existingQuestions);
         }
 
         // Create Question entity
