@@ -63,10 +63,7 @@ public class QuestionBackupRestorer implements CommandLineRunner {
             // List of backup files to restore
             String[] backupFiles = {
                 "question-rate-limiter.json",
-                "question-rate-limiter-actual.json",
-                "question-two-sum.json",
-                "question-binary-search.json",
-                "question-log-system.json"
+                "question-log-aggregator.json"
                 // Add more backup files here as needed
             };
 
@@ -113,7 +110,9 @@ public class QuestionBackupRestorer implements CommandLineRunner {
 
         // Parse JSON
         JsonNode root = objectMapper.readTree(resource.getInputStream());
-        JsonNode questionNode = root.get("question");
+
+        // Support both flat structure and nested "question" structure
+        JsonNode questionNode = root.has("question") ? root.get("question") : root;
 
         String title = questionNode.get("title").asText();
 
@@ -127,39 +126,37 @@ public class QuestionBackupRestorer implements CommandLineRunner {
         // Create Question entity
         Question question = new Question();
 
-        // Basic fields
-        question.setCompanyId(questionNode.has("companyId") && !questionNode.get("companyId").isNull()
-                              ? questionNode.get("companyId").asLong() : null);
-        question.setCreatedBy(questionNode.has("createdBy") && !questionNode.get("createdBy").isNull()
-                              ? questionNode.get("createdBy").asLong() : null);
+        // Basic fields (support both camelCase and snake_case)
+        question.setCompanyId(getLongOrNull(questionNode, "companyId", "company_id"));
+        question.setCreatedBy(getLongOrNull(questionNode, "createdBy", "created_by"));
         question.setTitle(title);
-        question.setDescription(questionNode.get("description").asText());
-        question.setShortDescription(getTextOrNull(questionNode, "shortDescription"));
+        question.setDescription(getTextOrNull(questionNode, "description"));
+        question.setShortDescription(getTextOrNull(questionNode, "shortDescription", "short_description"));
         question.setCategory(getTextOrNull(questionNode, "category"));
-        question.setDifficulty(questionNode.get("difficulty").asText());
+        question.setDifficulty(getTextOrNull(questionNode, "difficulty"));
 
         // Time and language settings
-        question.setTimeLimitMinutes(getIntOrNull(questionNode, "timeLimitMinutes"));
-        question.setPrimaryLanguage(getTextOrNull(questionNode, "primaryLanguage"));
-        question.setSupportedLanguages(getTextOrNull(questionNode, "supportedLanguages"));
+        question.setTimeLimitMinutes(getIntOrNull(questionNode, "timeLimitMinutes", "time_limit_minutes"));
+        question.setPrimaryLanguage(getTextOrNull(questionNode, "primaryLanguage", "primary_language"));
+        question.setSupportedLanguages(getTextOrNull(questionNode, "supportedLanguages", "supported_languages"));
 
         // Code templates
-        question.setInitialCodeJava(getTextOrNull(questionNode, "initialCodeJava"));
-        question.setInitialCodePython(getTextOrNull(questionNode, "initialCodePython"));
-        question.setInitialCodeJavascript(getTextOrNull(questionNode, "initialCodeJavascript"));
+        question.setInitialCodeJava(getTextOrNull(questionNode, "initialCodeJava", "initial_code_java"));
+        question.setInitialCodePython(getTextOrNull(questionNode, "initialCodePython", "initial_code_python"));
+        question.setInitialCodeJavascript(getTextOrNull(questionNode, "initialCodeJavascript", "initial_code_javascript"));
 
         // JSON fields
-        question.setTestsJson(getTextOrNull(questionNode, "testsJson"));
-        question.setRequirementsJson(getTextOrNull(questionNode, "requirementsJson"));
-        question.setRubricJson(getTextOrNull(questionNode, "rubricJson"));
-        question.setIntentionalBugsJson(getTextOrNull(questionNode, "intentionalBugsJson"));
-        question.setFollowupQuestionsJson(getTextOrNull(questionNode, "followupQuestionsJson"));
-        question.setGeneratedLanguagesJson(getTextOrNull(questionNode, "generatedLanguagesJson"));
+        question.setTestsJson(getTextOrNull(questionNode, "testsJson", "tests_json"));
+        question.setRequirementsJson(getTextOrNull(questionNode, "requirementsJson", "requirements_json"));
+        question.setRubricJson(getTextOrNull(questionNode, "rubricJson", "rubric_json"));
+        question.setIntentionalBugsJson(getTextOrNull(questionNode, "intentionalBugsJson", "intentional_bugs_json"));
+        question.setFollowupQuestionsJson(getTextOrNull(questionNode, "followupQuestionsJson", "followup_questions_json"));
+        question.setGeneratedLanguagesJson(getTextOrNull(questionNode, "generatedLanguagesJson", "generated_languages_json"));
 
         // AI configuration
-        question.setAiPromptTemplate(getTextOrNull(questionNode, "aiPromptTemplate"));
-        question.setAiCustomPrompt(getTextOrNull(questionNode, "aiCustomPrompt"));
-        question.setAiHelperName(getTextOrNull(questionNode, "aiHelperName"));
+        question.setAiPromptTemplate(getTextOrNull(questionNode, "aiPromptTemplate", "ai_prompt_template"));
+        question.setAiCustomPrompt(getTextOrNull(questionNode, "aiCustomPrompt", "ai_custom_prompt"));
+        question.setAiHelperName(getTextOrNull(questionNode, "aiHelperName", "ai_helper_name"));
         // Note: agentTemplate needs to be set separately if needed
 
         // Status and versioning
@@ -235,16 +232,43 @@ public class QuestionBackupRestorer implements CommandLineRunner {
 
     // Helper methods
 
-    private String getTextOrNull(JsonNode node, String fieldName) {
-        if (node.has(fieldName) && !node.get(fieldName).isNull()) {
-            return node.get(fieldName).asText();
+    /**
+     * Get text value from node, trying both camelCase and snake_case field names
+     */
+    private String getTextOrNull(JsonNode node, String... fieldNames) {
+        for (String fieldName : fieldNames) {
+            if (node.has(fieldName) && !node.get(fieldName).isNull()) {
+                JsonNode value = node.get(fieldName);
+                if (value.isObject()) {
+                    // If it's a JSON object, convert to string
+                    return value.toString();
+                }
+                return value.asText();
+            }
         }
         return null;
     }
 
-    private Integer getIntOrNull(JsonNode node, String fieldName) {
-        if (node.has(fieldName) && !node.get(fieldName).isNull()) {
-            return node.get(fieldName).asInt();
+    /**
+     * Get integer value from node, trying both camelCase and snake_case field names
+     */
+    private Integer getIntOrNull(JsonNode node, String... fieldNames) {
+        for (String fieldName : fieldNames) {
+            if (node.has(fieldName) && !node.get(fieldName).isNull()) {
+                return node.get(fieldName).asInt();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get long value from node, trying both camelCase and snake_case field names
+     */
+    private Long getLongOrNull(JsonNode node, String... fieldNames) {
+        for (String fieldName : fieldNames) {
+            if (node.has(fieldName) && !node.get(fieldName).isNull()) {
+                return node.get(fieldName).asLong();
+            }
         }
         return null;
     }
