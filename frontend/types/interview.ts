@@ -51,11 +51,15 @@ export interface InterviewListResponse {
 export interface Question {
   id: number
   title: string
+  shortDescription?: string
   description: string
   difficulty: string
+  category?: string
   timeLimitMinutes: number
   supportedLanguages: string[]
   createdAt?: string
+  publishedAt?: string
+  deactivatedAt?: string
   initialCodeJava?: string
   initialCodePython?: string
   initialCodeJavascript?: string
@@ -65,6 +69,17 @@ export interface Question {
   testsJson?: string
   rubricJson?: string
   intentionalBugsJson?: string
+  status?: string
+  currentStep?: number
+  version?: number
+  companyId?: number | null
+  deactivated?: boolean
+  primaryLanguage?: string
+  generatedLanguagesJson?: string
+  aiPromptTemplate?: string
+  aiCustomPrompt?: string
+  aiHelperName?: string
+  agentTemplateId?: number
 }
 
 export interface FollowUpQuestion {
