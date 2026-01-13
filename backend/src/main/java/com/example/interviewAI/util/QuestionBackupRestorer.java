@@ -114,6 +114,13 @@ public class QuestionBackupRestorer implements CommandLineRunner {
         // Support both flat structure and nested "question" structure
         JsonNode questionNode = root.has("question") ? root.get("question") : root;
 
+        // Log available fields for debugging
+        if (questionNode.isObject()) {
+            java.util.List<String> fieldNames = new java.util.ArrayList<>();
+            questionNode.fieldNames().forEachRemaining(fieldNames::add);
+            logger.debug("Available fields in backup file: {}", String.join(", ", fieldNames));
+        }
+
         String title = questionNode.get("title").asText();
 
         // Check if question already exists
@@ -130,8 +137,15 @@ public class QuestionBackupRestorer implements CommandLineRunner {
         question.setCompanyId(getLongOrNull(questionNode, "companyId", "company_id"));
         question.setCreatedBy(getLongOrNull(questionNode, "createdBy", "created_by"));
         question.setTitle(title);
-        question.setDescription(getTextOrNull(questionNode, "description"));
-        question.setShortDescription(getTextOrNull(questionNode, "shortDescription", "short_description"));
+
+        String description = getTextOrNull(questionNode, "description");
+        question.setDescription(description);
+        logger.debug("Set description for '{}': {}", title, description != null ? "set" : "null");
+
+        String shortDescription = getTextOrNull(questionNode, "shortDescription", "short_description");
+        question.setShortDescription(shortDescription);
+        logger.debug("Set shortDescription for '{}': {}", title, shortDescription != null ? "set" : "null");
+
         question.setCategory(getTextOrNull(questionNode, "category"));
         question.setDifficulty(getTextOrNull(questionNode, "difficulty"));
 
