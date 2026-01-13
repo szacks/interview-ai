@@ -1,89 +1,166 @@
 {
-  "question": {
-    "companyId": null,
-    "createdBy": 1,
-    "title": "Build a Rate Limiter",
-    "description": "# Rate Limiter\n\nImplement a rate limiter that allows a maximum number of requests per user within a given time window.\n\n## Requirements\n- Support configurable rate limits (e.g., 5 requests per minute)\n- Thread-safe implementation\n- Handle edge cases (empty user ID, negative timestamp, null values)\n\n## Constraints\n- Handle up to 1000 concurrent users\n- Support 1-60 requests per minute range\n- Memory efficient - cleanup old timestamps\n\n## Examples\n\n### Example 1: Basic Usage\n```java\nRateLimiter limiter = new RateLimiter(2, 1000); // 2 requests per 1000ms\nlimiter.allowRequest(\"user1\", 0);     // true (first request)\nlimiter.allowRequest(\"user1\", 100);   // true (second request)\nlimiter.allowRequest(\"user1\", 200);   // false (rate limit exceeded)\nlimiter.allowRequest(\"user1\", 1100);  // true (window reset)\n```\n\n### Example 2: Multiple Users\n```java\nlimiter.allowRequest(\"user1\", 0);     // true\nlimiter.allowRequest(\"user2\", 0);     // true (different user)\n```\n\n### Example 3: Edge Cases\n```java\nlimiter.allowRequest(\"\", 0);          // should throw exception (empty user)\nlimiter.allowRequest(null, 0);        // should throw exception (null user)\nlimiter.allowRequest(\"user1\", -1);    // should throw exception (negative timestamp)\n```",
-    "shortDescription": "Build a thread-safe rate limiter that supports limiting requests per user within a time window",
-    "category": "backend",
-    "difficulty": "hard",
-    "timeLimitMinutes": 45,
-    "primaryLanguage": "java",
-    "supportedLanguages": "java,python,javascript",
-    "initialCodeJava": "public class RateLimiter {\n    public RateLimiter(int limit, long windowMs) {\n        // TODO: Initialize\n    }\n    \n    public boolean allowRequest(String userId, long timestamp) {\n        // TODO: Implement\n        return false;\n    }\n}",
-    "initialCodePython": "class RateLimiter:\n    def __init__(self, limit: int, window_ms: int):\n        # TODO: Initialize\n        pass\n    \n    def allow_request(self, user_id: str, timestamp: int) -> bool:\n        # TODO: Implement\n        return False",
-    "initialCodeJavascript": "class RateLimiter {\n    constructor(limit, windowMs) {\n        // TODO: Initialize\n    }\n    \n    allowRequest(userId, timestamp) {\n        // TODO: Implement\n        return false;\n    }\n}",
-    "testsJson": "[\n  {\n    \"id\": \"test_1\",\n    \"name\": \"Basic Usage - First Request\",\n    \"description\": \"First request should be allowed\",\n    \"visibleToCandidate\": true,\n    \"timeout\": 5000,\n    \"setup\": \"RateLimiter limiter = new RateLimiter(2, 1000);\",\n    \"input\": \"limiter.allowRequest(\\\"user1\\\", 0)\",\n    \"expectedOutput\": \"true\"\n  },\n  {\n    \"id\": \"test_2\",\n    \"name\": \"Rate Limit Exceeded\",\n    \"description\": \"Third request should be blocked\",\n    \"visibleToCandidate\": false,\n    \"timeout\": 5000,\n    \"setup\": \"RateLimiter limiter = new RateLimiter(2, 1000); limiter.allowRequest(\\\"user1\\\", 0); limiter.allowRequest(\\\"user1\\\", 100);\",\n    \"input\": \"limiter.allowRequest(\\\"user1\\\", 200)\",\n    \"expectedOutput\": \"false\"\n  },\n  {\n    \"id\": \"test_3\",\n    \"name\": \"Window Reset\",\n    \"description\": \"Request after window should be allowed\",\n    \"visibleToCandidate\": false,\n    \"timeout\": 5000,\n    \"setup\": \"RateLimiter limiter = new RateLimiter(2, 1000); limiter.allowRequest(\\\"user1\\\", 0); limiter.allowRequest(\\\"user1\\\", 100);\",\n    \"input\": \"limiter.allowRequest(\\\"user1\\\", 1100)\",\n    \"expectedOutput\": \"true\"\n  },\n  {\n    \"id\": \"test_4\",\n    \"name\": \"Multiple Users\",\n    \"description\": \"Different users should have separate rate limits\",\n    \"visibleToCandidate\": true,\n    \"timeout\": 5000,\n    \"setup\": \"RateLimiter limiter = new RateLimiter(1, 1000); limiter.allowRequest(\\\"user1\\\", 0);\",\n    \"input\": \"limiter.allowRequest(\\\"user2\\\", 0)\",\n    \"expectedOutput\": \"true\"\n  }\n]",
-    "requirementsJson": null,
-    "rubricJson": null,
-    "intentionalBugsJson": null,
-    "aiPromptTemplate": "helpful",
-    "aiCustomPrompt": null,
-    "aiHelperName": "Backend Expert",
-    "agentTemplateId": null,
-    "followupQuestionsJson": null,
-    "generatedLanguagesJson": "{\"java\": {\"generated\": false, \"reviewed\": true}, \"python\": {\"generated\": true, \"reviewed\": true}, \"javascript\": {\"generated\": true, \"reviewed\": true}}",
-    "status": "PUBLISHED",
-    "version": 1,
-    "parentQuestionId": null,
-    "currentStep": 7,
-    "usageCount": 0,
-    "averageScore": null,
-    "deactivated": false
+  "id": 5,
+  "created_at": "2025-12-19T10:13:16.75455",
+  "description": "Build a rate limiter that controls how many requests are allowed in a time window.\n\nEXAMPLE:\nconst limiter = new RateLimiter(3, 1000); // 3 requests per second\nlimiter.allowRequest(); // true\nlimiter.allowRequest(); // true\nlimiter.allowRequest(); // true\nlimiter.allowRequest(); // false (limit reached)\n// After 1 second passes, requests are allowed again",
+  "difficulty": "medium",
+  "initial_code_java": "// Rate Limiter\nimport java.util.*;\n\npublic class RateLimiter {\n    \n    public RateLimiter(int maxRequests, long windowMs) {\n        // TODO: Initialize the rate limiter\n    }\n    \n    public boolean allowRequest() {\n        // TODO: Return true if request allowed, false if limit exceeded\n        return false;\n    }\n}",
+  "initial_code_javascript": "// Rate Limiter\n\nclass RateLimiter {\n  constructor(maxRequests, windowMs) {\n    // TODO: Initialize the rate limiter\n  }\n\n  allowRequest() {\n    // TODO: Return true if request allowed, false if limit exceeded\n    return false;\n  }\n}",
+  "initial_code_python": "# Rate Limiter\nimport time\n\nclass RateLimiter:\n    def __init__(self, max_requests, window_ms):\n        # TODO: Initialize the rate limiter\n        pass\n\n    def allow_request(self):\n        # TODO: Return True if request allowed, False if limit exceeded\n        return False",
+  "intentional_bugs_json": {
+    "bugs": [
+      {
+        "name": "Memory grows unbounded",
+        "description": "Stores all timestamps causing memory issues with high traffic",
+        "difficulty": "common"
+      },
+      {
+        "name": "Doesn't filter expired requests",
+        "description": "Counts expired requests towards the limit",
+        "difficulty": "medium"
+      },
+      {
+        "name": "Off-by-one error",
+        "description": "Allows one too many or too few requests",
+        "difficulty": "common"
+      },
+      {
+        "name": "No window reset",
+        "description": "Never allows new requests after window fills up",
+        "difficulty": "hard"
+      }
+    ]
   },
-  "followUpQuestions": [
-    {
-      "questionText": "Walk me through your rate limiting algorithm. How does it work?",
-      "answer": "Strong candidates should:\n• Explain sliding window or token bucket approach\n• Mention timestamp tracking\n• Discuss cleanup strategy\n\nRed flags:\n• Cannot explain own code\n• Vague \"it just works\" responses",
-      "orderIndex": 0
+  "requirements_json": {
+    "requirements": [
+      "Create a rate limiter with max requests and time window",
+      "Implement allowRequest function",
+      "Track request timestamps efficiently",
+      "Handle time window expiration",
+      "Support multiple independent limiters"
+    ]
+  },
+  "rubric_json": {
+    "categories": [
+      {
+        "category": "Correctness",
+        "points": 25,
+        "description": "Basic solution passes tests"
+      },
+      {
+        "category": "Edge Cases",
+        "points": 15,
+        "description": "Handles edge cases (limit=1, empty, boundary)"
+      },
+      {
+        "category": "Memory Efficiency",
+        "points": 20,
+        "description": "Recognizes memory problem with high traffic"
+      },
+      {
+        "category": "Alternative Solutions",
+        "points": 20,
+        "description": "Discusses or implements memory-efficient alternative"
+      },
+      {
+        "category": "AI Collaboration",
+        "points": 20,
+        "description": "Uses AI effectively - asks good questions, reviews critically"
+      }
+    ]
+  },
+  "supported_languages": "java,python,javascript",
+  "tests_json": {
+    "tests": [
+      {
+        "testCase": "TC1",
+        "name": "allows requests under limit",
+        "operations": [],
+        "assertions": [],
+        "description": "3 requests with limit 3 should all be true",
+        "input": "const limiter = new RateLimiter(2, 1000);\nassert(limiter.allowRequest(\"user1\", 0) === true);\nassert(limiter.allowRequest(\"user1\", 100) === true);\nassert(limiter.allowRequest(\"user1\", 200) === false);"
+      },
+      {
+        "testCase": "TC2",
+        "name": "blocks request when limit reached",
+        "operations": [],
+        "assertions": [],
+        "description": "3rd request with limit 2 should be false",
+        "input": "const limiter = new RateLimiter(2, 1000);\nassert(limiter.allowRequest(\"user1\", 0) === true);\nassert(limiter.allowRequest(\"user1\", 100) === true);\nassert(limiter.allowRequest(\"user1\", 200) === false);"
+      },
+      {
+        "testCase": "TC3",
+        "name": "allows request after window expires",
+        "operations": [],
+        "assertions": [],
+        "description": "After window expires, new requests should be allowed",
+        "input": "const limiter = new RateLimiter(2, 1000);\nassert(limiter.allowRequest(\"user1\", 0) === true);\nassert(limiter.allowRequest(\"user1\", 100) === true);\nassert(limiter.allowRequest(\"user1\", 200) === false);"
+      },
+      {
+        "testCase": "TC4",
+        "name": "each limiter is independent",
+        "operations": [],
+        "assertions": [],
+        "description": "Two limiters should track separately",
+        "input": "const limiter = new RateLimiter(2, 1000);\nassert(limiter.allowRequest(\"user1\", 0) === true);\nassert(limiter.allowRequest(\"user1\", 100) === true);\nassert(limiter.allowRequest(\"user1\", 200) === false);"
+      },
+      {
+        "testCase": "TC5",
+        "name": "handles limit of 1",
+        "operations": [],
+        "assertions": [],
+        "description": "Single request limit should work correctly",
+        "input": "const limiter = new RateLimiter(2, 1000);\nassert(limiter.allowRequest(\"user1\", 0) === true);\nassert(limiter.allowRequest(\"user1\", 100) === true);\nassert(limiter.allowRequest(\"user1\", 200) === false);"
+      },
+      {
+        "testCase": "TC6",
+        "name": "sliding window - partial expiry",
+        "operations": [],
+        "assertions": [],
+        "description": "Sliding window should handle partial expiry correctly",
+        "input": "const limiter = new RateLimiter(2, 1000);\nassert(limiter.allowRequest(\"user1\", 0) === true);\nassert(limiter.allowRequest(\"user1\", 100) === true);\nassert(limiter.allowRequest(\"user1\", 200) === false);"
+      },
+      {
+        "testCase": "TC7",
+        "name": "high volume - 10 requests with limit 10",
+        "operations": [],
+        "assertions": [],
+        "description": "Should handle high volume requests",
+        "input": "const limiter = new RateLimiter(2, 1000);\nassert(limiter.allowRequest(\"user1\", 0) === true);\nassert(limiter.allowRequest(\"user1\", 100) === true);\nassert(limiter.allowRequest(\"user1\", 200) === false);"
+      }
+    ]
+  },
+  "time_limit_minutes": 35,
+  "title": "Rate Limiter",
+  "ai_custom_prompt": null,
+  "ai_prompt_template": "helpful",
+  "archived_at": null,
+  "average_score": null,
+  "category": "algorithm",
+  "company_id": 1,
+  "created_by": 1,
+  "followup_questions_json": [],
+  "generated_languages_json": {
+    "java": {
+      "generated": false,
+      "reviewed": true
     },
-    {
-      "questionText": "What happens if two threads try to check the rate limit for the same user simultaneously?",
-      "answer": "Should mention:\n• Race conditions / concurrent access issues\n• ConcurrentHashMap or synchronization\n• Why regular HashMap is unsafe\n\nBonus points:\n• Discusses lock-free approaches\n• Mentions atomic operations",
-      "orderIndex": 1
+    "python": {
+      "generated": false,
+      "reviewed": true
     },
-    {
-      "questionText": "How would you optimize this for millions of users?",
-      "answer": "Look for:\n• Memory cleanup strategy (TTL, LRU)\n• Distributed rate limiting (Redis)\n• Sharding/partitioning strategies\n\nNot expected but impressive:\n• Sliding window counters\n• Leaky bucket algorithm",
-      "orderIndex": 2
+    "javascript": {
+      "generated": false,
+      "reviewed": true
     }
-  ],
-  "testCases": [
-    {
-      "testName": "Basic - First Request Allowed",
-      "testCase": "limiter.allowRequest(\"user1\", 0)",
-      "description": "The first request for any user should always be allowed",
-      "operationsJson": "[{\"method\": \"allowRequest\", \"args\": [\"user1\", 0]}]",
-      "assertionsJson": "[{\"type\": \"assertEquals\", \"expected\": true, \"message\": \"First request should be allowed\"}]",
-      "orderIndex": 0,
-      "passed": false
-    },
-    {
-      "testName": "Rate Limit - Third Request Blocked",
-      "testCase": "limiter.allowRequest(\"user1\", 200)",
-      "description": "When rate limit is 2, the third request within window should be blocked",
-      "operationsJson": "[{\"method\": \"allowRequest\", \"args\": [\"user1\", 0]}, {\"method\": \"allowRequest\", \"args\": [\"user1\", 100]}, {\"method\": \"allowRequest\", \"args\": [\"user1\", 200]}]",
-      "assertionsJson": "[{\"type\": \"assertEquals\", \"expected\": false, \"message\": \"Third request should be blocked\"}]",
-      "orderIndex": 1,
-      "passed": false
-    },
-    {
-      "testName": "Window Reset - Request After Window Allowed",
-      "testCase": "limiter.allowRequest(\"user1\", 1100)",
-      "description": "After the time window expires, requests should be allowed again",
-      "operationsJson": "[{\"method\": \"allowRequest\", \"args\": [\"user1\", 0]}, {\"method\": \"allowRequest\", \"args\": [\"user1\", 100]}, {\"method\": \"allowRequest\", \"args\": [\"user1\", 1100]}]",
-      "assertionsJson": "[{\"type\": \"assertEquals\", \"expected\": true, \"message\": \"Request after window should be allowed\"}]",
-      "orderIndex": 2,
-      "passed": false
-    },
-    {
-      "testName": "Multiple Users - Separate Limits",
-      "testCase": "limiter.allowRequest(\"user2\", 0)",
-      "description": "Different users should have independent rate limits",
-      "operationsJson": "[{\"method\": \"allowRequest\", \"args\": [\"user1\", 0]}, {\"method\": \"allowRequest\", \"args\": [\"user2\", 0]}]",
-      "assertionsJson": "[{\"type\": \"assertEquals\", \"expected\": true, \"message\": \"Different user should be allowed\"}]",
-      "orderIndex": 3,
-      "passed": false
-    }
-  ]
+  },
+  "parent_question_id": null,
+  "primary_language": "javascript",
+  "published_at": "2025-12-19T10:13:16.75455",
+  "short_description": "Build a rate limiter that controls how many requests are allowed in a time window.",
+  "status": "PUBLISHED",
+  "updated_at": "2026-01-12T14:01:15.808308",
+  "usage_count": null,
+  "version": 6,
+  "ai_helper_name": null,
+  "deactivated": false
 }
