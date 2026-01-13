@@ -486,7 +486,7 @@ export default function InterviewSessionPage() {
                                       <Star className="size-3.5 text-chart-1" />
                                       <span className="font-semibold text-chart-1">Answer</span>
                                     </div>
-                                    <p className="text-foreground leading-relaxed">{q.answer}</p>
+                                    <p className="text-foreground leading-relaxed whitespace-pre-line">{q.answer}</p>
                                   </div>
                                 )}
 

@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Code2, Play, Send, Loader2, CheckCircle2, XCircle, Clock, MessageSquare, Terminal, HelpCircle, PlayCircle } from "lucide-react"
+import { Code2, Play, Send, Loader2, CheckCircle2, XCircle, Clock, MessageSquare, Terminal, HelpCircle } from "lucide-react"
 import Editor from "@monaco-editor/react"
 import { Textarea } from "@/components/ui/textarea"
 import { useChatStore } from "@/stores/chatStore"
@@ -743,14 +743,6 @@ export default function CandidateInterviewPage({
                   <HelpCircle className="size-4 mr-2" />
                   AI Chat
                 </TabsTrigger>
-                <TabsTrigger
-                  value="tests"
-                  disabled={!showRunTests}
-                  className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <PlayCircle className="size-4 mr-2" />
-                  Tests
-                </TabsTrigger>
               </TabsList>
             </div>
 
@@ -873,15 +865,6 @@ export default function CandidateInterviewPage({
                   >
                     <Send className="size-4" />
                   </Button>
-                </div>
-              </div>
-            </TabsContent>
-
-            {/* Tests Tab */}
-            <TabsContent value="tests" className="flex-1 m-0 overflow-y-auto">
-              <div className="p-4 space-y-4">
-                <div className="text-xs text-muted-foreground">
-                  Test results will appear here when you run tests from the main area.
                 </div>
               </div>
             </TabsContent>
