@@ -191,19 +191,68 @@ public class QuestionBackupRestorer implements CommandLineRunner {
             question.setPublishedAt(LocalDateTime.now());
         }
 
-        // Parse and add FollowUpQuestions
+        // Parse and add FollowUpQuestions (support both nested array and JSON string)
+        JsonNode followUpQuestionsNode = null;
+
+        // Try to find followUpQuestions in root (for nested structure like rate-limiter)
         if (root.has("followUpQuestions") && root.get("followUpQuestions").isArray()) {
+            followUpQuestionsNode = root.get("followUpQuestions");
+        }
+        // Try to find in questionNode (for nested "question" object)
+        else if (questionNode.has("followUpQuestions") && questionNode.get("followUpQuestions").isArray()) {
+            followUpQuestionsNode = questionNode.get("followUpQuestions");
+        }
+        // Try to find followup_questions_json which may be a JSON array field
+        else if (questionNode.has("followup_questions_json")) {
+            JsonNode jsonField = questionNode.get("followup_questions_json");
+            if (jsonField.isArray()) {
+                followUpQuestionsNode = jsonField;
+            } else if (jsonField.isTextual()) {
+                // It's a string containing JSON, parse it
+                try {
+                    followUpQuestionsNode = objectMapper.readTree(jsonField.asText());
+                } catch (Exception e) {
+                    logger.warn("Failed to parse followup_questions_json for '{}': {}", title, e.getMessage());
+                }
+            }
+        }
+
+        // Add follow-up questions if found
+        if (followUpQuestionsNode != null && followUpQuestionsNode.isArray()) {
             List<FollowUpQuestion> followUpQuestions = new ArrayList<>();
-            for (JsonNode fqNode : root.get("followUpQuestions")) {
+            for (JsonNode fqNode : followUpQuestionsNode) {
                 FollowUpQuestion fq = new FollowUpQuestion();
                 fq.setQuestion(question);
-                fq.setQuestionText(fqNode.get("questionText").asText());
-                fq.setAnswer(getTextOrNull(fqNode, "answer"));
-                fq.setOrderIndex(fqNode.has("orderIndex") ? fqNode.get("orderIndex").asInt() : 0);
-                fq.setCreatedAt(LocalDateTime.now());
-                followUpQuestions.add(fq);
+
+                // Support both 'questionText' and 'question' field names
+                String questionText = null;
+                if (fqNode.has("questionText")) {
+                    questionText = fqNode.get("questionText").asText();
+                } else if (fqNode.has("question")) {
+                    questionText = fqNode.get("question").asText();
+                }
+
+                if (questionText != null) {
+                    fq.setQuestionText(questionText);
+
+                    // Support both 'answer' and 'expectedAnswer' field names
+                    String answer = null;
+                    if (fqNode.has("answer")) {
+                        answer = getTextOrNull(fqNode, "answer");
+                    } else if (fqNode.has("expectedAnswer")) {
+                        answer = getTextOrNull(fqNode, "expectedAnswer");
+                    }
+                    fq.setAnswer(answer);
+
+                    fq.setOrderIndex(fqNode.has("orderIndex") ? fqNode.get("orderIndex").asInt() : 0);
+                    fq.setCreatedAt(LocalDateTime.now());
+                    followUpQuestions.add(fq);
+                }
             }
-            question.setFollowUpQuestions(followUpQuestions);
+            if (!followUpQuestions.isEmpty()) {
+                question.setFollowUpQuestions(followUpQuestions);
+                logger.debug("Added {} follow-up questions for '{}'", followUpQuestions.size(), title);
+            }
         }
 
         // Parse and add TestCases

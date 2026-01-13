@@ -412,3 +412,67 @@ content-length:0
 [00:44:10.016] Browser LOG     [API Client] Adding auth token to request: /questions/332
 [00:44:10.016] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/questions/new?id=332 color: rgb(120, 120, 120) color: inherit {"dp":"/questions/new","o":"http://localhost:3000/questions/new?id=332","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1768299064081}
 [00:44:10.016] Browser LOG     [API Client] Successful response: /questions/332 200
+[01:02:01.877] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:02:02.046] Browser LOG     [API Client] Adding auth token to request: /questions/332
+[01:02:02.046] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[01:02:02.046] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/questions/new","route":"/questions/new"}
+[01:02:02.046] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/questions/new?id=332 color: rgb(120, 120, 120) color: inherit {"dp":"/questions/new","o":"http://localhost:3000/questions/new?id=332","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1768300136127}
+[01:02:02.280] Browser LOG     [API Client] Successful response: /questions/332 200
+[01:02:05.770] Browser LOG     [API Client] Adding auth token to request: /users/me
+[01:02:05.770] Browser LOG     [API Client] Adding auth token to request: /questions
+[01:02:05.770] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/questions color: rgb(120, 120, 120) color: inherit {"dp":"/questions","o":"http://localhost:3000/questions","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1768300139755}
+[01:02:05.770] Browser LOG     [API Client] Successful response: /users/me 200
+[01:02:05.770] Browser LOG     [API Client] Successful response: /questions 200
+[01:02:16.390] Browser LOG     [API Client] Adding auth token to request: /questions/332
+[01:02:16.390] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/questions/new?id=332 color: rgb(120, 120, 120) color: inherit {"dp":"/questions/new","o":"http://localhost:3000/questions/new?id=332","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1768300150447}
+[01:02:16.390] Browser LOG     [API Client] Successful response: /questions/332 200
+[01:02:19.221] Browser LOG     [API Client] Adding auth token to request: /users/me
+[01:02:19.221] Browser LOG     [API Client] Adding auth token to request: /questions
+[01:02:19.221] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/questions color: rgb(120, 120, 120) color: inherit {"dp":"/questions","o":"http://localhost:3000/questions","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1768300153275}
+[01:02:19.221] Browser LOG     [API Client] Successful response: /users/me 200
+[01:02:19.221] Browser LOG     [API Client] Successful response: /questions 200
+[01:02:21.272] Browser LOG     [API Client] Adding auth token to request: /questions/333
+[01:02:21.272] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/questions/new?id=333 color: rgb(120, 120, 120) color: inherit {"dp":"/questions/new","o":"http://localhost:3000/questions/new?id=333","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1768300155327}
+[01:02:21.272] Browser LOG     [API Client] Successful response: /questions/333 200
+[01:02:27.202] Browser LOG     [API Client] Adding auth token to request: /users/me
+[01:02:27.202] Browser LOG     [API Client] Adding auth token to request: /questions
+[01:02:27.202] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/questions color: rgb(120, 120, 120) color: inherit {"dp":"/questions","o":"http://localhost:3000/questions","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1768300161256}
+[01:02:27.202] Browser LOG     [API Client] Successful response: /questions 200
+[01:02:27.202] Browser LOG     [API Client] Successful response: /users/me 200
+[01:02:29.711] Browser LOG     [API Client] Adding auth token to request: /questions/5
+[01:02:29.711] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/questions/new?id=5 color: rgb(120, 120, 120) color: inherit {"dp":"/questions/new","o":"http://localhost:3000/questions/new?id=5","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1768300163767}
+[01:02:29.711] Browser LOG     [API Client] Successful response: /questions/5 200
+[01:02:33.521] Browser LOG     [API Client] Adding auth token to request: /users/me
+[01:02:33.521] Browser LOG     [API Client] Adding auth token to request: /questions
+[01:02:33.521] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/questions color: rgb(120, 120, 120) color: inherit {"dp":"/questions","o":"http://localhost:3000/questions","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1768300167573}
+[01:02:33.521] Browser LOG     [API Client] Successful response: /questions 200
+[01:02:33.521] Browser LOG     [API Client] Successful response: /users/me 200
+[01:02:37.221] Browser LOG     [API Client] Adding auth token to request: /questions/332
+[01:02:37.221] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/questions/new?id=332 color: rgb(120, 120, 120) color: inherit {"dp":"/questions/new","o":"http://localhost:3000/questions/new?id=332","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1768300171282}
+[01:02:37.221] Browser LOG     [API Client] Successful response: /questions/332 200
+[01:15:33.525] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:15:33.848] Browser LOG     [API Client] Adding auth token to request: /questions/332
+[01:15:33.848] Browser ERROR   [API Client] No response: /questions/332
+[01:15:33.848] Browser ERROR   Error fetching question: {"code":"ERR_NETWORK","message":"No response from server"}
+[01:15:33.848] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[01:15:33.848] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/questions/new","route":"/questions/new"}
+[01:15:33.848] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/questions/new?id=332 color: rgb(120, 120, 120) color: inherit {"dp":"/questions/new","o":"http://localhost:3000/questions/new?id=332","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1768300947830}
+[01:15:33.848] Browser LOG     [API Client] Adding auth token to request: /users/me
+[01:15:33.848] Browser LOG     [API Client] Adding auth token to request: /questions
+[01:15:33.848] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/questions color: rgb(120, 120, 120) color: inherit {"dp":"/questions","o":"http://localhost:3000/questions","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1768300947924}
+[01:15:33.848] Browser ERROR   [API Client] No response: /users/me
+[01:15:33.848] Browser ERROR   Failed to fetch user profile: {"code":"ERR_NETWORK","message":"No response from server"}
+[01:15:33.848] Browser ERROR   [API Client] No response: /questions
+[01:15:33.848] Browser ERROR   Error fetching questions: {"code":"ERR_NETWORK","message":"No response from server"}
+[01:15:33.848] Browser ERROR   {"code":"ERR_NETWORK","message":"No response from server"}
+[01:16:01.377] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:16:01.548] Browser LOG     [API Client] Adding auth token to request: /users/me
+[01:16:01.548] Browser LOG     [API Client] Adding auth token to request: /questions
+[01:16:01.548] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[01:16:01.548] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/questions","route":"/questions"}
+[01:16:01.548] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/questions color: rgb(120, 120, 120) color: inherit {"dp":"/questions","o":"http://localhost:3000/questions","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1768300975629}
+[01:16:01.910] Browser LOG     [API Client] Successful response: /users/me 200
+[01:16:01.910] Browser LOG     [API Client] Successful response: /questions 200
+[01:16:06.346] Browser LOG     [API Client] Adding auth token to request: /questions/337
+[01:16:06.346] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/questions/new?id=337 color: rgb(120, 120, 120) color: inherit {"dp":"/questions/new","o":"http://localhost:3000/questions/new?id=337","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1768300980364}
+[01:16:06.346] Browser LOG     [API Client] Successful response: /questions/337 200
