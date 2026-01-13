@@ -18,15 +18,6 @@ import { webSocketService } from "@/services/webSocketService"
 import apiClient from "@/services/apiClient"
 import type { ChatMessage as ChatMessageType } from "@/types/chat"
 
-const mockChatHistory = [
-  {
-    role: "ai",
-    message:
-      "Hello! I'm here to help you during the interview. Feel free to ask me questions about the problem, discuss approaches, or get clarification on requirements.",
-    timestamp: new Date(),
-  },
-]
-
 type InterviewStatus = "setup" | "waiting" | "live" | "ended"
 
 export default function CandidateInterviewPage({

@@ -54,8 +54,18 @@ public class QuestionService {
             questions = questionRepository.findAll();
         }
 
+        // Filter and get only the latest version of each question
         return questions.stream()
                 .filter(q -> (q.getDeactivated() == null || !q.getDeactivated()) && !"ARCHIVED".equals(q.getStatus())) // Exclude deactivated and archived questions
+                // Group by title and get the latest version
+                .collect(Collectors.groupingBy(
+                        Question::getTitle,
+                        Collectors.maxBy(java.util.Comparator.comparingInt(Question::getVersion))
+                ))
+                .values()
+                .stream()
+                .filter(java.util.Optional::isPresent)
+                .map(java.util.Optional::get)
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
     }

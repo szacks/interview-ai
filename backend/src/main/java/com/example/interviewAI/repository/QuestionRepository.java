@@ -33,4 +33,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     @Query("SELECT q FROM Question q WHERE (q.companyId = ?1 OR q.companyId IS NULL) AND q.difficulty = ?2 AND q.supportedLanguages LIKE %?3%")
     List<Question> findByCompanyIdOrCompanyIdIsNullAndDifficultyAndLanguage(Long companyId, String difficulty, String language);
+
+    @Query("SELECT q FROM Question q WHERE q.title = ?1 AND q.version = ?2")
+    List<Question> findByTitleAndVersion(String title, Integer version);
 }
